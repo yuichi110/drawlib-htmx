@@ -1,0 +1,26 @@
+[project]
+name = "docs"
+type = "site"
+title = "htmx v4 User Guide (Unofficial)"
+description = "Practical user guide, Hypermedia-Driven Application (HDA) architecture patterns, and feature reference for htmx v4.0.1."
+style = "default"
+
+[i18n]
+default_lang = "en"
+langs = ["en", "ja"]
+
+[i18n.labels]
+en = "English"
+ja = "日本語"
+
+[i18n.descriptions]
+en = "Practical user guide, Hypermedia-Driven Application (HDA) architecture patterns, and feature reference for htmx v4.0.1."
+ja = "htmx v4.0.1 の実践ユーザーガイド・ハイパーメディア駆動（HDA）設計ベストプラクティス・機能別リファレンス（非公式）。"
+
+[seo]
+site_url = "https://htmx.drawlib.com"
+og_image = "_assets/ogp.png"
+twitter_card = "summary_large_image"
+sitemap = true
+robots = true
+llms_txt = true

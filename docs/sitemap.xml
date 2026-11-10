@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://htmx.drawlib.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/01_getting_started.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/01_getting_started.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/01_getting_started.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/01_getting_started.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/02_hypermedia_architecture.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/02_hypermedia_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/02_hypermedia_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/02_hypermedia_architecture.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/03_requests_and_triggers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/03_requests_and_triggers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/03_requests_and_triggers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/03_requests_and_triggers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/04_targeting_and_swapping.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/04_targeting_and_swapping.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/04_targeting_and_swapping.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/04_targeting_and_swapping.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/05_headers_events_and_status.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/05_headers_events_and_status.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/05_headers_events_and_status.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/05_headers_events_and_status.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/06_extensions_and_streaming.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/06_extensions_and_streaming.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/06_extensions_and_streaming.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/06_extensions_and_streaming.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/07_history_caching_and_ux.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/07_history_caching_and_ux.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/en/08_security_testing_and_debugging.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/08_security_testing_and_debugging.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/08_security_testing_and_debugging.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/08_security_testing_and_debugging.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/01_getting_started.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/01_getting_started.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/01_getting_started.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/01_getting_started.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/02_hypermedia_architecture.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/02_hypermedia_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/02_hypermedia_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/02_hypermedia_architecture.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/03_requests_and_triggers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/03_requests_and_triggers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/03_requests_and_triggers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/03_requests_and_triggers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/04_targeting_and_swapping.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/04_targeting_and_swapping.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/04_targeting_and_swapping.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/04_targeting_and_swapping.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/05_headers_events_and_status.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/05_headers_events_and_status.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/05_headers_events_and_status.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/05_headers_events_and_status.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/06_extensions_and_streaming.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/06_extensions_and_streaming.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/06_extensions_and_streaming.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/06_extensions_and_streaming.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/07_history_caching_and_ux.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/07_history_caching_and_ux.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/ja/08_security_testing_and_debugging.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/08_security_testing_and_debugging.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/08_security_testing_and_debugging.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/08_security_testing_and_debugging.html" />
+  </url>
+</urlset>

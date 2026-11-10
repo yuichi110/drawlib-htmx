@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security, Compatibility, Internal API &amp; CLI — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    
+    
+    
+    <meta name="description" content="This catalog page documents the security, caching, and compatibility extensions (hx-csp, hx-history-cache, hx-prompt, hx-alpine-compat, htmx-2-compat), the…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="Security, Compatibility, Internal API &amp; CLI — htmx v4 API Reference">
+    <meta property="og:description" content="This catalog page documents the security, caching, and compatibility extensions (hx-csp, hx-history-cache, hx-prompt, hx-alpine-compat, htmx-2-compat), the…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Security, Compatibility, Internal API &amp; CLI — htmx v4 API Reference">
+    <meta name="twitter:description" content="This catalog page documents the security, caching, and compatibility extensions (hx-csp, hx-history-cache, hx-prompt, hx-alpine-compat, htmx-2-compat), the…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="#summary-table" class="catalog-nav-sublink is-prose-sublink" data-target="summary-table">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink" data-target="security-caching-compatibility-extensions">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink" data-target="extension-internal-api-internalapi">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink" data-target="migration-cli-tool-upgrade-check">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">Security, Compatibility, Internal API &amp; CLI</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/12_extensions_security_compat_and_cli.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">Security, Compatibility, Internal API &amp; CLI</h1>
+<p>This catalog page documents the security, caching, and compatibility extensions (<code>hx-csp</code>, <code>hx-history-cache</code>, <code>hx-prompt</code>, <code>hx-alpine-compat</code>, <code>htmx-2-compat</code>), the complete 15-member <strong>Extension Internal API (<code>internalAPI</code>)</strong> passed to <code>htmx.registerExtension(name, { init(api) })</code>, and the <strong><code>upgrade-check</code></strong> CLI migration tool (<code>src/scripts/upgrade-check.py</code>).</p>
+<h2 id="summary-table" class="catalog-section-heading"><span>Summary Table</span><a class="header-anchor" href="#summary-table" aria-label="Permalink to Summary Table">#</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Symbol</th>
+<th style="text-align:left">Registered Name / Category</th>
+<th style="text-align:left">Signature / Attributes / Options</th>
+<th style="text-align:left">Primary Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>hx-csp</code></td>
+<td style="text-align:left"><code>'hx-csp'</code> (Security Extension)</td>
+<td style="text-align:left"><code>hx-csp</code> script loaded after <code>htmx.js</code></td>
+<td style="text-align:left">Replaces <code>new Function</code> / <code>AsyncFunction</code> with a strict-CSP safe recursive-descent AST evaluator (<code>jsep</code>) and Trusted Types policy (<code>'htmx-csp'</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-history-cache</code></td>
+<td style="text-align:left"><code>'history-cache'</code> (Caching Extension)</td>
+<td style="text-align:left"><code>hx-history=&quot;false&quot;</code>, <code>htmx.config.historyCacheSize</code></td>
+<td style="text-align:left">Caches previous page <code>&lt;body hx-history-elt&gt;</code> snapshots in <code>sessionStorage</code> (<code>htmx-history-cache</code>) and restores instantly on browser Back/Forward (<code>popstate</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-prompt</code></td>
+<td style="text-align:left"><code>'hx-prompt'</code> (UX/Compat Extension)</td>
+<td style="text-align:left"><code>hx-prompt=&quot;&lt;message&gt;&quot;</code></td>
+<td style="text-align:left">Prompts the user via <code>window.prompt()</code> during <code>htmx:confirm</code>, sending the response in the <code>HX-Prompt</code> request header (<code>evt.detail.prompt</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-alpine-compat</code></td>
+<td style="text-align:left"><code>'alpine-compat'</code> (Compat Extension)</td>
+<td style="text-align:left">Overrides <code>api.isSoftMatch</code></td>
+<td style="text-align:left">Preserves Alpine.js dynamic <code>:id</code> and <code>x-bind:id</code> elements during <code>innerMorph</code> / <code>outerMorph</code> when server templates lack static <code>id</code> attributes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx-2-compat</code></td>
+<td style="text-align:left"><code>'compat'</code> (Compat Extension)</td>
+<td style="text-align:left">Restores htmx 2.x defaults &amp; events</td>
+<td style="text-align:left">Enables <code>implicitInheritance</code>, bridges <code>HX-Trigger*</code> headers, maps <code>hx-vals</code>/<code>hx-headers</code>, aliases legacy <code>hx-*</code> attributes, and re-emits htmx 2.x camelCase events.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HCON</code></td>
+<td style="text-align:left"><code>api.HCON</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>{ parse(str), split(str), merge(src, dst) }</code></td>
+<td style="text-align:left">Parses htmx Config Object Notation (relaxed JSON, bare keys, dotted paths <code>a.b:1</code>, <code>&lt;.../&gt;</code> tokens), splits top-level commas, and deep-merges safely.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>attributeValue</code></td>
+<td style="text-align:left"><code>api.attributeValue</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, name, defaultVal?, eltCollector?, allowInheritance?) =&gt; string | null</code></td>
+<td style="text-align:left">Resolves an <code>hx-*</code> attribute on <code>elt</code> or its ancestors (<code>:inherited</code>, <code>:append</code>), normalizing prefixes and invoking <code>htmx:after:implicitInheritance</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>parseTriggerSpecs</code></td>
+<td style="text-align:left"><code>api.parseTriggerSpecs</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(spec) =&gt; Array&lt;{ name: string, [mod: string]: any }&gt;</code></td>
+<td style="text-align:left">Parses an <code>hx-trigger</code> specification string into an array of structured trigger spec objects (<code>every</code>, <code>[filter]</code>, <code>delay</code>, <code>throttle</code>, <code>from</code>, <code>target</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>determineMethodAndAction</code></td>
+<td style="text-align:left"><code>api.determineMethodAndAction</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, evt?) =&gt; { action: string | undefined, method: string }</code></td>
+<td style="text-align:left">Resolves HTTP <code>method</code> (uppercase, default <code>'GET'</code>) and target URL <code>action</code> from <code>hx-method</code>/<code>hx-action</code>, <code>hx-get</code>..<code>hx-query</code>, or boosted <code>&lt;a&gt;</code>/<code>&lt;form&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>createRequestContext</code></td>
+<td style="text-align:left"><code>api.createRequestContext</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(sourceElement, sourceEvent?) =&gt; Object</code></td>
+<td style="text-align:left">Constructs the full htmx request context (<code>ctx</code>) with <code>AbortController</code>, resolved <code>target</code>, <code>swap</code>, <code>select</code>, <code>selectOOB</code>, <code>headers</code>, and merged <code>hx-config</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>collectFormData</code></td>
+<td style="text-align:left"><code>api.collectFormData</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, form, submitter, validate, isGet) =&gt; FormData | undefined</code></td>
+<td style="text-align:left">Runs HTML5 <code>reportValidity()</code> when <code>validate</code> is truthy (<code>undefined</code> on failure) and collects <code>FormData</code> from <code>form</code>, non-GET containers, <code>submitter</code>, and <code>hx-include</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>getAttributeObject</code></td>
+<td style="text-align:left"><code>api.getAttributeObject</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, attrName, callback, scope?) =&gt; Promise&lt;void&gt; | undefined</code></td>
+<td style="text-align:left">Evaluates an HCON/JSON or <code>js:</code>/<code>javascript:</code> object attribute (e.g., <code>hx-vals</code>, <code>hx-headers</code>) and passes the resolved object to <code>callback(obj)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>insertContent</code></td>
+<td style="text-align:left"><code>api.insertContent</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(task, cssTransition?) =&gt; Promise&lt;void&gt;</code></td>
+<td style="text-align:left">Executes a swap task (<code>innerHTML</code>, <code>outerHTML</code>, <code>innerMorph</code>, <code>outerMorph</code>, etc.), handles <code>[hx-preserve]</code>, transitions, settle events, <code>&lt;script&gt;</code> activation, and <code>htmx.process()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>morph</code></td>
+<td style="text-align:left"><code>api.morph</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(oldNode, fragment, innerHTML) =&gt; void</code></td>
+<td style="text-align:left">Runs the Idiomorph DOM morphing algorithm with persistent ID maps, <code>pantry</code> staging, <code>morphIgnore</code>/<code>morphSkip</code>, and <code>htmx:before:morph:node</code>/<code>attr</code> hooks.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>isSoftMatch</code></td>
+<td style="text-align:left"><code>api.isSoftMatch</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(oldNode, newNode) =&gt; boolean</code></td>
+<td style="text-align:left">Determines whether <code>oldNode</code> and <code>newNode</code> share the same <code>tagName</code> and compatible <code>id</code> (or identical <code>&lt;script&gt;</code>) during Idiomorph candidate matching.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>initSecurity</code></td>
+<td style="text-align:left"><code>api.initSecurity</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(ttPolicy, syncFn, asyncFn) =&gt; void</code></td>
+<td style="text-align:left">Replaces htmx core's internal Trusted Types policy (<code>createHTML</code>, <code>createScript</code>), synchronous <code>#Function</code>, and asynchronous <code>#AsyncFunction</code> constructors.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>onTrigger</code></td>
+<td style="text-align:left"><code>api.onTrigger</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, specString, handler) =&gt; void</code></td>
+<td style="text-align:left">Parses <code>specString</code> and attaches full <code>hx-trigger</code> event listeners (<code>load</code>, <code>revealed</code>, <code>intersect</code>, <code>every</code>, filters, <code>delay</code>, <code>throttle</code>, <code>from</code>) to <code>elt</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmxProp</code></td>
+<td style="text-align:left"><code>api.htmxProp</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt) =&gt; { listeners: Array, triggerSpecs: Array }</code></td>
+<td style="text-align:left">Lazily initializes and returns <code>elt._htmx</code> state storage and stamps <code>data-htmx-powered=&quot;true&quot;</code> on <code>elt</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>triggerHtmxEvent</code></td>
+<td style="text-align:left"><code>api.triggerHtmxEvent</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(on, eventName, detail?, bubbles?) =&gt; boolean</code></td>
+<td style="text-align:left">Invokes matching extension lifecycle hooks (<code>htmx_&lt;event&gt;</code>) and dispatches a cancelable, composed <code>CustomEvent</code>, returning <code>false</code> if cancelled.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>executeJavaScript</code></td>
+<td style="text-align:left"><code>api.executeJavaScript</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(thisArg, obj, code, expression?, isAsync?, compile?) =&gt; any</code></td>
+<td style="text-align:left">Fires <code>htmx:scope</code>, binds <code>htmx</code> helpers to <code>thisArg</code>, and evaluates or compiles (<code>compile=true</code>) JavaScript expressions/statements via <code>#AsyncFunction</code> / <code>#Function</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>upgrade-check</code></td>
+<td style="text-align:left"><code>src/scripts/upgrade-check.py</code> (CLI)</td>
+<td style="text-align:left"><code>python3 upgrade-check.py [paths...] [--fix] [--no-color]</code></td>
+<td style="text-align:left">Static analysis &amp; auto-migration CLI auditing HTML/templates and JS/TS files across 7 breaking-change categories from htmx 2.x to htmx 4.0.</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/12_extensions_security_compat_and_cli/cat_12_security_compat_internal_api.png" alt="12_extensions_security_compat_and_cli_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Security, Compatibility, Internal API & Migration CLI Architecture</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mf">88.0</span><span class="p">),</span>
+    <span class="s2">"Security, Compatibility, Internal API &amp; Migration CLI"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Left Column: Security, Caching &amp; Compatibility Extensions + CLI</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">68</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">shield_check</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="s2">"Security, Compat &amp; CLI"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="c1"># Focal Point 1: hx-csp</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">68.3</span><span class="p">),</span> <span class="s2">"hx-csp ('hx-csp')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">64.3</span><span class="p">),</span> <span class="s2">"jsep AST eval + Trusted Types"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">55.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"hx-history-cache ('history-cache')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">52.8</span><span class="p">),</span> <span class="s2">"sessionStorage LRU (default 10)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">45.3</span><span class="p">),</span> <span class="s2">"hx-prompt &amp; hx-alpine-compat"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">41.3</span><span class="p">),</span> <span class="s2">"HX-Prompt header | :id soft-match"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">33.8</span><span class="p">),</span> <span class="s2">"htmx-2-compat ('compat')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">29.8</span><span class="p">),</span> <span class="s2">"2.x inheritance, headers &amp; events"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">17.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">),</span> <span class="s2">"upgrade-check.py CLI"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">15.2</span><span class="p">),</span> <span class="s2">"7 static checks + --fix auto-rewrite</span><span class="se">\n</span><span class="s2">Events | Inheritance | Attributes"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Right Panel: Extension Internal API (internalAPI — 15 members)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">98</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">gear_six</span><span class="p">((</span><span class="mi">86</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">129</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="s2">"Extension Internal API (init(api) — 15 Members)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="c1"># Focal Point 2: Swap &amp; Idiomorph Engine</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"Swap &amp; Idiomorph"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">57.0</span><span class="p">),</span> <span class="s2">"insertContent(task)</span><span class="se">\n</span><span class="s2">morph(old, frag, inner)</span><span class="se">\n</span><span class="s2">isSoftMatch(old, new)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"Parsing &amp; Attributes"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">57.0</span><span class="p">),</span> <span class="s2">"HCON (parse/split/merge)</span><span class="se">\n</span><span class="s2">attributeValue()</span><span class="se">\n</span><span class="s2">parseTriggerSpecs()</span><span class="se">\n</span><span class="s2">getAttributeObject()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Request &amp; Form Data"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">33.0</span><span class="p">),</span> <span class="s2">"determineMethodAndAction()</span><span class="se">\n</span><span class="s2">createRequestContext()</span><span class="se">\n</span><span class="s2">collectFormData()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Runtime, Security &amp; Events"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">33.0</span><span class="p">),</span> <span class="s2">"initSecurity() | htmxProp()</span><span class="se">\n</span><span class="s2">onTrigger()</span><span class="se">\n</span><span class="s2">triggerHtmxEvent()</span><span class="se">\n</span><span class="s2">executeJavaScript()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">93</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">18.7</span><span class="p">),</span> <span class="s2">"Passed to init(api) in htmx.registerExtension(name, ext)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">14.3</span><span class="p">),</span> <span class="s2">"Overrides isSoftMatch / initSecurity &amp; dispatches custom swap tasks"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="security-caching-compatibility-extensions" class="catalog-section-heading"><span>Security, Caching &amp; Compatibility Extensions</span><a class="header-anchor" href="#security-caching-compatibility-extensions" aria-label="Permalink to Security, Caching &amp; Compatibility Extensions">#</a></h2>
+<h3 id="hx-csp-hx-csp"><code>hx-csp</code> (<code>hx-csp</code>)<a class="header-anchor" href="#hx-csp-hx-csp" aria-label="Permalink">#</a></h3>
+<p>Replaces htmx core's dynamic code compilation (<code>new Function</code> and <code>new AsyncFunction</code>) and raw innerHTML assignment with a strict Content Security Policy (CSP) compliant AST evaluator (<code>jsep</code>) and a Trusted Types pass-through policy (<code>'htmx-csp'</code>), enabling htmx (<code>hx-on:*</code>, <code>hx-vals=&quot;js:...&quot;</code>, <code>hx-headers=&quot;js:...&quot;</code>, and <code>hx-live</code>) to run without <code>'unsafe-eval'</code>.</p>
+<h4 id="extension-registration-hook-mechanics">Extension Registration &amp; Hook Mechanics</h4>
+<ul>
+<li><strong>Registered Name</strong>: <code>'hx-csp'</code> (<code>src/ext/hx-csp.js</code>)</li>
+<li><strong><code>init(api)</code></strong>:
+<ul>
+<li>Creates a Trusted Types policy via <code>window.trustedTypes.createPolicy('htmx-csp', { createHTML: s =&gt; s, createScript: s =&gt; s })</code> (or falls back to <code>{ createHTML: s =&gt; s, createScript: s =&gt; s }</code> when Trusted Types are unavailable or policy creation throws).</li>
+<li>Calls <code>api.initSecurity(policy, cspFunction(false), cspFunction(true))</code> to replace htmx's internal <code>#ttPolicy</code>, synchronous <code>#Function</code>, and asynchronous <code>#AsyncFunction</code> constructors.</li>
+</ul>
+</li>
+</ul>
+<h4 id="supported-javascript-subset-jsep-ast-evaluator">Supported JavaScript Subset (JSEP AST Evaluator)</h4>
+<ul>
+<li><strong>Supported Expressions</strong>:
+<ul>
+<li>Literals (<code>Literal</code>), identifiers (<code>Identifier</code>), <code>this</code> (<code>ThisExpression</code>), template literals (<code>TemplateLiteral</code>), arrays (<code>ArrayExpression</code>), and object literals (<code>ObjectExpression</code>, including spread <code>...</code>).</li>
+<li>Property access (<code>MemberExpression</code> with <code>.</code> and <code>[]</code>, including optional chaining <code>?.</code> and method binding), function/method calls (<code>CallExpression</code> with <code>?.()</code> and <code>...spread</code>), and <code>new</code> construction (<code>NewExpression</code> on safe constructors).</li>
+<li>Unary operators (<code>!</code>, <code>+</code>, <code>-</code>, <code>~</code>, <code>typeof</code>, <code>void</code>, <code>delete</code>, <code>await</code>), update operators (<code>++</code>, <code>--</code> prefix/postfix), binary operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>**</code>, <code>==</code>, <code>!=</code>, <code>===</code>, <code>!==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code>, <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>in</code>, <code>instanceof</code>), logical operators (<code>&amp;&amp;</code>, <code>||</code>, <code>??</code>), ternary (<code>ConditionalExpression</code>), and comma sequences (<code>SequenceExpression</code>).</li>
+<li>Assignments (<code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code>, <code>||=</code>, <code>&amp;&amp;=</code>, <code>??=</code>), single/multi-param arrow functions (<code>x =&gt; ...</code>, <code>(a, b) =&gt; ...</code>, <code>async () =&gt; ...</code>), and semicolon-separated statements (<code>Compound</code>) with <code>return</code>.</li>
+</ul>
+</li>
+<li><strong>Blocked Constructs (Security Sandboxing)</strong>:
+<ul>
+<li>Blocks access to dangerous properties via <code>BLOCKED_PROPS</code>: <code>'constructor'</code>, <code>'__proto__'</code>, and <code>'prototype'</code> (returns <code>undefined</code> and ignores writes).</li>
+<li>Blocks calls to dangerous globals via <code>BLOCKED_CALLS</code>: <code>eval</code>, <code>Function</code>, <code>AsyncFunction</code>, <code>GeneratorFunction</code>, <code>AsyncGeneratorFunction</code>, plus string-based <code>setTimeout('...')</code> and <code>setInterval('...')</code> (throws <code>Error('Blocked by hx-csp')</code>).</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html"><span class="cm">&lt;!-- Enforce strict CSP without 'unsafe-eval' --&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">"Content-Security-Policy"</span>
+      <span class="na">content</span><span class="o">=</span><span class="s">"default-src 'self'; script-src 'self'; require-trusted-types-for 'script'; trusted-types htmx-csp;"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/htmx.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-csp.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"hx-csp"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/like"</span>
+          <span class="na">hx-vals</span><span class="o">=</span><span class="s">"js:{ count: Number(this.dataset.count) + 1 }"</span>
+          <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"this.dataset.count = Number(this.dataset.count) + 1"</span>
+          <span class="na">data-count</span><span class="o">=</span><span class="s">"4"</span><span class="p">&gt;</span>
+    Like
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-history-cache-history-cache"><code>hx-history-cache</code> (<code>history-cache</code>)<a class="header-anchor" href="#hx-history-cache-history-cache" aria-label="Permalink">#</a></h3>
+<p>Snapshots the current page's history element (<code>[hx-history-elt]</code> or <code>document.body</code>) into <code>sessionStorage</code> (<code>'htmx-history-cache'</code>) before htmx pushes or replaces history entries, and restores cached HTML directly on browser Back/Forward (<code>popstate</code>) navigation without a network round-trip.</p>
+<h4 id="configuration-attributes">Configuration &amp; Attributes</h4>
+<ul>
+<li><strong>Registered Name</strong>: <code>'history-cache'</code> (<code>src/ext/hx-history-cache.js</code>)</li>
+<li><strong><code>hx-history=&quot;false&quot;</code></strong>: When placed on any element in the document (<code>htmx.find('[hx-history=&quot;false&quot;]')</code>), disables caching for the current URL and purges any existing cache entry for that path.</li>
+<li><strong><code>htmx.config.historyCacheSize</code></strong>: Maximum number of URL entries retained in the LRU cache inside <code>sessionStorage</code> under key <code>'htmx-history-cache'</code>. Defaults to <code>10</code>. Setting <code>&lt;= 0</code> disables caching and removes <code>'htmx-history-cache'</code>.</li>
+</ul>
+<h4 id="lifecycle-events-hooks">Lifecycle Events &amp; Hooks</h4>
+<ul>
+<li><strong>Before History Update (<code>htmx_before_historyUpdate</code>)</strong>:
+<ul>
+<li>Triggered before <code>pushState</code> / <code>replaceState</code>. Calls <code>saveToCache(normalizePath(location.pathname + location.search), getHistoryElement())</code> to snapshot <code>cleanInnerHTML(historyElt)</code> before the new history entry is written, and marks <code>history.state = { ...history.state, cached: true }</code>.</li>
+</ul>
+</li>
+<li><strong>On Browser Back/Forward (<code>htmx_before_restoreHistory</code>)</strong>:
+<ul>
+<li>Checks the LRU cache in <code>sessionStorage</code> for <code>detail.path</code>.</li>
+<li><strong>Cache Hit</strong>: Fires <code>htmx:historyCacheHit</code> (<code>{ path, content }</code>). If not prevented, swaps <code>content</code> into <code>[hx-history-elt]</code> / <code>document.body</code> via <code>api.insertContent({ type: 'innerHTML', target, content, transition: htmx.config.transitions })</code>, dispatches <code>htmx:after:restoreHistory</code> (<code>{ path, cacheMiss: false }</code>), and returns <code>false</code> to cancel core's network reload.</li>
+<li><strong>Cache Miss</strong>: Fires <code>htmx:historyCacheMiss</code> (<code>{ path }</code>) and allows htmx core to perform its standard network restore.</li>
+</ul>
+</li>
+<li><strong>Sanitization (<code>cleanInnerHTML</code>)</strong>: Clones the history element, removes all <code>[hx-Vals]</code> nodes and strips transient <code>.htmx-request</code> / <code>.htmx-settling</code> classes before serializing to <code>sessionStorage</code>.</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-history-cache.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">historyCacheSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">20</span><span class="p">;</span><span class="w"> </span><span class="c1">// Keep up to 20 pages in sessionStorage</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"history-cache"</span> <span class="na">hx-history-elt</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">nav</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/products?page=2"</span> <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"true"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main"</span><span class="p">&gt;</span>Page 2<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">main</span> <span class="na">id</span><span class="o">=</span><span class="s">"main"</span><span class="p">&gt;</span>...<span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-prompt-hx-prompt"><code>hx-prompt</code> (<code>hx-prompt</code>)<a class="header-anchor" href="#hx-prompt-hx-prompt" aria-label="Permalink">#</a></h3>
+<p>Intercepts the <code>htmx:confirm</code> lifecycle event on elements with <code>hx-prompt</code> (or inherited <code>hx-prompt</code>), displays a synchronous browser <code>window.prompt()</code> dialog, and attaches the user's input to both the <code>HX-Prompt</code> request header and <code>evt.detail.prompt</code>.</p>
+<h4 id="attributes-request-header">Attributes &amp; Request Header</h4>
+<ul>
+<li><strong>Registered Name</strong>: <code>'hx-prompt'</code> (<code>src/ext/hx-prompt.js</code>)</li>
+<li><strong><code>hx-prompt=&quot;&lt;message&gt;&quot;</code></strong>: Evaluates via <code>api.attributeValue(elt, 'hx-prompt')</code> (supports <code>:inherited</code> or <code>implicitInheritance</code>).</li>
+<li><strong>Cancellation Behavior</strong>: If the user clicks Cancel (<code>window.prompt()</code> returns <code>null</code>), <code>htmx_confirm</code> returns <code>false</code>, aborting the htmx request before <code>issueRequest()</code> runs.</li>
+<li><strong>Header &amp; Event Detail</strong>: When confirmed, sets <code>evt.detail.prompt = response</code> and sets <code>evt.detail.ctx.request.headers['HX-Prompt'] = response</code>.</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-prompt.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"hx-prompt"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/account/api-key/42"</span>
+          <span class="na">hx-prompt</span><span class="o">=</span><span class="s">"Type your key name to confirm deletion:"</span>
+          <span class="na">hx-target</span><span class="o">=</span><span class="s">"#key-row-42"</span>
+          <span class="na">hx-swap</span><span class="o">=</span><span class="s">"delete"</span><span class="p">&gt;</span>
+    Revoke API Key
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-alpine-compat-alpine-compat"><code>hx-alpine-compat</code> (<code>alpine-compat</code>)<a class="header-anchor" href="#hx-alpine-compat-alpine-compat" aria-label="Permalink">#</a></h3>
+<p>Patches htmx's internal Idiomorph node-matching predicate (<code>api.isSoftMatch</code>) so that elements whose <code>id</code> attribute is dynamically bound by Alpine.js (<code>:id</code> or <code>x-bind:id</code>) are still matched and morphed in-place against incoming server HTML fragments that lack a static <code>id</code> attribute.</p>
+<h4 id="internal-mechanism">Internal Mechanism</h4>
+<ul>
+<li><strong>Registered Name</strong>: <code>'alpine-compat'</code> (<code>src/ext/hx-alpine-compat.js</code>)</li>
+<li><strong>Why It Is Needed</strong>: In standard Idiomorph (<code>api.isSoftMatch(oldNode, newNode)</code>), if <code>oldNode</code> has a populated <code>oldNode.id</code> (set at runtime by Alpine's <code>:id</code> / <code>x-bind:id</code>) while the server-rendered <code>newNode</code> only carries <code>:id=&quot;item.id&quot;</code> and has <code>newNode.id === &quot;&quot;</code>, <code>oldNode.id === newNode.id</code> evaluates to <code>false</code>, causing Idiomorph to destroy and recreate the DOM node (losing Alpine component state).</li>
+<li><strong>Override Logic</strong>: Wraps <code>api.isSoftMatch</code> so that if the original <code>origSoftMatch(oldNode, newNode)</code> returns <code>false</code>, it checks <code>(oldNode.hasAttribute(':id') || oldNode.hasAttribute('x-bind:id')) &amp;&amp; !newNode.id</code> alongside matching <code>oldNode.tagName === newNode.tagName</code> (and <code>isEqualNode</code> for <code>SCRIPT</code>).</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-alpine-compat.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"alpine-compat"</span>
+     <span class="na">x-data</span><span class="o">=</span><span class="s">"{ items: [{ id: 'row-1', label: 'Alpha' }] }"</span>
+     <span class="na">hx-get</span><span class="o">=</span><span class="s">"/items-fragment"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">template</span> <span class="na">x-for</span><span class="o">=</span><span class="s">"item in items"</span> <span class="na">:key</span><span class="o">=</span><span class="s">"item.id"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">:id</span><span class="o">=</span><span class="s">"item.id"</span> <span class="na">x-text</span><span class="o">=</span><span class="s">"item.label"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="htmx-2-compat-compat"><code>htmx-2-compat</code> (<code>compat</code>)<a class="header-anchor" href="#htmx-2-compat-compat" aria-label="Permalink">#</a></h3>
+<p>Provides a comprehensive compatibility layer that restores htmx 2.x configuration defaults, attribute inheritance, legacy attribute aliases, <code>HX-Trigger*</code> response header event dispatching, <code>hx-vals</code> / <code>hx-headers</code> request injection, and htmx 2.x camelCase lifecycle event names.</p>
+<h4 id="compatibility-features-restored-defaults">Compatibility Features &amp; Restored Defaults</h4>
+<ul>
+<li><strong>Registered Name</strong>: <code>'compat'</code> (<code>src/ext/htmx-2-compat.js</code>)</li>
+<li><strong>Configuration Defaults (<code>init</code>)</strong>:
+<ul>
+<li>Sets <code>htmx.config.implicitInheritance = true</code> (restoring automatic inheritance for <code>hx-target</code>, <code>hx-swap</code>, <code>hx-select</code>, etc.).</li>
+<li>Sets <code>htmx.config.defaultSwap = 'innerHTML'</code>.</li>
+<li>Sets <code>htmx.config.extensions = 'hx-prompt'</code> (auto-enabling <code>hx-prompt</code>).</li>
+</ul>
+</li>
+<li><strong>Attribute Transformations (<code>htmx_before_process</code> &amp; <code>htmx_after_implicitInheritance</code>)</strong>:
+<ul>
+<li>Renames <code>hx-history-elt</code> to <code>hx-history</code> on elements (<code>htmx_before_process</code>).</li>
+<li>Normalizes <code>hx-swap</code> values <code>'morph'</code> and <code>'morph:innerHTML'</code> -&gt; <code>'innerMorph'</code>, and <code>'morph:outerHTML'</code> -&gt; <code>'outerMorph'</code>.</li>
+<li>Maps <code>hx-disinherit=&quot;*&quot;</code> -&gt; <code>hx-inherit=&quot;false&quot;</code>.</li>
+<li>Maps <code>hx-params=&quot;*&quot;</code> -&gt; <code>hx-include:inherited=&quot;*&quot;</code> and <code>hx-params=&quot;none&quot;</code> -&gt; <code>hx-include:inherited=&quot;none&quot;</code> (warns on comma-separated filter lists).</li>
+<li>Translates <code>hx-sync=&quot;&lt;selector&gt;:&lt;strategy&gt;&quot;</code> into <code>hx-config='{&quot;actionQueue&quot;: {&quot;scope&quot;: &quot;&lt;selector&gt;&quot;, &quot;strategy&quot;: &quot;&lt;strategy&gt;&quot;}}'</code>.</li>
+<li>Logs warnings when deprecated <code>hx-vars</code> or <code>hx-ext=&quot;ignore:...&quot;</code> are encountered.</li>
+</ul>
+</li>
+<li><strong><code>hx-vals</code> &amp; <code>hx-headers</code> Evaluation (<code>htmx_config_request</code>)</strong>:
+<ul>
+<li>Collects inherited and local <code>hx-vals</code> via <code>api.getAttributeObject</code> and merges resolved key/value pairs into <code>ctx.request.body</code> (<code>FormData</code>).</li>
+<li>Collects inherited and local <code>hx-headers</code> via <code>api.getAttributeObject</code> and merges resolved headers into <code>ctx.request.headers</code>.</li>
+</ul>
+</li>
+<li><strong><code>HX-Trigger*</code> Response Headers (<code>htmx_after_request</code>, <code>htmx_after_swap</code>, <code>htmx_after_settle</code>)</strong>:
+<ul>
+<li>Parses <code>HX-Trigger</code>, <code>HX-Trigger-After-Swap</code>, and <code>HX-Trigger-After-Settle</code> (supporting both JSON objects <code>{&quot;evt&quot;: detail}</code> and comma-separated event names) and dispatches them via <code>htmx.trigger()</code>.</li>
+</ul>
+</li>
+<li><strong>Legacy 2.x Event Mapping</strong>:
+<ul>
+<li>Re-emits htmx 4.0 colon-delimited lifecycle events under their htmx 2.x camelCase names (<code>htmx:beforeRequest</code>, <code>htmx:afterRequest</code>, <code>htmx:configRequest</code>, <code>htmx:beforeSwap</code>, <code>htmx:afterSwap</code>, <code>htmx:beforeOnLoad</code>, <code>htmx:afterOnLoad</code>, <code>htmx:beforeProcessNode</code>, <code>htmx:afterProcessNode</code>, <code>htmx:beforeSend</code>, <code>htmx:responseError</code>, <code>htmx:sendError</code>, <code>htmx:sendAbort</code>, <code>htmx:timeout</code>, <code>htmx:oobBeforeSwap</code>, <code>htmx:oobAfterSwap</code>, <code>htmx:beforeTransition</code>, <code>htmx:historyRestore</code>, <code>htmx:beforeHistoryUpdate</code>, <code>htmx:pushedIntoHistory</code>, <code>htmx:replacedInHistory</code>) and synthesizes <code>xhr</code> (<code>status</code>, <code>statusText</code>, <code>response</code>, <code>responseText</code>, <code>getResponseHeader</code>, <code>getAllResponseHeaders</code>) on <code>detail.xhr</code>.</li>
+</ul>
+</li>
+<li><strong>Legacy <code>htmx.*</code> Global Helpers</strong>:
+<ul>
+<li>Restores <code>htmx.values(elt, type)</code>, <code>htmx.remove(elt, delay?)</code>, <code>htmx.addClass(elt, cls, delay?)</code>, <code>htmx.removeClass(elt, cls, delay?)</code>, <code>htmx.toggleClass(elt, cls)</code>, <code>htmx.closest(elt, selector)</code>, and <code>htmx.defineExtension(name, ext)</code> (adapting <code>onEvent</code> and <code>transformResponse</code> hooks to htmx 4.0).</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/htmx.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-prompt.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/htmx-2-compat.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"compat"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Legacy 2.x attributes, events, and implicit inheritance work seamlessly --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#output"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">'{"source": "legacy-panel"}'</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/submit"</span>
+            <span class="na">hx-on:htmx:after-request</span><span class="o">=</span><span class="s">"console.log(event.detail.xhr.status)"</span><span class="p">&gt;</span>
+      Submit (2.x Compat)
+    <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"output"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="extension-internal-api-internalapi" class="catalog-section-heading"><span>Extension Internal API (<code>internalAPI</code>)</span><a class="header-anchor" href="#extension-internal-api-internalapi" aria-label="Permalink to Extension Internal API (internalAPI)">#</a></h2>
+<p>When an extension is registered via <code>htmx.registerExtension(name, extensionDefinition)</code>, htmx invokes <code>extensionDefinition.init(internalAPI)</code> once, passing the 15-member <code>internalAPI</code> object (<code>#internalAPI</code> in <code>src/htmx.js</code>). Extensions can call these internal primitives directly or wrap/override methods such as <code>api.isSoftMatch</code> or <code>api.initSecurity</code>.</p>
+<hr />
+<h3 id="hcon">HCON<a class="header-anchor" href="#hcon" aria-label="Permalink">#</a></h3>
+<p>Provides htmx's lightweight <strong>HCON (htmx Config Object Notation)</strong> parser, top-level comma splitter, and prototype-pollution-safe deep object merger.</p>
+<h4 id="object-signature-methods">Object Signature &amp; Methods</h4>
+<pre><code class="language-ts"><span class="kd">interface</span><span class="w"> </span><span class="nx">HCON</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">parse</span><span class="p">(</span><span class="kt">string</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">split</span><span class="p">(</span><span class="kt">string</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">  </span><span class="nx">merge</span><span class="p">(</span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong><code>api.HCON.parse(string)</code></strong>:
+<ul>
+<li>Fast-paths standard <code>JSON.parse(string)</code> if valid JSON object.</li>
+<li>Otherwise strips optional outer <code>{ ... }</code> and parses relaxed key-value pairs separated by commas or whitespace:
+<ul>
+<li>Keys can be unquoted identifiers, dotted paths (<code>actionQueue.strategy: 'drop'</code> -&gt; <code>{ actionQueue: { strategy: 'drop' } }</code>), or single/double-quoted strings.</li>
+<li>Values can be <code>true</code>, <code>false</code>, <code>null</code>, finite numbers, quoted strings (with <code>\</code> escapes), nested <code>{...}</code> / <code>[...]</code> JSON structures, <code>&lt;.../&gt;</code> hyperscript/selector tokens, or bare tokens.</li>
+<li>Valueless keys default to <code>true</code> (e.g., <code>&quot;once changed delay:300ms&quot;</code> -&gt; <code>{ once: true, changed: true, delay: &quot;300ms&quot; }</code>).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><code>api.HCON.split(string)</code></strong>:
+<ul>
+<li>Splits a string on top-level commas <code>,</code> while ignoring commas inside <code>(...)</code>, <code>[...]</code>, <code>&lt;.../&gt;</code>, <code>'...'</code>, and <code>&quot;...&quot;</code>.</li>
+</ul>
+</li>
+<li><strong><code>api.HCON.merge(source, target)</code></strong>:
+<ul>
+<li>Recursively merges properties from <code>source</code> into <code>target</code> and returns <code>target</code>. Skips <code>'__proto__'</code>, <code>'constructor'</code>, and <code>'prototype'</code> keys to prevent prototype pollution.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-config'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">specs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'click[ctrlKey, shiftKey], keyup delay:200ms'</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// ['click[ctrlKey, shiftKey]', 'keyup delay:200ms']</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">'actionQueue.strategy: drop, timeout: 5000, once'</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// { actionQueue: { strategy: 'drop' }, timeout: 5000, once: true }</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="attributevalue">attributeValue<a class="header-anchor" href="#attributevalue" aria-label="Permalink">#</a></h3>
+<p>Resolves an htmx attribute value on <code>elt</code> or its DOM ancestors, automatically respecting <code>htmx.config.prefix</code>, <code>htmx.config.metaCharacter</code>, explicit <code>:inherited</code> / <code>:append</code> modifiers, <code>hx-inherit</code>, and <code>htmx.config.implicitInheritance</code>.</p>
+<h4 id="signature-parameters">Signature &amp; Parameters</h4>
+<pre><code class="language-ts"><span class="nx">attributeValue</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">defaultVal?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">eltCollector</span><span class="o">?:</span><span class="w"> </span><span class="p">(</span><span class="nx">val</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ownerElt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">allowInheritance?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// defaults to htmx.config.implicitInheritance</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">any</span>
+</code></pre>
+<ul>
+<li><strong>Resolution Rules</strong>:
+<ul>
+<li>Normalizes <code>name</code> using <code>adjustName()</code> (applying <code>htmx.config.prefix</code> and <code>htmx.config.metaCharacter</code>).</li>
+<li>Checks <code>elt</code> directly for <code>name</code> or <code>name:inherited</code>.</li>
+<li>If <code>:append</code> or <code>:inherited:append</code> is present, collects values up the ancestor chain and concatenates them with <code>,</code>.</li>
+<li>Walks parent elements checking <code>:inherited</code> attributes (or standard attributes when <code>allowInheritance</code> or <code>hx-inherit</code> permits inheritance).</li>
+<li>If resolved via <code>implicitInheritance</code> on an ancestor, triggers <code>htmx:after:implicitInheritance</code> (<code>{ elt, parent }</code>).</li>
+<li>Calls <code>eltCollector(val, ownerElt)</code> for each contributing element when provided, or returns <code>defaultVal</code> if no attribute is found.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-attr-reader'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">htmx_config_request</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">team</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'hx-team'</span><span class="p">,</span><span class="w"> </span><span class="s1">'default-team'</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Team'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">team</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="parsetriggerspecs">parseTriggerSpecs<a class="header-anchor" href="#parsetriggerspecs" aria-label="Permalink">#</a></h3>
+<p>Parses an <code>hx-trigger</code> attribute string into an array of normalized trigger specification objects.</p>
+<h4 id="signature-return-value">Signature &amp; Return Value</h4>
+<pre><code class="language-ts"><span class="nx">parseTriggerSpecs</span><span class="p">(</span><span class="nx">spec</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Array</span><span class="o">&lt;</span><span class="p">{</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">filter?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">changed?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">once?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">consume?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">stop?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">prevent?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">halt?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">capture?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">passive?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">delay?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">throttle?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">from?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">   </span><span class="nx">queue?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">root?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">threshold?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span>
+</code></pre>
+<ul>
+<li><strong>Parsing Mechanics</strong>:
+<ul>
+<li>Splits <code>spec</code> on top-level commas via <code>HCON.split(spec)</code>.</li>
+<li>Rewrites <code>every &lt;interval&gt; [condition]</code> into <code>every[condition] &lt;interval&gt;</code> so polling conditions are extracted uniformly.</li>
+<li>Extracts <code>[...]</code> bracket filter expressions into <code>triggerSpec.filter</code> (throws <code>&quot;unterminated:&quot; + name</code> if closing <code>]</code> is missing).</li>
+<li>Parses remaining space-separated modifiers via <code>HCON.parse(rest)</code> and sets <code>triggerSpec.name</code> to the event name (e.g., <code>'click'</code>, <code>'every'</code>, <code>'intersect'</code>, <code>'revealed'</code>, <code>'load'</code>).</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">specs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">parseTriggerSpecs</span><span class="p">(</span><span class="s1">'keyup[key=="Enter"] changed delay:250ms from:body, load once'</span><span class="p">);</span>
+<span class="c1">// [</span>
+<span class="c1">//   { name: 'keyup', filter: 'key=="Enter"', changed: true, delay: '250ms', from: 'body' },</span>
+<span class="c1">//   { name: 'load', once: true }</span>
+<span class="c1">// ]</span>
+</code></pre>
+<hr />
+<h3 id="determinemethodandaction">determineMethodAndAction<a class="header-anchor" href="#determinemethodandaction" aria-label="Permalink">#</a></h3>
+<p>Determines the HTTP method (uppercase) and target URL (<code>action</code>) for an element and triggering DOM event.</p>
+<h4 id="signature-return-value-2">Signature &amp; Return Value</h4>
+<pre><code class="language-ts"><span class="nx">determineMethodAndAction</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">evt?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>Resolution Precedence</strong>:
+<ol>
+<li>Explicit <code>hx-method</code> and <code>hx-action</code> attributes on <code>elt</code>.</li>
+<li>Verb attributes in order: <code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-patch</code>, <code>hx-delete</code>, <code>hx-query</code> (checked via <code>elt.hasAttribute()</code>).</li>
+<li>If <code>elt</code> is boosted (<code>isBoosted(elt)</code>):
+<ul>
+<li>For <code>&lt;a href=&quot;...&quot;&gt;</code>: <code>action = elt.getAttribute('href')</code>, <code>method = 'GET'</code>.</li>
+<li>For <code>&lt;form&gt;</code>: inspects <code>evt?.submitter</code> (<code>formAction</code> / <code>formmethod</code>) before falling back to <code>elt.getAttribute('action')</code> and <code>elt.getAttribute('method')</code>.</li>
+</ul>
+</li>
+<li>Defaults <code>method</code> to <code>'GET'</code> (uppercased).</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">determineMethodAndAction</span><span class="p">(</span><span class="nx">buttonElt</span><span class="p">,</span><span class="w"> </span><span class="nx">submitEvent</span><span class="p">);</span>
+<span class="c1">// e.g. { method: 'POST', action: '/api/items' }</span>
+</code></pre>
+<hr />
+<h3 id="createrequestcontext">createRequestContext<a class="header-anchor" href="#createrequestcontext" aria-label="Permalink">#</a></h3>
+<p>Constructs the complete htmx request context object (<code>ctx</code>) used throughout the request, swap, and history pipeline.</p>
+<h4 id="signature-context-shape">Signature &amp; Context Shape</h4>
+<pre><code class="language-ts"><span class="nx">createRequestContext</span><span class="p">(</span><span class="nx">sourceElement</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">sourceEvent?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">sourceElement</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">sourceEvent?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">select</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">selectOOB</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">push</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">replace</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">confirm</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">anchor</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestCredentials</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="kt">AbortSignal</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestMode</span><span class="p">;</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>Key Initialization Steps</strong>:
+<ul>
+<li>Creates an <code>AbortController</code> (<code>request.abort = () =&gt; abortController.abort()</code>, <code>request.signal = abortController.signal</code>).</li>
+<li>Calls <code>determineMethodAndAction(sourceElement, sourceEvent)</code> and strips any <code>#anchor</code> hash from <code>action</code> into <code>request.anchor</code> when <code>method === 'GET'</code>.</li>
+<li>Resolves <code>target</code> (<code>hx-target</code> or <code>sourceElement</code>), <code>swap</code> (<code>hx-swap</code>), <code>select</code> (<code>hx-select</code>), <code>selectOOB</code> (<code>hx-select-oob</code>), <code>push</code> (<code>hx-push-url</code>), <code>replace</code> (<code>hx-replace-url</code>), <code>transition</code> (<code>hx-transition</code>), and <code>confirm</code> (<code>hx-confirm</code>).</li>
+<li>Populates standard request headers: <code>HX-Request: 'true'</code>, <code>HX-Source</code> (<code>tagName#id</code>), <code>HX-Current-URL</code>, <code>Accept: 'text/html, */*; q=0.9'</code>, <code>HX-Boosted: 'true'</code> (when boosted), and <code>HX-Target</code> (when target has an <code>id</code>).</li>
+<li>Applies <code>hx-boost</code> overrides and deep-merges <code>hx-config</code> via <code>HCON.merge()</code>, while enforcing <code>ctx.request.mode = htmx.config.mode</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">createRequestContext</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">);</span>
+<span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Extension-Trace'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'enabled'</span><span class="p">;</span>
+</code></pre>
+<hr />
+<h3 id="collectformdata">collectFormData<a class="header-anchor" href="#collectformdata" aria-label="Permalink">#</a></h3>
+<p>Validates associated form controls (when <code>validate</code> is truthy) and builds a <code>FormData</code> instance containing inputs from the enclosing <code>&lt;form&gt;</code>, non-GET container, submitter button, and any <code>hx-include</code> selectors.</p>
+<h4 id="signature-behavior">Signature &amp; Behavior</h4>
+<pre><code class="language-ts"><span class="nx">collectFormData</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">form</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLFormElement</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">submitter</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElement</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">isGet</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">FormData</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span>
+</code></pre>
+<ul>
+<li><strong>Validation &amp; Collection Rules</strong>:
+<ul>
+<li>If <code>form</code> is present: validates <code>form.reportValidity()</code> (returning <code>undefined</code> if invalid) and initializes <code>new FormData(form)</code>.</li>
+<li>If <code>form</code> is absent and <code>elt</code> is a <code>&lt;form&gt;</code> or non-<code>isGet</code> element: validates <code>elt</code> and its descendant inputs via <code>reportValidity()</code>, then copies all named <code>[name]</code> inputs inside <code>elt</code> into <code>FormData</code>.</li>
+<li>Appends <code>submitter.name</code> / <code>submitter.value</code> when a named submitter triggered the request outside <code>form</code>.</li>
+<li>Resolves <code>hx-include</code> (<code>api.attributeValue(elt, 'hx-include')</code>), validates included elements when <code>validate</code> is truthy, and merges their values into <code>FormData</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">formData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">collectFormData</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">form</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">formData</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Validation failed</span>
+</code></pre>
+<hr />
+<h3 id="getattributeobject">getAttributeObject<a class="header-anchor" href="#getattributeobject" aria-label="Permalink">#</a></h3>
+<p>Reads an attribute containing either HCON/JSON or a <code>js:</code> / <code>javascript:</code> dynamic expression (such as <code>hx-vals</code> or <code>hx-headers</code>), evaluates it, and invokes <code>callback(resolvedObject)</code>.</p>
+<h4 id="signature-sync-async-execution">Signature &amp; Sync/Async Execution</h4>
+<pre><code class="language-ts"><span class="nx">getAttributeObject</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attrName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">callback</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span>
+</code></pre>
+<ul>
+<li><strong>Behavior</strong>:
+<ul>
+<li>Looks up <code>attrName</code> on <code>elt</code>. If empty or missing, returns <code>undefined</code> without calling <code>callback</code>.</li>
+<li><strong>Static HCON / JSON</strong>: Parses synchronously via <code>HCON.parse(hxAttr)</code>, invokes <code>callback(obj)</code> immediately, and returns <code>undefined</code>.</li>
+<li><strong>Dynamic <code>js:</code> / <code>javascript:</code> Prefix</strong>: Strips the prefix, wraps the expression in <code>{ ... }</code> if not already wrapped, evaluates asynchronously via <code>executeJavaScript(elt, scope, code, true, true)</code>, and returns a <code>Promise</code> that calls <code>callback(obj)</code> when resolved.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">getAttributeObject</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'hx-vals'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">vals</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">]</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">vals</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="insertcontent">insertContent<a class="header-anchor" href="#insertcontent" aria-label="Permalink">#</a></h3>
+<p>Executes a single DOM swap task (<code>task</code>), handling CSS View Transitions, <code>[hx-preserve]</code> element retention, Idiomorph or standard HTML insertion, settle lifecycle events, <code>&lt;script&gt;</code> tag activation, <code>htmx.process()</code> initialization, and scroll/focus restoration.</p>
+<h4 id="signature-task-object-properties">Signature &amp; Task Object Properties</h4>
+<pre><code class="language-ts"><span class="nx">insertContent</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">task</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'innerHTML'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerHTML'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerSync'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'innerMorph'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerMorph'</span><span class="w"> </span><span class="o">|</span>
+<span class="w">          </span><span class="s1">'textContent'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'beforebegin'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'afterbegin'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'beforeend'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'afterend'</span><span class="w"> </span><span class="o">|</span>
+<span class="w">          </span><span class="s1">'delete'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'none'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">content?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">DocumentFragment</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Node</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">select?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">strip?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">focus?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">scroll</span><span class="o">?:</span><span class="w"> </span><span class="s1">'top'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'bottom'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">anchor?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">transition?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">     </span><span class="nx">settleDelay?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">ctx?</span><span class="o">:</span><span class="w"> </span><span class="kt">Object</span><span class="p">;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">cssTransition?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// default true</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span>
+</code></pre>
+<ul>
+<li><strong>Execution Pipeline</strong>:
+<ol>
+<li>Resolves <code>task.target</code> (via <code>htmx.find</code> if string). If <code>task.transition &amp;&amp; cssTransition &amp;&amp; document.startViewTransition</code>, wraps execution in a View Transition.</li>
+<li>Parses <code>task.content</code> into a <code>DocumentFragment</code>, applies <code>task.strip</code> (unwrapping first root element) and <code>task.select</code> filtering.</li>
+<li>Saves <code>[hx-preserve]</code> elements by <code>id</code> into a temporary pantry before swap and restores them afterward.</li>
+<li>Executes the swap strategy (<code>innerHTML</code>, <code>outerHTML</code>, <code>outerSync</code> via <code>moveBefore</code>, <code>innerMorph</code>, <code>outerMorph</code>, <code>textContent</code>, adjacent insertions, <code>delete</code>, <code>none</code>, or custom extension <code>handle_swap(task)</code>).</li>
+<li>Fires <code>htmx:before:settle</code>, waits <code>settleDelay</code> if specified, activates <code>&lt;script&gt;</code> tags (unless <code>htmx.config.allowScriptTags === false</code>), calls <code>htmx.process()</code> on newly inserted elements, and fires <code>htmx:after:settle</code>.</li>
+<li>Executes <code>task.focus</code> and <code>task.scroll</code> / <code>task.anchor</code> scrolling.</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">insertContent</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'innerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">'#live-feed'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="s1">'&lt;div id="item-1"&gt;Updated via internalAPI&lt;/div&gt;'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="morph">morph<a class="header-anchor" href="#morph" aria-label="Permalink">#</a></h3>
+<p>Runs htmx's built-in <strong>Idiomorph</strong> DOM morphing algorithm to transform <code>oldNode</code> (or its children) to match <code>fragment</code> while preserving existing DOM nodes, focus state, and CSS transitions.</p>
+<h4 id="signature-parameters-2">Signature &amp; Parameters</h4>
+<pre><code class="language-ts"><span class="nx">morph</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">oldNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Document</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">fragment</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">DocumentFragment</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">innerHTML?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// true for innerMorph, false for outerMorph</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>Algorithm &amp; Extension Hooks</strong>:
+<ul>
+<li>Builds persistent ID sets (<code>idMap</code>) across both <code>oldNode</code> and <code>fragment</code> using <code>__createIdMaps</code>.</li>
+<li>Stages unmatched existing nodes in a hidden <code>div</code> pantry (<code>__createPantry</code>) and uses <code>moveBefore</code> (when supported) or <code>insertBefore</code> to relocate matched nodes without destroying state.</li>
+<li>Respects <code>htmx.config.morphIgnore</code> (attributes ignored during attribute sync), <code>htmx.config.morphSkip</code> (selector of subtrees skipped entirely), <code>htmx.config.morphSkipChildren</code> (selector whose children are skipped), and <code>htmx.config.morphScanLimit</code>.</li>
+<li>Fires extension hooks <code>htmx:before:morph:node</code> (<code>{ oldNode, newNode }</code>) and <code>htmx:before:morph:attr</code> (<code>{ attr, type, node }</code>); returning <code>false</code> cancels morphing that node or attribute.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'template'</span><span class="p">);</span>
+<span class="nx">template</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;ul id="list"&gt;&lt;li id="a"&gt;Item A (Updated)&lt;/li&gt;&lt;/ul&gt;'</span><span class="p">;</span>
+<span class="nx">api</span><span class="p">.</span><span class="nx">morph</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'list'</span><span class="p">),</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span><span class="w"> </span><span class="c1">// outerMorph</span>
+</code></pre>
+<hr />
+<h3 id="issoftmatch">isSoftMatch<a class="header-anchor" href="#issoftmatch" aria-label="Permalink">#</a></h3>
+<p>Default node-compatibility predicate used by <code>api.morph</code> to determine whether an existing DOM element <code>oldNode</code> can be morphed into <code>newNode</code> when no exact <code>id</code> match is required.</p>
+<h4 id="signature-matching-rules">Signature &amp; Matching Rules</h4>
+<pre><code class="language-ts"><span class="nx">isSoftMatch</span><span class="p">(</span><span class="nx">oldNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+</code></pre>
+<ul>
+<li><strong>Default Logic</strong>:
+<ul>
+<li>Returns <code>true</code> if and only if:
+<ol>
+<li><code>oldNode.nodeType === Node.ELEMENT_NODE</code></li>
+<li><code>oldNode.tagName === newNode.tagName</code></li>
+<li><code>(oldNode.tagName !== 'SCRIPT' || oldNode.isEqualNode(newNode))</code></li>
+<li><code>(!oldNode.id || oldNode.id === newNode.id)</code></li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>Extension Overriding</strong>: Stored directly as a property on <code>#internalAPI</code> (<code>this.#internalAPI.isSoftMatch(oldElt, newHead)</code>), allowing extensions like <code>hx-alpine-compat</code> to wrap and override <code>api.isSoftMatch</code> during <code>init(api)</code>.</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-soft-match'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">orig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">isSoftMatch</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">isSoftMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">oldNode</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">dataset</span><span class="o">?</span><span class="p">.</span><span class="nx">morphKey</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">morphKey</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">newNode</span><span class="p">.</span><span class="nx">dataset</span><span class="o">?</span><span class="p">.</span><span class="nx">morphKey</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">tagName</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">newNode</span><span class="p">.</span><span class="nx">tagName</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">orig</span><span class="p">(</span><span class="nx">oldNode</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="initsecurity">initSecurity<a class="header-anchor" href="#initsecurity" aria-label="Permalink">#</a></h3>
+<p>Replaces htmx core's internal Trusted Types policy (<code>#ttPolicy</code>), synchronous function compiler (<code>#Function</code>), and asynchronous function compiler (<code>#AsyncFunction</code>).</p>
+<h4 id="signature-parameters-3">Signature &amp; Parameters</h4>
+<pre><code class="language-ts"><span class="nx">initSecurity</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">ttPolicy</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createHTML</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span><span class="w"> </span><span class="nx">createScript</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">any</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">syncFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">...args</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Function</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">asyncFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">...args</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Function</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>Usage</strong>: Used by security extensions such as <code>hx-csp</code> to replace dynamic <code>new Function</code> / <code>new AsyncFunction</code> evaluation with a custom AST interpreter and register a Trusted Types policy for <code>innerHTML</code> / <code>&lt;script&gt;</code> creation.</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'my-security-policy'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">trustedTypes</span><span class="p">.</span><span class="nx">createPolicy</span><span class="p">(</span><span class="s1">'my-app-policy'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">createHTML</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">html</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">html</span><span class="p">),</span>
+<span class="w">      </span><span class="nx">createScript</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">script</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">script</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">initSecurity</span><span class="p">(</span><span class="nx">policy</span><span class="p">,</span><span class="w"> </span><span class="nb">Function</span><span class="p">,</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="p">(){}).</span><span class="kr">constructor</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="ontrigger">onTrigger<a class="header-anchor" href="#ontrigger" aria-label="Permalink">#</a></h3>
+<p>Parses an <code>hx-trigger</code> specification string (<code>specString</code>) and attaches all corresponding event listeners, polling timers, intersection observers, and modifier pipelines to <code>elt</code>.</p>
+<h4 id="signature-supported-trigger-mechanics">Signature &amp; Supported Trigger Mechanics</h4>
+<pre><code class="language-ts"><span class="nx">onTrigger</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">specString</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>Capabilities</strong>:
+<ul>
+<li>Parses <code>specString</code> via <code>parseTriggerSpecs(specString)</code> and records the parsed specs in <code>htmxProp(elt).triggerSpecs</code>.</li>
+<li>Supports special triggers (<code>load</code>, <code>revealed</code>, <code>intersect</code> with <code>root</code>/<code>threshold</code>, and <code>every &lt;interval&gt;</code>) as well as arbitrary DOM events.</li>
+<li>Evaluates modifier pipelines in order: <code>from:</code> target resolution, <code>target:</code> selector filter, <code>[filter]</code> JS expression (via <code>executeJavaScript</code>), <code>prevent</code>, <code>stop</code>/<code>consume</code>, <code>halt</code>, <code>changed</code> value comparison, <code>once</code> listener removal, <code>delay:</code> timer, and <code>throttle:</code> gate before calling <code>handler(elt, evt)</code>.</li>
+<li>Stores cleanup entries (<code>{ type, target, listener, options }</code>) in <code>htmxProp(elt).listeners</code> so <code>htmx:cleanup</code> automatically removes them when <code>elt</code> leaves the DOM.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'auto-save'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">htmx_after_process</span><span class="p">(</span><span class="nx">elt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="s1">'hx-autosave'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">onTrigger</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'input changed delay:500ms'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">targetElt</span><span class="p">,</span><span class="w"> </span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="nx">targetElt</span><span class="p">,</span><span class="w"> </span><span class="s1">'autosave:commit'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">originalEvent</span><span class="o">:</span><span class="w"> </span><span class="nx">evt</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxprop">htmxProp<a class="header-anchor" href="#htmxprop" aria-label="Permalink">#</a></h3>
+<p>Lazily initializes and returns the internal <code>_htmx</code> metadata object stored on a DOM element, and marks the element with <code>data-htmx-powered=&quot;true&quot;</code>.</p>
+<h4 id="signature-return-object">Signature &amp; Return Object</h4>
+<pre><code class="language-ts"><span class="nx">htmxProp</span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">listeners</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span>
+<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">EventTarget</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">listener</span><span class="o">:</span><span class="w"> </span><span class="kt">EventListenerOrEventListenerObject</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">options?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">AddEventListenerOptions</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">triggerSpecs</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">customKey</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>Cleanup Integration</strong>: The <code>MutationObserver</code> in htmx core selects all <code>[data-htmx-powered]</code> elements removed from the document, fires <code>htmx:cleanup</code> on each, removes every listener registered in <code>elt._htmx.listeners</code>, and deletes <code>elt._htmx</code>. Extensions can attach custom per-element state or register custom listeners in <code>api.htmxProp(elt).listeners</code> for automatic teardown.</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">htmxProp</span><span class="p">(</span><span class="nx">elt</span><span class="p">);</span>
+<span class="nx">prop</span><span class="p">.</span><span class="nx">listeners</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="nx">listener</span><span class="o">:</span><span class="w"> </span><span class="nx">onResize</span><span class="w"> </span><span class="p">});</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="triggerhtmxevent">triggerHtmxEvent<a class="header-anchor" href="#triggerhtmxevent" aria-label="Permalink">#</a></h3>
+<p>Logs event diagnostics, executes matching extension lifecycle hooks (<code>htmx_&lt;event&gt;</code>), and dispatches a cancelable, composed <code>CustomEvent</code> on the target element.</p>
+<h4 id="signature-return-value-3">Signature &amp; Return Value</h4>
+<pre><code class="language-ts"><span class="nx">triggerHtmxEvent</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">on</span><span class="o">:</span><span class="w"> </span><span class="kt">EventTarget</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">eventName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">detail?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">bubbles?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// default true</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+</code></pre>
+<ul>
+<li><strong>Execution Order</strong>:
+<ol>
+<li>Logs <code>detail.error</code> via <code>console.error</code>, <code>detail.warn</code> via <code>console.warn</code>, or all events via <code>console.log</code> when <code>htmx.config.logAll === true</code>.</li>
+<li>Converts colons in <code>eventName</code> to underscores (<code>htmx:config:request</code> -&gt; <code>htmx_config_request</code>) and invokes every registered extension method with that name (<code>ext[hookName](on, detail)</code>). If any extension explicitly returns <code>false</code>, immediately returns <code>false</code> without dispatching the DOM event.</li>
+<li>Adjusts <code>eventName</code> for <code>htmx.config.metaCharacter</code> (if configured) and dispatches <code>new CustomEvent(eventName, { bubbles, cancelable: true, composed: true, detail })</code> on <code>on</code>, returning <code>!event.defaultPrevented</code>.</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">triggerHtmxEvent</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'htmx:custom:action'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="mf">123</span><span class="w"> </span><span class="p">});</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">allowed</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Cancelled by an extension or event.preventDefault()</span>
+</code></pre>
+<hr />
+<h3 id="executejavascript">executeJavaScript<a class="header-anchor" href="#executejavascript" aria-label="Permalink">#</a></h3>
+<p>Evaluates or compiles a JavaScript expression or statement body with <code>this</code> bound to <code>thisArg</code>, built-in <code>htmx</code> helper functions in scope, and extension-injected scope variables via the <code>htmx:scope</code> hook.</p>
+<h4 id="signature-parameters-4">Signature &amp; Parameters</h4>
+<pre><code class="language-ts"><span class="nx">executeJavaScript</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">thisArg</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">obj?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">code?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">expression?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span><span class="w"> </span><span class="c1">// default true (wraps in `return (...)`)</span>
+<span class="w">  </span><span class="nx">isAsync?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span><span class="w">    </span><span class="c1">// default true (uses #AsyncFunction)</span>
+<span class="w">  </span><span class="nx">compile?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w">     </span><span class="c1">// default false (when true, returns reusable thunk `() =&gt; any`)</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span>
+</code></pre>
+<ul>
+<li><strong>Scope Injection &amp; Compilation</strong>:
+<ul>
+<li>Builds a base scope containing all enumerable methods of <code>htmx</code> bound to <code>thisArg</code> (<code>find</code>, <code>findAll</code>, <code>trigger</code>, <code>ajax</code>, <code>swap</code>, <code>process</code>, <code>on</code>, <code>off</code>, <code>timeout</code>, <code>sleep</code>).</li>
+<li>Fires the extension hook <code>triggerHtmxEvent(thisArg, 'htmx:scope', { scope, code })</code> (used by extensions like <code>hx-live</code> to inject <code>q</code>, <code>data</code>, <code>aria</code>, <code>attr</code>, <code>local</code>, <code>closest</code>, <code>take</code>, <code>toggle</code>, <code>debounce</code>).</li>
+<li>Merges <code>obj</code> properties into <code>scope</code>.</li>
+<li>Compiles <code>code</code> (<code>return (${code})</code> if <code>expression === true</code>, or raw statements if <code>expression === false</code>) using <code>#AsyncFunction</code> (<code>isAsync === true</code>) or <code>#Function</code> (<code>isAsync === false</code>)—which automatically uses <code>hx-csp</code>'s AST evaluator when <code>hx-csp</code> is active.</li>
+<li>Returns a compiled zero-arg function <code>() =&gt; func.call(thisArg, ...values)</code> when <code>compile === true</code>, or invokes <code>func.call(thisArg, ...values)</code> immediately when <code>compile === false</code>.</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="c1">// Compile an expression once and invoke repeatedly</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">evalCondition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">executeJavaScript</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">min</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="s1">'this.value.length &gt;= min'</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">evalCondition</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Input meets minimum length'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<hr />
+<h2 id="migration-cli-tool-upgrade-check" class="catalog-section-heading"><span>Migration CLI Tool (<code>upgrade-check</code>)</span><a class="header-anchor" href="#migration-cli-tool-upgrade-check" aria-label="Permalink to Migration CLI Tool (upgrade-check)">#</a></h2>
+<h3 id="upgrade-check">upgrade-check<a class="header-anchor" href="#upgrade-check" aria-label="Permalink">#</a></h3>
+<p>A zero-dependency Python 3 CLI static analyzer and auto-migrator (<code>src/scripts/upgrade-check.py</code>) that scans HTML/template files (<code>.html</code>, <code>.htm</code>, <code>.jinja</code>, <code>.jinja2</code>, <code>.j2</code>, <code>.njk</code>, <code>.hbs</code>, <code>.ejs</code>, <code>.erb</code>, <code>.php</code>, <code>.twig</code>, <code>.blade.php</code>, <code>.svelte</code>, <code>.vue</code>, <code>.astro</code>, <code>.tsx</code>, <code>.jsx</code>, <code>.py</code>, <code>.rb</code>, <code>.go</code>, <code>.rs</code>, <code>.java</code>, <code>.cs</code>) and JavaScript/TypeScript files (<code>.js</code>, <code>.ts</code>, <code>.mjs</code>, <code>.cjs</code>, <code>.jsx</code>, <code>.tsx</code>) for breaking changes when upgrading from htmx 2.x to htmx 4.0.</p>
+<h4 id="cli-invocation-options">CLI Invocation &amp; Options</h4>
+<pre><code class="language-bash">python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span><span class="o">[</span>paths...<span class="o">]</span><span class="w"> </span><span class="o">[</span>--fix<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-color<span class="o">]</span>
+</code></pre>
+<ul>
+<li><strong><code>paths</code></strong> (optional, defaults to <code>.</code>): Files or directories to scan recursively (automatically skips <code>.git</code>, <code>node_modules</code>, <code>__pycache__</code>, <code>.venv</code>, <code>venv</code>, <code>vendor</code>, <code>dist</code>, <code>build</code>, <code>.next</code>, <code>.nuxt</code>).</li>
+<li><strong><code>--fix</code></strong>: Automatically applies safe in-place rewrites (<code>[FIX]</code> items) and prints remaining <code>[MANUAL]</code> items requiring human review.</li>
+<li><strong><code>--no-color</code></strong>: Disables ANSI terminal color codes (also disabled automatically when <code>stdout</code> is not a TTY).</li>
+</ul>
+<h4 id="the-7-migration-checks-performed">The 7 Migration Checks Performed</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Check #</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">What It Detects</th>
+<th style="text-align:left"><code>--fix</code> Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. Event Names</strong></td>
+<td style="text-align:left"><code>Event Names</code></td>
+<td style="text-align:left">Legacy htmx 2.x camelCase events in <code>addEventListener('htmx:afterRequest', ...)</code>, <code>htmx.on('htmx:configRequest', ...)</code>, and HTML <code>hx-on:htmx:after-request</code> / <code>hx-on::after-request</code> attributes (covers 33 renamed events + 31 removed events).</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> all 33 renamed event strings and <code>hx-on:</code> attributes to htmx 4.0 colon syntax (e.g., <code>htmx:after:request</code>, <code>hx-on:htmx:after:request</code>). Flags removed events as <code>[MANUAL]</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. Attribute Inheritance</strong></td>
+<td style="text-align:left"><code>Attribute Inheritance</code></td>
+<td style="text-align:left">Inherited attributes (<code>hx-target</code>, <code>hx-swap</code>, <code>hx-select</code>, <code>hx-include</code>, <code>hx-confirm</code>, <code>hx-headers</code>, <code>hx-vals</code>, <code>hx-boost</code>, <code>hx-indicator</code>, <code>hx-push-url</code>, <code>hx-replace-url</code>, <code>hx-Select-oob</code>, <code>hx-sync</code>, <code>hx-disinherit</code>, <code>hx-encoding</code>, <code>hx-ext</code>, <code>hx-history-elt</code>, <code>hx-params</code>, <code>hx-preserve</code>, <code>hx-prompt</code>, <code>hx-request</code>, <code>hx-validate</code>) placed on container tags (<code>&lt;div&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, etc.) without a local <code>hx-get</code>/<code>hx-post</code>/etc.</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> by appending <code>:inherited</code> to the attribute name (e.g., <code>hx-target=&quot;#out&quot;</code> -&gt; <code>hx-target:inherited=&quot;#out&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. Removed / Changed Attributes</strong></td>
+<td style="text-align:left"><code>Removed / Changed Attributes</code></td>
+<td style="text-align:left">Detects <code>hx-vars</code>, <code>hx-disinherit</code>, <code>hx-history-elt</code>, <code>hx-params</code>, <code>hx-prompt</code>, <code>hx-request</code>, <code>hx-sync</code>, <code>hx-vals</code>, and <code>hx-headers</code>.</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> <code>hx-vars</code> -&gt; <code>hx-vals</code>, <code>hx-disinherit=&quot;*&quot;</code> -&gt; <code>hx-inherit=&quot;false&quot;</code>, and <code>hx-history-elt</code> -&gt; <code>hx-history</code>. Flags <code>hx-params</code>, <code>hx-prompt</code>, <code>hx-request</code>, <code>hx-sync</code>, <code>hx-vals</code>, and <code>hx-headers</code> as <code>[MANUAL]</code> with migration guidance.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>4. JavaScript API Changes</strong></td>
+<td style="text-align:left"><code>JavaScript API Changes</code></td>
+<td style="text-align:left">Detects removed 2.x JS methods (<code>htmx.defineExtension</code>, <code>htmx.removeExtension</code>, <code>htmx.values</code>, <code>htmx.remove</code>, <code>htmx.addClass</code>, <code>htmx.removeClass</code>, <code>htmx.toggleClass</code>, <code>htmx.takeClass</code>, <code>htmx.closest</code>, <code>htmx.logger</code>) and <code>event.detail.xhr</code> usage.</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> <code>htmx.defineExtension</code> -&gt; <code>htmx.registerExtension</code> and <code>htmx.closest(elt, sel)</code> -&gt; <code>elt.closest(sel)</code>. Flags remaining DOM helpers and <code>detail.xhr</code> as <code>[MANUAL]</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>5. Configuration Changes</strong></td>
+<td style="text-align:left"><code>Configuration Changes</code></td>
+<td style="text-align:left">Detects <code>htmx.config.&lt;option&gt;</code> assignments or <code>&lt;meta name=&quot;htmx-config&quot;&gt;</code> keys for 25 removed 2.x config options (<code>historyEnabled</code>, <code>historyCacheSize</code>, <code>useTemplateFragments</code>, <code>selfRequestsOnly</code>, <code>allowEval</code>, <code>globalViewTransitions</code>, <code>scrollBehavior</code>, <code>defaultSwapStyle</code>, <code>indicatorClass</code>, etc.).</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> <code>htmx.config.defaultSwapStyle</code> -&gt; <code>htmx.config.defaultSwap</code> and <code>htmx.config.globalViewTransitions</code> -&gt; <code>htmx.config.transitions</code>. Flags removed options as <code>[MANUAL]</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>6. Swap Style Changes</strong></td>
+<td style="text-align:left"><code>Swap Style Changes</code></td>
+<td style="text-align:left">Detects <code>hx-swap=&quot;morph&quot;</code>, <code>hx-swap=&quot;morph:innerHTML&quot;</code>, <code>hx-swap=&quot;morph:outerHTML&quot;</code>, or <code>idiomorph</code> extension references.</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> <code>morph</code> / <code>morph:innerHTML</code> -&gt; <code>innerMorph</code> and <code>morph:outerHTML</code> -&gt; <code>outerMorph</code> (preserving swap modifiers). Flags <code>idiomorph</code> extension references as <code>[MANUAL]</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>7. SSE Extension Syntax</strong></td>
+<td style="text-align:left"><code>SSE Extension Syntax</code></td>
+<td style="text-align:left">Detects htmx 2.x SSE attributes <code>sse-connect</code>, <code>sse-swap</code>, and <code>sse-close</code>.</td>
+<td style="text-align:left"><strong>Auto-fixes (<code>[FIX]</code>)</strong> <code>sse-connect=&quot;&lt;url&gt;&quot;</code> -&gt; <code>hx-sse:connect=&quot;&lt;url&gt;&quot;</code>. Flags <code>sse-swap</code> and <code>sse-close</code> as <code>[MANUAL]</code> (<code>hx-trigger=&quot;sse:&lt;event&gt;&quot;</code> / server close).</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash"><span class="c1"># Dry-run audit of templates/ and src/</span>
+python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span>templates/<span class="w"> </span>src/
+
+<span class="c1"># Automatically rewrite all safe [FIX] items in-place</span>
+python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span>templates/<span class="w"> </span>src/<span class="w"> </span>--fix
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="11_extensions_reactive_and_dom.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">Reactive Scripting &amp; DOM UX Extensions</span>
+                    </a>
+                    
+                    
+                    <div></div>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

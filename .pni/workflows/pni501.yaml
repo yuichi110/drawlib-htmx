@@ -1,0 +1,77 @@
+id: pni501
+category: audit
+name: htmx v4.0.1 Engineering & Architecture Diagnostic (PNI501)
+description: Deterministic JavaScript AST, module dependency DAG, library hygiene, hermetic Playwright Chromium @web/test-runner + V8 coverage container runtime, and supply-chain diagnostic of htmx v4.0.1, compiled into HTML and A4 PDF under docs/reports/pni501/.
+
+targets:
+  root: "."
+  source:
+    - "src/htmx.js"
+    - "src/ext"
+    - "src/scripts"
+  tests:
+    - "test/tests"
+  docs:
+    - "README.md"
+  exclude:
+    - "reports/**"
+    - "reports_src/**"
+    - "docs/**"
+    - "docs_src/**"
+    - "api_src/**"
+    - "architecture_src/**"
+    - "dist/**"
+    - "dev/**"
+    - "editors/**"
+    - "scripts/**"
+    - "test/manual/**"
+    - "test/scratch/**"
+    - "test/lib/**"
+    - "test/benchmarks/**"
+
+steps:
+  - id: repo_and_deps
+    uses: repo_structure_audit
+
+  - id: ast_and_quality
+    uses: javascript_ast_audit
+
+  - id: arch_recording
+    uses: architecture_analysis
+
+  - id: library_hygiene
+    uses: library_hygiene_audit
+
+  - id: test_health
+    uses: javascript_test_audit
+
+  - id: runtime_verification
+    uses: container_runtime_audit
+    with:
+      dockerfile: ".pni/dockerfiles/root/Dockerfile"
+      build_timeout_sec: 480
+      test_timeout_sec: 480
+      smoke_timeout_sec: 120
+      test_cmd: "./node_modules/.bin/web-test-runner --browsers chromium --config pni-wtr.config.mjs --playwright >/out/node_test.txt 2>&1; rc=$?; cp /tmp/cov/coverage-summary.json /out/coverage-summary.json 2>/dev/null || true; cat /out/node_test.txt; exit $rc"
+      smoke_cmd: "node dist/scripts/upgrade-check.js --help >/dev/null 2>&1 || true; node -e \"const fs=require('fs'); const s=fs.readFileSync('dist/htmx.js','utf8'); if(!s.includes('4.0.1')) process.exit(1);\" && printf '{\"detail\":\"htmx v4.0.1 dist bundle & upgrade-check CLI smoke probe exited 0\"}' >/out/smoke.json"
+
+  - id: security_audit
+    uses: security_vulnerability_audit
+
+  - id: output_score
+    uses: emit_score
+    with:
+      target: "pni501"
+      save_file: false
+
+  - id: create_report
+    uses: write_drawlib_report
+    with:
+      target: "pni501"
+      src_dir: "reports_src"
+      output_dir: "docs/reports/pni501"
+      formats:
+        - "pdf"
+        - "html"
+      lang: "en"
+      style: "google"

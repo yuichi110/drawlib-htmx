@@ -1,0 +1,532 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7. History, Caching &amp; UX Patterns</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/07_history_caching_and_ux.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 provides progressive enhancement (hx-boost), clean browser history navigation (hx-push-url, hx-replace-url, hx-history-elt), opt-in…">
+    <link rel="canonical" href="https://htmx.drawlib.com/en/07_history_caching_and_ux.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Guide">
+    <meta property="og:title" content="7. History, Caching &amp; UX Patterns — Guide">
+    <meta property="og:description" content="htmx v4.0.1 provides progressive enhancement (hx-boost), clean browser history navigation (hx-push-url, hx-replace-url, hx-history-elt), opt-in…">
+    <meta property="og:url" content="https://htmx.drawlib.com/en/07_history_caching_and_ux.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="7. History, Caching &amp; UX Patterns — Guide">
+    <meta name="twitter:description" content="htmx v4.0.1 provides progressive enhancement (hx-boost), clean browser history navigation (hx-push-url, hx-replace-url, hx-history-elt), opt-in…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="Guide">
+                    
+                    Guide
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Overview</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="01_getting_started.html" >1. Getting Started</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_hypermedia_architecture.html" >2. Hypermedia Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_requests_and_triggers.html" >3. Requests &amp; Triggers</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="04_targeting_and_swapping.html" >4. Targeting &amp; Swapping</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_headers_events_and_status.html" >5. Headers, Events &amp; Status</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extensions_and_streaming.html" >6. Extensions &amp; Streaming</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="07_history_caching_and_ux.html" >7. History, Caching &amp; UX</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="08_security_testing_and_debugging.html" >8. Security, Testing &amp; Debugging</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Companion Portals</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Reference Catalog<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/architecture/" target="_blank" rel="noopener noreferrer">Internal Architecture Guide<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Diagnostic Report<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">7. History, Caching &amp; UX Patterns</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="07_history_caching_and_ux.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/07_history_caching_and_ux.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>7. History, Caching &amp; UX Patterns</h1>
+<p>htmx v4.0.1 provides progressive enhancement (<code>hx-boost</code>), clean browser history navigation (<code>hx-push-url</code>, <code>hx-replace-url</code>, <code>hx-history-elt</code>), opt-in <code>sessionStorage</code> snapshot caching (<code>hx-history-cache</code>), flicker-free loading indicators (<code>hx-indicator</code>, <code>hx-disable</code>), and bandwidth-saving conditional polling (<code>hx-ptag</code>).</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/07_history_caching_and_ux/ch07_history_and_cache_flow.png" alt="07_history_caching_and_ux_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Browser History Navigation, Core AJAX Restore, and hx-history-cache Flow</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decision</span><span class="p">,</span> <span class="n">End</span><span class="p">,</span> <span class="n">FlowDiagram</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Start</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">192</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">FlowDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Browser Back/Forward (popstate) Restoration Pipeline in htmx v4.0.1"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">pop</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Start</span><span class="p">(</span><span class="s2">"Browser Back/Forward</span><span class="se">\n</span><span class="s2">(popstate Event)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">48</span><span class="p">))</span>
+<span class="n">cfg_chk</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Decision</span><span class="p">(</span><span class="s2">"config.history</span><span class="se">\n</span><span class="s2">Mode?"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">48</span><span class="p">))</span>
+<span class="n">reload_end</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">End</span><span class="p">(</span><span class="s2">"location.reload()</span><span class="se">\n</span><span class="s2">Hard Browser Refresh"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+
+<span class="n">ext_chk</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Decision</span><span class="p">(</span><span class="s2">"hx-history-cache</span><span class="se">\n</span><span class="s2">Hit in sessionStorage?"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">114</span><span class="p">,</span> <span class="mi">48</span><span class="p">))</span>
+<span class="n">cache_hit</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">End</span><span class="p">(</span><span class="s2">"Instant outerSync Swap</span><span class="se">\n</span><span class="s2">Restore Input &amp; Scroll</span><span class="se">\n</span><span class="s2">(Zero Network Call)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">core_fetch</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">End</span><span class="p">(</span><span class="s2">"Core Fetch GET URL</span><span class="se">\n</span><span class="s2">HX-History-Restore-Request</span><span class="se">\n</span><span class="s2">Swap [hx-history-elt] / body"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">pop</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">cfg_chk</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">cfg_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">reload_end</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'"reload"'</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">cfg_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ext_chk</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"true"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ext_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">cache_hit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Cache Hit"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ext_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">core_fetch</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Miss / Core Only"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">flow</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>7.1 Progressive Enhancement with <code>hx-boost:inherited=&quot;true&quot;</code></h2>
+<p>Adding <code>hx-boost:inherited=&quot;true&quot;</code> to <code>&lt;body&gt;</code> or a navigation container upgrades standard <code>&lt;a href=&quot;...&quot;&gt;</code> links and <code>&lt;form&gt;</code> submissions into AJAX requests targeting <code>document.body</code> while preserving graceful fallback if JavaScript is disabled:</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Boost all internal links and forms inside the application shell --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">header</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">nav</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/projects"</span><span class="p">&gt;</span>Projects<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/billing"</span><span class="p">&gt;</span>Billing<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+      <span class="cm">&lt;!-- Opt a specific link out of boosting --&gt;</span>
+      <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/legacy-app"</span> <span class="na">hx-boost</span><span class="o">=</span><span class="s">"false"</span><span class="p">&gt;</span>Legacy Portal<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">main</span> <span class="na">id</span><span class="o">=</span><span class="s">"app-content"</span> <span class="na">hx-history-elt</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Welcome<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<blockquote>
+<p>[!IMPORTANT]
+Because <code>hx-boost</code> is almost always placed on a parent container (<code>&lt;body&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>) for its descendant links and forms, <strong>always include the <code>:inherited</code> modifier</strong> (<code>hx-boost:inherited=&quot;true&quot;</code>) in htmx v4.0.1!</p>
+</blockquote>
+<hr />
+<h2>7.2 Browser History Management (<code>hx-push-url</code>, <code>hx-replace-url</code>, <code>hx-history-elt</code>)</h2>
+<p>In htmx 2, history navigation serialized DOM snapshots into <code>localStorage</code>, which frequently caused quota issues and stale UI bugs. <strong>In htmx v4.0.1 core, history restoration is clean and stateless</strong>: when a user clicks Back or Forward, htmx issues an AJAX <code>GET</code> request with <code>HX-History-Restore-Request: true</code> and <code>HX-Request-Type: full</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Attribute / Config</th>
+<th style="text-align:left">Values</th>
+<th style="text-align:left">Behavior in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>hx-push-url</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code>, <code>&quot;false&quot;</code>, or custom URL</td>
+<td style="text-align:left">Pushes the request URL (or custom URL) via <code>history.pushState()</code> after swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-replace-url</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code>, <code>&quot;false&quot;</code>, or custom URL</td>
+<td style="text-align:left">Replaces the current URL via <code>history.replaceState()</code> without adding a history entry.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-history-elt</code></strong></td>
+<td style="text-align:left">Boolean attribute on container</td>
+<td style="text-align:left">Marks the element (e.g. <code>&lt;main hx-history-elt&gt;</code>) to swap during history restoration instead of <code>document.body</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>htmx.config.history</code></strong></td>
+<td style="text-align:left"><code>true</code> <em>(default)</em>, <code>false</code>, <code>&quot;reload&quot;</code></td>
+<td style="text-align:left"><code>true</code>: AJAX restore on Back/Forward; <code>false</code>: disables history; <code>&quot;reload&quot;</code>: runs <code>location.reload()</code> on Back/Forward.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>7.3 Instant Snapshot Restoration with <code>hx-history-cache</code></h2>
+<p>When you want instantaneous zero-network Back/Forward restoration that also preserves user-typed <code>&lt;input&gt;</code> values, checkboxes, and scroll offsets, load the official <strong><code>hx-history-cache.js</code></strong> extension (<code>registers as: 'history-cache'</code>).</p>
+<p>Unlike htmx 2's <code>localStorage</code> cache, <code>hx-history-cache</code> in htmx v4.0.1:</p>
+<ul>
+<li>Stores entries in per-tab <strong><code>sessionStorage</code></strong> keyed by a unique <code>history.state.htmxId</code> UUID.</li>
+<li>Annotates and restores form input values (<code>input</code>, <code>textarea</code>, <code>select</code>, excluding <code>password</code> and <code>file</code>) and scroll positions (<code>scrollTop</code>, <code>scrollLeft</code>).</li>
+<li>Swaps cached HTML using <strong><code>outerSync</code></strong> by default to keep the root container node stable.</li>
+<li>Automatically skips caching any page containing <code>&lt;div hx-history=&quot;false&quot;&gt;</code>.</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/htmx.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/ext/hx-history-cache.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="c1">// Optional customization (if using htmax.js, set disable: false to activate)</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">historyCache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">size</span><span class="o">:</span><span class="w"> </span><span class="mf">15</span><span class="p">,</span><span class="w">              </span><span class="c1">// Max LRU snapshots in sessionStorage (default: 10)</span>
+<span class="w">    </span><span class="nx">refreshOnMiss</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">  </span><span class="c1">// If true, runs location.reload() on cache miss</span>
+<span class="w">    </span><span class="nx">disable</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">        </span><span class="c1">// Set to false when enabling inside htmax.js</span>
+<span class="w">    </span><span class="nx">swapStyle</span><span class="o">:</span><span class="w"> </span><span class="s1">'outerSync'</span><span class="w"> </span><span class="c1">// Default swap style on cache hit</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2>7.4 Flicker-Free Loading Indicators &amp; Disabling Controls</h2>
+<p>Fast requests (<code>&lt; 150ms</code>) should feel instantaneous without flashing a spinner, while slower requests should clearly communicate progress and prevent double-submissions.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/07_history_caching_and_ux/ch07_indicator_and_ptag.png" alt="07_history_caching_and_ux_2" />
+  <figcaption class="drawlib-caption">Flicker-Free Loading Indicator CSS Timeline and hx-ptag Conditional 304 Polling</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">74</span><span class="p">)</span>
+
+<span class="c1"># Left Panel: Flicker-Free Indicator &amp; hx-disable</span>
+<span class="n">left_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"Flicker-Free Loading UX"</span><span class="p">,</span>
+    <span class="s2">"hx-indicator + hx-disable"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">spinner_gap</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">left_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">l_xy</span><span class="p">,</span> <span class="n">l_w</span><span class="p">,</span> <span class="n">l_h</span> <span class="o">=</span> <span class="n">left_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">ux_cards</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ux_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. Request Starts (0ms)"</span><span class="p">,</span> <span class="s2">"htmx adds .htmx-request &amp; disables hx-disable targets"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"0ms"</span><span class="p">)</span>
+<span class="n">ux_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"2. CSS Transition Delay (200ms)"</span><span class="p">,</span>
+    <span class="s2">"Fast responses (&lt;200ms) finish before spinner shows"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"200ms"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ux_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. Slow Request (&gt;200ms)"</span><span class="p">,</span>
+    <span class="s2">"Spinner fades in smoothly; hx-browser-indicator spins tab"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"SLOW"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ux_cards</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">l_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">l_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">l_h</span><span class="p">)</span>
+
+<span class="c1"># Right Panel: Conditional Polling with hx-ptag</span>
+<span class="n">right_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"Conditional Polling (hx-ptag)"</span><span class="p">,</span>
+    <span class="s2">"Zero-DOM-Churn 304 Responses"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_clockwise</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">right_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">90.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">r_xy</span><span class="p">,</span> <span class="n">r_w</span><span class="p">,</span> <span class="n">r_h</span> <span class="o">=</span> <span class="n">right_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">90.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">ptag_cards</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ptag_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. Initial hx-ptag='v1'"</span><span class="p">,</span> <span class="s2">"Element stores current version tag on elt._htmx.ptag"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"INIT"</span><span class="p">)</span>
+<span class="n">ptag_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"2. Poll Sends HX-PTag: v1"</span><span class="p">,</span> <span class="s2">"htmx_config_request attaches HX-PTag request header"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"REQ"</span><span class="p">)</span>
+<span class="n">ptag_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. 304 Not Modified or 200 + v2"</span><span class="p">,</span>
+    <span class="s2">"304 skips swap via config.noSwap; 200 updates ptag to v2"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"304"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ptag_cards</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">r_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">r_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">r_h</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Combining <code>hx-indicator</code>, <code>transition-delay</code>, and <code>hx-disable</code></h3>
+<pre><code class="language-css"><span class="c">/* Delay spinner visibility by 200ms so fast responses never flash a loading icon */</span>
+<span class="p">.</span><span class="nc">htmx-indicator</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">opacity</span><span class="w"> </span><span class="mi">150</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease-in</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="nc">htmx-request</span><span class="w"> </span><span class="p">.</span><span class="nc">htmx-indicator</span><span class="o">,</span>
+<span class="p">.</span><span class="nc">htmx-request</span><span class="p">.</span><span class="nc">htmx-indicator</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">opacity</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease-in</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/orders/submit"</span>
+      <span class="na">hx-indicator</span><span class="o">=</span><span class="s">"#submit-spinner"</span>
+      <span class="na">hx-disable</span><span class="o">=</span><span class="s">"find button, find input"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"coupon_code"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"Promo code"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>
+    Place Order
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"submit-spinner"</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator"</span><span class="p">&gt;</span>Processing...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2>7.5 Conditional Polling with <code>hx-ptag</code> (<code>HX-PTag</code>)</h2>
+<p>When polling an endpoint frequently (<code>hx-trigger=&quot;every 3s&quot;</code>), re-rendering and swapping identical HTML wastes bandwidth and CPU. The official <strong><code>hx-ptag.js</code></strong> extension (<code>registers as: 'ptag'</code>) attaches a per-element entity tag header (<code>HX-PTag</code>) to each request:</p>
+<ol>
+<li>Seed the element with <code>hx-ptag=&quot;&lt;initial-hash&gt;&quot;</code> (or let the first response set the <code>HX-PTag</code> response header).</li>
+<li>On every subsequent request, <code>hx-ptag</code> sends <code>HX-PTag: &lt;current-value&gt;</code>.</li>
+<li>If the underlying data has not changed, your server returns <strong><code>HTTP 304 Not Modified</code></strong> with an empty body (which htmx automatically skips swapping because <code>304</code> is in <code>htmx.config.noSwap</code>). When data changes, the server returns <code>HTTP 200 OK</code> with the new HTML and an updated <code>HX-PTag: &lt;new-hash&gt;</code> response header.</li>
+</ol>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/ext/hx-ptag.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"live-scoreboard"</span>
+     <span class="na">hx-get</span><span class="o">=</span><span class="s">"/scores/live"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"every 3s"</span>
+     <span class="na">hx-ptag</span><span class="o">=</span><span class="s">"score-rev-41"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  Team A: 2 — Team B: 1
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

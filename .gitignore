@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -218,3 +217,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node.js
+node_modules/
+coverage/
+
+# Drawlib & PNI501 caches
+.drawlib/
+.pni/cache/
+**/.subportals_backup/
+

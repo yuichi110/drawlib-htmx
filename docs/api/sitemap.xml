@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://htmx.drawlib.com/api/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/00_overview.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/00_overview.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/00_overview.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/00_overview.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/01_core_request_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/01_core_request_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/02_trigger_and_sync_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/03_target_and_swap_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/03_target_and_swap_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/03_target_and_swap_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/03_target_and_swap_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/04_data_and_config_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/05_ux_history_and_control_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/06_http_headers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/06_http_headers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/06_http_headers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/06_http_headers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/07_javascript_api.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/07_javascript_api.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/07_javascript_api.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/07_javascript_api.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/08_configuration_options.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/08_configuration_options.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/08_configuration_options.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/08_configuration_options.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/09_events_reference.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/09_events_reference.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/09_events_reference.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/09_events_reference.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/11_extensions_reactive_and_dom.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/11_extensions_reactive_and_dom.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/11_extensions_reactive_and_dom.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/11_extensions_reactive_and_dom.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/00_overview.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/00_overview.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/00_overview.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/00_overview.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/01_core_request_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/01_core_request_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/02_trigger_and_sync_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/02_trigger_and_sync_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/03_target_and_swap_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/03_target_and_swap_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/03_target_and_swap_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/03_target_and_swap_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/04_data_and_config_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/04_data_and_config_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/05_ux_history_and_control_attributes.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/05_ux_history_and_control_attributes.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/06_http_headers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/06_http_headers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/06_http_headers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/06_http_headers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/07_javascript_api.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/07_javascript_api.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/07_javascript_api.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/07_javascript_api.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/08_configuration_options.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/08_configuration_options.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/08_configuration_options.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/08_configuration_options.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/09_events_reference.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/09_events_reference.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/09_events_reference.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/09_events_reference.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/11_extensions_reactive_and_dom.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/11_extensions_reactive_and_dom.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/11_extensions_reactive_and_dom.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/11_extensions_reactive_and_dom.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html" />
+  </url>
+</urlset>

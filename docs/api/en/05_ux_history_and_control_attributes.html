@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX, History, Events &amp; Inheritance Control Attributes — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/05_ux_history_and_control_attributes.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html">
+    
+    
+    
+    <meta name="description" content="htmx v4 refines how progressive enhancement, browser history restoration, in-flight loading states, untrusted content isolation, inline event scripting, and…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="UX, History, Events &amp; Inheritance Control Attributes — htmx v4 API Reference">
+    <meta property="og:description" content="htmx v4 refines how progressive enhancement, browser history restoration, in-flight loading states, untrusted content isolation, inline event scripting, and…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/05_ux_history_and_control_attributes.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="UX, History, Events &amp; Inheritance Control Attributes — htmx v4 API Reference">
+    <meta name="twitter:description" content="htmx v4 refines how progressive enhancement, browser history restoration, in-flight loading states, untrusted content isolation, inline event scripting, and…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink" data-target="navigation-browser-history-attributes">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink" data-target="in-flight-ux-security-inline-scripting">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink" data-target="attribute-inheritance-modifiers">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">UX, History, Events &amp; Inheritance Control Attributes</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/05_ux_history_and_control_attributes.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">UX, History, Events &amp; Inheritance Control Attributes</h1>
+<p>htmx v4 refines how progressive enhancement, browser history restoration, in-flight loading states, untrusted content isolation, inline event scripting, and attribute inheritance work across the DOM. Crucially, htmx v4 makes <strong>attribute inheritance explicit by default</strong> via <code>:inherited</code> and <code>:append</code>, renames htmx 2's <code>hx-disabled-elt</code> to <code>hx-disable</code>, repurposes <code>hx-ignore</code> (formerly <code>hx-disable</code>) as the subtree sanitization boundary, and replaces <code>localStorage</code> history snapshots with clean network-backed <code>outerSync</code> restoration via <code>hx-history-elt</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Attribute / Modifier</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Value Format</th>
+<th style="text-align:left">htmx 2 Equivalent</th>
+<th style="text-align:left">Core Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-boost"><code>hx-boost</code></a></td>
+<td style="text-align:left">Navigation &amp; UX</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | HCON</td>
+<td style="text-align:left"><code>hx-boost</code> (implicit)</td>
+<td style="text-align:left">Progressively enhances same-origin <code>&lt;a href&gt;</code> and <code>&lt;form&gt;</code> elements into AJAX requests targeting <code>document.body</code> with <code>push:'true'</code> and <code>show:'top'</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-push-url"><code>hx-push-url</code></a></td>
+<td style="text-align:left">Browser History</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL Path</td>
+<td style="text-align:left"><code>hx-push-url</code></td>
+<td style="text-align:left">Pushes a new entry into browser history via <code>history.pushState({htmx: true}, '', path)</code> during the swap phase.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-replace-url"><code>hx-replace-url</code></a></td>
+<td style="text-align:left">Browser History</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL Path</td>
+<td style="text-align:left"><code>hx-replace-url</code></td>
+<td style="text-align:left">Replaces the current browser history entry via <code>history.replaceState({htmx: true}, '', path)</code> during the swap phase.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-history-elt"><code>hx-history-elt</code></a></td>
+<td style="text-align:left">Browser History</td>
+<td style="text-align:left">Boolean / Marker Attribute</td>
+<td style="text-align:left"><code>hx-history-elt</code></td>
+<td style="text-align:left">Designates the container restored via <code>outerSync</code> on back/forward navigation instead of <code>document.body</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-indicator"><code>hx-indicator</code></a></td>
+<td style="text-align:left">In-Flight UX</td>
+<td style="text-align:left">CSS / Extended Selector</td>
+<td style="text-align:left"><code>hx-indicator</code></td>
+<td style="text-align:left">Applies <code>htmx.config.requestClass</code> (<code>htmx-request</code>) to matched elements while requests are in flight, using reference counting (<code>s.rc</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-disable"><code>hx-disable</code></a></td>
+<td style="text-align:left">In-Flight UX</td>
+<td style="text-align:left">CSS / Extended Selector</td>
+<td style="text-align:left"><code>hx-disabled-elt</code></td>
+<td style="text-align:left">Sets <code>.disabled = true</code> on matched form controls while requests are in flight, using reference counting (<code>s.dc</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-ignore"><code>hx-ignore</code></a></td>
+<td style="text-align:left">Security Control</td>
+<td style="text-align:left">Boolean / Marker Attribute</td>
+<td style="text-align:left"><code>hx-disable</code></td>
+<td style="text-align:left">Halts all htmx attribute scanning, element initialization, and <code>hx-on:*</code> binding on the element and its entire subtree.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-on"><code>hx-on:*</code></a></td>
+<td style="text-align:left">Inline Scripting</td>
+<td style="text-align:left">JS Code / Arrow Specs</td>
+<td style="text-align:left"><code>hx-on:*</code></td>
+<td style="text-align:left">Binds inline async event handlers for DOM events (<code>hx-on:click</code>), htmx lifecycle events (<code>hx-on::after:swap</code>), or multi-handler specs (<code>hx-on=&quot;... -&gt; ...&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#inherited"><code>:inherited</code></a></td>
+<td style="text-align:left">Inheritance</td>
+<td style="text-align:left">Attribute Name Modifier</td>
+<td style="text-align:left"><em>(Implicit by default)</em></td>
+<td style="text-align:left">Explicitly opts an attribute on a parent element into inheritance by descendant elements (<code>hx-target:inherited=&quot;#main&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#append"><code>:append</code></a></td>
+<td style="text-align:left">Inheritance</td>
+<td style="text-align:left">Attribute Name Modifier</td>
+<td style="text-align:left"><em>(New in htmx 4)</em></td>
+<td style="text-align:left">Appends comma-separated or HCON values on a child element to an inherited parent attribute (<code>hx-include:append=&quot;#extra&quot;</code>).</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_ux_history_and_control_attributes/cat_05_ux_history_control.png" alt="05_ux_history_and_control_attributes_1" />
+  <figcaption class="drawlib-caption">htmx v4 Explicit Attribute Inheritance, Subtree Isolation, In-Flight UX Reference Counting, and History Lifecycle</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer container frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">152</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">62.0</span><span class="p">),</span>
+    <span class="s2">"htmx v4 Explicit Inheritance, In-Flight UX &amp; Browser History Architecture"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">x_left</span> <span class="o">=</span> <span class="mf">43.0</span>
+<span class="n">x_right</span> <span class="o">=</span> <span class="mf">117.0</span>
+<span class="n">y_top</span> <span class="o">=</span> <span class="mf">44.0</span>
+<span class="n">y_bot</span> <span class="o">=</span> <span class="mf">17.0</span>
+<span class="n">card_w</span> <span class="o">=</span> <span class="mf">64.0</span>
+<span class="n">card_h</span> <span class="o">=</span> <span class="mf">20.0</span>
+
+<span class="c1"># 1. Explicit Inheritance (Top-Left, Focal Point 1)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">tree_structure</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"1. Explicit Inheritance (:inherited / :append)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"Opt-in parent cascade (implicitInheritance = false)</span><span class="se">\n</span><span class="s2">:append merges child CSV / HCON values (strips </span><span class="si">{}</span><span class="s2">)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. Subtree Security &amp; Inline Events (Top-Right, Neutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">shield_check</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"2. DOM Control &amp; Events (hx-ignore / hx-on:*)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-ignore blocks subtree init &amp; XPath hx-on scan</span><span class="se">\n</span><span class="s2">hx-on::&lt;phase&gt;:&lt;action&gt; &amp; 'evt -&gt; code' with(detail)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. In-Flight UX State (Bottom-Left, PrimaryNeutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">spinner</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"3. In-Flight UX (hx-indicator / hx-disable)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-indicator increments s.rc -&gt; adds .htmx-request</span><span class="se">\n</span><span class="s2">hx-disable increments s.dc -&gt; sets el.disabled = true"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 4. Boost &amp; Browser History (Bottom-Right, Focal Point 2)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">clock_counter_clockwise</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"4. Boost &amp; History (hx-boost / hx-history-elt)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-boost upgrades same-origin &lt;a&gt;/&lt;form&gt; (show:top)</span><span class="se">\n</span><span class="s2">pushState({htmx:true}) &amp; outerSync restore on traverse"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Connecting arrows</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">10.0</span><span class="p">),</span> <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">10.0</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">10.0</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">10.0</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="navigation-browser-history-attributes" class="catalog-section-heading"><span>Navigation &amp; Browser History Attributes</span><a class="header-anchor" href="#navigation-browser-history-attributes" aria-label="Permalink to Navigation &amp; Browser History Attributes">#</a></h2>
+<h3 id="hx-boost">hx-boost<a class="header-anchor" href="#hx-boost" aria-label="Permalink">#</a></h3>
+<p>Progressively enhances standard HTML <code>&lt;a href=&quot;...&quot;&gt;</code> links and <code>&lt;form&gt;</code> elements into AJAX-powered requests without requiring individual <code>hx-get</code> or <code>hx-post</code> attributes. In htmx v4, <code>hx-boost</code> accepts <code>&quot;true&quot;</code>, <code>&quot;false&quot;</code>, or an <strong>HCON configuration string</strong> that merges directly into the request context <code>ctx</code> (<code>swap</code>, <code>target</code>, <code>select</code>, <code>push</code>, <code>replace</code>, <code>transition</code>). Because attribute inheritance is explicit in htmx v4, placing <code>hx-boost</code> on <code>&lt;body&gt;</code> or a <code>&lt;nav&gt;</code> container <strong>requires the <code>:inherited</code> modifier</strong> (<code>hx-boost:inherited=&quot;true&quot;</code>).</p>
+<h4 id="syntax-signature">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Boost all same-origin links and forms inside a container via :inherited --&gt;</span>
+<span class="p">&lt;</span><span class="nt">nav</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/dashboard"</span><span class="p">&gt;</span>Dashboard<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/reports"</span><span class="p">&gt;</span>Reports<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Boost with HCON context overrides (morph swap and custom target) --&gt;</span>
+<span class="p">&lt;</span><span class="nt">main</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"swap:outerMorph, target:#app-shell, select:#app-shell"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/settings"</span><span class="p">&gt;</span>Account Settings<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="eligibility-rules-default-context-overrides">Eligibility Rules &amp; Default Context Overrides</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Rule / Default in <code>src/htmx.js</code></th>
+<th style="text-align:left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Eligible <code>&lt;a&gt;</code> Elements</strong></td>
+<td style="text-align:left"><code>tagName === &quot;A&quot;</code></td>
+<td style="text-align:left">Must have <code>target=&quot;&quot;</code> or <code>target=&quot;_self&quot;</code>, no <code>download</code> attribute, <code>href</code> not starting with <code>#</code> (fragment-only), and pass <code>__isSameOrigin(elt.href)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Eligible <code>&lt;form&gt;</code> Elements</strong></td>
+<td style="text-align:left"><code>tagName === &quot;FORM&quot;</code></td>
+<td style="text-align:left">Must have <code>method !== &quot;dialog&quot;</code> and pass <code>__isSameOrigin(elt.action)</code>. Respects submitter <code>formAction</code> and <code>formmethod</code> attributes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Default <code>ctx.target</code></strong></td>
+<td style="text-align:left"><code>document.body</code></td>
+<td style="text-align:left">Resolved in <code>__resolveTarget()</code> when no explicit <code>hx-target</code> or HCON <code>target:</code> override is present.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Default History Action</strong></td>
+<td style="text-align:left"><code>push = &quot;true&quot;</code></td>
+<td style="text-align:left">In <code>__resolveHistoryAction()</code>, boosted elements default to pushing the final response URL (`response.raw.url</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Default Scroll Behavior</strong></td>
+<td style="text-align:left">`swapSpec.show</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Modifier-Key Clicks</strong></td>
+<td style="text-align:left">Bypassed (<code>__isModifierKeyClick</code>)</td>
+<td style="text-align:left">Clicking a boosted link with <code>Ctrl</code>, <code>Meta</code> (<code>Cmd</code>), or <code>Shift</code> held down bypasses htmx so the browser opens a new tab or window normally.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Request Header</strong></td>
+<td style="text-align:left"><code>HX-Boosted: true</code></td>
+<td style="text-align:left">Automatically attached to <code>ctx.request.headers</code> in <code>__createCoreHeaders()</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Application-wide progressive enhancement with local opt-out --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">header</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/projects"</span><span class="p">&gt;</span>Projects<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Opt out a specific link from boosting --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/legacy-app"</span> <span class="na">hx-boost</span><span class="o">=</span><span class="s">"false"</span><span class="p">&gt;</span>Legacy Portal<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">"/search"</span> <span class="na">method</span><span class="o">=</span><span class="s">"get"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"search"</span> <span class="na">name</span><span class="o">=</span><span class="s">"q"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Search<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-push-url">hx-push-url<a class="header-anchor" href="#hx-push-url" aria-label="Permalink">#</a></h3>
+<p>Pushes a new URL entry into the browser's session history stack (<code>history.pushState({htmx: true}, '', path)</code>) during <code>htmx.swap()</code>, immediately before content insertion.</p>
+<h4 id="syntax-signature-2">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Push the request/response URL automatically --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/tabs/activity"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#tab-pane"</span> <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  Activity
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Push a custom clean URL path --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/filters/apply"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#results"</span> <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"/catalog?filtered=1"</span><span class="p">&gt;</span>
+  Apply Filters
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="values-history-lifecycle">Values &amp; History Lifecycle</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Resolved <code>path</code></th>
+<th style="text-align:left">Internal Behavior (<code>__resolveHistoryAction</code> &amp; <code>__handleHistoryUpdate</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>url.pathname + url.search + (#anchor)</code></td>
+<td style="text-align:left">Derived from `ctx.response?.raw?.url</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left"><code>null</code> (No history update)</td>
+<td style="text-align:left">Suppresses URL pushing (useful to override <code>hx-boost</code> or an inherited <code>hx-push-url:inherited=&quot;true&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left">Custom URL string</td>
+<td style="text-align:left">Exact string (e.g. <code>&quot;/items/42&quot;</code>)</td>
+<td style="text-align:left">Pushes the specified relative path or URL into <code>history.pushState({htmx: true}, '', path)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Initial Entry Stamp</strong></td>
+<td style="text-align:left"><code>history.replaceState({htmx: true}, '', location.href)</code></td>
+<td style="text-align:left">On the first htmx history update after a fresh page load, htmx stamps the initial history entry with <code>{htmx: true}</code> so back navigation to the initial page is intercepted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Lifecycle Events</strong></td>
+<td style="text-align:left"><code>htmx:before:history:update</code> -&gt; <code>htmx:after:history:push</code> -&gt; <code>htmx:after:history:update</code></td>
+<td style="text-align:left">Dispatched on <code>document</code>. Calling <code>evt.preventDefault()</code> on <code>htmx:before:history:update</code> cancels the history push.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Header Override</strong></td>
+<td style="text-align:left">Overridden by <code>HX-Push-Url</code> / <code>HX-Replace-Url</code></td>
+<td style="text-align:left">If the server sends <code>HX-Push-Url</code> or <code>HX-Replace-Url</code> response headers, they take precedence over <code>hx-push-url</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-2">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Inherited URL pushing on a tab bar with one utility button opted out --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">role</span><span class="o">=</span><span class="s">"tablist"</span> <span class="na">hx-target:inherited</span><span class="o">=</span><span class="s">"#panel"</span> <span class="na">hx-push-url:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/orgs/overview"</span><span class="p">&gt;</span>Overview<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/orgs/members"</span><span class="p">&gt;</span>Members<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/orgs/refresh"</span> <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"false"</span><span class="p">&gt;</span>Refresh Panel<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">section</span> <span class="na">id</span><span class="o">=</span><span class="s">"panel"</span><span class="p">&gt;&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-replace-url">hx-replace-url<a class="header-anchor" href="#hx-replace-url" aria-label="Permalink">#</a></h3>
+<p>Replaces the current entry in the browser's session history stack (<code>history.replaceState({htmx: true}, '', path)</code>) during <code>htmx.swap()</code> without creating a new back-button history step.</p>
+<h4 id="syntax-signature-3">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Sync URL query parameters with live filter state without polluting Back history --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"search"</span> <span class="na">name</span><span class="o">=</span><span class="s">"q"</span>
+       <span class="na">hx-get</span><span class="o">=</span><span class="s">"/products"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"input changed delay:300ms"</span>
+       <span class="na">hx-target</span><span class="o">=</span><span class="s">"#product-grid"</span>
+       <span class="na">hx-replace-url</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="values-behavior">Values &amp; Behavior</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Resolved <code>path</code></th>
+<th style="text-align:left">Internal Behavior (<code>__resolveHistoryAction</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>url.pathname + url.search + (#anchor)</code></td>
+<td style="text-align:left">Replaces the current URL with the resolved request/response URL (`response.raw.url</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left"><code>null</code> (No history update)</td>
+<td style="text-align:left">Disables URL replacement (overrides inherited <code>hx-replace-url:inherited</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left">Custom URL string</td>
+<td style="text-align:left">Exact string (e.g. <code>&quot;/wizard?step=2&quot;</code>)</td>
+<td style="text-align:left">Calls <code>history.replaceState({htmx: true}, '', path)</code> and fires <code>htmx:after:history:replace</code> and <code>htmx:after:history:update</code> on <code>document</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Precedence vs <code>hx-push-url</code></strong></td>
+<td style="text-align:left"><code>let type = push ? 'push' : 'replace'</code></td>
+<td style="text-align:left">If both <code>push</code> and <code>replace</code> are truthy on the same context, <code>push</code> wins. Setting <code>hx-replace-url=&quot;true&quot;</code> on a boosted element suppresses <code>hx-boost</code>'s default <code>push = 'true'</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-3">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Multi-step modal wizard that updates the URL bar in place --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/onboarding/step-2"</span>
+      <span class="na">hx-target</span><span class="o">=</span><span class="s">"#wizard-box"</span>
+      <span class="na">hx-replace-url</span><span class="o">=</span><span class="s">"/onboarding?step=2"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"company"</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Continue<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-history-elt">hx-history-elt<a class="header-anchor" href="#hx-history-elt" aria-label="Permalink">#</a></h3>
+<p>Designates the primary container element that htmx swaps when restoring page state during browser back/forward traversal (<code>navigate</code> or <code>popstate</code> events). Unlike htmx 2 (which cached DOM snapshots in <code>localStorage</code>), <strong>htmx v4 performs a live <code>GET</code> request with <code>HX-History-Restore-Request: true</code></strong> (or delegates to the optional <code>hx-history-cache</code> extension) and swaps the <code>[hx-history-elt]</code> element via <code>outerSync</code>.</p>
+<h4 id="syntax-signature-4">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">aside</span> <span class="na">id</span><span class="o">=</span><span class="s">"persistent-sidebar"</span><span class="p">&gt;</span>...<span class="p">&lt;/</span><span class="nt">aside</span><span class="p">&gt;</span>
+
+  <span class="cm">&lt;!-- Only #app-workspace is extracted and morphed via outerSync on Back/Forward --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">main</span> <span class="na">id</span><span class="o">=</span><span class="s">"app-workspace"</span> <span class="na">hx-history-elt</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Current View<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="restoration-mechanics-restorehistory">Restoration Mechanics (<code>__restoreHistory</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Default (No <code>hx-history-elt</code>)</th>
+<th style="text-align:left">With <code>hx-history-elt</code> Present</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Resolved <code>historyElt</code></strong></td>
+<td style="text-align:left"><code>document.body</code></td>
+<td style="text-align:left">First element matching <code>document.querySelector('[hx-history-elt],[data-hx-history-elt]')</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Restore <code>swap</code> Strategy</strong></td>
+<td style="text-align:left"><code>outerSync</code></td>
+<td style="text-align:left"><code>outerSync</code> (synchronizes attributes on <code>historyElt</code> and replaces its children while keeping <code>historyElt</code> in the DOM).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Restore <code>select</code> Filter</strong></td>
+<td style="text-align:left"><code>undefined</code> (full body)</td>
+<td style="text-align:left"><code>&quot;[hx-history-elt],[data-hx-history-elt]&quot;</code> — extracts only the matching <code>[hx-history-elt]</code> subtree from the server's response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Request Cancellation</strong></td>
+<td style="text-align:left"><code>this.#historyAbort?.abort()</code></td>
+<td style="text-align:left">Rapid back/forward clicks automatically abort any in-flight history restoration request before issuing the next one.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Reload Mode</strong></td>
+<td style="text-align:left"><code>htmx.config.history = &quot;reload&quot;</code></td>
+<td style="text-align:left">Calls <code>location.reload()</code> instead of issuing an AJAX restore request.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-4">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Keep a persistent audio player and navigation bar untouched across history traversal --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">audio</span> <span class="na">id</span><span class="o">=</span><span class="s">"podcast-player"</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ep1.mp3"</span> <span class="na">controls</span><span class="p">&gt;&lt;/</span><span class="nt">audio</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">nav</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span> <span class="na">hx-target:inherited</span><span class="o">=</span><span class="s">"#page-shell"</span> <span class="na">hx-select:inherited</span><span class="o">=</span><span class="s">"#page-shell"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/episodes/1"</span><span class="p">&gt;</span>Episode 1<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/episodes/2"</span><span class="p">&gt;</span>Episode 2<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"page-shell"</span> <span class="na">hx-history-elt</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Episode content restored here on Back/Forward --&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="in-flight-ux-security-inline-scripting" class="catalog-section-heading"><span>In-Flight UX, Security &amp; Inline Scripting</span><a class="header-anchor" href="#in-flight-ux-security-inline-scripting" aria-label="Permalink to In-Flight UX, Security &amp; Inline Scripting">#</a></h2>
+<h3 id="hx-indicator">hx-indicator<a class="header-anchor" href="#hx-indicator" aria-label="Permalink">#</a></h3>
+<p>Specifies one or more elements that receive <code>htmx.config.requestClass</code> (default <code>&quot;htmx-request&quot;</code>) after request confirmation succeeds and while the network request is in flight. htmx injects an adopted stylesheet (<code>this.indicatorStyleSheet</code>) that hides <code>.htmx-indicator</code> elements by default (<code>opacity:0; visibility:hidden</code>) and transitions them to visible (<code>opacity:1; visibility:visible; transition: opacity 200ms ease-in</code>) when they or an ancestor have <code>.htmx-request</code>.</p>
+<h4 id="syntax-signature-5">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/reports/generate"</span> <span class="na">hx-indicator</span><span class="o">=</span><span class="s">"#gen-spinner, closest .card"</span><span class="p">&gt;</span>
+  Generate Report
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"gen-spinner"</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator"</span><span class="p">&gt;</span>Building PDF...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="selector-support-reference-counting-showindicators-hideindicators">Selector Support &amp; Reference Counting (<code>__showIndicators</code> / <code>__hideIndicators</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Feature</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+<th style="text-align:left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Default Target</strong></td>
+<td style="text-align:left"><code>[ctx.sourceElement]</code></td>
+<td style="text-align:left">When <code>hx-indicator</code> is omitted, htmx applies <code>htmx-request</code> to <code>ctx.sourceElement</code> itself (unless <code>sourceElement === document.body</code>), so child <code>.htmx-indicator</code> elements inside a button or form become visible automatically.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Extended Selectors</strong></td>
+<td style="text-align:left"><code>__findAllExt(elt, hxIndicator, &quot;hx-indicator&quot;)</code></td>
+<td style="text-align:left">Supports CSS selectors, comma-separated lists, <code>closest &lt;sel&gt;</code>, <code>find &lt;sel&gt;</code>, <code>findAll &lt;sel&gt;</code>, <code>next [&lt;sel&gt;]</code>, <code>previous [&lt;sel&gt;]</code>, <code>this</code>, and <code>global &lt;sel&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Reference Counting (<code>s.rc</code>)</strong></td>
+<td style="text-align:left"><code>s.rc = (s.rc || 0) + 1</code></td>
+<td style="text-align:left">Stored on <code>indicator._htmx_state.rc</code>. When concurrent requests share the same indicator, <code>.htmx-request</code> is only removed when <code>--s.rc &lt;= 0</code> in the <code>finally</code> block.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Redirect / Location Carryover</strong></td>
+<td style="text-align:left"><code>ctx.keepIndicators = true</code></td>
+<td style="text-align:left">When a response triggers <code>HX-Refresh</code>, <code>HX-Redirect</code>, or <code>HX-Location</code>, indicators remain active across the navigation/redirect chain.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-5">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Prevent spinner flash on fast (&lt;200ms) responses using CSS transition-delay --&gt;</span>
+<span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">.</span><span class="nc">htmx-request</span><span class="w"> </span><span class="p">.</span><span class="nc">delayed-spinner</span><span class="o">,</span>
+<span class="w">  </span><span class="p">.</span><span class="nc">htmx-request</span><span class="p">.</span><span class="nc">delayed-spinner</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">opacity</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="w"> </span><span class="kc">ease-in</span><span class="w"> </span><span class="mi">200</span><span class="kt">ms</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/checkout"</span> <span class="na">hx-indicator</span><span class="o">=</span><span class="s">"find .delayed-spinner"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Pay Now<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator delayed-spinner"</span><span class="p">&gt;</span>Processing payment...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-disable">hx-disable<a class="header-anchor" href="#hx-disable" aria-label="Permalink">#</a></h3>
+<p>Disables specified form controls or interactive elements by setting their DOM <code>.disabled = true</code> property while a request is in flight, preventing duplicate submissions. <strong>Renamed from <code>hx-disabled-elt</code> in htmx 2</strong> (while htmx 2's old <code>hx-disable</code> was renamed to <code>hx-ignore</code>).</p>
+<h4 id="syntax-signature-6">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Disable the triggering button itself during the request --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/orders/submit"</span> <span class="na">hx-disable</span><span class="o">=</span><span class="s">"this"</span><span class="p">&gt;</span>
+  Place Order
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Disable all buttons and inputs inside a form during submission --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/settings"</span> <span class="na">hx-disable</span><span class="o">=</span><span class="s">"findAll button, findAll input, findAll select"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"org_name"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Save Changes<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="selector-support-reference-counting-disableelements-enableelements">Selector Support &amp; Reference Counting (<code>__disableElements</code> / <code>__enableElements</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Feature</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+<th style="text-align:left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Default Target</strong></td>
+<td style="text-align:left">None (opt-in)</td>
+<td style="text-align:left">Unlike <code>hx-indicator</code>, omitting <code>hx-disable</code> does not disable <code>ctx.sourceElement</code>. Set <code>hx-disable=&quot;this&quot;</code> to disable the triggering element itself.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Extended Selectors</strong></td>
+<td style="text-align:left"><code>__findAllExt(elt, hxDisable, &quot;hx-disable&quot;)</code></td>
+<td style="text-align:left">Supports <code>this</code>, <code>closest &lt;sel&gt;</code>, <code>find &lt;sel&gt;</code>, <code>findAll &lt;sel&gt;</code>, <code>next [&lt;sel&gt;]</code>, <code>previous [&lt;sel&gt;]</code>, and standard CSS selectors. Note that <code>find button</code> matches the first button whereas <code>findAll button</code> or <code>button</code> matches all buttons.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Reference Counting (<code>s.dc</code>)</strong></td>
+<td style="text-align:left"><code>s.dc = (s.dc || 0) + 1</code></td>
+<td style="text-align:left">Increments <code>el._htmx_state.dc</code> and sets <code>el.disabled = true</code> after <code>htmx:confirm</code>. In the <code>finally</code> block, decrements <code>--s.dc</code> and sets <code>el.disabled = false</code> only when <code>s.dc &lt;= 0</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Timing vs Form Collection</strong></td>
+<td style="text-align:left">Runs <strong>after</strong> <code>__collectFormData()</code></td>
+<td style="text-align:left">Elements are disabled inside <code>__issueRequest()</code> after form data has already been collected, so disabling <code>&lt;input&gt;</code> or <code>&lt;button type=&quot;submit&quot;&gt;</code> via <code>hx-disable</code> never strips their values from the outgoing request payload.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-6">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Inherited self-disabling behavior for all action buttons in a toolbar --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"toolbar"</span> <span class="na">hx-disable:inherited</span><span class="o">=</span><span class="s">"this"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/jobs/backup"</span><span class="p">&gt;</span>Run Backup<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/jobs/vacuum"</span><span class="p">&gt;</span>Vacuum Database<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-ignore">hx-ignore<a class="header-anchor" href="#hx-ignore" aria-label="Permalink">#</a></h3>
+<p>Prevents htmx from scanning, initializing, or binding <code>hx-on:*</code> event listeners on the element and any of its descendants (<code>__ignore(elt)</code> checks <code>elt.closest('[hx-ignore],[data-hx-ignore]') != null</code>). <strong>Renamed from <code>hx-disable</code> in htmx 2</strong> to avoid confusion with disabling form controls (<code>hx-disable</code>).</p>
+<blockquote>
+<p>[!IMPORTANT]
+Always place <code>hx-ignore</code> (or <code>data-hx-ignore</code>) on containers that render untrusted or user-generated HTML (such as markdown comments, rich-text posts, or email previews) to prevent stored XSS via injected <code>hx-on:*</code>, <code>hx-get</code>, or <code>hx-vals=&quot;js:...&quot;</code> attributes.</p>
+</blockquote>
+<h4 id="syntax-signature-7">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">article</span> <span class="na">class</span><span class="o">=</span><span class="s">"user-comment"</span> <span class="na">hx-ignore</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Any hx-* or data-hx-* attributes inside this subtree are completely inert --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">p</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/admin/delete"</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"load"</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"stealSession()"</span><span class="p">&gt;</span>
+    Untrusted user comment content
+  <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">article</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="protection-scope-ignore-process">Protection Scope (<code>__ignore</code> &amp; <code>process</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Phase / Feature</th>
+<th style="text-align:left">Behavior When Inside <code>[hx-ignore]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>htmx.process(root)</code></strong></td>
+<td style="text-align:left">Returns immediately at the top of <code>process()</code> before firing <code>htmx:before:process</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-on</code> XPath Scan</strong></td>
+<td style="text-align:left">Every node matched by <code>#hxOnQuery</code> is checked with <code>if (!this.__ignore(hxOnNode))</code> before firing <code>htmx:before:on:init</code> or binding listeners.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Action &amp; Boost Queries</strong></td>
+<td style="text-align:left"><code>__shouldInitialize(elt)</code> verifies <code>!this.__ignore(elt)</code> before initializing <code>hx-get</code>/<code>hx-post</code>/<code>hx-boost</code> handlers.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Secondary Prefix</strong></td>
+<td style="text-align:left">Honors <code>htmx.config.prefix</code> (<code>data-hx-ignore</code> by default) alongside <code>hx-ignore</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-7">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Safe template rendering user-submitted bios alongside interactive htmx controls --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"profile-card"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/users/42/follow"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"outerHTML"</span><span class="p">&gt;</span>Follow<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"bio-content"</span> <span class="na">hx-ignore</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Server-rendered user HTML is isolated from htmx processing --&gt;</span>
+    {{ user.bio_html }}
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-on">hx-on:*<a class="header-anchor" href="#hx-on" aria-label="Permalink">#</a></h3>
+<p>Attaches inline JavaScript event listeners to an element using htmx's full trigger specification engine (<code>once</code>, <code>delay</code>, <code>throttle</code>, <code>from</code>, <code>target</code>, <code>prevent</code>, <code>stop</code>, <code>halt</code>, <code>[filter]</code>). In htmx v4, handlers execute asynchronously (<code>AsyncFunction</code>) with <code>this</code> bound to the element, <code>event</code> passed as a named parameter, and <code>with(event?.detail || {})</code> unwrapped in scope.</p>
+<h4 id="syntax-signature-8">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- 1. Standard or custom DOM event: hx-on:&lt;event&gt; --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"this.classList.toggle('active')"</span><span class="p">&gt;</span>Toggle<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Double-colon shorthand for htmx lifecycle events: hx-on::&lt;phase&gt;:&lt;action&gt; --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/comments"</span>
+      <span class="na">hx-on::after:request</span><span class="o">=</span><span class="s">"if (ctx.response.status === 200) this.reset()"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">textarea</span> <span class="na">name</span><span class="o">=</span><span class="s">"body"</span> <span class="na">required</span><span class="p">&gt;&lt;/</span><span class="nt">textarea</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Post<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 3. Multi-handler arrow syntax with trigger modifiers on base hx-on attribute --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span>
+       <span class="na">hx-on</span><span class="o">=</span><span class="s">"focus once -&gt; find('#hint').hidden = false;</span>
+<span class="s">              keydown[key=='Escape'] halt -&gt; this.value = ''"</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="handler-forms-execution-scope-handlehxonattributes">Handler Forms &amp; Execution Scope (<code>__handleHxOnAttributes</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Form / Scope Variable</th>
+<th style="text-align:left">Syntax / Identifier</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>DOM Event (<code>hx-on:&lt;event&gt;</code>)</strong></td>
+<td style="text-align:left"><code>hx-on:mouseenter=&quot;..&quot;</code></td>
+<td style="text-align:left">Listens for <code>&lt;event&gt;</code> directly. Note that HTML attribute names are lowercased by the browser parser.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>htmx Shorthand (<code>hx-on::&lt;event&gt;</code>)</strong></td>
+<td style="text-align:left"><code>hx-on::config:request=&quot;..&quot;</code></td>
+<td style="text-align:left">Expands leading <code>::</code> (or doubled <code>htmx.config.metaCharacter</code>) into <code>htmx:&lt;event&gt;</code>, e.g. <code>htmx:config:request</code> or <code>htmx:after:swap</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Multi-Handler (<code>hx-on=&quot;...&quot;</code>)</strong></td>
+<td style="text-align:left"><code>hx-on=&quot;&lt;triggerSpec&gt; -&gt; &lt;code&gt;; &lt;triggerSpec2&gt; -&gt; &lt;code2&gt;&quot;</code></td>
+<td style="text-align:left">Splits on <code>;(?=[^;]*-&gt;)</code> and passes the left-hand side of <code>-&gt;</code> to <code>__onTrigger()</code>, unlocking full trigger modifiers (<code>click once delay:200ms from:document -&gt; ...</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>this</code> &amp; <code>event</code></strong></td>
+<td style="text-align:left"><code>this</code>, <code>event</code></td>
+<td style="text-align:left"><code>this</code> is bound to the element owning <code>hx-on</code>; <code>event</code> is the native <code>Event</code> or <code>CustomEvent</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>event.detail</code> Unwrapping</strong></td>
+<td style="text-align:left"><code>ctx</code>, <code>task</code>, <code>error</code>, <code>issueRequest</code></td>
+<td style="text-align:left">Handler code is wrapped in <code>with(event?.detail||{}){...}</code>, so <code>ctx</code> (on <code>htmx:*:request</code>/<code>swap</code> events) can be accessed directly without writing <code>event.detail.ctx</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Bound <code>htmx</code> Helpers</strong></td>
+<td style="text-align:left"><code>find(sel)</code>, <code>findAll(sel)</code>, <code>ajax(...)</code>, <code>trigger(...)</code>, <code>timeout(...)</code></td>
+<td style="text-align:left">All public <code>Htmx.prototype</code> methods are injected into the execution scope via <code>__apiMethods(thisArg)</code>, with <code>find(sel)</code> and <code>findAll(sel)</code> scoped to <code>this</code> when called with 1 argument.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-8">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Modify request headers inline during htmx:config:request using unwrapped ctx --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/secure-data"</span>
+        <span class="na">hx-on::config:request</span><span class="o">=</span><span class="s">"ctx.request.headers['X-Client-Time'] = new Date().toISOString()"</span><span class="p">&gt;</span>
+  Fetch Secure Data
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Custom async confirmation dialog using htmx:confirm's unwrapped issueRequest / dropRequest --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/projects/99"</span>
+        <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"Custom modal"</span>
+        <span class="na">hx-on::confirm</span><span class="o">=</span><span class="s">"event.preventDefault(); (await showCustomModal()) ? issueRequest() : dropRequest()"</span><span class="p">&gt;</span>
+  Delete Project
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="attribute-inheritance-modifiers" class="catalog-section-heading"><span>Attribute Inheritance Modifiers</span><a class="header-anchor" href="#attribute-inheritance-modifiers" aria-label="Permalink to Attribute Inheritance Modifiers">#</a></h2>
+<h3 id="inherited">:inherited<a class="header-anchor" href="#inherited" aria-label="Permalink">#</a></h3>
+<p>Explicitly marks an htmx attribute on a parent container so that descendant elements inherit its value (<code>__attributeValue</code>). In htmx v4, <code>htmx.config.implicitInheritance</code> defaults to <code>false</code>, eliminating unintended attribute cascades across complex component trees and removing the need for htmx 2's <code>hx-disinherit</code>.</p>
+<h4 id="syntax-signature-9">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Parent opts hx-target and hx-swap into inheritance --&gt;</span>
+<span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-target:inherited</span><span class="o">=</span><span class="s">"#workspace"</span> <span class="na">hx-swap:inherited</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/views/kanban"</span><span class="p">&gt;</span>Kanban<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/views/calendar"</span><span class="p">&gt;</span>Calendar<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Local attribute overrides inherited value --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/views/export"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#modal"</span><span class="p">&gt;</span>Export<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="inheritance-resolution-rules-attributevalue">Inheritance Resolution Rules (<code>__attributeValue</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Rule / Configuration</th>
+<th style="text-align:left">Mechanism in <code>src/htmx.js</code></th>
+<th style="text-align:left">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Local Precedence</strong></td>
+<td style="text-align:left"><code>this.__attr(elt, name) ?? this.__attr(elt, name + &quot;:inherited&quot;)</code></td>
+<td style="text-align:left">An element always checks its own plain attribute (<code>hx-target</code>) and its own <code>:inherited</code> attribute (<code>hx-target:inherited</code>) before searching ancestors.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Ancestor Lookup</strong></td>
+<td style="text-align:left"><code>elt.parentNode?.closest?.('[hx-name\\:inherited], ...')</code></td>
+<td style="text-align:left">Walks up the DOM via <code>closest()</code> to the nearest ancestor carrying <code>&lt;attr&gt;:inherited</code> (or <code>&lt;attr&gt;:inherited:append</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Non-Inheritable Action Attributes</strong></td>
+<td style="text-align:left"><code>allowInheritance = false</code></td>
+<td style="text-align:left">Action attributes (<code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-patch</code>, <code>hx-delete</code>, <code>hx-query</code>, <code>hx-action</code>), <code>hx-trigger</code>, and <code>hx-validate</code> pass <code>allowInheritance = false</code> and do not inherit even if <code>htmx.config.implicitInheritance = true</code> (unless <code>:inherited</code> is explicitly placed on an ancestor).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Custom Meta-Character</strong></td>
+<td style="text-align:left"><code>htmx.config.metaCharacter</code></td>
+<td style="text-align:left">If your template engine reserves <code>:</code>, set <code>&lt;meta name=&quot;htmx-config&quot; content=&quot;metaCharacter:_&quot;&gt;</code> to write <code>hx-target_inherited=&quot;#out&quot;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Global Legacy Mode</strong></td>
+<td style="text-align:left"><code>htmx.config.implicitInheritance = true</code></td>
+<td style="text-align:left">Restores htmx 2's implicit inheritance for inheritable attributes and fires the extension hook <code>htmx:after:implicitInheritance</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-9">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Shared status routing, indicator, and CSRF headers inherited from a layout container --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"crud-panel"</span>
+     <span class="na">hx-headers:inherited</span><span class="o">=</span><span class="s">"X-CSRF-Token: 'csrf_9921'"</span>
+     <span class="na">hx-indicator:inherited</span><span class="o">=</span><span class="s">"#panel-loader"</span>
+     <span class="na">hx-status:422:inherited</span><span class="o">=</span><span class="s">"target:#panel-errors, swap:innerHTML"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"panel-loader"</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator"</span><span class="p">&gt;</span>Saving...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"panel-errors"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/items/1/archive"</span><span class="p">&gt;</span>Archive Item 1<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/items/2/archive"</span><span class="p">&gt;</span>Archive Item 2<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="append">:append<a class="header-anchor" href="#append" aria-label="Permalink">#</a></h3>
+<p>Appends comma-separated selectors or HCON key-value pairs on a child element to the value inherited from an ancestor's <code>:inherited</code> attribute, rather than replacing the parent's value. Can be written as <code>&lt;attr&gt;:append</code> (for a leaf child) or <code>&lt;attr&gt;:inherited:append</code> (so grandchildren also inherit the combined value).</p>
+<h4 id="syntax-signature-10">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-vals:inherited</span><span class="o">=</span><span class="s">"tenant:'acme', env:'prod'"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Sends tenant:'acme', env:'prod', action:'audit' --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/logs"</span> <span class="na">hx-vals:append</span><span class="o">=</span><span class="s">"action:'audit'"</span><span class="p">&gt;</span>
+    Write Audit Log
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="merging-mechanics-attributevalue">Merging Mechanics (<code>__attributeValue</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Modifier Combination</th>
+<th style="text-align:left">Resolution Formula (<code>src/htmx.js</code>)</th>
+<th style="text-align:left">Result Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&lt;attr&gt;:append</code> on child</td>
+<td style="text-align:left"><code>(parentVal + &quot;,&quot; + appendValue).replace(/[{}]/g, '')</code></td>
+<td style="text-align:left">Concatenates parent and child strings with <code>,</code> and strips any surrounding JSON <code>{}</code> braces so <code>HCON.parse()</code> or <code>HCON.split()</code> parses the combined string seamlessly.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;attr&gt;:inherited:append</code> on middle container</td>
+<td style="text-align:left">Chains across multiple ancestor levels</td>
+<td style="text-align:left">Merges grandparent <code>:inherited</code> + parent <code>:inherited:append</code> + child <code>:append</code> in top-down order (later keys override earlier keys in HCON).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-include:append</code></strong></td>
+<td style="text-align:left">Combines CSS/extended selector lists</td>
+<td style="text-align:left">Parent <code>hx-include:inherited=&quot;#global-filter&quot;</code> + child <code>hx-include:append=&quot;closest tr&quot;</code> resolves to <code>&quot;#global-filter,closest tr&quot;</code>, collecting inputs from both.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-headers:append</code> / <code>hx-vals:append</code> / <code>hx-config:append</code></strong></td>
+<td style="text-align:left">Merges HCON/JSON objects</td>
+<td style="text-align:left">Parent <code>{&quot;A&quot;: &quot;1&quot;}</code> + child <code>{&quot;B&quot;: &quot;2&quot;}</code> strips <code>{}</code> to <code>&quot;A&quot;: &quot;1&quot;,&quot;B&quot;: &quot;2&quot;</code>, which <code>HCON.parse()</code> parses into <code>{A: 1, B: 2}</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-10">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Multi-level :inherited and :inherited:append cascade for hx-include and hx-headers --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-headers:inherited</span><span class="o">=</span><span class="s">"X-App: 'portal'"</span>
+      <span class="na">hx-include:inherited</span><span class="o">=</span><span class="s">"#csrf-input"</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">"csrf-input"</span> <span class="na">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="na">name</span><span class="o">=</span><span class="s">"csrf"</span> <span class="na">value</span><span class="o">=</span><span class="s">"sec_881"</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-headers:inherited:append</span><span class="o">=</span><span class="s">"X-Module: 'billing'"</span>
+           <span class="na">hx-include:inherited:append</span><span class="o">=</span><span class="s">"#billing-period"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">select</span> <span class="na">id</span><span class="o">=</span><span class="s">"billing-period"</span> <span class="na">name</span><span class="o">=</span><span class="s">"period"</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">"2026-11"</span><span class="p">&gt;</span>2026-11<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+
+    <span class="cm">&lt;!-- Sends headers X-App, X-Module, X-Action and includes #csrf-input, #billing-period, #invoice-note --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">"invoice-note"</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"note"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/billing/export"</span>
+            <span class="na">hx-headers:append</span><span class="o">=</span><span class="s">"X-Action: 'csv'"</span>
+            <span class="na">hx-include:append</span><span class="o">=</span><span class="s">"#invoice-note"</span><span class="p">&gt;</span>
+      Export CSV
+    <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="04_data_and_config_attributes.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">Data, Validation &amp; Configuration Attributes</span>
+                    </a>
+                    
+                    
+                    <a href="06_http_headers.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">HTTP Request &amp; Response Headers</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

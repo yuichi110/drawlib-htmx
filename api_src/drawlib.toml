@@ -1,0 +1,33 @@
+[project]
+name = "api"
+type = "catalog"
+title = "htmx v4 API Reference"
+description = "Complete bilingual API, attribute, HTTP header, event, extension, and CLI reference for htmx v4.0.1."
+style = "default"
+
+[i18n]
+default_lang = "en"
+langs = ["en", "ja"]
+
+[i18n.labels]
+en = "English"
+ja = "日本語"
+
+[i18n.descriptions]
+en = "Complete bilingual API, attribute, HTTP header, event, extension, and CLI reference for htmx v4.0.1."
+ja = "htmx v4.0.1 の完全 API・属性・HTTPヘッダ・イベント・拡張機能・CLI リファレンス（非公式）。"
+
+[catalog]
+sidebar_expanded = true
+breadcrumb_root = { en = "API Reference", ja = "API リファレンス" }
+badge_text = { en = "API Reference · v4.0.1", ja = "API リファレンス · v4.0.1" }
+badge_url = "index.html"
+repo_url = "https://github.com/bigskysoftware/htmx"
+
+[seo]
+site_url = "https://htmx.drawlib.com/api"
+og_image = "_assets/ogp.png"
+twitter_card = "summary_large_image"
+sitemap = true
+robots = true
+llms_txt = true

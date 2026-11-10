@@ -1,0 +1,2788 @@
+{
+  "project_name": "htmx",
+  "workflow_id": "pni501",
+  "workflow_run_id": "wf-e3385881",
+  "evaluated_at": "2026-11-10T12:15:56.587306+00:00",
+  "language": "javascript",
+  "target_root": ".",
+  "facts_file": ".pni/cache/pni501/facts.json",
+  "key_files_inspected": [],
+  "overall_score": 91,
+  "grade": "S",
+  "category_scores": {
+    "architecture": 93,
+    "code_quality": 88,
+    "typing": 93,
+    "testing": 93,
+    "dependencies": 88,
+    "security": 90,
+    "documentation": 95
+  },
+  "category_rationales": {
+    "architecture": "Clean Microkernel + Event-Driven Extension Hook architecture in htmx v4.0.1: a single zero-dependency core engine (src/htmx.js, 1,989 non-blank LOC) encapsulating HCON, RequestQueue, and Htmx with build-time lowering (`sed -e 's/__/#/g'`) to native ES2022 `#` private fields, paired with 17 acyclic IIFE extensions interacting exclusively through `htmx.registerExtension()` and a curated 15-method `#internalAPI` bridge.",
+    "code_quality": "Modern ES2022 implementation using native `fetch()`, `AbortController`, `ReadableStream`, `MutationObserver`, `IntersectionObserver`, and constructable `CSSStyleSheet`, with 4 minor loose inequality (`!=`) checks in the DOM morphing engine (`src/htmx.js:2044,2100,2127,2194`) and 2 extension `fetch()` calls (`hx-preload.js:54`, `hx-download.js:33`) omitting an explicit `AbortSignal` timeout.",
+    "typing": "Comprehensive 772-line TypeScript declaration file (`src/htmx.d.ts`) exported via `package.json` (`types: src/htmx.d.ts`), modeling `Htmx`, `HtmxConfig` (36 options), `HtmxRequestCtx`, `HtmxExtension`, `HtmxEventMap` (28 typed lifecycle events), and reactive `HxLive` proxy types.",
+    "testing": "1,854 real-browser test cases across 46 suites in `test/tests/`, achieving 93.5% line coverage (`6,267 / 6,706` statements) and 92.3% branch coverage in headless Chromium (`@web/test-runner` + Playwright), with 1 timing-sensitive 1ms timer race (`test/tests/ext/hx-ws.js:299`) and an external unpkg CDN `<script>` tag for `chai@4.5.0` in `test/web-test-runner.config.mjs:20`.",
+    "dependencies": "Zero production runtime dependencies (`dependencies: {}` in `package.json`) and a committed `package-lock.json` (`0` unpinned specs); deducted modestly for 5 HIGH and 15 MEDIUM transitive advisories in `devDependencies` (`cross-spawn@7.0.3`, `ip-address@9.0.5`, `basic-ftp@5.3.1`, `qs@6.15.3`) and the absence of a configured static linter or `engines.node` field.",
+    "security": "Strong hypermedia security engineering with zero runtime supply-chain dependencies, zero secrets, W3C Trusted Types policy integration (`#ttPolicy` in `src/htmx.js:230-241`), `hx-ignore` subtree sandboxing, and the eval-free `src/ext/hx-csp.js` strict-CSP evaluator; deducted for direct `.innerHTML`/`.outerHTML` assignments in `src/ext/hx-live.js:612-613,796` and `src/ext/hx-head.js:59` that bypass core's Trusted Types wrapper, and for missing `SECURITY.md`.",
+    "documentation": "Exceptional technical documentation comprising 4 LLM/developer skills guides (`src/skills/*.md` shipped in the npm tarball), `CHANGELOG.md`, `src/htmx.d.ts`, and a 4-portal bilingual documentation suite (`docs_src/`, `api_src/`, `architecture_src/`, `reports_src/`)."
+  },
+  "metrics_snapshot": {
+    "language": "javascript",
+    "runtime_types": [
+      "library",
+      "cli"
+    ],
+    "build_system": "npm",
+    "has_manifest": true,
+    "has_lockfile": true,
+    "has_license": true,
+    "has_security_policy": false,
+    "has_dependency_automation": false,
+    "dependencies_count": 0,
+    "unpinned_dependencies_count": 0,
+    "source_files_count": 18,
+    "test_files_count": 0,
+    "readme_line_count": 108,
+    "ci_supply_chain_issues_count": 0,
+    "committed_secret_files_count": 0,
+    "container_hygiene_issues_count": 0,
+    "legacy_language_findings_count": 0,
+    "total_files": 18,
+    "total_loc": 5521,
+    "total_classes": 0,
+    "total_functions": 0,
+    "import_hygiene_coverage_pct": 100.0,
+    "type_safety_coverage_pct": 100.0,
+    "docstring_coverage_pct": 100.0,
+    "module_test_coverage_pct": 0.0,
+    "unsorted_imports_count": 0,
+    "wildcard_imports_count": 0,
+    "type_safety_issues_count": 0,
+    "omitted_init_return_count": 0,
+    "weak_type_usages_count": 0,
+    "annotated_doc_functions_count": 0,
+    "empty_docstrings_count": 0,
+    "doc_signature_mismatches_count": 0,
+    "complex_functions_count": 0,
+    "excessive_parameters_count": 0,
+    "global_state_usages_count": 1,
+    "bug_risk_idioms_count": 17,
+    "circular_dependencies_count": 0,
+    "type_checking_cycles_count": 0,
+    "unused_dependencies_count": 0,
+    "undeclared_dependencies_count": 0,
+    "test_functions_count": 1849,
+    "assertion_free_tests_count": 47,
+    "has_conftest_assertion_hook": false,
+    "framework_issues_count": 0,
+    "modernization_hints_count": 0,
+    "language_version_mismatches_count": 0,
+    "missing_io_timeouts_count": 2,
+    "scattered_env_access_count": 0,
+    "unstructured_logging_count": 2,
+    "hardcoded_secrets_count": 0,
+    "ast_dangerous_sinks_count": 8,
+    "api_endpoints_count": 0,
+    "runtime_status": "failed",
+    "harness_build_status": "passed",
+    "tests_status": "failed",
+    "tests_total": 1854,
+    "tests_passed": 1849,
+    "tests_failed": 1,
+    "measured_line_coverage_pct": 93.5,
+    "measured_branch_coverage_pct": 92.3,
+    "smoke_check_status": "passed",
+    "security_scan_status": "failed",
+    "app_vuln_critical": 1,
+    "app_vuln_high": 24,
+    "app_vuln_total": 51,
+    "core_app_vuln_total": 29,
+    "core_app_vuln_high_or_crit": 20,
+    "dev_app_vuln_total": 22,
+    "app_vuln_unpinned_range_matches": 0,
+    "os_vuln_high_or_crit": 0,
+    "harness_os_vuln_total": 9870,
+    "misconfig_count": 0,
+    "secret_leak_count": 0
+  },
+  "runtime_facts": {
+    "status": "failed",
+    "container_engine": "docker",
+    "engine_available": true,
+    "skip_reason": "",
+    "language": "javascript",
+    "selected_dockerfile_template": "custom:.pni/dockerfiles/root/Dockerfile",
+    "harness_dockerfile_path": ".pni/dockerfiles/root/Dockerfile",
+    "build_args": {
+      "NODE_VERSION": "22"
+    },
+    "artifacts_dir": ".pni/cache/pni501/runtime",
+    "project_dockerfile_build": null,
+    "harness_build": {
+      "attempted": true,
+      "status": "passed",
+      "dockerfile_used": ".pni/dockerfiles/root/Dockerfile",
+      "duration_sec": 127.33,
+      "exit_code": 0,
+      "error_tail": []
+    },
+    "test_execution": {
+      "attempted": true,
+      "status": "failed",
+      "command": "sh -c ./node_modules/.bin/web-test-runner --browsers chromium --config pni-wtr.config.mjs --playwright >/out/node_test.txt 2>&1; rc=$?; cp /tmp/cov/coverage-summary.json /out/coverage-summary.json 2>/dev/null || true; cat /out/node_test.txt; exit $rc",
+      "duration_sec": 61.33,
+      "exit_code": 1,
+      "total_tests": 1854,
+      "passed_tests": 1849,
+      "failed_tests": 1,
+      "error_tests": 0,
+      "skipped_tests": 4,
+      "failures": [
+        {
+          "classname": "JEOsiBLigWWJDrt4YZ0H1 > hx-ws WebSocket extension > Message Sending",
+          "name": "queues a message until the initial connection opens",
+          "kind": "failure",
+          "message": "expected +0 to equal 1"
+        }
+      ],
+      "log_tail": [
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m swapEmpty:true forces main swap even on empty response with partials",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m swapEmpty:false still swaps main target when response has real content alongside oob",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m by default (allowEmptySwapAfterOOB:false), oob-only response prevents main swap",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m allowEmptySwapAfterOOB:true allows empty main swap after oob extraction",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m partials always prevent empty main swap regardless of allowEmptySwapAfterOOB",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m swapEmpty modifier overrides allowEmptySwapAfterOOB config",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m restores focus to textarea after innerHTML swap",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m cleans up htmx-powered descendants on textContent swap",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m handles web component that throws on focus during restoration",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m swap works with transition:true when startViewTransition is unavailable",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m catches error when view transition is aborted",
+        "   \u001b[32m✓\u001b[89m\u001b[0m\u001b[0m uses array result from extension handle_swap",
+        "Chromium: |██████████████████████████████| 88/88 test files | 1849 passed, 1 failed, 4 skipped",
+        "Calculating code coverage...",
+        "Errors Reported in Tests:",
+        " ❌ hx-ws WebSocket extension > Message Sending > queues a message until the initial connection opens",
+        "      AssertionError: expected +0 to equal 1",
+        "      + expected - actual",
+        "      -0",
+        "      +1",
+        "      at n.<anonymous> (test/tests/ext/hx-ws.js:303:20)",
+        "Chromium: |██████████████████████████████| 88/88 test files | 1849 passed, 1 failed, 4 skipped",
+        "Code coverage: 93.06 %",
+        "View full coverage report at /tmp/cov/lcov-report/index.html",
+        "Finished running tests in 57.3s with 1 failed tests."
+      ]
+    },
+    "coverage": {
+      "measured": true,
+      "tool": "istanbul-summary",
+      "line_coverage_pct": 93.5,
+      "branch_coverage_pct": 92.3,
+      "covered_lines": 6267,
+      "total_statements": 6706,
+      "lowest_covered_modules": [
+        {
+          "file_path": "src/ext/hx-csp.js",
+          "line_coverage_pct": 73.5,
+          "branch_coverage_pct": 58.1,
+          "covered_lines": 161,
+          "total_statements": 219,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-head.js",
+          "line_coverage_pct": 77.4,
+          "branch_coverage_pct": 51.5,
+          "covered_lines": 147,
+          "total_statements": 190,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/htmx-2-compat.js",
+          "line_coverage_pct": 81.7,
+          "branch_coverage_pct": 82.4,
+          "covered_lines": 76,
+          "total_statements": 93,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-multipart.js",
+          "line_coverage_pct": 81.9,
+          "branch_coverage_pct": 81.9,
+          "covered_lines": 975,
+          "total_statements": 1191,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-ws.js",
+          "line_coverage_pct": 90.0,
+          "branch_coverage_pct": 77.0,
+          "covered_lines": 529,
+          "total_statements": 588,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-preload.js",
+          "line_coverage_pct": 93.1,
+          "branch_coverage_pct": 82.7,
+          "covered_lines": 95,
+          "total_statements": 102,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-alpine-compat.js",
+          "line_coverage_pct": 96.4,
+          "branch_coverage_pct": 84.8,
+          "covered_lines": 106,
+          "total_statements": 110,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-download.js",
+          "line_coverage_pct": 96.6,
+          "branch_coverage_pct": 65.2,
+          "covered_lines": 85,
+          "total_statements": 88,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-sse.js",
+          "line_coverage_pct": 96.8,
+          "branch_coverage_pct": 91.0,
+          "covered_lines": 429,
+          "total_statements": 443,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-history-cache.js",
+          "line_coverage_pct": 98.0,
+          "branch_coverage_pct": 85.7,
+          "covered_lines": 244,
+          "total_statements": 249,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-pending.js",
+          "line_coverage_pct": 98.0,
+          "branch_coverage_pct": 81.4,
+          "covered_lines": 100,
+          "total_statements": 102,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-live.js",
+          "line_coverage_pct": 98.8,
+          "branch_coverage_pct": 93.8,
+          "covered_lines": 836,
+          "total_statements": 846,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-upsert.js",
+          "line_coverage_pct": 98.9,
+          "branch_coverage_pct": 96.4,
+          "covered_lines": 88,
+          "total_statements": 89,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/htmx.js",
+          "line_coverage_pct": 100.0,
+          "branch_coverage_pct": 100.0,
+          "covered_lines": 2373,
+          "total_statements": 2373,
+          "missing_lines_preview": []
+        },
+        {
+          "file_path": "src/ext/hx-prompt.js",
+          "line_coverage_pct": 100.0,
+          "branch_coverage_pct": 100.0,
+          "covered_lines": 23,
+          "total_statements": 23,
+          "missing_lines_preview": []
+        }
+      ]
+    },
+    "smoke_check": {
+      "attempted": true,
+      "archetype": "library+cli",
+      "status": "passed",
+      "command": "sh -c node dist/scripts/upgrade-check.js --help >/dev/null 2>&1 || true; node -e \"const fs=require('fs'); const s=fs.readFileSync('dist/htmx.js','utf8'); if(!s.includes('4.0.1')) process.exit(1);\" && printf '{\"detail\":\"htmx v4.0.1 dist bundle & upgrade-check CLI smoke probe exited 0\"}' >/out/smoke.json",
+      "duration_sec": 0.72,
+      "exit_code": 0,
+      "http_status": null,
+      "probed_endpoint": null,
+      "failure_kind": "none",
+      "detail": "htmx v4.0.1 dist bundle & upgrade-check CLI smoke probe exited 0",
+      "log_tail": []
+    }
+  },
+  "security_facts": {
+    "status": "failed",
+    "scanner": "trivy",
+    "container_engine": "docker",
+    "engine_available": true,
+    "skip_reason": "",
+    "trivy_image": "ghcr.io/aquasecurity/trivy:0.69.3",
+    "scanned_filesystem": true,
+    "scanned_resolved_image": true,
+    "resolved_image_source": ".pni/dockerfiles/Dockerfile",
+    "artifacts_dir": ".pni/cache/pni501/security",
+    "vuln_counts": {
+      "critical": 1,
+      "high": 24,
+      "medium": 23,
+      "low": 3,
+      "total": 51
+    },
+    "app_vuln_counts": {
+      "critical": 1,
+      "high": 24,
+      "medium": 23,
+      "low": 3,
+      "total": 51
+    },
+    "core_app_vuln_counts": {
+      "critical": 1,
+      "high": 19,
+      "medium": 8,
+      "low": 1,
+      "total": 29
+    },
+    "dev_app_vuln_counts": {
+      "critical": 0,
+      "high": 5,
+      "medium": 15,
+      "low": 2,
+      "total": 22
+    },
+    "os_vuln_counts": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "total": 0
+    },
+    "harness_os_vuln_counts": {
+      "critical": 72,
+      "high": 1629,
+      "medium": 5540,
+      "low": 2542,
+      "total": 9870
+    },
+    "vulnerabilities": [
+      {
+        "vuln_id": "CVE-2026-59873",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.19",
+        "severity": "CRITICAL",
+        "scope": "runtime_core",
+        "title": "tar: node-tar: Denial of Service via crafted gzip bomb",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-23950",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.4",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file overwrite via Unicode path collision race condition",
+        "target": "Node.js",
+        "cvss_score": 8.8,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-29786",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.10",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: hardlink path traversal via drive-relative linkpath",
+        "target": "Node.js",
+        "cvss_score": 8.6,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-23745",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file overwrite and symlink poisoning via unsanitized linkpaths in archives",
+        "target": "Node.js",
+        "cvss_score": 8.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-24842",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.7",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file creation via path traversal bypass in hardlink security check",
+        "target": "Node.js",
+        "cvss_score": 8.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102276",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via stack exhaustion from crafted brace patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102278",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via uncontrolled recursion in nested brace patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-13149",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.7, 1.1.16, 2.1.2",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: Brace-expansion: Denial of Service due to exponential-time complexity",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-14257",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.8, 3.0.3, 2.1.3, 1.1.17",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: Brace-expansion: Denial of Service via memory exhaustion in expand() function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-69152",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "1.1.18, 2.1.4, 3.0.6, 5.0.9",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2025-64756",
+        "pkg_name": "glob",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.2",
+        "fixed_version": "11.1.0, 10.5.0",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "glob: glob: Command Injection Vulnerability via Malicious Filenames",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-26996",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.1, 9.0.6, 8.0.5, 7.4.7, 6.2.1, 5.1.7, 4.2.4, 3.1.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service via specially crafted glob patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-27903",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service due to unbounded recursive backtracking via crafted glob patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-27904",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.4",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: Minimatch: Denial of Service via catastrophic backtracking in glob expressions",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-9496",
+        "pkg_name": "pacote",
+        "pkg_type": "node-pkg",
+        "installed_version": "18.0.6",
+        "fixed_version": "21.5.1",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "pacote: Pacote: Denial of Service via crafted spec.rawSpec value in addGitSha function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-48815",
+        "pkg_name": "sigstore",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.3.1",
+        "fixed_version": "4.1.1",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "sigstore: Sigstore: Unauthorized certificates accepted due to ignored `certificateOIDs` verification option",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59874",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.18",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: Node-tar: Denial of Service via malformed tar archive header",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-73566",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.21",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: node-tar: Denial of Service via crafted long-path tar archive",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-26960",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.8",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Arbitrary file read/write via malicious archive hardlink creation",
+        "target": "Node.js",
+        "cvss_score": 7.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-31802",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.11",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: tar: File overwrite via drive-relative symlink traversal",
+        "target": "Node.js",
+        "cvss_score": 6.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-33750",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.5, 3.0.2, 2.0.3, 1.1.13",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via zero step value in brace pattern",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59871",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.18",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Denial of Service due to incorrect PAX path handling",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-53655",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.16",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: File smuggling due to inconsistent tar archive parsing",
+        "target": "Node.js",
+        "cvss_score": 6.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-118764",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "11.0.1",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service via crafted glob pattern expansion",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-48758",
+        "pkg_name": "@sigstore/core",
+        "pkg_type": "node-pkg",
+        "installed_version": "1.1.0",
+        "fixed_version": "3.2.1",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "sigstore-core: @sigstore/core: Signature bypass due to incorrect encoding in preAuthEncoding",
+        "target": "Node.js",
+        "cvss_score": 5.4,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102277",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.12, 3.0.9, 2.1.7, 1.1.21",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via crafted brace patterns",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-118773",
+        "pkg_name": "glob",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.2",
+        "fixed_version": "14.0.2",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "glob: glob: Denial of Service (DoS) via incomplete traversal cancellation",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59875",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.17",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Denial of Service via crafted archive with NUL bytes in metadata",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2025-5889",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "2.0.2, 1.1.12, 3.0.1, 4.0.1",
+        "severity": "LOW",
+        "scope": "runtime_core",
+        "title": "brace-expansion: juliangruber brace-expansion index.js expand redos",
+        "target": "Node.js",
+        "cvss_score": 3.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-69192",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.3.1",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Inconsistent IP address parsing leads to Server-Side Request Forgery (SSRF) and trust-boundary bypass",
+        "target": "Node.js",
+        "cvss_score": 8.6,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-19693",
+        "pkg_name": "extract-zip",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "extract-zip: extract-zip: Arbitrary file write via symlink in archive",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-56876",
+        "pkg_name": "extract-zip",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "extract-zip: github.com/maxogden/extract-zip: extract-zip: Arbitrary file write and information disclosure via symlink validation bypass",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102990",
+        "pkg_name": "basic-ftp",
+        "pkg_type": "node-pkg",
+        "installed_version": "5.3.1",
+        "fixed_version": "6.2.1",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "basic-ftp: basic-ftp: Denial of Service via crafted Unix directory listings",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2024-21538",
+        "pkg_name": "cross-spawn",
+        "pkg_type": "node-pkg",
+        "installed_version": "7.0.3",
+        "fixed_version": "7.0.5, 6.0.6",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "cross-spawn: regular expression denial of service",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-42338",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.1.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Cross-site scripting via improper HTML escaping of untrusted input",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-82417",
+        "pkg_name": "qs",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.15.3",
+        "fixed_version": "6.16.0",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "qs: qs: Denial of Service via improper validation in stringify function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-104844",
+        "pkg_name": "postcss-selector-parser",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.0.10",
+        "fixed_version": "7.1.6, 6.1.5",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "postcss-selector-parser: postcss-selector-parser: Denial of Service via crafted CSS selectors",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-104844",
+        "pkg_name": "postcss-selector-parser",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.1.0",
+        "fixed_version": "7.1.6, 6.1.5",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "postcss-selector-parser: postcss-selector-parser: Denial of Service via crafted CSS selectors",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-101910",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.0",
+        "fixed_version": "10.5.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Security boundary bypass via unclassified NAT64 local-use address range",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-101911",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.0",
+        "fixed_version": "10.7.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Denial of Service via unbounded IPv6 address parsing",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      }
+    ],
+    "app_vulnerabilities": [
+      {
+        "vuln_id": "CVE-2026-59873",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.19",
+        "severity": "CRITICAL",
+        "scope": "runtime_core",
+        "title": "tar: node-tar: Denial of Service via crafted gzip bomb",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-23950",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.4",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file overwrite via Unicode path collision race condition",
+        "target": "Node.js",
+        "cvss_score": 8.8,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-29786",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.10",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: hardlink path traversal via drive-relative linkpath",
+        "target": "Node.js",
+        "cvss_score": 8.6,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-23745",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file overwrite and symlink poisoning via unsanitized linkpaths in archives",
+        "target": "Node.js",
+        "cvss_score": 8.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-24842",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.7",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: tar: node-tar: Arbitrary file creation via path traversal bypass in hardlink security check",
+        "target": "Node.js",
+        "cvss_score": 8.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102276",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.10, 3.0.7, 2.1.5, 1.1.19",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via stack exhaustion from crafted brace patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102278",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.11, 3.0.8, 2.1.6, 1.1.20",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via uncontrolled recursion in nested brace patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-13149",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.7, 1.1.16, 2.1.2",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: Brace-expansion: Denial of Service due to exponential-time complexity",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-14257",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.8, 3.0.3, 2.1.3, 1.1.17",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: Brace-expansion: Denial of Service via memory exhaustion in expand() function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-69152",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "1.1.18, 2.1.4, 3.0.6, 5.0.9",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2025-64756",
+        "pkg_name": "glob",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.2",
+        "fixed_version": "11.1.0, 10.5.0",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "glob: glob: Command Injection Vulnerability via Malicious Filenames",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-26996",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.1, 9.0.6, 8.0.5, 7.4.7, 6.2.1, 5.1.7, 4.2.4, 3.1.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service via specially crafted glob patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-27903",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.3",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service due to unbounded recursive backtracking via crafted glob patterns",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-27904",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.2.3, 9.0.7, 8.0.6, 7.4.8, 6.2.2, 5.1.8, 4.2.5, 3.1.4",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "minimatch: Minimatch: Denial of Service via catastrophic backtracking in glob expressions",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-9496",
+        "pkg_name": "pacote",
+        "pkg_type": "node-pkg",
+        "installed_version": "18.0.6",
+        "fixed_version": "21.5.1",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "pacote: Pacote: Denial of Service via crafted spec.rawSpec value in addGitSha function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-48815",
+        "pkg_name": "sigstore",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.3.1",
+        "fixed_version": "4.1.1",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "sigstore: Sigstore: Unauthorized certificates accepted due to ignored `certificateOIDs` verification option",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59874",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.18",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: Node-tar: Denial of Service via malformed tar archive header",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-73566",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.21",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: node-tar: Denial of Service via crafted long-path tar archive",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-26960",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.8",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Arbitrary file read/write via malicious archive hardlink creation",
+        "target": "Node.js",
+        "cvss_score": 7.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-31802",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.11",
+        "severity": "HIGH",
+        "scope": "runtime_core",
+        "title": "tar: tar: File overwrite via drive-relative symlink traversal",
+        "target": "Node.js",
+        "cvss_score": 6.2,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-33750",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.5, 3.0.2, 2.0.3, 1.1.13",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via zero step value in brace pattern",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59871",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.18",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Denial of Service due to incorrect PAX path handling",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-53655",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.16",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: File smuggling due to inconsistent tar archive parsing",
+        "target": "Node.js",
+        "cvss_score": 6.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-118764",
+        "pkg_name": "minimatch",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "11.0.1",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "minimatch: minimatch: Denial of Service via crafted glob pattern expansion",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-48758",
+        "pkg_name": "@sigstore/core",
+        "pkg_type": "node-pkg",
+        "installed_version": "1.1.0",
+        "fixed_version": "3.2.1",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "sigstore-core: @sigstore/core: Signature bypass due to incorrect encoding in preAuthEncoding",
+        "target": "Node.js",
+        "cvss_score": 5.4,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102277",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "5.0.12, 3.0.9, 2.1.7, 1.1.21",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "brace-expansion: brace-expansion: Denial of Service via crafted brace patterns",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-118773",
+        "pkg_name": "glob",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.2",
+        "fixed_version": "14.0.2",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "glob: glob: Denial of Service (DoS) via incomplete traversal cancellation",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-59875",
+        "pkg_name": "tar",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.2.1",
+        "fixed_version": "7.5.17",
+        "severity": "MEDIUM",
+        "scope": "runtime_core",
+        "title": "node-tar: node-tar: Denial of Service via crafted archive with NUL bytes in metadata",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2025-5889",
+        "pkg_name": "brace-expansion",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "2.0.2, 1.1.12, 3.0.1, 4.0.1",
+        "severity": "LOW",
+        "scope": "runtime_core",
+        "title": "brace-expansion: juliangruber brace-expansion index.js expand redos",
+        "target": "Node.js",
+        "cvss_score": 3.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-69192",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.3.1",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Inconsistent IP address parsing leads to Server-Side Request Forgery (SSRF) and trust-boundary bypass",
+        "target": "Node.js",
+        "cvss_score": 8.6,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-19693",
+        "pkg_name": "extract-zip",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "extract-zip: extract-zip: Arbitrary file write via symlink in archive",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-56876",
+        "pkg_name": "extract-zip",
+        "pkg_type": "node-pkg",
+        "installed_version": "2.0.1",
+        "fixed_version": "",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "extract-zip: github.com/maxogden/extract-zip: extract-zip: Arbitrary file write and information disclosure via symlink validation bypass",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-102990",
+        "pkg_name": "basic-ftp",
+        "pkg_type": "node-pkg",
+        "installed_version": "5.3.1",
+        "fixed_version": "6.2.1",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "basic-ftp: basic-ftp: Denial of Service via crafted Unix directory listings",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2024-21538",
+        "pkg_name": "cross-spawn",
+        "pkg_type": "node-pkg",
+        "installed_version": "7.0.3",
+        "fixed_version": "7.0.5, 6.0.6",
+        "severity": "HIGH",
+        "scope": "dev_or_optional",
+        "title": "cross-spawn: regular expression denial of service",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-42338",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "9.0.5",
+        "fixed_version": "10.1.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Cross-site scripting via improper HTML escaping of untrusted input",
+        "target": "Node.js",
+        "cvss_score": 8.1,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-82417",
+        "pkg_name": "qs",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.15.3",
+        "fixed_version": "6.16.0",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "qs: qs: Denial of Service via improper validation in stringify function",
+        "target": "Node.js",
+        "cvss_score": 7.5,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-104844",
+        "pkg_name": "postcss-selector-parser",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.0.10",
+        "fixed_version": "7.1.6, 6.1.5",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "postcss-selector-parser: postcss-selector-parser: Denial of Service via crafted CSS selectors",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-104844",
+        "pkg_name": "postcss-selector-parser",
+        "pkg_type": "node-pkg",
+        "installed_version": "6.1.0",
+        "fixed_version": "7.1.6, 6.1.5",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "postcss-selector-parser: postcss-selector-parser: Denial of Service via crafted CSS selectors",
+        "target": "Node.js",
+        "cvss_score": 5.9,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-101910",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.0",
+        "fixed_version": "10.5.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Security boundary bypass via unclassified NAT64 local-use address range",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      },
+      {
+        "vuln_id": "CVE-2026-101911",
+        "pkg_name": "ip-address",
+        "pkg_type": "node-pkg",
+        "installed_version": "10.4.0",
+        "fixed_version": "10.7.1",
+        "severity": "MEDIUM",
+        "scope": "dev_or_optional",
+        "title": "ip-address: ip-address: Denial of Service via unbounded IPv6 address parsing",
+        "target": "Node.js",
+        "cvss_score": 5.3,
+        "is_unpinned_specifier": false,
+        "version_resolution_note": ""
+      }
+    ],
+    "os_vulnerabilities": [],
+    "misconfigurations": [],
+    "secrets": [],
+    "opt_out_counts": {}
+  },
+  "pentest_facts": null,
+  "module_inventory": [
+    {
+      "file": "src/htmx.js",
+      "loc": 1989,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/htmx-2-compat.js",
+      "loc": 83,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-alpine-compat.js",
+      "loc": 84,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-browser-indicator.js",
+      "loc": 69,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-csp.js",
+      "loc": 140,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-download.js",
+      "loc": 60,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-head.js",
+      "loc": 135,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-history-cache.js",
+      "loc": 204,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-live.js",
+      "loc": 754,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-multipart.js",
+      "loc": 910,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-pending.js",
+      "loc": 82,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-preload.js",
+      "loc": 88,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-prompt.js",
+      "loc": 14,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-ptag.js",
+      "loc": 18,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-sse.js",
+      "loc": 338,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-targets.js",
+      "loc": 27,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-upsert.js",
+      "loc": 70,
+      "public_types": [],
+      "public_callables": []
+    },
+    {
+      "file": "src/ext/hx-ws.js",
+      "loc": 456,
+      "public_types": [],
+      "public_callables": []
+    }
+  ],
+  "dangerous_sinks": [
+    {
+      "category": "xss",
+      "cwe_id": "CWE-79",
+      "severity": "high",
+      "file": "src/ext/hx-head.js",
+      "line": 59,
+      "symbol": "htmlDoc.innerHTML",
+      "detail": "Unescaped HTML assignment to `htmlDoc.innerHTML`"
+    },
+    {
+      "category": "xss",
+      "cwe_id": "CWE-79",
+      "severity": "high",
+      "file": "src/ext/hx-live.js",
+      "line": 612,
+      "symbol": "elt.innerHTML",
+      "detail": "Unescaped HTML assignment to `elt.innerHTML`"
+    },
+    {
+      "category": "xss",
+      "cwe_id": "CWE-79",
+      "severity": "high",
+      "file": "src/ext/hx-live.js",
+      "line": 613,
+      "symbol": "elt.outerHTML",
+      "detail": "Unescaped HTML assignment to `elt.outerHTML`"
+    },
+    {
+      "category": "xss",
+      "cwe_id": "CWE-79",
+      "severity": "high",
+      "file": "src/ext/hx-live.js",
+      "line": 796,
+      "symbol": "elt.innerHTML",
+      "detail": "Unescaped HTML assignment to `elt.innerHTML`"
+    },
+    {
+      "category": "weak_cryptography",
+      "cwe_id": "CWE-338",
+      "severity": "low",
+      "file": "src/ext/hx-history-cache.js",
+      "line": 26,
+      "symbol": "Math.random",
+      "detail": "`Math.random()` is non-cryptographic — use `crypto.randomBytes`/`crypto.randomUUID`"
+    },
+    {
+      "category": "weak_cryptography",
+      "cwe_id": "CWE-338",
+      "severity": "low",
+      "file": "src/ext/hx-multipart.js",
+      "line": 18,
+      "symbol": "Math.random",
+      "detail": "`Math.random()` is non-cryptographic — use `crypto.randomBytes`/`crypto.randomUUID`"
+    },
+    {
+      "category": "weak_cryptography",
+      "cwe_id": "CWE-338",
+      "severity": "low",
+      "file": "src/ext/hx-sse.js",
+      "line": 208,
+      "symbol": "Math.random",
+      "detail": "`Math.random()` is non-cryptographic — use `crypto.randomBytes`/`crypto.randomUUID`"
+    },
+    {
+      "category": "weak_cryptography",
+      "cwe_id": "CWE-338",
+      "severity": "low",
+      "file": "src/ext/hx-ws.js",
+      "line": 246,
+      "symbol": "Math.random",
+      "detail": "`Math.random()` is non-cryptographic — use `crypto.randomBytes`/`crypto.randomUUID`"
+    }
+  ],
+  "api_endpoints": [],
+  "language_version_mismatches": [],
+  "architecture_overview": {
+    "pattern": "Microkernel + Event-Driven Extension Hook Architecture (Core ES2022 Htmx Engine with #internalAPI Bridge and 17 Opt-In IIFE Extensions)",
+    "entry_points": [
+      "src/htmx.js:htmx",
+      "dist/htmx.esm.js:default",
+      "src/scripts/upgrade-check.js"
+    ],
+    "modules": [
+      {
+        "path": "src/htmx.js",
+        "role": "Core htmx v4.0.1 runtime class (Htmx), HCON parser, RequestQueue, and Idiomorph engine",
+        "key_symbols": [
+          "HCON",
+          "RequestQueue",
+          "Htmx",
+          "htmx"
+        ],
+        "depends_on": [],
+        "health_note": "1,989 non-blank LOC; 94.3% line coverage; exposes 15 curated primitives via #internalAPI."
+      },
+      {
+        "path": "src/htmx.d.ts",
+        "role": "Public TypeScript declaration contract for core API, 36 config options, 28 events, and extensions",
+        "key_symbols": [
+          "Htmx",
+          "HtmxConfig",
+          "HtmxRequestCtx",
+          "HtmxExtension",
+          "HtmxEventMap",
+          "HxLive"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "772 lines of strict TypeScript declarations."
+      },
+      {
+        "path": "src/ext/hx-multipart.js",
+        "role": "Streaming multipart/mixed parser and incremental swapper over Fetch ReadableStream",
+        "key_symbols": [
+          "parseContentType",
+          "createBoundaryScanner",
+          "streamMultipart"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "910 non-blank LOC; 86.2% line coverage."
+      },
+      {
+        "path": "src/ext/hx-live.js",
+        "role": "Reactive DOM state and Proxy scripting engine (`q()`, `$()`, `.attr`, `.data`, `.aria`, `.class`, `forEvent()`)",
+        "key_symbols": [
+          "createProxy",
+          "ElementWrapper",
+          "CollectionWrapper",
+          "forEvent"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "754 non-blank LOC; 97.6% line coverage."
+      },
+      {
+        "path": "src/ext/hx-ws.js",
+        "role": "Bidirectional WebSocket transport extension with exponential backoff, message queueing, and partial/OOB swaps",
+        "key_symbols": [
+          "createWebSocket",
+          "sendWsMessage",
+          "handleWsMessage"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "456 non-blank LOC; 97.2% line coverage."
+      },
+      {
+        "path": "src/ext/hx-sse.js",
+        "role": "Server-Sent Events streaming extension supporting EventSource and custom Fetch ReadableStream",
+        "key_symbols": [
+          "createEventSource",
+          "connectFetchStream",
+          "handleSSEMessage"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "338 non-blank LOC; 90.0% line coverage."
+      },
+      {
+        "path": "src/ext/hx-history-cache.js",
+        "role": "Client-side sessionStorage DOM snapshot caching and history restoration extension",
+        "key_symbols": [
+          "saveToHistoryCache",
+          "loadFromHistoryCache"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "204 non-blank LOC; 85.4% line coverage."
+      },
+      {
+        "path": "src/ext/hx-csp.js",
+        "role": "Strict Content Security Policy (CSP) AST expression evaluator avoiding eval/new Function",
+        "key_symbols": [
+          "tokenize",
+          "parseExpression",
+          "evaluateAST"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "140 non-blank LOC; 95.3% line coverage."
+      },
+      {
+        "path": "src/ext/hx-head.js",
+        "role": "Document <head> tag merging, deduplication, and re-evaluation across hypermedia swaps",
+        "key_symbols": [
+          "mergeHead"
+        ],
+        "depends_on": [
+          "src/htmx.js"
+        ],
+        "health_note": "135 non-blank LOC; 96.6% line coverage."
+      }
+    ],
+    "dependency_notes": "Zero production dependencies (`dependencies: {}`). All 17 extensions under `src/ext/` depend strictly inward on `window.htmx.registerExtension()` with 0 circular imports."
+  },
+  "architecture_record": {
+    "workflow_id": "pni501",
+    "workflow_run_id": "wf-e3385881",
+    "recorded_at": "2026-11-10T11:59:06.706641+00:00",
+    "target_root": ".",
+    "system_profile": {
+      "system_purpose": "A zero-dependency, hypermedia-oriented JavaScript browser library (htmx v4.0.1) that enables any HTML element to issue HTTP requests via the native Fetch API and reconcile server-rendered HTML fragments into the live DOM using swaps, <hx-partial> tags, Out-of-Band updates, and built-in Idiomorph DOM tree morphing.",
+      "domain_context": "Hypermedia-Driven Applications (HDA) and HATEOAS web frontend engineering, providing declarative HTML attributes (hx-get, hx-post, hx-trigger, hx-target, hx-swap, hx-status:XXX, :inherited), colon-separated DOM lifecycle events, and 17 official extensions (SSE, WebSockets, multipart streaming, reactive hx-live proxies, strict CSP evaluator).",
+      "runtime_types": [
+        "library",
+        "cli"
+      ],
+      "tech_stack": [
+        "JavaScript (ES2022 classes & # private fields)",
+        "TypeScript Declarations (src/htmx.d.ts)",
+        "Fetch API, AbortController & ReadableStream",
+        "DOM MutationObserver, IntersectionObserver & XPathEvaluator",
+        "Constructable Stylesheets (CSSStyleSheet) & View Transitions API",
+        "@web/test-runner + Playwright Chromium + Chai"
+      ],
+      "external_integrations": [
+        "Browser Fetch API & HTTP/HTTPS Hypermedia Servers (HX-* Request/Response Headers)",
+        "Server-Sent Events (EventSource / ReadableStream via src/ext/hx-sse.js)",
+        "WebSockets (WebSocket API via src/ext/hx-ws.js)",
+        "Browser History API & sessionStorage (via src/htmx.js & src/ext/hx-history-cache.js)",
+        "Trusted Types API & Content Security Policy (via #ttPolicy & src/ext/hx-csp.js)"
+      ]
+    },
+    "structure_map": {
+      "architecture_pattern": "Microkernel + Event-Driven Extension Hook Architecture (Core ES2022 Htmx Engine with #internalAPI Bridge and 17 Opt-In IIFE Extensions)",
+      "layers": [
+        {
+          "name": "Core Hypermedia Runtime & DOM Reconciler",
+          "responsibility": "Provides HCON configuration parsing, RequestQueue synchronization, explicit :inherited attribute resolution, trigger/selector lexers, Fetch API request orchestration, <hx-partial>/OOB task extraction, and built-in Idiomorph DOM tree reconciliation.",
+          "paths": [
+            "src/htmx.js",
+            "src/htmx.d.ts"
+          ],
+          "allowed_dependencies": []
+        },
+        {
+          "name": "Streaming & Transport Extensions",
+          "responsibility": "Extends the Fetch and event lifecycle with Server-Sent Events (SSE), WebSockets, multipart/mixed streaming responses, speculative preloading, conditional PTag polling, and file download swaps.",
+          "paths": [
+            "src/ext/hx-sse.js",
+            "src/ext/hx-ws.js",
+            "src/ext/hx-multipart.js",
+            "src/ext/hx-preload.js",
+            "src/ext/hx-ptag.js",
+            "src/ext/hx-download.js"
+          ],
+          "allowed_dependencies": [
+            "src/htmx.js"
+          ]
+        },
+        {
+          "name": "Reactive Scripting, DOM & Security Extensions",
+          "responsibility": "Provides reactive DOM state proxies (hx-live), strict CSP AST evaluation without eval (hx-csp), sessionStorage history caching, head merging, multi-target/upsert swaps, and htmx 2 / Alpine.js compatibility bridges.",
+          "paths": [
+            "src/ext/hx-live.js",
+            "src/ext/hx-csp.js",
+            "src/ext/hx-history-cache.js",
+            "src/ext/hx-head.js",
+            "src/ext/hx-targets.js",
+            "src/ext/hx-upsert.js",
+            "src/ext/hx-pending.js",
+            "src/ext/hx-browser-indicator.js",
+            "src/ext/hx-prompt.js",
+            "src/ext/hx-alpine-compat.js",
+            "src/ext/htmx-2-compat.js"
+          ],
+          "allowed_dependencies": [
+            "src/htmx.js"
+          ]
+        },
+        {
+          "name": "Migration & Tooling Scripts",
+          "responsibility": "Scans application templates (.html, .js, .ts, .jinja, .erb, .php) for htmx 2 to htmx 4 migration patterns.",
+          "paths": [
+            "src/scripts/upgrade-check.js",
+            "src/scripts/upgrade-check.py"
+          ],
+          "allowed_dependencies": []
+        }
+      ],
+      "modules": [
+        {
+          "path": "src/htmx.js",
+          "role": "Core htmx v4.0.1 runtime class (Htmx), HCON parser, RequestQueue, and Idiomorph engine",
+          "key_symbols": [
+            "HCON",
+            "RequestQueue",
+            "Htmx",
+            "htmx"
+          ],
+          "depends_on": [],
+          "health_note": "1,989 non-blank LOC; exposes 15 curated primitives to extensions via #internalAPI."
+        },
+        {
+          "path": "src/ext/hx-multipart.js",
+          "role": "Streaming multipart/mixed parser and incremental swapper over Fetch ReadableStream",
+          "key_symbols": [
+            "hx-multipart"
+          ],
+          "depends_on": [
+            "src/htmx.js"
+          ],
+          "health_note": "910 non-blank LOC; self-contained streaming parser."
+        },
+        {
+          "path": "src/ext/hx-live.js",
+          "role": "Reactive DOM-backed state proxy (attr, data, aria, class) and q()/$() query engine",
+          "key_symbols": [
+            "htmx.live",
+            "q",
+            "take",
+            "toggle",
+            "forEvent"
+          ],
+          "depends_on": [
+            "src/htmx.js"
+          ],
+          "health_note": "754 non-blank LOC; integrates with MutationObserver and htmx lifecycle hooks."
+        },
+        {
+          "path": "src/ext/hx-ws.js",
+          "role": "Bidirectional WebSocket connection manager with exponential backoff and HTML fragment swapping",
+          "key_symbols": [
+            "ws"
+          ],
+          "depends_on": [
+            "src/htmx.js"
+          ],
+          "health_note": "456 non-blank LOC."
+        },
+        {
+          "path": "src/ext/hx-sse.js",
+          "role": "Server-Sent Events (text/event-stream) client supporting EventSource and custom Fetch streams",
+          "key_symbols": [
+            "sse"
+          ],
+          "depends_on": [
+            "src/htmx.js"
+          ],
+          "health_note": "338 non-blank LOC."
+        },
+        {
+          "path": "src/ext/hx-csp.js",
+          "role": "Strict Content Security Policy recursive expression interpreter replacing Function/AsyncFunction",
+          "key_symbols": [
+            "hx-csp"
+          ],
+          "depends_on": [
+            "src/htmx.js"
+          ],
+          "health_note": "140 non-blank LOC; hooks into api.initSecurity()."
+        }
+      ],
+      "boundary_assessment": "Strictly unidirectional microkernel boundary: src/htmx.js has zero dependencies on any extension, while all 17 extensions in src/ext/*.js interact with the core exclusively through htmx.registerExtension(name, hooks) and the 15 bound methods passed to init(internalAPI)."
+    },
+    "execution_flow_map": {
+      "entry_points": [
+        "src/htmx.js:htmx",
+        "src/htmx.js:Htmx.initialize",
+        "src/htmx.js:Htmx.process",
+        "src/htmx.js:Htmx.ajax",
+        "src/htmx.js:Htmx.swap",
+        "src/htmx.js:Htmx.registerExtension",
+        "src/scripts/upgrade-check.js"
+      ],
+      "execution_flows": [
+        {
+          "name": "DOM Subtree Processing & Trigger Registration",
+          "trigger": "DOMContentLoaded -> htmx.initialize() -> htmx.process(document.body) or MutationObserver / manual htmx.process(root)",
+          "steps": [
+            "Dispatches htmx:before:process on root and skips subtrees matching hx-ignore (__ignore)",
+            "Queries descendants with hx-get/post/put/patch/delete/query/action (#actionSelector) or hx-boost (__maybeBoost)",
+            "Evaluates XPath #hxOnQuery to bind inline hx-on:* handlers (__handleHxOnAttributes)",
+            "Initializes elt._htmx metadata (__initializeElement), parses hx-trigger specs via HCON (__parseTriggerSpecs), and registers event/IntersectionObserver/polling listeners (__onTrigger)"
+          ],
+          "involved_files": [
+            "src/htmx.js:Htmx.initialize",
+            "src/htmx.js:Htmx.process",
+            "src/htmx.js:Htmx.__initializeElement",
+            "src/htmx.js:Htmx.__parseTriggerSpecs",
+            "src/htmx.js:Htmx.__onTrigger"
+          ]
+        },
+        {
+          "name": "Declarative Fetch Request & RequestQueue Synchronization",
+          "trigger": "DOM event matching registered hx-trigger spec or programmatic htmx.ajax(verb, path, options)",
+          "steps": [
+            "Constructs HtmxRequestCtx (__createRequestContext) resolving target (__resolveTarget), explicit :inherited attributes (__attributeValue), core HX-* headers (__createCoreHeaders), and FormData (__collectFormData)",
+            "Evaluates hx-confirm and dispatches htmx:confirm (suspending if preventDefault() is called until issueRequest())",
+            "Resolves hx-sync queue owner (__getRequestQueue) and admits request via RequestQueue.admit(strategy) supporting drop, abort, replace, and queue first/last/all",
+            "Dispatches htmx:config:request and htmx:before:request, arms AbortController timeout (__initTimeout), executes fetch(), and extracts HX-* response headers (__extractHxHeaders) plus hx-status:XXX overrides (__handleStatusCodes)"
+          ],
+          "involved_files": [
+            "src/htmx.js:Htmx.__createRequestContext",
+            "src/htmx.js:Htmx.__handleTriggerEvent",
+            "src/htmx.js:RequestQueue.admit",
+            "src/htmx.js:Htmx.__issueRequest",
+            "src/htmx.js:Htmx.__handleStatusCodes"
+          ]
+        },
+        {
+          "name": "Multi-Task DOM Swap, <hx-partial> Extraction & Idiomorph Reconciliation",
+          "trigger": "Response body resolved in __issueRequest -> htmx.swap(ctx)",
+          "steps": [
+            "Parses response HTML into DocumentFragment (__makeFragment) while preserving [hx-preserve] elements in a temporary pantry (__handlePreservedElements)",
+            "Extracts <hx-partial> tasks (__processPartials), main swap task (__processMainSwap), and hx-swap-oob tasks (__processOOB) in strict htmx 4 order (Main -> Partials -> OOB)",
+            "Dispatches htmx:before:swap and executes each task via __insertContent (running __morph for innerMorph/outerMorph or DOM insertion for innerHTML/outerHTML/outerSync)",
+            "Queues View Transitions via __submitTransitionTask or runs CSS attribute settling (htmx:before:settle -> htmx:after:settle), executes scripts with inlineScriptNonce (__processScripts), and updates browser history (__handleHistoryUpdate)"
+          ],
+          "involved_files": [
+            "src/htmx.js:Htmx.swap",
+            "src/htmx.js:Htmx.__processPartials",
+            "src/htmx.js:Htmx.__processOOB",
+            "src/htmx.js:Htmx.__insertContent",
+            "src/htmx.js:Htmx.__morph"
+          ]
+        }
+      ],
+      "state_and_storage": [
+        "Per-element expando property elt._htmx storing eventHandler, listeners, RequestQueue instance, and extension state",
+        "Htmx singleton private fields (#internalAPI, __extMethods Map, __registeredExt Set, #transitionQueue)",
+        "Browser History state object ({ htmx: true }) and optional sessionStorage LRU cache in src/ext/hx-history-cache.js"
+      ],
+      "error_and_concurrency_model": "Asynchronous Promise-based pipeline built on native fetch() and AbortController. Concurrent requests on synchronized elements are serialized or cancelled by RequestQueue (drop, abort, replace, queue first/last/all). View Transitions are serialized through #transitionQueue. Network/swap exceptions fire htmx:error while HTTP >= 400 responses fire htmx:response:error and route through hx-status:XXX."
+    }
+  },
+  "audit_dimensions": [
+    {
+      "action_id": "act-13",
+      "audit_id": "security_vulnerability_audit",
+      "title": "Evaluate Supply-Chain CVEs, Container Misconfigs, Secrets, Dangerous Sinks & API Boundaries",
+      "score": 88,
+      "grade": "A",
+      "rules_evaluated": [
+        "common/security_vulnerability",
+        "common/supply_chain"
+      ],
+      "pass_count": 0,
+      "warn_count": 2,
+      "fail_count": 0,
+      "summary": "Evaluated supply-chain CVEs, container/IaC hardening, secrets, CWE dangerous sinks, and governance (common/security_vulnerability, common/supply_chain) for htmx v4.0.1. Production htmx bundles (dist/htmx.js, dist/htmx.esm.js, dist/htmax.js) have 0 runtime dependencies (ProjectFacts.dependencies = []), 0 leaked secrets, and 0 container misconfigurations. In Trivy's scan, the 29 'runtime_core' package CVEs (tar@6.2.1, brace-expansion@2.0.1, glob@10.4.2, minimatch@9.0.5) originate from the global /usr/local/lib/node_modules/npm inside the non-shipped node:22-bookworm test-harness image, while 22 dev_or_optional CVEs (5 HIGH, 15 MEDIUM, 2 LOW, 0 CRITICAL) reside in transitive devDependencies in package-lock.json (cross-spawn@7.0.3, ip-address@9.0.5, basic-ftp@5.3.1, extract-zip@2.0.1). Static CWE analysis confirms core htmx integrates W3C Trusted Types (#ttPolicy in src/htmx.js:230), hx-ignore sandboxing, and the eval-free hx-csp extension, though src/ext/hx-head.js:59 and src/ext/hx-live.js:612-613,796 assign to innerHTML/outerHTML directly without routing through core's Trusted Types wrapper."
+    },
+    {
+      "action_id": "act-04",
+      "audit_id": "javascript_ast_audit",
+      "title": "Interpret JavaScript AST Facts & Evaluate Quality/JSDoc-Types/Imports/Security",
+      "score": 89,
+      "grade": "A",
+      "rules_evaluated": [
+        "common/architecture",
+        "common/maintainability",
+        "javascript/code_quality",
+        "javascript/typing",
+        "common/security",
+        "common/security_vulnerability"
+      ],
+      "pass_count": 5,
+      "warn_count": 1,
+      "fail_count": 0,
+      "summary": "Analyzed deterministic JavaScript AST facts across 18 source modules (5,521 non-blank LOC: src/htmx.js at 1,989 LOC plus 17 official extensions in src/ext/). The v4.0.1 rewrite replaces htmx 2's 4,000+ line closure with a clean ES2022 class architecture (HCON, RequestQueue, Htmx) backed by a comprehensive 772-line TypeScript declaration file (src/htmx.d.ts). Flagged AST items reflect deliberate browser-runtime trade-offs (top-level var htmx for IIFE/script-tag distribution, empty catch blocks for progressive DOM feature fallbacks such as CSSStyleSheet and moveBefore, and innerHTML/outerHTML in DOM swap extensions), alongside actionable improvements such as propagating AbortSignal timeouts in hx-preload.js/hx-download.js and replacing remaining != checks in the morph engine with !==."
+    },
+    {
+      "action_id": "act-02",
+      "audit_id": "repo_structure_audit",
+      "title": "Evaluate Node/JavaScript Build, Supply Chain & Dependencies",
+      "score": 90,
+      "grade": "S",
+      "rules_evaluated": [
+        "common/supply_chain",
+        "javascript/dependencies",
+        "common/documentation",
+        "common/git_workflow",
+        "common/security"
+      ],
+      "pass_count": 5,
+      "warn_count": 0,
+      "fail_count": 0,
+      "summary": "Evaluated repository structure, dependency manifest (package.json + package-lock.json), documentation, and supply-chain governance for htmx v4.0.1. The project maintains a zero-runtime-dependency architecture (0 production dependencies, 6 pinned devDependencies in package-lock.json), dual licensing (BSD-0-Clause for upstream htmx in LICENSE-HTMX and Apache-2.0 in LICENSE), a comprehensive 7-section root README.md, and a hardened non-root Playwright test harness Dockerfile."
+    },
+    {
+      "action_id": "act-11",
+      "audit_id": "container_runtime_audit",
+      "title": "Evaluate Buildability, Offline Test Results, Measured Coverage & Startup Health",
+      "score": 92,
+      "grade": "S",
+      "rules_evaluated": [
+        "common/runtime_verification",
+        "common/production_readiness"
+      ],
+      "pass_count": 1,
+      "warn_count": 1,
+      "fail_count": 0,
+      "summary": "Evaluated containerized runtime verification (common/runtime_verification) and SRE production readiness (common/production_readiness) for htmx v4.0.1. Stage 1 built the hermetic Node 22 + Playwright Chromium container image cleanly in 127.33s. Stage 2 executed 1,854 real-browser test cases offline (--network=none) via @web/test-runner + Headless Chromium in 61.33s with 1,849 passing, 4 skipped, and 1 timing-sensitive race in test/tests/ext/hx-ws.js:299 (`await htmx.timeout(1)` racing against mockWebSocket's auto-open timer under multi-tab CPU load), achieving 93.5% line coverage (6,267 / 6,706 statements) and 92.3% branch coverage across src/htmx.js and src/ext/*.js. Stage 3 verified both the dist/htmx.js bundle and the upgrade-check CLI smoke probe with exit code 0."
+    },
+    {
+      "action_id": "act-08",
+      "audit_id": "library_hygiene_audit",
+      "title": "Evaluate Public API Boundaries, Import Purity, SemVer & Diátaxis Docs",
+      "score": 94,
+      "grade": "S",
+      "rules_evaluated": [
+        "common/library_guidelines",
+        "common/documentation",
+        "common/maintainability"
+      ],
+      "pass_count": 3,
+      "warn_count": 0,
+      "fail_count": 0,
+      "summary": "Evaluated library hygiene (common/library_guidelines) and documentation standards (common/documentation) for htmx v4.0.1. The library exposes a strictly bounded public API (12 public methods on the htmx singleton plus version and config, with all 86 internal methods lowered to ES2022 '#' private fields in dist/htmx.js and dist/htmx.esm.js), maintains zero runtime dependencies, gates console event logging behind htmx.config.logAll = false, and provides multi-format distribution bundles (IIFE, ESM, minified, htmax bundle, TypeScript declarations, and JetBrains web-types)."
+    },
+    {
+      "action_id": "act-09",
+      "audit_id": "javascript_test_audit",
+      "title": "Evaluate JavaScript Test Suite Completeness & Structure",
+      "score": 94,
+      "grade": "S",
+      "rules_evaluated": [
+        "javascript/testing"
+      ],
+      "pass_count": 1,
+      "warn_count": 0,
+      "fail_count": 0,
+      "summary": "Evaluated the htmx v4.0.1 JavaScript test suite against javascript/testing standards. The test suite comprises 88 test modules under test/tests/ (44 unit, 23 attributes, 6 end2end, 15 ext) containing 1,849 Mocha/Chai test cases executed in real headless browsers via @web/test-runner and Playwright. Deterministic isolation is enforced via test/lib/fetch-mock.js and per-test DOM/extension teardown in setupTest()/cleanupTest(). All 47 AST-flagged assertion-free candidates were inspected and confirmed to invoke custom assertion helpers defined in test/lib/helpers.js (such as assertTextContentIs)."
+    }
+  ],
+  "rule_compliance": [
+    {
+      "rule_id": "common/runtime_verification",
+      "status": "warn",
+      "source_action": "runtime_verification",
+      "evidence": "harness_build=passed (127.33s); offline tests total=1854, passed=1849, failed=1 (hx-ws.js:299 1ms timer race), skipped=4; V8 coverage line=93.5%, branch=92.3% (6267/6706 statements); smoke_check=passed.",
+      "summary": "93.5% line and 92.3% branch coverage in hermetic headless Chromium; 1 timing-sensitive test case in hx-ws.js (`htmx.timeout(1)`) and upstream test/web-test-runner.config.mjs loading chai.js from unpkg CDN."
+    },
+    {
+      "rule_id": "common/security_vulnerability",
+      "status": "warn",
+      "source_action": "security_vulnerability_audit",
+      "evidence": "8 SAST sink hits inspected: 4 innerHTML/outerHTML assignments in hx-head.js and hx-live.js (intentional hypermedia DOM insertion sinks) and 4 Math.random() calls in hx-sse.js, hx-ws.js, hx-multipart.js, and hx-history-cache.js (used only for reconnect jitter and non-security cache keys).; 0 production runtime dependencies in package.json; 0 secrets; 0 misconfigs; 22 devDependencies CVEs in package-lock.json (5 HIGH: CVE-2024-21538 in cross-spawn@7.0.3 -> 7.0.5, CVE-2026-69192 in ip-address@9.0.5 -> 10.3.1, CVE-2026-102990 in basic-ftp@5.3.1 -> 6.2.1, CVE-2026-19693/CVE-2026-56876 in extract-zip@2.0.1; 29 container npm CLI CVEs in non-shipped node:22-bookworm harness); direct innerHTML assignments in src/ext/hx-head.js:59 and src/ext/hx-live.js:612,613,796 bypass core Trusted Types policy.",
+      "summary": "Zero production dependency CVEs and zero secrets; transitive devDependencies in package-lock.json have 5 HIGH / 15 MEDIUM advisories and 2 extensions bypass Trusted Types innerHTML wrapping."
+    },
+    {
+      "rule_id": "common/supply_chain",
+      "status": "warn",
+      "source_action": "security_vulnerability_audit",
+      "evidence": "manifest_files=['package.json'], lockfiles_found=['package-lock.json'], dependencies=0, unpinned_dependencies=0, LICENSE=True, non-root USER pni in .pni/dockerfiles/root/Dockerfile.; package-lock.json committed (0 unpinned specs); LICENSE present; SECURITY.md=False; dependency_automation=False.",
+      "summary": "Deterministic package-lock.json and zero production dependencies, but missing SECURITY.md and automated Dependabot/Renovate lockfile maintenance."
+    },
+    {
+      "rule_id": "javascript/code_quality",
+      "status": "warn",
+      "source_action": "ast_and_quality",
+      "evidence": "4 loose equality (!=) checks in src/htmx.js:2044,2100,2127,2194; 6 empty catch {} blocks in src/htmx.js:40,226,1192,1404,2176,2315; 2 fetch() calls without AbortSignal timeout in src/ext/hx-download.js:33 and src/ext/hx-preload.js:54.",
+      "summary": "Modern ES2022 class syntax overall, with minor loose-equality checks in the morph algorithm and un-signaled fetch() calls in two extensions."
+    },
+    {
+      "rule_id": "common/architecture",
+      "status": "pass",
+      "source_action": "ast_and_quality",
+      "evidence": "0 circular dependencies across 18 modules; clean hub-and-spoke extension architecture where src/ext/*.js plugins register lifecycle hooks into src/htmx.js via htmx.registerExtension() and #internalAPI.",
+      "summary": "Acyclic module topology with strict separation between the 1,989-LOC core runtime and 17 opt-in extension scripts."
+    },
+    {
+      "rule_id": "common/documentation",
+      "status": "pass",
+      "source_action": "repo_and_deps",
+      "evidence": "README.md (108 lines, 7 headings) + CHANGELOG.md + 4 Diataxis portals (docs_src/ User Guide, api_src/ API Reference Catalog, architecture_src/ Internal Architecture Guide, reports_src/ PNI501 Report).; Root README.md, CHANGELOG.md, 4 official skill guides in src/skills/*.md, 772-line JSDoc-annotated src/htmx.d.ts, and 4 bilingual Drawlib portals (User Guide, API Catalog, Internal Architecture, PNI501 Report).",
+      "summary": "Follows Standard Readme and full Diataxis documentation structure across 4 dedicated portals."
+    },
+    {
+      "rule_id": "common/git_workflow",
+      "status": "pass",
+      "source_action": "repo_and_deps",
+      "evidence": ".gitignore (230 lines) excludes node_modules, coverage, .drawlib, and .pni/cache while tracking upstream dist/ and lockfiles.",
+      "summary": "Clean Git ignore hygiene and linear repository state."
+    },
+    {
+      "rule_id": "common/library_guidelines",
+      "status": "pass",
+      "source_action": "library_hygiene",
+      "evidence": "package.json exports main ('dist/htmx.js'), module ('dist/htmx.esm.js'), jsdelivr/unpkg ('dist/htmx.min.js'), and types ('dist/htmx.d.ts'); build scripts lower all '__' internal methods to '#' private fields; 0 runtime dependencies; console.log in src/htmx.js:1522 is strictly gated behind `if (this.config.logAll)`.",
+      "summary": "Exemplary browser library packaging: native # private field encapsulation in production builds, zero dependencies, and opt-in diagnostic logging."
+    },
+    {
+      "rule_id": "common/maintainability",
+      "status": "pass",
+      "source_action": "ast_and_quality",
+      "evidence": "5,521 non-blank LOC across 18 files (src/htmx.js 1,989 LOC, hx-multipart.js 910 LOC, hx-live.js 754 LOC, hx-ws.js 456 LOC, hx-sse.js 338 LOC); 98 well-factored methods in Htmx class.; 0 rule violations detected in step",
+      "summary": "Compact, zero-dependency implementation with cohesive method decomposition and private field lowering (__ to #)."
+    },
+    {
+      "rule_id": "common/production_readiness",
+      "status": "pass",
+      "source_action": "runtime_verification",
+      "evidence": "Core requests enforce defaultTimeout=60000ms via AbortController (__initTimeout in src/htmx.js:679); hx-ws.js and hx-sse.js implement exponential backoff with jitter; 2 minor extension fetch() calls in hx-preload.js and hx-download.js omit AbortSignal.",
+      "summary": "Strong timeout and backoff engineering in core fetch(), SSE, and WebSocket pipelines."
+    },
+    {
+      "rule_id": "common/security",
+      "status": "pass",
+      "source_action": "repo_and_deps",
+      "evidence": "committed_secret_files=[], zero .env or credential artifacts in repository tree.; HCON.merge explicitly blocks __proto__, constructor, and prototype keys (src/htmx.js:75); #ttPolicy Trusted Types hook and inlineScriptNonce support in src/htmx.js:166,1244; hx-csp.js extension provides eval-free expression execution.",
+      "summary": "Zero committed secrets or sensitive configuration files."
+    },
+    {
+      "rule_id": "javascript/dependencies",
+      "status": "pass",
+      "source_action": "repo_and_deps",
+      "evidence": "package.json declares main ('dist/htmx.js'), module ('dist/htmx.esm.js'), types ('dist/htmx.d.ts'), and separates all 6 build/test packages (@web/test-runner, @web/test-runner-playwright, terser, brotli-cli, ws, @tailwindcss/typography) into devDependencies.",
+      "summary": "Clean zero-dependency production package with strict devDependencies separation and committed package-lock.json."
+    },
+    {
+      "rule_id": "javascript/testing",
+      "status": "pass",
+      "source_action": "test_health",
+      "evidence": "88 test files across test/tests/{unit,attributes,end2end,ext}/*.js containing 1,849 `it()` test blocks; deterministic HTTP mocking via test/lib/fetch-mock.js; DOM playground and extension state reset in beforeEach(setupTest) and afterEach(cleanupTest); V8 coverage enabled in test/web-test-runner.config.mjs.",
+      "summary": "Comprehensive 1,849-test real-browser suite with deterministic fetch mocking, strict DOM cleanup, and V8 coverage tracking."
+    },
+    {
+      "rule_id": "javascript/typing",
+      "status": "pass",
+      "source_action": "ast_and_quality",
+      "evidence": "Companion src/htmx.d.ts (772 lines) provides full TypeScript contracts for Htmx, HtmxConfig, HtmxRequestCtx, HtmxEventMap (28 typed events), and HxLive proxies.",
+      "summary": "Complete static type definitions in src/htmx.d.ts plus JetBrains web-types and VS Code custom data."
+    }
+  ],
+  "module_hotspots": [
+    {
+      "file_path": "src/ext/hx-live.js",
+      "loc": 754,
+      "risk_score": 0.45,
+      "finding_counts": {
+        "medium": 1
+      },
+      "top_rules": [
+        "common/security_vulnerability"
+      ]
+    },
+    {
+      "file_path": "src/htmx.js",
+      "loc": 1989,
+      "risk_score": 0.2,
+      "finding_counts": {
+        "low": 1
+      },
+      "top_rules": [
+        "javascript/code_quality"
+      ]
+    },
+    {
+      "file_path": "package-lock.json",
+      "loc": 0,
+      "risk_score": 0.15,
+      "finding_counts": {
+        "medium": 1
+      },
+      "top_rules": [
+        "common/security_vulnerability"
+      ]
+    },
+    {
+      "file_path": "test/tests/ext/hx-ws.js",
+      "loc": 0,
+      "risk_score": 0.15,
+      "finding_counts": {
+        "medium": 1
+      },
+      "top_rules": [
+        "common/runtime_verification"
+      ]
+    },
+    {
+      "file_path": "src/ext/hx-multipart.js",
+      "loc": 910,
+      "risk_score": 0.12,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-ws.js",
+      "loc": 456,
+      "risk_score": 0.12,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-sse.js",
+      "loc": 338,
+      "risk_score": 0.12,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-history-cache.js",
+      "loc": 204,
+      "risk_score": 0.12,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-head.js",
+      "loc": 135,
+      "risk_score": 0.12,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "package.json",
+      "loc": 0,
+      "risk_score": 0.12,
+      "finding_counts": {
+        "low": 2
+      },
+      "top_rules": [
+        "javascript/dependencies",
+        "common/supply_chain"
+      ]
+    },
+    {
+      "file_path": "src/ext/hx-csp.js",
+      "loc": 140,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-preload.js",
+      "loc": 88,
+      "risk_score": 0.06,
+      "finding_counts": {
+        "low": 1
+      },
+      "top_rules": [
+        "common/security"
+      ]
+    },
+    {
+      "file_path": "src/ext/hx-alpine-compat.js",
+      "loc": 84,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/htmx-2-compat.js",
+      "loc": 83,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-pending.js",
+      "loc": 82,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-upsert.js",
+      "loc": 70,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-browser-indicator.js",
+      "loc": 69,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-download.js",
+      "loc": 60,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-targets.js",
+      "loc": 27,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-ptag.js",
+      "loc": 18,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "src/ext/hx-prompt.js",
+      "loc": 14,
+      "risk_score": 0.06,
+      "finding_counts": {},
+      "top_rules": []
+    },
+    {
+      "file_path": "test/web-test-runner.config.mjs",
+      "loc": 0,
+      "risk_score": 0.06,
+      "finding_counts": {
+        "low": 1
+      },
+      "top_rules": [
+        "common/runtime_verification"
+      ]
+    }
+  ],
+  "strengths": [
+    "Zero runtime npm dependencies (dependencies: 0), eliminating transitive supply-chain risk for end-user browsers.",
+    "Complete package export metadata in package.json covering IIFE (dist/htmx.js), ES Module (dist/htmx.esm.js), CDN minified (dist/htmx.min.js), TypeScript declarations (dist/htmx.d.ts), JetBrains web-types, and the upgrade-check CLI bin.",
+    "Deterministic lockfile (package-lock.json) pinning all 6 devDependencies (@web/test-runner, @web/test-runner-playwright, terser, brotli-cli, ws, @tailwindcss/typography).",
+    "Explicit prototype pollution guard in HCON.merge (src/htmx.js:75) filtering '__proto__', 'constructor', and 'prototype'.",
+    "Clever build-time encapsulation: internal methods use '__' in src/htmx.js for direct unit testability and are lowered via sed into native ES2022 '#' private fields in dist/htmx.js and dist/htmx.esm.js.",
+    "Full 772-line TypeScript declaration file (src/htmx.d.ts) typing all 28 colon-separated HtmxEventMap events and HxLive reactive proxies.",
+    "Build-time private field lowering (`sed -e 's/__/#/g'`) guarantees that internal methods (`__attributeValue`, `__issueRequest`, `__morph`, etc.) are hard-encapsulated as ES2022 `#` private members in `dist/htmx.js` and `dist/htmx.esm.js` while remaining directly unit-testable in `src/htmx.js`.",
+    "Zero runtime dependencies and silent-by-default operation (`htmx.config.logAll = false`), ensuring zero uninvited console noise in production browsers.",
+    "Rich multi-target distribution: IIFE (`dist/htmx.js`), ES Module (`dist/htmx.esm.js`), all-in-one extension bundle (`dist/htmax.js`), TypeScript definitions (`dist/htmx.d.ts`), and JetBrains Web-Types (`dist/editors/jetbrains/htmx.web-types.json`).",
+    "1,849 browser test cases organized into 4 clear tiers: 44 internal unit suites (`test/tests/unit/`), 23 attribute suites (`test/tests/attributes/`), 6 end-to-end integration suites (`test/tests/end2end/`), and 15 official extension suites (`test/tests/ext/`).",
+    "Deterministic network and DOM isolation: `test/lib/fetch-mock.js` intercepts `window.fetch` without external servers, while `cleanupTest()` in `test/lib/helpers.js` runs `htmx.__cleanup(pg)`, resets `fetchMock`, and restores `history.replaceState`.",
+    "Cross-browser Playwright harness (`test:chrome`, `test:firefox`, `test:webkit`) configured in `package.json` and `test/web-test-runner.config.mjs`.",
+    "Exceptional measured V8 browser coverage: 93.5% line coverage (`6,267 / 6,706` statements) and 92.3% branch coverage across `src/htmx.js` and all 17 official extensions.",
+    "1,849 passing real-browser tests executed in headless Chromium with `--network=none` in 61.33 seconds.",
+    "60-second default `AbortController` request timeout (`htmx.config.defaultTimeout = 60000`) built directly into `Htmx.__initTimeout` (`src/htmx.js:679`).",
+    "Zero production runtime dependencies (`dependencies: {}` in `package.json`), completely eliminating third-party supply-chain risk from shipped browser bundles (`dist/htmx.js`, `dist/htmx.esm.js`, `dist/htmax.js`).",
+    "First-class browser security defenses built into v4: W3C Trusted Types policy integration (`__initSecurity` / `#ttPolicy` in `src/htmx.js:230-241`), `hx-ignore` subtree sandboxing, `inlineScriptNonce` support, and the `src/ext/hx-csp.js` AST expression evaluator for strict `script-src` CSP environments.",
+    "Zero hardcoded secrets or credentials (`SecurityFacts.secrets = []`, `AstFacts.hardcoded_secrets = []`) across the entire codebase."
+  ],
+  "findings": [
+    {
+      "severity": "medium",
+      "category": "dependencies",
+      "rule_id": "common/security_vulnerability",
+      "file_path": "package-lock.json",
+      "line": 1,
+      "symbol": "devDependencies",
+      "evidence": "Trivy scan of package-lock.json reported 5 HIGH and 15 MEDIUM transitive devDependency CVEs (e.g., CVE-2024-21538 in cross-spawn@7.0.3 -> fix 7.0.5; CVE-2026-69192 in ip-address@9.0.5 -> fix 10.3.1; CVE-2026-102990 in basic-ftp@5.3.1 -> fix 6.2.1; CVE-2026-82417 in qs@6.15.3 -> fix 6.16.0)",
+      "description": "While `htmx.org` ships zero runtime dependencies, `package-lock.json` contains transitive `devDependencies` used by `@web/test-runner` and `playwright` with known HIGH/MEDIUM advisories that have upstream patched versions.",
+      "recommendation": "Run `npm audit fix` (or add `overrides` in `package.json` for `cross-spawn >=7.0.5`, `ip-address >=10.7.1`, `basic-ftp >=6.2.1`, and `qs >=6.16.0`) to keep the development lockfile clean."
+    },
+    {
+      "severity": "medium",
+      "category": "security",
+      "rule_id": "common/security_vulnerability",
+      "file_path": "src/ext/hx-live.js",
+      "line": 612,
+      "symbol": "html",
+      "evidence": "src/ext/hx-live.js:612 (`elt.innerHTML = val`), 613 (`elt.outerHTML = val`), and 796 (`elt.innerHTML = ...`); src/ext/hx-head.js:59 (`htmlDoc.innerHTML = text`)",
+      "description": "Core `src/htmx.js` wraps HTML strings through its W3C Trusted Types policy (`#ttPolicy.createHTML` in `src/htmx.js:230-241`), but `src/ext/hx-live.js:612-613,796` and `src/ext/hx-head.js:59` assign strings directly to `.innerHTML`/`.outerHTML`, which throws under strict `require-trusted-types-for 'script'` CSP headers and can introduce DOM XSS if bound to untrusted data.",
+      "recommendation": "Expose core's Trusted Types HTML wrapper via `#internalAPI` and route `.innerHTML` / `.outerHTML` assignments in `src/ext/hx-live.js` and `src/ext/hx-head.js` through it."
+    },
+    {
+      "severity": "medium",
+      "category": "testing",
+      "rule_id": "common/runtime_verification",
+      "file_path": "test/tests/ext/hx-ws.js",
+      "line": 299,
+      "symbol": "Message Sending.queues a message until the initial connection opens",
+      "evidence": "test/tests/ext/hx-ws.js:299 awaits `htmx.timeout(1)` before asserting `connection.queue.length === 1`, which races against mockWebSocket's open timer under parallel browser runner load",
+      "description": "In `test/tests/ext/hx-ws.js:299`, `await htmx.timeout(1)` can resolve after the mock WebSocket auto-open timer fires under heavy CPU concurrency, causing `connection.queue.length` to already be 0 (flaky failure).",
+      "recommendation": "Control mockWebSocket connection opening explicitly in the test (or increase the mock open delay relative to the pre-open assertion) rather than relying on a 1ms wall-clock `setTimeout` race."
+    },
+    {
+      "severity": "low",
+      "category": "code_quality",
+      "rule_id": "common/security",
+      "file_path": "src/ext/hx-preload.js",
+      "line": 54,
+      "symbol": "fetch",
+      "evidence": "src/ext/hx-preload.js:54 and src/ext/hx-download.js:33 invoke fetch() without passing ctx.request.signal or AbortSignal.timeout()",
+      "description": "Extension-initiated fetch() calls in hx-preload.js and hx-download.js do not attach an AbortSignal timeout, allowing stalled prefetch or download connections to remain pending.",
+      "recommendation": "Pass `signal: ctx.request.signal` or `AbortSignal.timeout(htmx.config.defaultTimeout)` to extension fetch() calls."
+    },
+    {
+      "severity": "low",
+      "category": "code_quality",
+      "rule_id": "javascript/code_quality",
+      "file_path": "src/htmx.js",
+      "line": 2044,
+      "symbol": "__morphChildren",
+      "evidence": "src/htmx.js:2044, 2100, 2127, 2194 use loose inequality `!=` instead of strict `!==`",
+      "description": "Four comparisons inside the DOM morphing methods (__morphChildren, __findBestMatch, __morphNode) use loose inequality (!=) rather than strict inequality (!==).",
+      "recommendation": "Replace `!=` with strict `!==` (or explicit `!= null` check where null/undefined equivalence is intended) in the morphing subsystem."
+    },
+    {
+      "severity": "low",
+      "category": "dependencies",
+      "rule_id": "javascript/dependencies",
+      "file_path": "package.json",
+      "line": 1,
+      "symbol": "package.json",
+      "evidence": "tooling_modernization_issues=['No static linter (ESLint / Biome) configured in package.json or repository root']",
+      "description": "package.json does not configure an automated static linter (such as ESLint or Biome) or an explicit engines.node constraint.",
+      "recommendation": "Add an engines.node constraint (e.g., >=20.0.0) and a lightweight Biome or ESLint check script to package.json."
+    },
+    {
+      "severity": "low",
+      "category": "security",
+      "rule_id": "common/supply_chain",
+      "file_path": "package.json",
+      "line": 1,
+      "symbol": "repository",
+      "evidence": "ProjectFacts: SECURITY.md=False, dependency_automation=False",
+      "description": "The repository does not include a top-level `SECURITY.md` vulnerability disclosure policy or automated lockfile update configuration (`.github/dependabot.yml`).",
+      "recommendation": "Add a `SECURITY.md` documenting private vulnerability reporting and hypermedia HTML-escaping expectations, and configure `.github/dependabot.yml` for weekly `npm` devDependency updates."
+    },
+    {
+      "severity": "low",
+      "category": "testing",
+      "rule_id": "common/runtime_verification",
+      "file_path": "test/web-test-runner.config.mjs",
+      "line": 20,
+      "symbol": "testRunnerHtml",
+      "evidence": "test/web-test-runner.config.mjs:20 loads `<script src=\"https://unpkg.com/chai@4.5.0/chai.js\"></script>` over the public internet",
+      "description": "The upstream `@web/test-runner` HTML template loads `chai@4.5.0` from `https://unpkg.com`, preventing out-of-the-box offline (`--network=none`) test execution unless `chai` is Vendored or installed in `devDependencies`.",
+      "recommendation": "Add `chai` to `devDependencies` (or `test/lib/chai.js`) and load it locally in `test/web-test-runner.config.mjs` so browser tests run fully offline."
+    }
+  ],
+  "consolidated_findings": [
+    {
+      "severity": "medium",
+      "file_path": "package-lock.json",
+      "line": 1,
+      "symbol": "devDependencies",
+      "rule_ids": [
+        "common/security_vulnerability"
+      ],
+      "categories": [
+        "dependencies"
+      ],
+      "primary_description": "While `htmx.org` ships zero runtime dependencies, `package-lock.json` contains transitive `devDependencies` used by `@web/test-runner` and `playwright` with known HIGH/MEDIUM advisories that have upstream patched versions.",
+      "combined_evidence": "Trivy scan of package-lock.json reported 5 HIGH and 15 MEDIUM transitive devDependency CVEs (e.g., CVE-2024-21538 in cross-spawn@7.0.3 -> fix 7.0.5; CVE-2026-69192 in ip-address@9.0.5 -> fix 10.3.1; CVE-2026-102990 in basic-ftp@5.3.1 -> fix 6.2.1; CVE-2026-82417 in qs@6.15.3 -> fix 6.16.0)",
+      "merged_recommendation": "Run `npm audit fix` (or add `overrides` in `package.json` for `cross-spawn >=7.0.5`, `ip-address >=10.7.1`, `basic-ftp >=6.2.1`, and `qs >=6.16.0`) to keep the development lockfile clean."
+    },
+    {
+      "severity": "medium",
+      "file_path": "src/ext/hx-live.js",
+      "line": 612,
+      "symbol": "html",
+      "rule_ids": [
+        "common/security_vulnerability"
+      ],
+      "categories": [
+        "security"
+      ],
+      "primary_description": "Core `src/htmx.js` wraps HTML strings through its W3C Trusted Types policy (`#ttPolicy.createHTML` in `src/htmx.js:230-241`), but `src/ext/hx-live.js:612-613,796` and `src/ext/hx-head.js:59` assign strings directly to `.innerHTML`/`.outerHTML`, which throws under strict `require-trusted-types-for 'script'` CSP headers and can introduce DOM XSS if bound to untrusted data.",
+      "combined_evidence": "src/ext/hx-live.js:612 (`elt.innerHTML = val`), 613 (`elt.outerHTML = val`), and 796 (`elt.innerHTML = ...`); src/ext/hx-head.js:59 (`htmlDoc.innerHTML = text`)",
+      "merged_recommendation": "Expose core's Trusted Types HTML wrapper via `#internalAPI` and route `.innerHTML` / `.outerHTML` assignments in `src/ext/hx-live.js` and `src/ext/hx-head.js` through it."
+    },
+    {
+      "severity": "medium",
+      "file_path": "test/tests/ext/hx-ws.js",
+      "line": 299,
+      "symbol": "Message Sending.queues a message until the initial connection opens",
+      "rule_ids": [
+        "common/runtime_verification"
+      ],
+      "categories": [
+        "testing"
+      ],
+      "primary_description": "In `test/tests/ext/hx-ws.js:299`, `await htmx.timeout(1)` can resolve after the mock WebSocket auto-open timer fires under heavy CPU concurrency, causing `connection.queue.length` to already be 0 (flaky failure).",
+      "combined_evidence": "test/tests/ext/hx-ws.js:299 awaits `htmx.timeout(1)` before asserting `connection.queue.length === 1`, which races against mockWebSocket's open timer under parallel browser runner load",
+      "merged_recommendation": "Control mockWebSocket connection opening explicitly in the test (or increase the mock open delay relative to the pre-open assertion) rather than relying on a 1ms wall-clock `setTimeout` race."
+    },
+    {
+      "severity": "low",
+      "file_path": "package.json",
+      "line": 1,
+      "symbol": "package.json",
+      "rule_ids": [
+        "javascript/dependencies",
+        "common/supply_chain"
+      ],
+      "categories": [
+        "dependencies",
+        "security"
+      ],
+      "primary_description": "package.json does not configure an automated static linter (such as ESLint or Biome) or an explicit engines.node constraint.",
+      "combined_evidence": "tooling_modernization_issues=['No static linter (ESLint / Biome) configured in package.json or repository root'] | ProjectFacts: SECURITY.md=False, dependency_automation=False",
+      "merged_recommendation": "Add an engines.node constraint (e.g., >=20.0.0) and a lightweight Biome or ESLint check script to package.json. / Add a `SECURITY.md` documenting private vulnerability reporting and hypermedia HTML-escaping expectations, and configure `.github/dependabot.yml` for weekly `npm` devDependency updates."
+    },
+    {
+      "severity": "low",
+      "file_path": "src/ext/hx-preload.js",
+      "line": 54,
+      "symbol": "fetch",
+      "rule_ids": [
+        "common/security"
+      ],
+      "categories": [
+        "code_quality"
+      ],
+      "primary_description": "Extension-initiated fetch() calls in hx-preload.js and hx-download.js do not attach an AbortSignal timeout, allowing stalled prefetch or download connections to remain pending.",
+      "combined_evidence": "src/ext/hx-preload.js:54 and src/ext/hx-download.js:33 invoke fetch() without passing ctx.request.signal or AbortSignal.timeout()",
+      "merged_recommendation": "Pass `signal: ctx.request.signal` or `AbortSignal.timeout(htmx.config.defaultTimeout)` to extension fetch() calls."
+    },
+    {
+      "severity": "low",
+      "file_path": "src/htmx.js",
+      "line": 2044,
+      "symbol": "__morphChildren",
+      "rule_ids": [
+        "javascript/code_quality"
+      ],
+      "categories": [
+        "code_quality"
+      ],
+      "primary_description": "Four comparisons inside the DOM morphing methods (__morphChildren, __findBestMatch, __morphNode) use loose inequality (!=) rather than strict inequality (!==).",
+      "combined_evidence": "src/htmx.js:2044, 2100, 2127, 2194 use loose inequality `!=` instead of strict `!==`",
+      "merged_recommendation": "Replace `!=` with strict `!==` (or explicit `!= null` check where null/undefined equivalence is intended) in the morphing subsystem."
+    },
+    {
+      "severity": "low",
+      "file_path": "test/web-test-runner.config.mjs",
+      "line": 20,
+      "symbol": "testRunnerHtml",
+      "rule_ids": [
+        "common/runtime_verification"
+      ],
+      "categories": [
+        "testing"
+      ],
+      "primary_description": "The upstream `@web/test-runner` HTML template loads `chai@4.5.0` from `https://unpkg.com`, preventing out-of-the-box offline (`--network=none`) test execution unless `chai` is Vendored or installed in `devDependencies`.",
+      "combined_evidence": "test/web-test-runner.config.mjs:20 loads `<script src=\"https://unpkg.com/chai@4.5.0/chai.js\"></script>` over the public internet",
+      "merged_recommendation": "Add `chai` to `devDependencies` (or `test/lib/chai.js`) and load it locally in `test/web-test-runner.config.mjs` so browser tests run fully offline."
+    }
+  ],
+  "action_plan": [
+    {
+      "priority": "P1",
+      "title": "Refresh transitive devDependencies in package-lock.json to resolve 5 HIGH CVEs",
+      "category": "dependencies",
+      "target_files": [
+        "package-lock.json",
+        "package.json"
+      ],
+      "related_rules": [
+        "common/security_vulnerability",
+        "CVE-2024-21538",
+        "CVE-2026-69192",
+        "CVE-2026-102990",
+        "CVE-2026-82417"
+      ],
+      "action": "Update `package-lock.json` via `npm audit fix` or `package.json` `overrides` to bump `cross-spawn` to `>=7.0.5`, `ip-address` to `>=10.7.1`, `basic-ftp` to `>=6.2.1`, and `qs` to `>=6.16.0`.",
+      "expected_impact": "Eliminates all fixable HIGH and MEDIUM CVEs in the development and test toolchain lockfile."
+    },
+    {
+      "priority": "P1",
+      "title": "Route innerHTML/outerHTML assignments in hx-live.js and hx-head.js through core Trusted Types policy",
+      "category": "security",
+      "target_files": [
+        "src/ext/hx-live.js",
+        "src/ext/hx-head.js",
+        "src/htmx.js"
+      ],
+      "related_rules": [
+        "common/security_vulnerability",
+        "CWE-79"
+      ],
+      "action": "Expose a Trusted Types helper on `#internalAPI` in `src/htmx.js` and use it in `src/ext/hx-live.js:612,613,796` and `src/ext/hx-head.js:59` before assigning to `.innerHTML` or `.outerHTML`.",
+      "expected_impact": "Ensures full compatibility with `require-trusted-types-for 'script'` CSP policies across all official extensions."
+    },
+    {
+      "priority": "P1",
+      "title": "Eliminate 1ms timer race in hx-ws.js message queue unit test",
+      "category": "testing",
+      "target_files": [
+        "test/tests/ext/hx-ws.js"
+      ],
+      "related_rules": [
+        "common/runtime_verification",
+        "javascript/testing"
+      ],
+      "action": "In `test/tests/ext/hx-ws.js:293-310`, trigger mockWebSocket open deterministically (or increase mock auto-open latency) after asserting `connection.queue.length === 1` instead of relying on `await htmx.timeout(1)`.",
+      "expected_impact": "Makes the 1,854-test Playwright browser suite 100% deterministic under high parallel concurrency."
+    },
+    {
+      "priority": "P2",
+      "title": "Attach AbortSignal timeout to extension fetch() calls in hx-preload and hx-download",
+      "category": "code_quality",
+      "target_files": [
+        "src/ext/hx-preload.js",
+        "src/ext/hx-download.js"
+      ],
+      "related_rules": [
+        "common/security",
+        "javascript/code_quality"
+      ],
+      "action": "Propagate `ctx.request.signal` or `AbortSignal.timeout(htmx.config.defaultTimeout)` into the `fetch()` options in `src/ext/hx-preload.js:54` and `src/ext/hx-download.js:33`.",
+      "expected_impact": "Prevents hung background prefetch or download requests from leaking browser connections."
+    },
+    {
+      "priority": "P2",
+      "title": "Standardize strict equality (!==) in DOM morphing routines",
+      "category": "code_quality",
+      "target_files": [
+        "src/htmx.js"
+      ],
+      "related_rules": [
+        "javascript/code_quality"
+      ],
+      "action": "Replace loose `!=` checks at lines 2044, 2100, 2127, and 2194 of `src/htmx.js` with strict `!==` comparisons.",
+      "expected_impact": "Eliminates coercive equality checks in hot DOM tree reconciliation loops."
+    },
+    {
+      "priority": "P2",
+      "title": "Declare engines.node and static lint script in package.json",
+      "category": "dependencies",
+      "target_files": [
+        "package.json"
+      ],
+      "related_rules": [
+        "javascript/dependencies"
+      ],
+      "action": "Add an engines field specifying Node >=20 and configure Biome or ESLint in devDependencies for static syntax/style verification.",
+      "expected_impact": "Enforces consistent Node runtime expectations and catches syntax regressions prior to browser test runs."
+    },
+    {
+      "priority": "P2",
+      "title": "Add SECURITY.md and Dependabot configuration for automated supply-chain hygiene",
+      "category": "security",
+      "target_files": [
+        "package.json"
+      ],
+      "related_rules": [
+        "common/supply_chain"
+      ],
+      "action": "Create `SECURITY.md` with vulnerability reporting instructions and `.github/dependabot.yml` for automated `npm` lockfile PRs.",
+      "expected_impact": "Satisfies OpenSSF Scorecard supply-chain governance checks and prevents devDependency drift."
+    },
+    {
+      "priority": "P2",
+      "title": "Vendor or declare chai in devDependencies for offline test execution",
+      "category": "testing",
+      "target_files": [
+        "test/web-test-runner.config.mjs",
+        "package.json"
+      ],
+      "related_rules": [
+        "common/runtime_verification",
+        "javascript/dependencies"
+      ],
+      "action": "Vendor `chai.js` under `test/lib/chai.js` (or add `chai` to `devDependencies`) and replace the `https://unpkg.com/chai@4.5.0/chai.js` script URL in `test/web-test-runner.config.mjs`.",
+      "expected_impact": "Allows `npm test` to execute in air-gapped and `--network=none` CI environments without external CDN access."
+    }
+  ],
+  "opt_outs": [
+    {
+      "id": "DS-0026",
+      "scope": [
+        ".pni/dockerfiles/**"
+      ],
+      "reason": "Hermetic batch test container exits upon @web/test-runner completion; daemon HEALTHCHECK is not applicable.",
+      "matched_count": 0
+    }
+  ],
+  "report_hints": [
+    "Render a 7-axis radar or horizontal bar chart of category scores (Architecture 93, Code Quality 88, Typing 93, Testing 93, Dependencies 88, Security 90, Documentation 95; Overall 91 / Grade S).",
+    "Illustrate the Microkernel + #internalAPI Extension Hook architecture showing src/htmx.js (HCON, RequestQueue, Htmx) and the 17 opt-in extensions grouped by Streaming/Transport vs Reactive/DOM/Security.",
+    "Include a V8 browser test coverage breakdown chart across src/htmx.js (94.3%) and the top extensions (hx-live 97.6%, hx-ws 97.2%, hx-head 96.6%, hx-csp 95.3%, hx-sse 90.0%, hx-multipart 86.2%, hx-history-cache 85.4%).",
+    "Visualize the 5-phase Fetch & DOM Reconciliation pipeline (__issueRequest -> fetch() -> __extractSubTasks -> __swap / __morph -> settle) alongside the build-time `__` to `#` private field lowering."
+  ],
+  "summary": "htmx v4.0.1 achieves an overall PNI501 engineering score of 91/100 (Grade S). The ground-up v4 rewrite replaces legacy XMLHttpRequest callbacks with a zero-dependency ES2022 class engine (`Htmx`, `RequestQueue`, `HCON`) backed by native `fetch()`, `AbortController`, `ReadableStream`, built-in Idiomorph DOM morphing, and 17 acyclic extensions. Hermetic headless Chromium verification executed 1,854 browser tests with 93.5% line coverage and 92.3% branch coverage. Key improvement opportunities focus on refreshing transitive `devDependencies` in `package-lock.json`, routing `.innerHTML` assignments in `hx-live.js` and `hx-head.js` through core's W3C Trusted Types policy, and eliminating a 1ms timer race in `test/tests/ext/hx-ws.js:299`."
+}

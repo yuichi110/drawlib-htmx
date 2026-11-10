@@ -1,0 +1,1029 @@
+describe('swap() unit tests', function() {
+
+    // TODO move to __parseSwapSpec unit test
+    it('prepend normalizes to afterbegin', function () {
+        assert.equal(htmx.__parseSwapSpec('prepend').style, 'afterbegin')
+    })
+
+    it('append normalizes to beforeend', function () {
+        assert.equal(htmx.__parseSwapSpec('append').style, 'beforeend')
+    })
+
+    it('before normalizes to beforebegin', function () {
+        assert.equal(htmx.__parseSwapSpec('before').style, 'beforebegin')
+    })
+
+    it('after normalizes to afterend', function () {
+        assert.equal(htmx.__parseSwapSpec('after').style, 'afterend')
+    })
+
+    it('new terminology works with modifiers', function () {
+        assert.equal(htmx.__parseSwapSpec('prepend swap:10').style, 'afterbegin')
+        assert.equal(htmx.__parseSwapSpec('prepend swap:10').swap, "10")
+        assert.equal(htmx.__parseSwapSpec('append swap:20').style, 'beforeend')
+        assert.equal(htmx.__parseSwapSpec('append swap:20').swap, "20")
+    })
+    // end TODO move to __parseSwapSpec unit test
+
+    it('swaps in plain content properly', async function () {
+        await htmx.swap({"target":"#test-playground", "text":"Hello Swap"})
+        playground().innerText.should.equal("Hello Swap")
+    })
+
+    it('swaps in html content properly', async function () {
+        await htmx.swap({"target":"#test-playground", "text":"<a>Hello Swap</a>"})
+        let child = playground().children[0];
+        child.tagName.should.equal("A");
+        child.innerText.should.equal("Hello Swap")
+    })
+
+    it('initializes htmx content properly', async function () {
+        await htmx.swap({"target":"#test-playground", "text":"<a hx-get='/foo'>Hello Swap</a>"})
+        let child = playground().children[0];
+        child.tagName.should.equal("A");
+        child.innerText.should.equal("Hello Swap")
+        assert.isNotNull(child._htmx);
+    })
+
+    it('swaps in plain content properly w/outerHTML', async function () {
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"Hello Swap", "swap" : "outerHTML"})
+        playground().innerText.should.equal("Hello Swap")
+    })
+
+    it('swaps in html content properly w/outerHTML', async function () {
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<span>Hello Swap</span>", "swap" : "outerHTML"})
+        let child = playground().children[0];
+        child.tagName.should.equal("SPAN");
+        child.innerText.should.equal("Hello Swap")
+    })
+
+    it('replaces target element w/outerHTML', async function () {
+        createProcessedHTML("<div id='d1'></div>")
+        let original = find('#d1');
+        await htmx.swap({"target":"#d1", "text":"<span id='d1'>Replaced</span>", "swap" : "outerHTML"})
+        let replaced = find('#d1');
+        replaced.should.not.equal(original);
+        replaced.tagName.should.equal("SPAN");
+    })
+
+    it('inserts before target w/beforebegin', async function () {
+        createProcessedHTML("<div id='d1'>Target</div>")
+        await htmx.swap({"target":"#d1", "text":"<span>Before</span>", "swap" : "beforebegin"})
+        let children = playground().children;
+        children[0].tagName.should.equal("SPAN");
+        children[0].innerText.should.equal("Before");
+        children[1].innerText.should.equal("Target");
+    })
+
+    it('inserts plain text before target w/beforebegin', async function () {
+        createProcessedHTML("<div id='d1'>Target</div>")
+        await htmx.swap({"target":"#d1", "text":"Before", "swap" : "beforebegin"})
+        playground().childNodes[0].textContent.should.equal("Before");
+        find('#d1').innerText.should.equal("Target");
+    })
+
+    it('prepends content inside target w/afterbegin', async function () {
+        createProcessedHTML("<div id='d1'><span>Existing</span></div>")
+        await htmx.swap({"target":"#d1", "text":"<span>First</span>", "swap" : "afterbegin"})
+        let children = find('#d1').children;
+        children[0].innerText.should.equal("First");
+        children[1].innerText.should.equal("Existing");
+    })
+
+    it('prepends plain text inside target w/afterbegin', async function () {
+        createProcessedHTML("<div id='d1'>Existing</div>")
+        await htmx.swap({"target":"#d1", "text":"First", "swap" : "afterbegin"})
+        find('#d1').childNodes[0].textContent.should.equal("First");
+    })
+
+    it('appends content inside target w/beforeend', async function () {
+        createProcessedHTML("<div id='d1'><span>Existing</span></div>")
+        await htmx.swap({"target":"#d1", "text":"<span>Last</span>", "swap" : "beforeend"})
+        let children = find('#d1').children;
+        children[0].innerText.should.equal("Existing");
+        children[1].innerText.should.equal("Last");
+    })
+
+    it('appends plain text inside target w/beforeend', async function () {
+        createProcessedHTML("<div id='d1'>Existing</div>")
+        await htmx.swap({"target":"#d1", "text":"Last", "swap" : "beforeend"})
+        let target = find('#d1');
+        target.childNodes[target.childNodes.length - 1].textContent.should.equal("Last");
+    })
+
+    it('inserts after target w/afterend', async function () {
+        createProcessedHTML("<div id='d1'>Target</div>")
+        await htmx.swap({"target":"#d1", "text":"<span>After</span>", "swap" : "afterend"})
+        let children = playground().children;
+        children[0].innerText.should.equal("Target");
+        children[1].tagName.should.equal("SPAN");
+        children[1].innerText.should.equal("After");
+    })
+
+    it('inserts plain text after target w/afterend', async function () {
+        createProcessedHTML("<div id='d1'>Target</div>")
+        await htmx.swap({"target":"#d1", "text":"After", "swap" : "afterend"})
+        find('#d1').innerText.should.equal("Target");
+        playground().childNodes[1].textContent.should.equal("After");
+    })
+
+    it('executes script w/innerHTML', async function () {
+        window.testVar = 0;
+        await htmx.swap({"target":"#test-playground", "text":"<script>window.testVar = 1</script>"})
+        window.testVar.should.equal(1);
+        delete window.testVar;
+    })
+
+    it('executes script w/outerHTML', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<div><script>window.testVar = 2</script></div>", "swap" : "outerHTML"})
+        window.testVar.should.equal(2);
+        delete window.testVar;
+    })
+
+    it('executes script w/beforebegin', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<script>window.testVar = 3</script>", "swap" : "beforebegin"})
+        window.testVar.should.equal(3);
+        delete window.testVar;
+    })
+
+    it('executes script w/afterbegin', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<script>window.testVar = 4</script>", "swap" : "afterbegin"})
+        window.testVar.should.equal(4);
+        delete window.testVar;
+    })
+
+    it('executes script w/beforeend', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<script>window.testVar = 5</script>", "swap" : "beforeend"})
+        window.testVar.should.equal(5);
+        delete window.testVar;
+    })
+
+    it('executes script w/afterend', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<script>window.testVar = 6</script>", "swap" : "afterend"})
+        window.testVar.should.equal(6);
+        delete window.testVar;
+    })
+
+    it('swaps oob content', async function () {
+        createProcessedHTML("<div id='d1'></div><div id='d2'></div>")
+        await htmx.swap({"target":"#d1", "text":"<div>Main</div><div id='d2' hx-swap-oob='true'>OOB</div>"})
+        find('#d1').innerText.trim().should.equal("Main");
+        find('#d2').innerText.should.equal("OOB");
+    })
+
+    it('swaps oob with outerHTML', async function () {
+        createProcessedHTML("<div id='d1'></div><div id='d2'></div>")
+        await htmx.swap({"target":"#d1", "text":"<div>Main</div><div id='d2' hx-swap-oob='outerHTML'>OOB</div>"})
+        find('#d2').innerText.should.equal("OOB");
+    })
+
+    it('swaps oob with innerHTML', async function () {
+        createProcessedHTML("<div id='d1'></div><div id='d2'><span>Old</span></div>")
+        await htmx.swap({"target":"#d1", "text":"<div>Main</div><div id='d2' hx-swap-oob='innerHTML'>OOB</div>"})
+        find('#d2').innerText.should.equal("OOB");
+        find('#d2').tagName.should.equal("DIV");
+    })
+
+    it('swaps partial with default target', async function () {
+        await htmx.swap({"target":"#test-playground", "text":"<hx-partial hx-target='#test-playground'>Partial</hx-partial>"})
+        playground().innerText.should.equal("Partial");
+    })
+
+    it('swaps partial with custom target', async function () {
+        createProcessedHTML("<div id='d1'></div><div id='d2'></div>")
+        await htmx.swap({"target":"#d1", "text":"<hx-partial hx-target='#d2'>Partial</hx-partial>"})
+        find('#d2').innerText.should.equal("Partial");
+    })
+
+    it('swaps partial with custom swap style', async function () {
+        createProcessedHTML("<div id='d1'>Existing</div>")
+        await htmx.swap({"target":"#test-playground", "text":"<hx-partial hx-target='#d1' hx-swap='beforeend'>Partial</hx-partial>"})
+        find('#d1').innerText.should.equal("ExistingPartial");
+    })
+
+    it('executes script in oob swap', async function () {
+        window.testVar = 0;
+        createProcessedHTML("<div id='d1'></div><div id='d2'></div>")
+        await htmx.swap({"target":"#d1", "text":"<div>Main</div><div id='d2' hx-swap-oob='true'><script>window.testVar = 7</script></div>"})
+        window.testVar.should.equal(7);
+        delete window.testVar;
+    })
+
+    it('executes script in partial', async function () {
+        window.testVar = 0;
+        await htmx.swap({"target":"#test-playground", "text":"<hx-partial hx-target='#test-playground'><script>window.testVar = 8</script></hx-partial>"})
+        window.testVar.should.equal(8);
+        delete window.testVar;
+    })
+
+    it('executes script when wrapped in html tag', async function () {
+        window.testVar = 0;
+        await htmx.swap({"target":"#test-playground", "text":"<html><body><script>window.testVar = 9</script><div>Content</div></body></html>"})
+        window.testVar.should.equal(9);
+        delete window.testVar;
+    })
+
+    it('executes script when wrapped in body tag', async function () {
+        window.testVar = 0;
+        await htmx.swap({"target":"#test-playground", "text":"<body><script>window.testVar = 10</script><div>Content</div></body>"})
+        window.testVar.should.equal(10);
+        delete window.testVar;
+    })
+
+    it('replaces attributes when swapping element with same id', async function () {
+        createProcessedHTML("<div id='d1' class='old' data-value='1'></div>")
+        await htmx.swap({"target":"#d1", "text":"<div id='d1' class='new' data-value='2'>Content</div>", "swap":"outerHTML"})
+        let replaced = find('#d1');
+        replaced.getAttribute('class').should.equal('new');
+        replaced.getAttribute('data-value').should.equal('2');
+    })
+
+    it('CSS transitions do not reset radio checked state', async function () {
+        createProcessedHTML(`
+            <div id="target">
+                <input type="radio" id="r1" name="status" value="a" checked>
+                <input type="radio" id="r2" name="status" value="b">
+            </div>
+        `)
+        find('#r2').checked = true;
+        await htmx.swap({
+            target: '#target',
+            text: `
+                <input type="radio" id="r1" name="status" value="a">
+                <input type="radio" id="r2" name="status" value="b" checked>
+            `
+        })
+        await htmx.timeout(10);
+        find('#r2').checked.should.be.true;
+        find('#r1').checked.should.be.false;
+    })
+
+    it('triggers CSS transitions during swap', async function () {
+        this.skip(); //fails on firefox for some reason
+        createProcessedHTML("<style>#d1 { transition: opacity 100ms; }</style><div id='d1' style='opacity: 1;'>Old</div>")
+        let transitioned = false;
+        htmx.on('transitionstart', () => {
+            transitioned = true;
+        });
+        await htmx.swap({"target":"#d1", "text":"<div id='d1' style='opacity: 0.5;'>New</div>", "swap":"outerHTML"})
+        await htmx.timeout(50);
+        transitioned.should.be.true;
+    })
+
+    it('triggers htmx:before:swap event', async function () {
+        let triggered = false;
+        htmx.on('htmx:before:swap', () => {
+            triggered = true;
+        });
+        await htmx.swap({"target":"#test-playground", "text":"<div>Content</div>"})
+        triggered.should.be.true;
+    })
+
+    it('triggers htmx:after:swap event', async function () {
+        let triggered = false;
+        htmx.on('htmx:after:swap', () => {
+            triggered = true;
+        });
+        await htmx.swap({"target":"#test-playground", "text":"<div>Content</div>"})
+        triggered.should.be.true;
+    })
+
+    it('triggers htmx:after:settle event', async function () {
+        let triggered = false;
+        htmx.on('htmx:after:settle', () => {
+            triggered = true;
+        });
+        await htmx.swap({"target":"#test-playground", "text":"<div>Content</div>"})
+        triggered.should.be.true;
+    })
+
+    it('bubbles settle events up from replacement element after outerHTML swap', async function () {
+        createProcessedHTML("<div id='d1'>Original</div>")
+        let beforeSettleTarget, afterSettleTarget;
+        htmx.on('htmx:before:settle', (e) => { beforeSettleTarget = e.target; });
+        htmx.on('htmx:after:settle', (e) => { afterSettleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"<span id='replaced'>Replaced</span>", "swap":"outerHTML"})
+        let replacement = find('#replaced');
+        assert.isNotNull(replacement);
+        beforeSettleTarget.should.equal(replacement);
+        afterSettleTarget.should.equal(replacement);
+        document.body.contains(beforeSettleTarget).should.be.true;
+        document.body.contains(afterSettleTarget).should.be.true;
+    })
+
+    it('bubbles settle events after outerHTML swap when target has no previous sibling', async function () {
+        createProcessedHTML("<div id='d1'>First</div><div id='d2'>Second</div>")
+        let settleTarget;
+        htmx.on('htmx:after:settle', (e) => { settleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"<span id='new-first'>New</span>", "swap":"outerHTML"})
+        let replacement = find('#new-first');
+        assert.isNotNull(replacement);
+        settleTarget.should.equal(replacement);
+        document.body.contains(settleTarget).should.be.true;
+    })
+
+    it('bubbles settle events when outerHTML replacement content starts with a text node', async function () {
+        createProcessedHTML("<div id='d1'>Original</div>")
+        let settleTarget;
+        htmx.on('htmx:after:settle', (e) => { settleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"Hello <span id='replaced'>World</span>", "swap":"outerHTML"})
+        playground().innerText.should.contain("Hello")
+        playground().innerText.should.contain("World")
+        assert.isOk(settleTarget);
+        document.body.contains(settleTarget).should.be.true;
+    })
+
+    it('bubbles settle events when outerHTML target comes after a text node', async function () {
+        playground().innerHTML = "Text before <div id='d1'>Original</div>";
+        htmx.process(playground());
+        let settleTarget;
+        htmx.on('htmx:after:settle', (e) => { settleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"<span id='replaced'>Replaced</span>", "swap":"outerHTML"})
+        let replacement = find('#replaced');
+        assert.isNotNull(replacement);
+        settleTarget.should.equal(replacement);
+        document.body.contains(settleTarget).should.be.true;
+    })
+
+    it('bubbles settle events when outerHTML swap empties the parent (empty fragment, sole child)', async function () {
+        createProcessedHTML("<div id='wrapper'><div id='d1'>Original</div></div>")
+        let wrapper = find('#wrapper');
+        let beforeSettleTarget, afterSettleTarget;
+        wrapper.addEventListener('htmx:before:settle', (e) => { beforeSettleTarget = e.target; });
+        wrapper.addEventListener('htmx:after:settle', (e) => { afterSettleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"", "swap":"outerHTML"})
+        wrapper.children.length.should.equal(0);
+        beforeSettleTarget.should.equal(wrapper);
+        afterSettleTarget.should.equal(wrapper);
+    })
+
+    it('bubbles settle events when target follows a text node AND replacement starts with a text node', async function () {
+        playground().innerHTML = "Before text <div id='d1'>Original</div>";
+        htmx.process(playground());
+        let settleTarget;
+        htmx.on('htmx:after:settle', (e) => { settleTarget = e.target; });
+        await htmx.swap({"target":"#d1", "text":"inserted text <span id='replaced'>After</span>", "swap":"outerHTML"})
+        assert.isOk(settleTarget);
+        document.body.contains(settleTarget).should.be.true;
+        playground().innerText.should.contain("Before text inserted text After");
+    })
+
+    it('triggers view transition events with transition:true', async function () {
+        if (!document.startViewTransition) {
+            this.skip();
+            return;
+        }
+
+        let beforeTriggered = false;
+        let afterTriggered = false;
+        htmx.on('htmx:before:viewTransition', () => {
+            beforeTriggered = true;
+        });
+        htmx.on('htmx:after:viewTransition', () => {
+            afterTriggered = true;
+        });
+
+        await htmx.swap({"target":"#test-playground", "text":"<div id='d1'>Content</div>", "swap":"innerHTML transition:true"})
+        beforeTriggered.should.be.true;
+        afterTriggered.should.be.true;
+    })
+
+    it('does not update history when htmx:before:swap is cancelled', async function () {
+        let originalUrl = window.location.href;
+        let swapCancelled = false;
+        document.addEventListener('htmx:before:swap', (e) => {
+            e.preventDefault();
+            swapCancelled = true;
+        }, {once: true});
+        mockResponse('GET', '/test', '<div>content</div>');
+        const div = createProcessedHTML('<div hx-get="/test" hx-push-url="true">click</div>');
+        div.click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.isTrue(swapCancelled);
+        assert.equal(window.location.href, originalUrl);
+        history.replaceState(null, '', originalUrl);
+    })
+
+    it('does not fire htmx:after:swap when htmx:before:swap is cancelled', async function () {
+        let afterSwapFired = false;
+        document.addEventListener('htmx:before:swap', e => e.preventDefault(), { once: true });
+        document.addEventListener('htmx:after:swap', () => { afterSwapFired = true; }, { once: true });
+        mockResponse('GET', '/test', '<p>content</p>');
+        createProcessedHTML('<div hx-get="/test">click</div>');
+        find('div').click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.isFalse(afterSwapFired);
+    })
+
+    it('does not update title when htmx:before:swap is cancelled', async function () {
+        const originalTitle = document.title;
+        document.addEventListener('htmx:before:swap', e => e.preventDefault(), { once: true });
+        mockResponse('GET', '/test', '<title>Should Not Set</title><div>content</div>');
+        createProcessedHTML('<div hx-get="/test">click</div>');
+        find('div').click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.equal(document.title, originalTitle);
+    })
+
+    it('does not set title when swap is none', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "swap":"none", "text":"<title>Should Not Set</title><div>Content</div>"});
+        document.title.should.equal(originalTitle);
+    })
+
+    it('does not set title when hx-swap=none on element', async function () {
+        const originalTitle = document.title;
+        mockResponse('GET', '/test', '<title>Should Not Set</title><div>content</div>');
+        createProcessedHTML('<div id="target">original</div><button hx-get="/test" hx-swap="none" hx-target="#target">click</button>');
+        find('button').click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.equal(document.title, originalTitle);
+        assert.equal(find('#target').innerText, 'original');
+    })
+
+    it('does not set title for 204 no-swap status code response', async function () {
+        document.title = 'Before 204';
+        mockResponse('GET', '/test', '<title>Should Not Set</title><div>content</div>', { status: 204 });
+        createProcessedHTML('<div id="target">original</div><button hx-get="/test" hx-target="#target">click</button>');
+        find('button').click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.equal(document.title, 'Before 204');
+        assert.equal(find('#target').innerText, 'original');
+    })
+
+    it('sets document title from response', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<html><head><title>New Title</title></head><body><div>Content</div></body></html>"})
+        document.title.should.equal('New Title');
+        document.title = originalTitle;
+    })
+
+    it('ignores title when ignoreTitle:true modifier is set', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<html><head><title>Ignored Title</title></head><body><div>Content</div></body></html>", "swap":"innerHTML ignoreTitle:true"})
+        document.title.should.equal(originalTitle);
+    })
+
+    it('ignores title when ignoreTitle:true is set on a partial hx-swap', async function () {
+        let originalTitle = document.title;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#test-playground", "text":"<title>Partial Title</title><hx-partial hx-target='#d1' hx-swap='innerHTML ignoreTitle:true'>Content</hx-partial>"})
+        document.title.should.equal(originalTitle);
+    })
+
+    it('ignores title when ignoreTitle:true is set via hx-reswap (ctx.swap)', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<title>Reswap Title</title><div>Content</div>", "swap":"innerHTML ignoreTitle:true"})
+        document.title.should.equal(originalTitle);
+    })
+
+    it('sets title from fragment without html/body tags', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<title>Fragment Title</title><div>Content</div>"})
+        document.title.should.equal('Fragment Title');
+        document.title = originalTitle;
+    })
+
+    it('does not set title when response has no title tag', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<div>Content without title</div>"})
+        document.title.should.equal(originalTitle);
+    })
+
+    it('sets title with oob swap', async function () {
+        let originalTitle = document.title;
+        createProcessedHTML("<div id='d1'></div><div id='d2'></div>")
+        await htmx.swap({"target":"#d1", "text":"<title>OOB Title</title><div>Main</div><div id='d2' hx-swap-oob='true'>OOB</div>"})
+        document.title.should.equal('OOB Title');
+        document.title = originalTitle;
+    })
+
+    it('sets title with partial swap', async function () {
+        let originalTitle = document.title;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#test-playground", "text":"<title>Partial Title</title><hx-partial hx-target='#d1'>Partial Content</hx-partial>"})
+        document.title.should.equal('Partial Title');
+        document.title = originalTitle;
+    })
+
+    it('swaps partial from full html document response', async function () {
+        createProcessedHTML("<div id='d1'>Original</div>")
+        await htmx.swap({"target":"#test-playground", "text":"<!DOCTYPE html><html><head><title>Page</title></head><body><hx-partial hx-target='#d1'>Updated</hx-partial></body></html>"})
+        find('#d1').innerText.should.equal('Updated');
+    })
+
+    it('does not blank target when full html document response contains only hx-partial', async function () {
+        createProcessedHTML("<div id='d1'>Original</div><div id='d2'>Keep Me</div>")
+        await htmx.swap({"target":"#d1", "text":"<!DOCTYPE html><html><body><hx-partial hx-target='#d2'>Updated</hx-partial></body></html>"})
+        find('#d1').innerText.should.equal('Original');
+        find('#d2').innerText.should.equal('Updated');
+    })
+
+    it('sets title from full html document response with only hx-partial', async function () {
+        let originalTitle = document.title;
+        createProcessedHTML("<div id='d1'></div>")
+        await htmx.swap({"target":"#test-playground", "text":"<!DOCTYPE html><html><head><title>Partial Title</title></head><body><hx-partial hx-target='#d1'>Content</hx-partial></body></html>"})
+        document.title.should.equal('Partial Title');
+        document.title = originalTitle;
+    })
+
+    it('sets title from body tag response', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<body><title>Body Title</title><div>Content</div></body>"})
+        document.title.should.equal('Body Title');
+        document.title = originalTitle;
+    })
+
+    it('decodes HTML entities in title', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<title>&lt;/&gt; htmx &amp; friends</title><div>Content</div>"})
+        document.title.should.equal('</> htmx & friends');
+        document.title = originalTitle;
+    })
+
+    it('does not swap title tag into page content', async function () {
+        await htmx.swap({"target":"#test-playground", "text":"<title>Test Title</title><div id='content'>Main Content</div>"})
+        assert.isNull(playground().querySelector('title'));
+        find('#content').innerText.should.equal('Main Content');
+    })
+
+    it('supports autofocus', async function () {
+        let originalTitle = document.title;
+        await htmx.swap({"target":"#test-playground", "text":"<input id='i1' autofocus>"})
+        document.activeElement.id.should.equal("i1")
+    })
+
+    it('swaps both main target and partial target when both are present', async function () {
+        createProcessedHTML("<div id='target'>Hello</div><div id='target_oob'>OOB</div>")
+        await htmx.swap({
+            "target":"#target", 
+            "text":"<div>Hello me!</div><hx-partial hx-target='#target_oob' hx-swap='innerHTML'><div>OOB swap!</div></hx-partial>"
+        })
+        find('#target').textContent.should.equal("Hello me!");
+        find('#target_oob').textContent.should.equal("OOB swap!");
+    })
+
+    it('swaps only partial target when response contains only partial', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='target_oob'>OOB Original</div>")
+        await htmx.swap({
+            "target":"#target", 
+            "text":"<hx-partial hx-target='#target_oob' hx-swap='innerHTML'><div>OOB Updated</div></hx-partial>"
+        })
+        find('#target').textContent.should.equal("Original");
+        find('#target_oob').textContent.should.equal("OOB Updated");
+    })
+
+    it('does not swap main target when partial target is not found', async function () {
+        createProcessedHTML("<div id='target'>Original</div>")
+        await htmx.swap({
+            "target":"#target",
+            "text":"<hx-partial hx-target='#nonexistent' hx-swap='innerHTML'><div>Should Not Appear</div></hx-partial>"
+        })
+        find('#target').textContent.should.equal("Original");
+    })
+
+    it('does not swap main target when only whitespace and partial present', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='target_oob'>OOB</div>")
+        await htmx.swap({
+            "target":"#target", 
+            "text":"\n  <hx-partial hx-target='#target_oob' hx-swap='innerHTML'><div>OOB swap!</div></hx-partial>  \n"
+        })
+        find('#target').textContent.should.equal("Original");
+        find('#target_oob').textContent.should.equal("OOB swap!");
+    })
+
+    it('swaps both targets when empty element and partial present', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='target_oob'>OOB</div>")
+        await htmx.swap({
+            "target":"#target", 
+            "text":"<p></p><hx-partial hx-target='#target_oob' hx-swap='innerHTML'><div>OOB swap!</div></hx-partial>"
+        })
+        find('#target').querySelector('p').should.not.be.null;
+        find('#target_oob').textContent.should.equal("OOB swap!");
+    })
+  
+    it('swaps both targets when plain text and partial present', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='target_oob'>OOB</div>")
+        await htmx.swap({
+            "target":"#target", 
+            "text":"Hello<hx-partial hx-target='#target_oob' hx-swap='innerHTML'><div>OOB swap!</div></hx-partial>"
+        })
+        find('#target').textContent.should.equal("Hello");
+        find('#target_oob').innerText.should.equal("OOB swap!");
+    })
+
+    it('restores focus after innerHTML swap when element has same id', async function () {
+        createProcessedHTML("<input id='focused-input' value='test'>")
+        let input = find('#focused-input')
+        input.focus()
+        input.setSelectionRange(2, 2)
+        
+        await htmx.swap({"target":"#test-playground", "text":"<input id='focused-input' value='test'>"})
+        
+        document.activeElement.id.should.equal('focused-input')
+        document.activeElement.selectionStart.should.equal(2)
+        document.activeElement.selectionEnd.should.equal(2)
+    })
+
+    it('focusScroll:true scrolls the restored focused element into view', async function () {
+        createProcessedHTML("<input id='focused-input' value='test'>")
+        let input = find('#focused-input')
+        input.focus()
+
+        let focusOptions
+        let originalFocus = HTMLElement.prototype.focus
+        HTMLElement.prototype.focus = function(options) {
+            focusOptions = options
+            originalFocus.call(this, options)
+        }
+
+        try {
+            await htmx.swap({
+                target: '#test-playground',
+                text: "<input id='focused-input' value='test'>",
+                swap: 'innerHTML focusScroll:true'
+            })
+            focusOptions.preventScroll.should.equal(false)
+        } finally {
+            HTMLElement.prototype.focus = originalFocus
+        }
+    })
+
+    it('restores focus after outerHTML swap when element has same id', async function () {
+        createProcessedHTML("<div id='container'><input id='focused-input' value='test'></div>")
+        let input = find('#focused-input')
+        input.focus()
+        input.setSelectionRange(1, 3)
+        
+        await htmx.swap({"target":"#container", "text":"<div id='container'><input id='focused-input' value='test'></div>", "swap":"outerHTML"})
+        
+        document.activeElement.id.should.equal('focused-input')
+        document.activeElement.selectionStart.should.equal(1)
+        document.activeElement.selectionEnd.should.equal(3)
+    })
+
+    it('does not restore focus when focused element has no id', async function () {
+        createProcessedHTML("<input value='test'>")
+        let input = playground().querySelector('input')
+        input.focus()
+        
+        await htmx.swap({"target":"#test-playground", "text":"<input value='test'>"})
+        
+        document.activeElement.should.not.equal(input)
+    })
+
+    it('does not restore focus when new content lacks matching id', async function () {
+        createProcessedHTML("<input id='focused-input' value='test'>")
+        let input = find('#focused-input')
+        input.focus()
+        
+        await htmx.swap({"target":"#test-playground", "text":"<input id='different-input' value='test'>"})
+        
+        document.activeElement.id.should.not.equal('focused-input')
+    })
+
+    it('does not restore focus for morph swaps', async function () {
+        createProcessedHTML("<input id='focused-input' value='test'>")
+        let input = find('#focused-input')
+        input.focus()
+        input.setSelectionRange(2, 2)
+        
+        await htmx.swap({"target":"#test-playground", "text":"<input id='focused-input' value='test'>", "swap":"innerMorph"})
+        
+        // Morph should maintain focus naturally, not through restoration
+        document.activeElement.should.equal(input)
+    })
+
+    it('__insertContent accepts string swapSpec', async function () {
+        createProcessedHTML("<div id='d1'>Old</div>")
+        let fragment = document.createDocumentFragment()
+        fragment.append(document.createTextNode('New'))
+        await htmx.__insertContent({target: find('#d1'), swapSpec: 'innerHTML', fragment})
+        find('#d1').innerText.should.equal('New')
+    })
+
+    it('outerSync cleans up powered children before replacing them', async function() {
+        mockResponse('GET', '/endpoint', 'response')
+        createProcessedHTML("<div id='target'><button id='btn' hx-get='/endpoint' hx-swap='innerHTML'>click</button></div>")
+        const btn = find('#btn')
+        assert.isNotNull(btn._htmx?.initialized, 'child should start initialized')
+
+        await htmx.swap({
+            target: '#target',
+            swap: 'outerSync',
+            text: '<div id="target"><span>replaced</span></div>',
+            sourceElement: find('#target')
+        })
+
+        assert.isNull(btn.getAttribute('data-htmx-powered'), 'old child should be cleaned up')
+        assert.isNotOk(find('#btn'), 'old button should be gone')
+        assert.equal(find('#target').textContent, 'replaced')
+    })
+
+    it('outerSync adds hx-get to root element and initializes it', async function () {
+        createProcessedHTML("<div id='target'><p>static</p></div>")
+        mockResponse('GET', '/dynamic', 'fetched')
+
+        await htmx.swap({
+            target: '#target',
+            swap: 'outerSync',
+            text: '<div id="target" hx-get="/dynamic" hx-trigger="click" hx-swap="innerHTML"><p>now interactive</p></div>',
+            sourceElement: find('#target')
+        })
+
+        let target = find('#target')
+        target.getAttribute('hx-get').should.equal('/dynamic')
+        assert.isNotNull(target._htmx?.initialized, 'target root should be initialized with htmx')
+        target.click()
+        await forRequest()
+        target.textContent.should.equal('fetched')
+    })
+
+    it('outerSync removes hx-get from root element and old handler no longer fires', async function () {
+        mockResponse('GET', '/should-not-fire', 'bad')
+        createProcessedHTML("<div id='target' hx-get='/should-not-fire' hx-trigger='click' hx-swap='innerHTML'>interactive</div>")
+        let target = find('#target')
+        assert.isNotNull(target._htmx?.initialized, 'target should start initialized')
+
+        // outerSync removes hx-get from the root
+        await htmx.swap({
+            target: '#target',
+            swap: 'outerSync',
+            text: '<div id="target">no longer interactive</div>',
+            sourceElement: target
+        })
+
+        target = find('#target')
+        target.textContent.should.equal('no longer interactive')
+        assert.isNull(target.getAttribute('hx-get'), 'hx-get should be removed')
+
+        // clicking should NOT issue a request — track via event
+        let requestFired = false
+        let handler = () => { requestFired = true }
+        document.addEventListener('htmx:before:request', handler)
+        target.click()
+        await htmx.timeout(50)
+        document.removeEventListener('htmx:before:request', handler)
+        assert.isFalse(requestFired, 'no request should fire after hx-get removed')
+    })
+
+    it('outerSync changes hx-trigger on root element and new trigger fires', async function () {
+        mockResponse('GET', '/endpoint', 'response')
+        createProcessedHTML("<div id='target' hx-get='/endpoint' hx-trigger='click' hx-swap='innerHTML'>original</div>")
+
+        // Change trigger from click to mousedown
+        await htmx.swap({
+            target: '#target',
+            swap: 'outerSync',
+            text: '<div id="target" hx-get="/endpoint" hx-trigger="mousedown" hx-swap="innerHTML">updated</div>',
+            sourceElement: find('#target')
+        })
+
+        let target = find('#target')
+        target.getAttribute('hx-trigger').should.equal('mousedown')
+
+        // click should no longer trigger a request
+        let requestFired = false
+        let handler = () => { requestFired = true }
+        document.addEventListener('htmx:before:request', handler)
+        target.click()
+        await htmx.timeout(50)
+        document.removeEventListener('htmx:before:request', handler)
+        assert.isFalse(requestFired, 'click should not trigger after hx-trigger changed to mousedown')
+
+        // mousedown should trigger the request
+        target.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}))
+        await forRequest()
+        target.textContent.should.equal('response')
+    })
+
+    it('hx-partial hx-target resolves closest relative to sourceElement', async function () {
+        createProcessedHTML("<ul><li id='item-1'>Item 1 <button id='btn'>Edit</button></li></ul>")
+        await htmx.swap({
+            target: find('#btn'),
+            sourceElement: find('#btn'),
+            text: "<hx-partial hx-target='closest li' hx-swap='innerHTML'>Updated</hx-partial>"
+        })
+        find('#item-1').innerText.should.equal('Updated')
+    })
+
+    it('swaps partial to all elements matching a class selector', async function () {
+        createProcessedHTML("<div class='target'>A</div><div class='target'>B</div>")
+        await htmx.swap({"target":"#test-playground", "text":"<hx-partial hx-target='.target' hx-swap='innerHTML'>Updated</hx-partial>"})
+        playground().querySelectorAll('.target').forEach(el => el.innerText.should.equal('Updated'))
+    })
+
+    it('swapEmpty:false prevents main swap when response is only oob', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='oob'>OOB</div>")
+        await htmx.swap({"target":"#target", "swap":"innerHTML swapEmpty:false", "text":"<div id='oob' hx-swap-oob='true'>Updated</div>"})
+        find('#target').innerText.should.equal('Original');
+        find('#oob').innerText.should.equal('Updated');
+    })
+
+    it('swapEmpty:false prevents main swap when response is only partials', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='partial'>Partial</div>")
+        await htmx.swap({"target":"#target", "swap":"innerHTML swapEmpty:false", "text":"<hx-partial hx-target='#partial'>Updated</hx-partial>"})
+        find('#target').innerText.should.equal('Original');
+        find('#partial').innerText.should.equal('Updated');
+    })
+
+    it('swapEmpty:true forces main swap even on empty response with partials', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='partial'>Partial</div>")
+        await htmx.swap({"target":"#target", "swap":"innerHTML swapEmpty:true", "text":"<hx-partial hx-target='#partial'>Updated</hx-partial>"})
+        find('#target').innerText.should.equal('');
+        find('#partial').innerText.should.equal('Updated');
+    })
+
+    it('swapEmpty:false still swaps main target when response has real content alongside oob', async function () {
+        createProcessedHTML("<div id='target'>Original</div><div id='oob'>OOB</div>")
+        await htmx.swap({"target":"#target", "swap":"innerHTML swapEmpty:false", "text":"<div>New Content</div><div id='oob' hx-swap-oob='true'>Updated</div>"})
+        find('#target').innerText.trim().should.equal('New Content');
+        find('#oob').innerText.should.equal('Updated');
+    })
+
+    it('by default (allowEmptySwapAfterOOB:false), oob-only response prevents main swap', async function () {
+        let original = htmx.config.allowEmptySwapAfterOOB;
+        htmx.config.allowEmptySwapAfterOOB = false;
+        try {
+            createProcessedHTML("<div id='target'>Original</div><div id='oob'>OOB</div>")
+            await htmx.swap({"target":"#target", "swap":"innerHTML", "text":"<div id='oob' hx-swap-oob='true'>Updated</div>"})
+            find('#target').innerText.should.equal('Original');
+            find('#oob').innerText.should.equal('Updated');
+        } finally {
+            htmx.config.allowEmptySwapAfterOOB = original;
+        }
+    })
+
+    it('allowEmptySwapAfterOOB:true allows empty main swap after oob extraction', async function () {
+        let original = htmx.config.allowEmptySwapAfterOOB;
+        htmx.config.allowEmptySwapAfterOOB = true;
+        try {
+            createProcessedHTML("<div id='target'>Original</div><div id='oob'>OOB</div>")
+            await htmx.swap({"target":"#target", "swap":"innerHTML", "text":"<div id='oob' hx-swap-oob='true'>Updated</div>"})
+            find('#target').innerText.should.equal('');
+            find('#oob').innerText.should.equal('Updated');
+        } finally {
+            htmx.config.allowEmptySwapAfterOOB = original;
+        }
+    })
+
+    it('partials always prevent empty main swap regardless of allowEmptySwapAfterOOB', async function () {
+        let original = htmx.config.allowEmptySwapAfterOOB;
+        htmx.config.allowEmptySwapAfterOOB = true;
+        try {
+            createProcessedHTML("<div id='target'>Original</div><div id='partial'>Partial</div>")
+            await htmx.swap({"target":"#target", "swap":"innerHTML", "text":"<hx-partial hx-target='#partial'>Updated</hx-partial>"})
+            find('#target').innerText.should.equal('Original');
+            find('#partial').innerText.should.equal('Updated');
+        } finally {
+            htmx.config.allowEmptySwapAfterOOB = original;
+        }
+    })
+
+    it('swapEmpty modifier overrides allowEmptySwapAfterOOB config', async function () {
+        let original = htmx.config.allowEmptySwapAfterOOB;
+        htmx.config.allowEmptySwapAfterOOB = true;
+        try {
+            createProcessedHTML("<div id='target'>Original</div><div id='oob'>OOB</div>")
+            await htmx.swap({"target":"#target", "swap":"innerHTML swapEmpty:false", "text":"<div id='oob' hx-swap-oob='true'>Updated</div>"})
+            find('#target').innerText.should.equal('Original');
+            find('#oob').innerText.should.equal('Updated');
+        } finally {
+            htmx.config.allowEmptySwapAfterOOB = original;
+        }
+    })
+
+    it('restores focus to textarea after innerHTML swap', async function () {
+        createProcessedHTML("<textarea id='focused-textarea'>hello world</textarea>")
+        let textarea = find('#focused-textarea')
+        textarea.focus()
+        textarea.setSelectionRange(6, 11)
+        
+        await htmx.swap({"target":"#test-playground", "text":"<textarea id='focused-textarea'>hello world</textarea>"})
+        
+        document.activeElement.id.should.equal('focused-textarea')
+        document.activeElement.selectionStart.should.equal(6)
+        document.activeElement.selectionEnd.should.equal(11)
+    })
+
+    // Gap #11: textContent swap child cleanup
+    it('cleans up htmx-powered descendants on textContent swap', async function() {
+        mockResponse('GET', '/test', 'Plain text content');
+        
+        createProcessedHTML(
+            '<div id="target">' +
+            '<button id="child1" hx-get="/other">Child 1</button>' +
+            '<button id="child2" hx-post="/other">Child 2</button>' +
+            '</div>' +
+            '<button id="trigger" hx-get="/test" hx-target="#target" hx-swap="textContent">Swap</button>'
+        );
+        
+        assert.isTrue(find('#child1').hasAttribute('data-htmx-powered'));
+        assert.isTrue(find('#child2').hasAttribute('data-htmx-powered'));
+        
+        find('#trigger').click();
+        await forRequest();
+        await htmx.timeout(10);
+        
+        assert.isUndefined(find('#child1'));
+        assert.isUndefined(find('#child2'));
+        assert.equal(find('#target').textContent, 'Plain text content');
+    })
+
+    // Gap #9: __setFocus catch block when focus() throws
+    it('handles web component that throws on focus during restoration', async function() {
+        if (!customElements.get('broken-focus')) {
+            customElements.define('broken-focus', class extends HTMLElement {
+                focus() { throw new Error('focus not supported'); }
+            });
+        }
+        
+        mockResponse('GET', '/test', '<broken-focus id="field">Updated</broken-focus>');
+        createProcessedHTML('<div id="target"><input id="field" value="test"></div>');
+        
+        find('#field').focus();
+        await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerHTML'});
+        
+        let newElt = find('#field');
+        assert.isNotNull(newElt);
+        assert.equal(newElt.tagName, 'BROKEN-FOCUS');
+    })
+
+    // Gap #24: Transition queue task execution when startViewTransition unavailable
+    it('swap works with transition:true when startViewTransition is unavailable', async function() {
+        mockResponse('GET', '/test', '<div id="result">Swapped!</div>');
+        const originalStartViewTransition = document.startViewTransition;
+        document.startViewTransition = undefined;
+        
+        try {
+            createProcessedHTML('<div id="target">Original</div><button id="btn" hx-get="/test" hx-target="#target" hx-swap="innerHTML transition:true">Click</button>');
+            find('#btn').click();
+            await forRequest();
+            await htmx.timeout(50);
+            assert.include(find('#target').innerHTML, 'Swapped!');
+        } finally {
+            document.startViewTransition = originalStartViewTransition;
+        }
+    })
+
+    // Gap #25: view transition catch block when task throws
+    it('catches error when view transition is aborted', async function() {
+        let savedTransitions = htmx.config.transitions;
+        htmx.config.transitions = true;
+        mockResponse('GET', '/test', '<div>response</div>');
+        let btn = createProcessedHTML('<button hx-get="/test">Click</button>');
+
+        document.addEventListener('htmx:before:viewTransition', (e) => {
+            e.detail.task = async () => { throw new Error('transition aborted'); };
+        }, { once: true });
+
+        btn.click();
+        await forRequest();
+        await htmx.timeout(50);
+        htmx.config.transitions = savedTransitions;
+        assert.isTrue(true);
+    })
+
+    // Gap #12: Extension content transformation result
+    it('uses array result from extension handle_swap', async function() {
+        mockResponse('GET', '/test', '<div>Content</div>');
+        htmx.registerExtension('test-swap-ext', {
+            handle_swap: function(swapStyle, target, fragment, swapSpec) {
+                if (swapStyle === 'custom-swap') {
+                    let newEl = document.createElement('span');
+                    newEl.id = 'ext-result';
+                    newEl.textContent = 'Extension swapped';
+                    target.appendChild(newEl);
+                    return [newEl];
+                }
+            }
+        });
+        createProcessedHTML(
+            '<div id="target"></div>' +
+            '<button id="btn" hx-get="/test" hx-target="#target" hx-swap="custom-swap" hx-ext="test-swap-ext">Click</button>'
+        );
+        find('#btn').click();
+        await forRequest();
+        await htmx.timeout(10);
+        assert.isNotNull(find('#ext-result'));
+        assert.equal(find('#ext-result').textContent, 'Extension swapped');
+    })
+
+})

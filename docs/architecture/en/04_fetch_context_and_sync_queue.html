@@ -1,0 +1,796 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Fetch Context &amp; Sync Queue</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/04_fetch_context_and_sync_queue.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html">
+    
+    
+    
+    <meta name="description" content="When a synthesized trigger handler fires (as detailed in Chapter 3), htmx v4.0.1 drives the HTTP lifecycle through a unified mutable Request Context (ctx)…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 Architecture">
+    <meta property="og:title" content="4. Fetch Context &amp; Sync Queue — htmx v4 Architecture">
+    <meta property="og:description" content="When a synthesized trigger handler fires (as detailed in Chapter 3), htmx v4.0.1 drives the HTTP lifecycle through a unified mutable Request Context (ctx)…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="4. Fetch Context &amp; Sync Queue — htmx v4 Architecture">
+    <meta name="twitter:description" content="When a synthesized trigger handler fires (as detailed in Chapter 3), htmx v4.0.1 drives the HTTP lifecycle through a unified mutable Request Context (ctx)…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 Architecture">
+                    
+                    htmx v4 Architecture
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Architecture Overview</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Core Engine Internals</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="01_module_and_state_architecture.html" >1. Module &amp; State Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. Attribute Inheritance &amp; HCON</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_trigger_and_selector_parsers.html" >3. Trigger &amp; Selector Parsers</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Network &amp; DOM Pipeline</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item active">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetch Context &amp; Sync Queue</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap, Settle &amp; Morph Engine</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extension_and_security_internals.html" >6. Extension &amp; Security Internals</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Portals &amp; Reports</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">4. Fetch Context &amp; Sync Queue</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="04_fetch_context_and_sync_queue.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/04_fetch_context_and_sync_queue.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>4. Fetch Context &amp; Sync Queue</h1>
+<p>When a synthesized trigger handler fires (as detailed in <a href="03_trigger_and_selector_parsers.html">Chapter 3</a>), htmx v4.0.1 drives the HTTP lifecycle through a unified mutable <strong>Request Context (<code>ctx</code>)</strong> pipeline (<code>__createRequestContext</code> -&gt; <code>__handleTriggerEvent</code> -&gt; <code>RequestQueue.admit</code> -&gt; <code>__issueRequest</code>, lines 90–128 and 333–705) backed by native <code>fetch()</code>, <code>AbortController</code>, and per-element synchronization queues.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_fetch_context_and_sync_queue/arch_c04_fetch_pipeline_hero.png" alt="04_fetch_context_and_sync_queue_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Request Context Compilation, Pre-Flight Serialization, RequestQueue Admission, and fetch() Pipeline</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChevronProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">card_title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"End-to-End HTTP Request Context &amp; Synchronization Pipeline"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">61.5</span><span class="p">),</span> <span class="s2">"src/htmx.js — __createRequestContext (L386), __handleTriggerEvent (L471), RequestQueue (L90) &amp; __issueRequest (L547)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. Context Build"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"__createRequestContext()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"2. Pre-Flight &amp; Form"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"__handleTriggerEvent()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"3. Sync Admission"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"RequestQueue.admit()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+             <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+             <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"4. Fetch &amp; Headers"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"__issueRequest(ctx)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">)</span>
+
+<span class="n">pipeline</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">43</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="n">cards</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">21.5</span><span class="p">,</span> <span class="s2">"Context &amp; Security"</span><span class="p">,</span> <span class="s2">"L333-430: ctx &amp; request"</span><span class="p">,</span> <span class="s2">"Method/Action &amp; #anchor</span><span class="se">\n</span><span class="s2">AbortController &amp; Headers</span><span class="se">\n</span><span class="s2">Lock ctx.request.mode"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">55.0</span><span class="p">,</span> <span class="s2">"Form &amp; URL Params"</span><span class="p">,</span> <span class="s2">"L471-545: FormData"</span><span class="p">,</span> <span class="s2">"reportValidity() &amp; vals</span><span class="se">\n</span><span class="s2">htmx:config:request</span><span class="se">\n</span><span class="s2">Query vs URLSearchParams"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">88.5</span><span class="p">,</span> <span class="s2">"6-Mode Sync Queue"</span><span class="p">,</span> <span class="s2">"L90-128: _htmx_state.rq"</span><span class="p">,</span> <span class="s2">"drop / abort / replace</span><span class="se">\n</span><span class="s2">queue first / last / all</span><span class="se">\n</span><span class="s2">continue(abortRequest)"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">122.0</span><span class="p">,</span> <span class="s2">"Confirm, Fetch, Status"</span><span class="p">,</span> <span class="s2">"L547-639 &amp; L2271"</span><span class="p">,</span> <span class="s2">"htmx:confirm &amp; s.rc/s.dc</span><span class="se">\n</span><span class="s2">ctx.fetch() &amp; HX-* hdrs</span><span class="se">\n</span><span class="s2">hx-status:404/40x/4xx"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">fn_label</span><span class="p">,</span> <span class="n">body_txt</span><span class="p">,</span> <span class="n">box_style</span><span class="p">,</span> <span class="n">is_focal</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
+    <span class="n">rectangle</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">31.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">29.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">box_style</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+    <span class="n">line</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">42.5</span><span class="p">),</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+    <span class="n">t_style</span> <span class="o">=</span> <span class="n">white_title_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">card_title_s</span>
+    <span class="n">c_style</span> <span class="o">=</span> <span class="n">white_code_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">code_s</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span> <span class="o">+</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">heading</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">t_style</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">25.0</span><span class="p">),</span> <span class="n">fn_label</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">c_style</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">14.5</span><span class="p">),</span> <span class="n">body_txt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">c_style</span><span class="p">)</span>
+
+<span class="n">phosphor</span><span class="o">.</span><span class="n">gear</span><span class="p">((</span><span class="mf">9.5</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">clipboard_text</span><span class="p">((</span><span class="mf">43.0</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_left_right</span><span class="p">((</span><span class="mf">76.5</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">cloud_arrow_up</span><span class="p">((</span><span class="mf">110.0</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>4.1 Request Context Compilation (<code>__createRequestContext</code> &amp; <code>__determineMethodAndAction</code>)</h2>
+<p>Every element initialized by <code>process()</code> receives a bound async event handler created by <code>__createHtmxEventHandler(elt)</code> (lines 375–384), which wraps <code>__createRequestContext(elt, evt)</code> and <code>await this.__handleTriggerEvent(ctx)</code> inside a <code>try / catch</code> block that routes uncaught exceptions to <code>htmx:error</code>.</p>
+<h3>Resolving HTTP Method and Action URL (<code>__determineMethodAndAction</code>, Lines 333–351)</h3>
+<pre><code class="language-javascript"><span class="nx">__determineMethodAndAction</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-method"</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-action"</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">action</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">verb</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#verbs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">verbAction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">verb</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">verbAction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">action</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">verbAction</span><span class="p">;</span>
+<span class="w">                </span><span class="nx">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">verb</span><span class="p">;</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__isBoosted</span><span class="p">(</span><span class="nx">elt</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">action</span><span class="w"> </span><span class="o">||=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">submitter</span><span class="o">?</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">.(</span><span class="s2">"formAction"</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"href"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"action"</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">method</span><span class="w"> </span><span class="o">||=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">submitter</span><span class="o">?</span><span class="p">.</span><span class="nx">getAttribute</span><span class="o">?</span><span class="p">.(</span><span class="s2">"formmethod"</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"method"</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s2">"GET"</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="nx">method</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()};</span>
+<span class="p">}</span>
+</code></pre>
+<ol>
+<li><strong>Explicit <code>hx-action</code> + <code>hx-method</code> vs. Shorthand Verb Attributes</strong>: htmx first checks <code>hx-action</code> (with <code>allowInheritance = false</code>). If absent, it iterates through <code>this.#verbs</code> (<code>[&quot;get&quot;, &quot;post&quot;, &quot;put&quot;, &quot;patch&quot;, &quot;delete&quot;, &quot;query&quot;]</code> at line 143) and selects the first matching <code>hx-&lt;verb&gt;</code> attribute on <code>elt</code> (unless explicitly inherited via <code>:inherited</code>). Notice that htmx v4 natively includes the HTTP <code>QUERY</code> verb alongside the classic five REST verbs.</li>
+<li><strong>Boosted Element Fallbacks (<code>__isBoosted(elt)</code>)</strong>: When an <code>&lt;a&gt;</code> or <code>&lt;form&gt;</code> has <code>elt._htmx.boosted</code> set by <code>__maybeBoost</code> (line 968), <code>action</code> falls back to <code>evt.submitter?.getAttribute?.(&quot;formAction&quot;)</code> or the element's native <code>href</code> / <code>action</code> attribute.</li>
+<li><strong>Method Precedence</strong>: If <code>method</code> was not determined by <code>hx-method</code> or <code>hx-&lt;verb&gt;</code>, it falls back to <code>evt.submitter?.getAttribute?.(&quot;formmethod&quot;)</code>, then <code>elt.getAttribute(&quot;method&quot;)</code>, and finally <code>&quot;GET&quot;</code>, normalized via <code>.toUpperCase()</code>.</li>
+</ol>
+<h3>Building <code>ctx</code> and Enforcing the <code>hx-config</code> Security Invariant (Lines 386–430)</h3>
+<pre><code class="language-javascript"><span class="nx">__createRequestContext</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="nx">sourceEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">{</span><span class="nx">action</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__determineMethodAndAction</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="nx">sourceEvent</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">[</span><span class="nx">fullAction</span><span class="p">,</span><span class="w"> </span><span class="nx">anchor</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">action</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">''</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s1">'#'</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">ac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">AbortController</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">sourceElement</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">sourceEvent</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s2">"created"</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">select</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-select"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">selectOOB</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-select-oob"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-target"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-swap"</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">defaultSwap</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">push</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-push-url"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">replace</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-replace-url"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">transitions</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">confirm</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-confirm"</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-validate"</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">sourceElement</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s1">'form'</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">sourceElement</span><span class="p">.</span><span class="nx">noValidate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">sourceEvent</span><span class="p">.</span><span class="nx">submitter</span><span class="o">?</span><span class="p">.</span><span class="nx">formNoValidate</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span>
+<span class="w">                </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">),</span>
+<span class="w">            </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="nx">fullAction</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">anchor</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">method</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__createCoreHeaders</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">),</span>
+<span class="w">            </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="nx">ac</span><span class="p">.</span><span class="nx">abort</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">ac</span><span class="p">),</span>
+<span class="w">            </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="s2">"same-origin"</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="nx">ac</span><span class="p">.</span><span class="nx">signal</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">mode</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">.</span><span class="nx">_htmx</span><span class="o">?</span><span class="p">.</span><span class="nx">boosted</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">.</span><span class="nx">boosted</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__resolveTarget</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">"HX-Target"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__buildIdentifier</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">hxConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-config"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">hxConfig</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">hxConfig</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">mode</span><span class="p">;</span><span class="w">  </span><span class="c1">// mode is security-sensitive, never allow per-element override</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">ctx</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>Anchor Stripping (<code>#anchor</code>, line 388)</strong>: <code>(action || '').split('#')</code> separates the URL fragment into <code>ctx.request.anchor</code> before <code>fetch()</code> is called; after the DOM swap finishes, <code>__handleAnchorScroll(ctx)</code> (lines 1226–1230) scrolls <code>document.getElementById(ctx.request.anchor)</code> into view.</li>
+<li><strong>Core Request Headers (<code>__createCoreHeaders</code>, lines 436–447)</strong>:
+<ul>
+<li><code>HX-Request: &quot;true&quot;</code></li>
+<li><code>HX-Source</code>: <code>tagName.toLowerCase()</code> plus <code>#${encodeURI(elt.id)}</code> if <code>elt.id</code> is present (<code>__buildIdentifier</code> at lines 432–434).</li>
+<li><code>HX-Current-URL</code>: <code>location.href</code></li>
+<li><code>Accept: &quot;text/html&quot;</code></li>
+<li><code>HX-Boosted: &quot;true&quot;</code> (when <code>this.__isBoosted(elt)</code> is truthy)</li>
+<li><code>HX-Target</code>: <code>this.__buildIdentifier(ctx.target)</code> added at line 420 after <code>__resolveTarget</code> resolves <code>ctx.target</code> (defaulting to <code>document.body</code> for boosted elements or <code>sourceElement</code> otherwise).</li>
+<li><code>HX-Request-Type</code>: <code>&quot;full&quot;</code> if <code>ctx.target === document.body || ctx.select</code>, or <code>&quot;partial&quot;</code> otherwise (computed right before <code>fetch()</code> at line 585 after all config hooks have run).</li>
+</ul>
+</li>
+<li><strong>Boost &amp; <code>hx-config</code> HCON Overrides (lines 415–428)</strong>:
+<ul>
+<li>Because <code>hx-boost</code> in htmx v4 accepts an HCON specification (e.g., <code>hx-boost=&quot;swap:outerMorph push:false&quot;</code>), line 416 merges <code>sourceElement._htmx.boosted</code> directly into <code>ctx</code> <em>before</em> resolving <code>ctx.target</code>.</li>
+<li>Next, <code>hx-config</code> is merged into <code>ctx.request</code> via <code>HCON.merge(hxConfig, ctx.request)</code> (allowing per-element <code>timeout</code>, <code>credentials</code>, etc.), followed immediately by <code>ctx.request.mode = this.config.mode</code> (line 427). This <strong>security invariant</strong> prevents untrusted or injected <code>hx-config=&quot;mode:cors&quot;</code> attributes from escalating <code>htmx.config.mode</code> (which defaults to <code>'same-origin'</code>).</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>4.2 Form Data Collection &amp; Pre-Flight Pipeline (<code>__handleTriggerEvent</code> &amp; <code>__collectFormData</code>)</h2>
+<p>Once <code>ctx</code> is constructed, <code>__handleTriggerEvent(ctx)</code> (lines 471–545) validates inputs, assembles parameters, evaluates dynamic <code>hx-vals</code> and <code>hx-headers</code>, and dispatches <code>htmx:config:request</code>:</p>
+<h3>Enclosing Form Rule, HTML5 Validation &amp; Input Serialization (Lines 481–491 &amp; 1807–1873)</h3>
+<ol>
+<li><strong>The Enclosing Form Rule (lines 481–487)</strong>:<pre><code class="language-javascript"><span class="kd">let</span><span class="w"> </span><span class="nx">usesQueryParams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sr">/GET|DELETE/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">method</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">form</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">usesQueryParams</span>
+<span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s1">'form'</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">form</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="s2">"form"</span><span class="p">))</span>
+</code></pre>
+For <code>GET</code> and <code>DELETE</code> requests, htmx only serializes a <code>&lt;form&gt;</code> if the triggered element <strong>is itself</strong> the <code>&lt;form&gt;</code> (<code>elt.matches('form')</code>). In contrast, state-mutating / payload verbs (<code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>QUERY</code>) automatically locate and serialize any enclosing form via <code>elt.form || elt.closest(&quot;form&quot;)</code>.</li>
+<li><strong>HTML5 Constraint Validation (<code>__collectFormData</code>, lines 1807–1831)</strong>:
+<ul>
+<li>When <code>ctx.request.validate</code> is <code>true</code> (defaulting to <code>true</code> on <code>&lt;form&gt;</code> without <code>novalidate</code> or <code>submitter.formNoValidate</code>), htmx invokes <code>form.reportValidity()</code> (or <code>elt.reportValidity()</code> / <code>node.reportValidity()</code> on <code>hx-include</code> targets). If validation fails, <code>__collectFormData</code> returns <code>undefined</code> and <code>__handleTriggerEvent</code> aborts cleanly at line 491.</li>
+<li><strong>Submitter Self-Inclusion (<code>#4073</code>, line 1811)</strong>: When a <code>&lt;button type=&quot;submit&quot; name=&quot;cmd&quot; value=&quot;save&quot; hx-post=&quot;/save&quot;&gt;</code> inside a form triggers its own <code>click</code> handler rather than a <code>submit</code> event, <code>evt.submitter</code> is undefined. Line 1811 sets <code>submitter ??= (form &amp;&amp; elt.type === 'submit') ? elt : null</code>, ensuring the button's <code>name=value</code> pair is appended to <code>formData</code> (lines 1819–1822).</li>
+</ul>
+</li>
+<li><strong>Deduplicated Input Harvesting (<code>__addInputValues</code>, lines 1833–1873)</strong>:
+<ul>
+<li>Maintains an <code>included = new Set(...)</code> initialized with <code>form.elements</code> so no input is serialized twice when <code>hx-include</code> overlaps with the enclosing form.</li>
+<li><strong>Custom Elements &amp; Buttons (line 1836)</strong>: If <code>tag === 'BUTTON' || tag.includes('-')</code> (any Web Component custom element), htmx treats <code>elt</code> as a single atomic control (<code>inputs = [elt]</code>) rather than querying internal <code>[name]</code> descendants. Furthermore, if <code>Array.isArray(input.value)</code> (line 1864), each array element is appended individually to <code>FormData</code>.</li>
+<li><strong>Non-Form Containers on <code>GET</code> vs <code>POST</code> (line 1838)</strong>: If <code>elt</code> is a <code>&lt;div&gt;</code> without a form, <code>GET</code> sends no child inputs (<code>!isGet</code> is false), whereas <code>POST</code> on a non-<code>body</code> container collects <code>this.__queryEltAndDescendants(elt, '[name]:not(button)')</code>.</li>
+<li>Standard HTML controls handle <code>checkbox</code>/<code>radio</code> (including custom elements with <code>'checked' in input</code>), <code>input[type=&quot;file&quot;]</code> (<code>input.files</code>), and <code>select-multiple</code> (<code>input.selectedOptions</code>).</li>
+</ul>
+</li>
+</ol>
+<h3>Conditional Async <code>hx-vals</code> / <code>hx-headers</code> and Action Interception (Lines 492–544)</h3>
+<ul>
+<li><strong>Zero-Microtask HCON Fast Path (<code>__getAttributeObject</code>, lines 1875–1893)</strong>: Both <code>hx-vals</code> and <code>hx-headers</code> are parsed via <code>__getAttributeObject</code>. When the attribute has no <code>js:</code> or <code>javascript:</code> prefix, it parses synchronously via <code>HCON.parse(hxAttr)</code> and returns <code>undefined</code>; <code>__handleTriggerEvent</code> checks <code>if (valsResult) await valsResult</code> (line 496) and <code>if (headersResult) await headersResult</code> (line 506) so static HCON values never yield to the Promise microtask queue.</li>
+<li><strong>Pre-Flight Escape Hatches (lines 515–522)</strong>:
+<ol>
+<li><code>if (!this.__trigger(elt, &quot;htmx:config:request&quot;, {ctx: ctx})) return</code> — Extensions or listeners can mutate <code>ctx.request</code> or call <code>evt.preventDefault()</code> to cancel.</li>
+<li><code>if (ctx.request.method === 'DIALOG') return</code> — Allows native <code>&lt;form method=&quot;dialog&quot;&gt;</code> to close <code>&lt;dialog&gt;</code> elements without firing a network request.</li>
+<li><strong><code>js:</code> / <code>javascript:</code> Action URLs (lines 518–522)</strong>: If <code>ctx.request.action</code> starts with <code>js:</code> or <code>javascript:</code>, htmx converts <code>ctx.request.body</code> into a plain object via <code>Object.fromEntries(ctx.request.body)</code>, awaits <code>this.__executeJavaScript(ctx.sourceElement, data, javascriptContent, false)</code>, and returns without touching the network.</li>
+</ol>
+</li>
+<li><strong>Query String vs Body Encoding (lines 523–542)</strong>:
+<ul>
+<li>For <code>GET</code> and <code>DELETE</code> (<code>usesQueryParams</code>), parameters in <code>ctx.request.body</code> replace matching keys in <code>url.searchParams</code> (<code>url.searchParams.delete(key)</code> followed by <code>append</code>). If <code>url.origin === location.origin</code>, <code>ctx.request.action</code> is kept as a relative path (<code>url.pathname + url.search</code>), and <code>ctx.request.body</code> is set to <code>null</code>.</li>
+<li>For other verbs, unless <code>hx-encoding</code> or <code>form.enctype</code> is <code>&quot;multipart/form-data&quot;</code>, <code>ctx.request.body</code> (<code>FormData</code>) is converted into <code>new URLSearchParams(ctx.request.body)</code> (<code>application/x-www-form-urlencoded</code>).</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>4.3 The <code>RequestQueue</code> Admission State Machine (<code>class RequestQueue</code> &amp; <code>hx-sync</code>)</h2>
+<p>When <code>__handleTriggerEvent</code> calls <code>__issueRequest(ctx)</code> (line 547), htmx resolves the element's synchronization queue via <code>__determineSyncStrategy(elt)</code> and <code>__getRequestQueue(elt)</code> (lines 688–705) and gates execution on <code>requestQueue.admit(...)</code> (lines 90–128).</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_fetch_context_and_sync_queue/arch_c04_request_queue_matrix.png" alt="04_fetch_context_and_sync_queue_2" />
+  <figcaption class="drawlib-caption">RequestQueue State Machine (L90-128) and hx-sync Admission Strategies</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Colors</span><span class="p">,</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">79.5</span><span class="p">),</span> <span class="s2">"class RequestQueue (L90-128) &amp; hx-sync Admission State Machine"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">75.5</span><span class="p">),</span> <span class="s2">"Scoped per syncElt via this.__htmxState(syncElt).rq ||= new RequestQueue() (L695-705)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="c1"># Top Row: 3 State Machine Lifecycles</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">65.2</span><span class="p">),</span> <span class="s2">"1. Idle Slot (!#current)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="s2">"#current = {strategy, abort}</span><span class="se">\n</span><span class="s2">return 'run' (L96-99)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">65.2</span><span class="p">),</span> <span class="s2">"2. Busy Slot (#current != null)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="s2">"Evaluate 6 hx-sync strategies</span><span class="se">\n</span><span class="s2">return 'run' | 'queued' | 'dropped'"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">65.2</span><span class="p">),</span> <span class="s2">"3. finally: continue(abort)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="s2">"if (#current.abort === abort)</span><span class="se">\n</span><span class="s2">#current=null; #queue.shift()()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">46.5</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="p">(</span><span class="mf">50.5</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">93.5</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="p">(</span><span class="mf">97.5</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="c1"># Bottom Table: 6 Strategies in RequestQueue.admit() when #current is active</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">"hx-sync Strategy"</span><span class="p">,</span> <span class="s2">"Condition Checked (L100-115)"</span><span class="p">,</span> <span class="s2">"Queue &amp; Abort Mutation"</span><span class="p">,</span> <span class="s2">"Return"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"replace"</span><span class="p">,</span> <span class="s2">"strategy === 'replace'"</span><span class="p">,</span> <span class="s2">"#queue=[]; #current.abort()"</span><span class="p">,</span> <span class="s2">"'run'"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"non-abort vs abort"</span><span class="p">,</span> <span class="s2">"strategy!=='abort' &amp;&amp; cur==='abort'"</span><span class="p">,</span> <span class="s2">"#queue=[]; #current.abort()"</span><span class="p">,</span> <span class="s2">"'run'"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"queue all"</span><span class="p">,</span> <span class="s2">"strategy === 'queue all'"</span><span class="p">,</span> <span class="s2">"#queue.push(runRequest)"</span><span class="p">,</span> <span class="s2">"'queued'"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"queue last"</span><span class="p">,</span> <span class="s2">"strategy === 'queue last'"</span><span class="p">,</span> <span class="s2">"#queue = [runRequest]"</span><span class="p">,</span> <span class="s2">"'queued'"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"queue first (default)"</span><span class="p">,</span> <span class="s2">"not abort/drop &amp;&amp; #queue.length===0"</span><span class="p">,</span> <span class="s2">"#queue.push(runRequest)"</span><span class="p">,</span> <span class="s2">"'queued'"</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">"drop / busy abort"</span><span class="p">,</span> <span class="s2">"All other busy cases (L114)"</span><span class="p">,</span> <span class="s2">"No mutation (discarded)"</span><span class="p">,</span> <span class="s2">"'dropped'"</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">tbl</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="n">cell_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">),</span>
+    <span class="n">header_cell_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">header_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">),</span>
+    <span class="n">border_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+    <span class="n">has_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">set_style_cell_evenodd</span><span class="p">(</span>
+    <span class="n">even_color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">even_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">),</span>
+    <span class="n">odd_color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">Light</span><span class="p">,</span>
+    <span class="n">odd_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">set_style_cell_header</span><span class="p">(</span>
+    <span class="n">background_color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">Accent</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">draw_flexible</span><span class="p">(</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
+    <span class="n">column_widths</span><span class="o">=</span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">44.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">],</span>
+    <span class="n">row_heights</span><span class="o">=</span><span class="p">[</span><span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">],</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="n">align</span><span class="o">=</span><span class="s2">"top_left"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Scoping <code>RequestQueue</code> via <code>hx-sync</code> (Lines 688–705)</h3>
+<p><code>hx-sync</code> accepts three syntactic forms:</p>
+<ol>
+<li><strong>Strategy only (<code>hx-sync=&quot;replace&quot;</code>)</strong>: <code>__getRequestQueue</code> sees that <code>hxSync</code> matches <code>/^(drop|abort|replace|queue)/</code>, keeps <code>syncElt = elt</code>, and <code>__determineSyncStrategy</code> returns <code>&quot;replace&quot;</code>.</li>
+<li><strong>Selector only (<code>hx-sync=&quot;closest form&quot;</code>)</strong>: <code>__getRequestQueue</code> resolves <code>syncElt = this.__findOrWarn(elt, &quot;closest form&quot;, &quot;hx-sync&quot;) || elt</code>, while <code>__determineSyncStrategy</code> falls back to the default <code>&quot;queue first&quot;</code>.</li>
+<li><strong>Selector + Strategy (<code>hx-sync=&quot;#search-form:abort&quot;</code>)</strong>: Splits on the <strong>last</strong> colon (<code>hxSync.lastIndexOf(&quot;:&quot;)</code>) so CSS pseudo-classes inside the selector (e.g., <code>form:first-of-type:replace</code>) remain intact! The <code>RequestQueue</code> instance is lazily created on <code>this.__htmxState(syncElt).rq ||= new RequestQueue()</code>.</li>
+</ol>
+<h3>The <code>RequestQueue</code> Implementation (Lines 90–128)</h3>
+<pre><code class="language-javascript"><span class="kd">class</span><span class="w"> </span><span class="nx">RequestQueue</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">#current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="n">#queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+
+<span class="w">    </span><span class="cm">/** Returns "run", "queued", or "dropped" */</span>
+<span class="w">    </span><span class="nx">admit</span><span class="p">(</span><span class="nx">strategy</span><span class="p">,</span><span class="w"> </span><span class="nx">runRequest</span><span class="p">,</span><span class="w"> </span><span class="nx">abortRequest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">strategy</span><span class="p">,</span><span class="w"> </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="nx">abortRequest</span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="s2">"run"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"replace"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"abort"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="p">.</span><span class="nx">strategy</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"abort"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="p">.</span><span class="nx">abort</span><span class="o">?</span><span class="p">.()</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">strategy</span><span class="p">,</span><span class="w"> </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="nx">abortRequest</span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="s2">"run"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"queue all"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">runRequest</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"queue last"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nx">runRequest</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">strategy</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"abort"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">strategy</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"drop"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// default queue first</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">runRequest</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="s2">"dropped"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s2">"queued"</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">continue</span><span class="p">(</span><span class="nx">abortRequest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="o">?</span><span class="p">.</span><span class="nx">abort</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">abortRequest</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="w">    </span><span class="c1">// free current slot</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#queue</span><span class="p">.</span><span class="nx">shift</span><span class="p">()</span><span class="o">?</span><span class="p">.()</span><span class="w"> </span><span class="c1">// run next request</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">abort</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#current</span><span class="o">?</span><span class="p">.</span><span class="nx">abort</span><span class="o">?</span><span class="p">.()</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>Two subtle concurrency guarantees in <code>RequestQueue</code> deserve special attention:</p>
+<ul>
+<li><strong>Asymmetric <code>abort</code> Preemption (line 100)</strong>: When an element specifies <code>hx-sync=&quot;closest form:abort&quot;</code> (such as an autosave or background validation input inside a form), its in-flight request is tagged with <code>this.#current.strategy === &quot;abort&quot;</code>. If another <code>abort</code> request arrives while <code>#current</code> is active, it falls through to line 114 and returns <code>&quot;dropped&quot;</code>. However, if the user submits the form with the default <code>&quot;queue first&quot;</code> strategy (<code>strategy !== &quot;abort&quot; &amp;&amp; this.#current.strategy === &quot;abort&quot;</code>), line 100 <strong>immediately aborts the in-flight <code>abort</code> request and runs the form submission right away</strong> instead of queuing behind the background check!</li>
+<li><strong>Ownership-Verified Slot Release (<code>continue(abortRequest)</code>, lines 119–123)</strong>: When an aborted request's <code>fetch()</code> rejects and enters its <code>finally</code> block (line 637), a <code>replace</code> request may have <em>already</em> taken ownership of <code>this.#current</code>. By comparing <code>if (this.#current?.abort !== abortRequest) return</code>, the replaced request's <code>finally</code> block is prevented from clearing the new request's <code>#current</code> slot or prematurely shifting <code>#queue</code>.</li>
+</ul>
+<hr />
+<h2>4.4 Async <code>htmx:confirm</code>, Ref-Counted Indicators, <code>fetch()</code> &amp; Status Routing (<code>__issueRequest</code>)</h2>
+<p>Once <code>requestQueue.admit(syncStrategy, () =&gt; this.__issueRequest(ctx), abortRequest)</code> returns <code>&quot;run&quot;</code> (lines 555–559), <code>__issueRequest(ctx)</code> transitions <code>ctx.status = &quot;issuing&quot;</code> and executes the network and response header pipeline.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_fetch_context_and_sync_queue/arch_c04_issue_request_sequence.png" alt="04_fetch_context_and_sync_queue_3" />
+  <figcaption class="drawlib-caption">__issueRequest() Execution Flow (L547-639), Ref-Counted Indicators, and Hierarchical Status Code Routing</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">77.5</span><span class="p">),</span> <span class="s2">"__issueRequest(ctx) Lifecycle, HX-* Headers &amp; Status Code Routing"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">73.5</span><span class="p">),</span> <span class="s2">"Runs only after RequestQueue.admit() === 'run'; guarantees cleanup and queue advancement in finally (L623-638)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="c1"># Row 1: Pre-Fetch (Left -&gt; Center -&gt; Right)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">),</span> <span class="s2">"1. Async Confirm (L567)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"htmx:confirm </span><span class="si">{issueRequest}</span><span class="se">\n</span><span class="s2">js: __executeJavaScript()</span><span class="se">\n</span><span class="s2">else window.confirm()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">),</span> <span class="s2">"2. Timeout &amp; Ref-Counts"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"__initTimeout (abort('timeout'))</span><span class="se">\n</span><span class="s2">__showIndicators: ++s.rc</span><span class="se">\n</span><span class="s2">__disableElements: ++s.dc"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">),</span> <span class="s2">"3. Network Fetch (L583)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"HX-Request-Type: full|partial</span><span class="se">\n</span><span class="s2">htmx:before:request</span><span class="se">\n</span><span class="s2">await ctx.fetch(action, req)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span><span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">46.5</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="p">(</span><span class="mf">51.5</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">92.5</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="p">(</span><span class="mf">97.5</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="c1"># Row 2: Response Processing (Right -&gt; Center -&gt; Left)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mf">45.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">),</span> <span class="s2">"4. Extract &amp; Read Body"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">34.0</span><span class="p">),</span> <span class="s2">"__extractHxHeaders -&gt; ctx.hx</span><span class="se">\n</span><span class="s2">htmx:before:response</span><span class="se">\n</span><span class="s2">ctx.text = await resp.text()</span><span class="se">\n</span><span class="s2">htmx:after:request / :error"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">),</span> <span class="s2">"5. Early-Return Headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">34.0</span><span class="p">),</span> <span class="s2">"HX-Refresh -&gt; _loc.reload()</span><span class="se">\n</span><span class="s2">HX-Redirect -&gt; _loc.href</span><span class="se">\n</span><span class="s2">HX-Location -&gt; this.ajax()</span><span class="se">\n</span><span class="s2">sets ctx.keepIndicators=true"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">),</span> <span class="s2">"6. Overrides &amp; Status"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">34.0</span><span class="p">),</span> <span class="s2">"HX-Retarget/Reswap/Reselect</span><span class="se">\n</span><span class="s2">__handleStatusCodes (L2271)</span><span class="se">\n</span><span class="s2">[404, 40x, 4xx] -&gt; HCON.merge</span><span class="se">\n</span><span class="s2">await this.swap(ctx)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span><span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">97.5</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">92.5</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">51.5</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">46.5</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="c1"># Row 3: Finally Block (Full Width)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">27.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mf">21.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">17.8</span><span class="p">),</span> <span class="s2">"7. Guaranteed finally Block (L623-638)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">10.2</span><span class="p">),</span> <span class="s2">"await ctx.extensionPromise  |  clearTimeout(ctx.requestTimeout)  |  if (ctx.hx?.trigger) __handleTriggerHeader()</span><span class="se">\n</span><span class="s2">htmx:finally:request  |  if (!ctx.keepIndicators) { --s.rc; --s.dc }  |  requestQueue.continue(abortRequest)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Why <code>htmx:confirm</code>, Timeouts, and Indicators Run After Queue Admission</h3>
+<ol>
+<li><strong>Async Confirmation (<code>ctx.confirm</code>, lines 567–576)</strong>:<pre><code class="language-javascript"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">confirm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">confirmed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">(</span><span class="nx">resolve</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">issueRequest</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">resolve</span><span class="p">(</span><span class="kc">true</span><span class="p">),</span><span class="w"> </span><span class="nx">dropRequest</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">resolve</span><span class="p">(</span><span class="kc">false</span><span class="p">)};</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:confirm"</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">js</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__extractJavascriptContent</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">confirm</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">resolve</span><span class="p">(</span><span class="nx">js</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__executeJavaScript</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">ctx</span><span class="p">},</span><span class="w"> </span><span class="nx">js</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">confirm</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">confirmed</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+Because <code>htmx:confirm</code> runs <em>after</em> <code>requestQueue.admit()</code> returns <code>&quot;run&quot;</code>, queued requests never pop up overlapping confirmation dialogs simultaneously. Custom modal listeners can call <code>evt.preventDefault()</code> on <code>htmx:confirm</code> and later invoke <code>evt.detail.issueRequest()</code> or <code>evt.detail.dropRequest()</code> asynchronously; if <code>confirmed</code> is <code>false</code>, the <code>finally</code> block still runs <code>requestQueue.continue(abortRequest)</code> to unblock the next queued request.</li>
+<li><strong>Timeout Timer (<code>__initTimeout</code>, lines 679–686)</strong>: Starts <em>after</em> confirmation resolves (<code>ctx.requestTimeout = setTimeout(() =&gt; ctx.request?.abort?.('timeout'), timeout)</code>), so time spent by the user reading a confirmation dialog never counts against <code>defaultTimeout</code> (<code>60000ms</code>). Notice in <code>catch (error)</code> (line 622) that normal <code>AbortError</code> cancellations are silent, whereas <code>ctx.request.signal.reason === 'timeout'</code> explicitly dispatches <code>htmx:error</code>.</li>
+<li><strong>Reference-Counted Indicators &amp; Disabled Elements (<code>s.rc</code> &amp; <code>s.dc</code>, lines 1757–1805)</strong>:
+<ul>
+<li><code>__showIndicators(ctx)</code> resolves <code>hx-indicator</code> (or <code>[elt]</code> when omitted and <code>elt !== document.body</code>), increments <code>this.__htmxState(indicator).rc = (s.rc || 0) + 1</code>, and adds <code>htmx-request</code>.</li>
+<li><code>__disableElements(ctx)</code> resolves <code>hx-disable</code>, increments <code>this.__htmxState(el).dc = (s.dc || 0) + 1</code>, and sets <code>el.disabled = true</code>.</li>
+<li>In <code>finally</code>, <code>__hideIndicators</code> and <code>__enableElements</code> decrement <code>--s.rc</code> and <code>--s.dc</code>, only removing <code>htmx-request</code> or restoring <code>disabled = false</code> when the reference count reaches <code>&lt;= 0</code> (so concurrent requests sharing a global spinner never flicker).</li>
+</ul>
+</li>
+</ol>
+<h3>Response Header Normalization (<code>__extractHxHeaders</code>) &amp; Early-Return Redirects</h3>
+<p>Immediately after <code>let response = await ctx.fetch(ctx.request.action, ctx.request)</code> resolves (line 588), <code>__extractHxHeaders(ctx)</code> (lines 643–650) scans <code>ctx.response.raw.headers</code> for any header starting with <code>hx-</code>, strips the <code>hx-</code> prefix and hyphens, and stores it in lowercase on <code>ctx.hx</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">HTTP Response Header</th>
+<th style="text-align:left"><code>ctx.hx</code> Property</th>
+<th style="text-align:left">Processing Stage &amp; Behavior (<code>src/htmx.js</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>HX-Refresh: true</code></td>
+<td style="text-align:left"><code>ctx.hx.refresh</code></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code> (L655): Calls <code>this._loc.reload()</code>, sets <code>ctx.keepIndicators = true</code>, and skips swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Redirect: &lt;url&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.redirect</code></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code> (L659): Sets <code>this._loc.href = ctx.hx.redirect</code>, sets <code>ctx.keepIndicators = true</code>, and skips swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Location: &lt;spec&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.location</code></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code> (L663): Parses HCON or string path, forwards <code>ctx.indicators</code> and <code>ctx.disabledElements</code> into <code>opts</code>, invokes <code>this.ajax('GET', path, opts)</code>, and sets <code>ctx.keepIndicators = true</code> so the follow-up <code>ajax()</code> call inherits the active indicators seamlessly.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Retarget: &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.retarget</code></td>
+<td style="text-align:left">Pre-swap override (L610): Sets <code>ctx.target = ctx.hx.retarget</code> (resolved later in <code>__processMainSwap</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Reswap: &lt;spec&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.reswap</code></td>
+<td style="text-align:left">Pre-swap override (L611): Sets <code>ctx.swap = ctx.hx.reswap</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Reselect: &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.reselect</code></td>
+<td style="text-align:left">Pre-swap override (L612): Sets <code>ctx.select = ctx.hx.reselect</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Push-Url</code> / <code>HX-Replace-Url</code></td>
+<td style="text-align:left"><code>ctx.hx.pushurl</code> / <code>ctx.hx.replaceurl</code></td>
+<td style="text-align:left">Consumed during <code>swap(ctx)</code> in <code>__handleHistoryUpdate(ctx)</code> (covered in <a href="05_swap_settle_and_morph_engine.html">Chapter 5</a>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HX-Trigger: &lt;spec&gt;</code></td>
+<td style="text-align:left"><code>ctx.hx.trigger</code></td>
+<td style="text-align:left">Executed in <code>finally</code> (L628–630) via <code>__handleTriggerHeader(ctx.hx.trigger, ctx.sourceElement)</code> (L874–888), supporting both comma-separated event names and HCON objects (<code>{myEvent: {level: &quot;info&quot;, target: &quot;#toast&quot;}}</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3>Hierarchical Status Code Routing (<code>__handleStatusCodes</code>, Lines 2271–2286)</h3>
+<p>Right before calling <code>await this.swap(ctx)</code> (line 616), htmx invokes <code>__handleStatusCodes(ctx)</code> to apply declarative HTTP status code rules:</p>
+<pre><code class="language-javascript"><span class="nx">__handleStatusCodes</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">response</span><span class="p">.</span><span class="nx">raw</span><span class="p">.</span><span class="nx">status</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">noSwapStrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">noSwap</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">""</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">status</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">""</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">pattern</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="p">[</span><span class="nx">str</span><span class="p">,</span><span class="w"> </span><span class="nx">str</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'x'</span><span class="p">,</span><span class="w"> </span><span class="nx">str</span><span class="p">[</span><span class="mf">0</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'xx'</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">noSwapStrings</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">pattern</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">swap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="p">;</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">statusValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-status:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">pattern</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">statusValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">statusValue</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<ol>
+<li><strong>3-Tier Specificity Cascade (<code>[str, str.slice(0, 2) + 'x', str[0] + 'xx']</code>)</strong>: For a status code such as <code>404</code>, htmx checks patterns in order of decreasing specificity: exact <code>&quot;404&quot;</code>, decade wildcard <code>&quot;40x&quot;</code>, and class wildcard <code>&quot;4xx&quot;</code>.</li>
+<li><strong><code>config.noSwap</code> Matching</strong>: At each specificity tier, htmx first checks <code>this.config.noSwap</code> (which defaults to <code>[204, 304]</code> at line 203). If matched, <code>ctx.swap = &quot;none&quot;</code> is set and the loop returns immediately.</li>
+<li><strong>Full Context Mutation via <code>HCON.merge(statusValue, ctx)</code></strong>: If the element (or an ancestor via <code>:inherited</code>) defines <code>hx-status:&lt;pattern&gt;</code> (for example, <code>hx-status:422=&quot;target:#form-errors swap:innerHTML select:#errors&quot;</code> or <code>hx-status:5xx=&quot;swap:none confirm:false&quot;</code>), htmx merges that HCON specification directly into the top-level <code>ctx</code> object and returns before handing <code>ctx</code> to <code>await this.swap(ctx)</code> (covered in <a href="05_swap_settle_and_morph_engine.html">Chapter 5</a>).</li>
+</ol>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

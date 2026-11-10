@@ -1,0 +1,769 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Trigger &amp; Selector Parsers</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/03_trigger_and_selector_parsers.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 replaces rigid regular-expression attribute parsers with two composable micro-engines built on top of HCON: a 3-Layer Trigger Closure Synthesizer…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 Architecture">
+    <meta property="og:title" content="3. Trigger &amp; Selector Parsers — htmx v4 Architecture">
+    <meta property="og:description" content="htmx v4.0.1 replaces rigid regular-expression attribute parsers with two composable micro-engines built on top of HCON: a 3-Layer Trigger Closure Synthesizer…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="3. Trigger &amp; Selector Parsers — htmx v4 Architecture">
+    <meta name="twitter:description" content="htmx v4.0.1 replaces rigid regular-expression attribute parsers with two composable micro-engines built on top of HCON: a 3-Layer Trigger Closure Synthesizer…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 Architecture">
+                    
+                    htmx v4 Architecture
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Architecture Overview</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Core Engine Internals</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="01_module_and_state_architecture.html" >1. Module &amp; State Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. Attribute Inheritance &amp; HCON</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="03_trigger_and_selector_parsers.html" >3. Trigger &amp; Selector Parsers</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Network &amp; DOM Pipeline</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetch Context &amp; Sync Queue</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap, Settle &amp; Morph Engine</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extension_and_security_internals.html" >6. Extension &amp; Security Internals</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Portals &amp; Reports</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">3. Trigger &amp; Selector Parsers</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="03_trigger_and_selector_parsers.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/03_trigger_and_selector_parsers.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>3. Trigger &amp; Selector Parsers</h1>
+<p>htmx v4.0.1 replaces rigid regular-expression attribute parsers with two composable micro-engines built on top of <code>HCON</code>: a <strong>3-Layer Trigger Closure Synthesizer</strong> (<code>__parseTriggerSpecs</code> and <code>__onTrigger</code>, lines 322–331 and 734–872) and an <strong>Extended CSS Selector Engine</strong> (<code>__findAllExt</code>, lines 1895–1994) capable of traversing Shadow DOM boundaries, inheritance chains, and full document-order bitmasks.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/03_trigger_and_selector_parsers/arch_c03_trigger_selector_hero.png" alt="03_trigger_and_selector_parsers_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Trigger Lexer, 3-Layer Closure Synthesizer, and Extended Selector Engine</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChevronProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">card_title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"Trigger Compilation &amp; Extended Selector Resolution Pipeline"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">61.5</span><span class="p">),</span> <span class="s2">"src/htmx.js — __initializeTriggers (L734), __parseTriggerSpecs (L322), __onTrigger (L744) &amp; __findAllExt (L1900)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="c1"># Top pipeline using ChevronProcess</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. Default &amp; Lexer"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"HCON.split + HCON.parse"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"2. Source Resolution"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"from: &amp; __findAllExt()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"3. 3-Layer Closure"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Guard -&gt; Timed -&gt; Inner"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+             <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+             <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"4. Lifecycle Wiring"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"DOM / Observer / Timer"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">)</span>
+
+<span class="n">pipeline</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">43</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="c1"># Bottom architectural detail cards (4 columns aligned under chevrons)</span>
+<span class="n">cards</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">21.5</span><span class="p">,</span> <span class="s2">"Trigger Spec AST"</span><span class="p">,</span> <span class="s2">"__parseTriggerSpecs(L322)"</span><span class="p">,</span> <span class="s2">"every 1s [c] -&gt; every[c]</span><span class="se">\n</span><span class="s2">{name, ...HCON.parse()}"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">55.0</span><span class="p">,</span> <span class="s2">"Extended Selectors"</span><span class="p">,</span> <span class="s2">"__findAllExt (L1900)"</span><span class="p">,</span> <span class="s2">"global / closest / find</span><span class="se">\n</span><span class="s2">next / previous / this"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">88.5</span><span class="p">,</span> <span class="s2">"Closure Synthesis"</span><span class="p">,</span> <span class="s2">"__onTrigger (L744)"</span><span class="p">,</span> <span class="s2">"L1: spec.handler (guard)</span><span class="se">\n</span><span class="s2">L2: timed (delay/throt)</span><span class="se">\n</span><span class="s2">L3: inner (changed/once)"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">122.0</span><span class="p">,</span> <span class="s2">"Element State"</span><span class="p">,</span> <span class="s2">"elt._htmx &amp; _htmx_state"</span><span class="p">,</span> <span class="s2">"triggerSpecs / listeners</span><span class="se">\n</span><span class="s2">changedValues WeakMap"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">fn_label</span><span class="p">,</span> <span class="n">body_txt</span><span class="p">,</span> <span class="n">box_style</span><span class="p">,</span> <span class="n">is_focal</span> <span class="ow">in</span> <span class="n">cards</span><span class="p">:</span>
+    <span class="n">rectangle</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">20.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">31.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">29.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">box_style</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+    <span class="n">line</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">42.5</span><span class="p">),</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+    <span class="n">t_style</span> <span class="o">=</span> <span class="n">white_title_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">card_title_s</span>
+    <span class="n">c_style</span> <span class="o">=</span> <span class="n">white_code_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">code_s</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span> <span class="o">+</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">heading</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">t_style</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">25.0</span><span class="p">),</span> <span class="n">fn_label</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">c_style</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">14.5</span><span class="p">),</span> <span class="n">body_txt</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">c_style</span><span class="p">)</span>
+
+<span class="n">phosphor</span><span class="o">.</span><span class="n">lightning</span><span class="p">((</span><span class="mf">9.5</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">magnifying_glass</span><span class="p">((</span><span class="mf">43.0</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">funnel</span><span class="p">((</span><span class="mf">76.5</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">database</span><span class="p">((</span><span class="mf">110.0</span><span class="p">,</span> <span class="mf">30.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">3.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>3.1 Default Trigger Resolution (<code>__initializeTriggers</code>)</h2>
+<p>When <code>process(root)</code> initializes an element matching <code>#actionSelector</code> (<code>[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[hx-query]</code>) or a boosted <code>&lt;a&gt;</code>/<code>&lt;form&gt;</code>, <code>__initializeElement(elt)</code> (lines 365–373) first attaches <code>elt._htmx.eventHandler = this.__createHtmxEventHandler(elt)</code> and then invokes <code>__initializeTriggers(elt)</code> (lines 734–740):</p>
+<pre><code class="language-javascript"><span class="nx">__initializeTriggers</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">initialHandler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">.</span><span class="nx">eventHandler</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">hxTrigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"hx-trigger"</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">hxTrigger</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">"form"</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"submit"</span><span class="w"> </span><span class="o">:</span>
+<span class="w">        </span><span class="nx">elt</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">"input:not([type=button]):not([type=submit]),select,textarea"</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"change"</span><span class="w"> </span><span class="o">:</span>
+<span class="w">            </span><span class="s2">"click"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__onTrigger</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">trigger</span><span class="p">,</span><span class="w"> </span><span class="nx">initialHandler</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+<p>Two architectural invariants govern default trigger resolution:</p>
+<ol>
+<li><strong>No Implicit Inheritance (<code>allowInheritance = false</code>)</strong>: <code>__attributeValue(elt, &quot;hx-trigger&quot;, undefined, undefined, false)</code> explicitly disables implicit inheritanceeven if <code>htmx.config.implicitInheritance</code> is enabled globally. An ancestor's <code>hx-trigger</code> will only cascade if the ancestor explicitly opts in with <code>hx-trigger:inherited</code>.</li>
+<li><strong>Tag-Specific Natural Defaults</strong>: When <code>hx-trigger</code> is omitted, htmx inspects the element via <code>elt.matches(...)</code>:
+<ul>
+<li><code>&lt;form&gt;</code> elements listen for <code>submit</code>.</li>
+<li>Editable form controls (<code>input:not([type=button]):not([type=submit]),select,textarea</code>) listen for <code>change</code>.</li>
+<li>All other elements (including <code>&lt;button&gt;</code>, <code>&lt;input type=&quot;button&quot;&gt;</code>, <code>&lt;input type=&quot;submit&quot;&gt;</code>, <code>&lt;a&gt;</code>, and <code>&lt;div&gt;</code>) listen for <code>click</code>.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>3.2 Trigger Specification Lexer (<code>__parseTriggerSpecs</code> &amp; <code>__extractFilter</code>)</h2>
+<p>Once the raw trigger string is resolved, <code>__parseTriggerSpecs(spec)</code> (lines 322–331) compiles it into an array of normalized trigger specification objects using <code>HCON</code> (covered in <a href="02_attribute_inheritance_and_hcon.html">Chapter 2</a>):</p>
+<pre><code class="language-javascript"><span class="nx">__parseTriggerSpecs</span><span class="p">(</span><span class="nx">spec</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="nx">spec</span><span class="p">).</span><span class="nx">flatMap</span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// support `every 1s [cond]` by moving it next to `every`</span>
+<span class="w">        </span><span class="nx">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^\s*every\s+(\S+?)\s*(\[[^\]]*\])/</span><span class="p">,</span><span class="w"> </span><span class="s1">'every$2 $1'</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="p">[,</span><span class="nx">name</span><span class="p">,</span><span class="nx">rest</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^\s*(\S+\[[^\]]*\]|\S+)\s*(.*?)\s*$/</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span><span class="w">  </span><span class="c1">// skip empty/whitespace-only tokens</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="sr">/\[[^\]]*$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="s2">"unterminated:"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">name</span><span class="p">;</span><span class="w">  </span><span class="c1">// e.g. click[ctrlKey</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">[{</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">rest</span><span class="p">)}];</span><span class="w">  </span><span class="c1">// spread modifiers (delay, throttle, etc.) onto result</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre>
+<h3>Multi-Step Tokenization Pipeline</h3>
+<ol>
+<li><strong>Top-Level Comma Splitting (<code>HCON.split(spec)</code>)</strong>: Splits comma-separated trigger definitions (e.g., <code>hx-trigger=&quot;mouseenter once, click[ctrlKey] delay:300ms&quot;</code>) while respecting nested brackets <code>[...]</code>, braces <code>{...}</code>, and quotes so commas inside JS filter expressions (<code>click[a, b]</code>) are never split.</li>
+<li><strong>Polling Filter Normalization (<code>every 1s [cond]</code> -&gt; <code>every[cond] 1s</code>)</strong>: Unlike standard DOM events where the bracketed filter immediately follows the event name (<code>click[ctrlKey]</code>), polling specifications place the interval after <code>every</code> (<code>every 2s [ isActive() ]</code>). Line 325 rewrites <code>every &lt;interval&gt; [&lt;cond&gt;]</code> into <code>every[&lt;cond&gt;] &lt;interval&gt;</code> so that <code>every[&lt;cond&gt;]</code> becomes a single <code>name</code> token and <code>&lt;interval&gt;</code> is parsed as an HCON key in <code>rest</code>.</li>
+<li><strong>Head Token &amp; Unterminated Bracket Validation</strong>:
+<ul>
+<li>The regex <code>/^\s*(\S+\[[^\]]*\]|\S+)\s*(.*?)\s*$/</code> splits the specification into <code>name</code> (the event name plus optional <code>[filter]</code>) and <code>rest</code> (all trailing modifiers).</li>
+<li>If <code>name</code> contains an opening <code>[</code> without a closing <code>]</code>, <code>/\[[^\]]*$/.test(name)</code> immediately throws <code>&quot;unterminated:&quot; + name</code> (line 328), which is caught by <code>process()</code> or surfaced via <code>htmx:error</code>.</li>
+</ul>
+</li>
+<li><strong>HCON Modifier Spreading (<code>{name, ...HCON.parse(rest)}</code>)</strong>: Because <code>HCON.parse</code> treats bare words as <code>{word: true}</code> and <code>key:value</code> pairs as <code>{key: &quot;value&quot;}</code>, a modifier string like <code>once changed delay:500ms from:closest form</code> compiles directly into:<pre><code class="language-javascript"><span class="p">{</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"keyup[key=='Enter']"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">once</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">changed</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">delay</span><span class="o">:</span><span class="w"> </span><span class="s2">"500ms"</span><span class="p">,</span>
+<span class="w">    </span><span class="kr">from</span><span class="o">:</span><span class="w"> </span><span class="s2">"closest form"</span>
+<span class="p">}</span>
+</code></pre>
+</li>
+<li><strong>Filter Extraction (<code>__extractFilter</code>, lines 868–872)</strong>: Inside <code>__onTrigger</code>, <code>__extractFilter(spec.name)</code> splits <code>name</code> via <code>/^([^\[]*)\[([^\]]*)]/</code> into <code>[eventName, filter]</code> (or <code>[str, null]</code> when no brackets are present).</li>
+</ol>
+<hr />
+<h2>3.3 3-Layer Event Handler Closure Synthesis (<code>__onTrigger</code>)</h2>
+<p><code>__onTrigger(elt, specString, handler)</code> (lines 744–866) is the core event compiler used by both <code>hx-trigger</code> and <code>hx-on:*</code> attributes. After parsing <code>specs</code> and pushing them into <code>this.__htmxProp(elt).triggerSpecs</code>, it synthesizes a <strong>three-layer nested closure</strong> for each specification: <strong>Outer Guard (<code>spec.handler</code>) -&gt; Timing Wrapper (<code>timed</code>) -&gt; Inner Execution (<code>inner</code>)</strong>.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/03_trigger_and_selector_parsers/arch_c03_three_layer_closure.png" alt="03_trigger_and_selector_parsers_2" />
+  <figcaption class="drawlib-caption">3-Layer Closure Synthesis in __onTrigger() (L744-866) and Lifecycle Trigger Dispatchers</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">79.5</span><span class="p">),</span> <span class="s2">"__onTrigger() 3-Layer Closure Synthesis &amp; Lifecycle Triggers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">75.5</span><span class="p">),</span> <span class="s2">"Pre-timing guards execute synchronously before debounce/throttle timers; state mutations run only when timers fire"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="c1"># Left Column: Trigger Sources (DOM + Synthetic)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="mf">39.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="mf">67.2</span><span class="p">),</span> <span class="s2">"Event &amp; Synthetic Sources"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+
+<span class="n">sources</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">56.2</span><span class="p">,</span> <span class="s2">"DOM addEventListener"</span><span class="p">,</span> <span class="s2">"fromElts (elt / doc / ext)</span><span class="se">\n</span><span class="s2">capture &amp; passive flags"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">42.2</span><span class="p">,</span> <span class="s2">"IntersectionObserver"</span><span class="p">,</span> <span class="s2">"intersect / revealed (L824)</span><span class="se">\n</span><span class="s2">root, rootMargin, threshold"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">28.2</span><span class="p">,</span> <span class="s2">"setInterval Polling"</span><span class="p">,</span> <span class="s2">"every &lt;interval&gt; (L843)</span><span class="se">\n</span><span class="s2">isConnected ? fire : clear"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">14.2</span><span class="p">,</span> <span class="s2">"Immediate Load"</span><span class="p">,</span> <span class="s2">"load (L852) -&gt; CustomEvent</span><span class="se">\n</span><span class="s2">no DOM listener registered"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">cy</span><span class="p">,</span> <span class="n">s_title</span><span class="p">,</span> <span class="n">s_desc</span><span class="p">,</span> <span class="n">s_style</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+    <span class="n">rectangle</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">11.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">s_style</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+    <span class="n">text</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="n">cy</span> <span class="o">+</span> <span class="mf">2.8</span><span class="p">),</span> <span class="n">s_title</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+    <span class="n">text</span><span class="p">((</span><span class="mi">24</span><span class="p">,</span> <span class="n">cy</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">s_desc</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="c1"># Right Column: 3-Layer Closure Pipeline (Top to Bottom)</span>
+<span class="c1"># Layer 1: spec.handler</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">86</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">67.2</span><span class="p">),</span> <span class="s2">"Layer 1: Guarded Outer Handler — spec.handler(evt) (L804-821)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"1. Auto-Cancel: if (__shouldCancel(evt)) evt.preventDefault()</span><span class="se">\n</span><span class="s2">2. Origin/Target: from==='self' | from==='outside' | target.matches()</span><span class="se">\n</span><span class="s2">3. Sync Filter: __executeJavaScript(elt, evtArgs, filter, true, false)</span><span class="se">\n</span><span class="s2">4. Timer Reset: clear other.timeout &amp; other.throttledEvent on elt"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="c1"># Layer 2: timed(evt)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">38.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">86</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">42.5</span><span class="p">),</span> <span class="s2">"Layer 2: Timing Wrapper — timed(evt) (L778-801)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">),</span> <span class="s2">"spec.delay: clearTimeout(timeout) -&gt; setTimeout(inner, parseInterval)</span><span class="se">\n</span><span class="s2">spec.throttle: leading inner(evt) + trailing throttledEvent replay"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="c1"># Layer 3: inner(evt)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">86</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">19.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">24.5</span><span class="p">),</span> <span class="s2">"Layer 3: Inner Execution Closure — inner(evt) (L759-775)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">15.8</span><span class="p">),</span> <span class="s2">"1. Propagation: halt/prevent -&gt; preventDefault | halt/stop/consume</span><span class="se">\n</span><span class="s2">2. spec.changed: __htmxState(elt).changedValues WeakMap diff check</span><span class="se">\n</span><span class="s2">3. spec.once: removeEventListener() across all spec.listeners[]</span><span class="se">\n</span><span class="s2">4. Execute: handler(evt) -&gt; __createHtmxEventHandler(elt)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span><span class="p">)</span>
+
+<span class="c1"># Connections from sources to Layer 1, then Layer 1 -&gt; Layer 2 -&gt; Layer 3</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">42.5</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">51.5</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">48.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mf">45.8</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">95</span><span class="p">,</span> <span class="mf">31.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mf">28.2</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Layer 1: Guarded Outer Handler (<code>spec.handler</code>, Lines 804–821)</h3>
+<p><code>spec.handler</code> is the function registered with <code>addEventListener</code>. It runs synchronously at the moment the browser dispatches the event so that default browser navigation can be suppressed immediately—even when <code>delay</code> defers the actual HTTP request:</p>
+<pre><code class="language-javascript"><span class="nx">spec</span><span class="p">.</span><span class="nx">handler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__shouldCancel</span><span class="p">(</span><span class="nx">evt</span><span class="p">))</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="kr">from</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'self'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">target</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="nx">elt</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="kr">from</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'outside'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">evt</span><span class="p">.</span><span class="nx">target</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">target</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">evt</span><span class="p">.</span><span class="nx">target</span><span class="o">?</span><span class="p">.</span><span class="nx">matches</span><span class="o">?</span><span class="p">.(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">target</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">evtArgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="sr">/^[a-z]+$/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">k</span><span class="p">))</span><span class="w"> </span><span class="nx">evtArgs</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">__executeJavaScript</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">evtArgs</span><span class="p">,</span><span class="w"> </span><span class="nx">filter</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// a new trigger replaces any pending delayed or throttled trigger on this element</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">eventName</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'every'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">other</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__htmxProp</span><span class="p">(</span><span class="nx">elt</span><span class="p">).</span><span class="nx">triggerSpecs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">other</span><span class="p">.</span><span class="nx">timeout</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">other</span><span class="p">.</span><span class="nx">throttledEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">timed</span><span class="p">(</span><span class="nx">evt</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre>
+<p>Key design details in Layer 1:</p>
+<ul>
+<li><strong>Automatic Cancellation (<code>__shouldCancel(evt)</code>, lines 712–732)</strong>: Returns <code>true</code> in three exact cases:
+<ol>
+<li><code>evt.type === 'submit'</code> on a <code>&lt;form&gt;</code> element.</li>
+<li>Primary-button <code>click</code> (<code>evt.button === 0</code>) on an enabled submit button (<code>button[type=&quot;submit&quot;]</code>, <code>input[type=&quot;submit&quot;]</code>, <code>input[type=&quot;image&quot;]</code>, or <code>&lt;button&gt;</code> without <code>type</code>) associated with a <code>&lt;form&gt;</code>.</li>
+<li>Primary-button <code>click</code> inside an <code>&lt;a href=&quot;...&quot;&gt;</code> whose <code>href</code> is not a pure in-page fragment (<code>#section</code>). Note that modifier-key clicks (<code>ctrlKey</code>, <code>metaKey</code>, <code>shiftKey</code>) on links are subsequently ignored in <code>__handleTriggerEvent</code> via <code>__isModifierKeyClick(evt)</code> (lines 707–710) so users can still Cmd/Ctrl-click boosted links to open a new browser tab.</li>
+</ol>
+</li>
+<li><strong>Origin &amp; Target Filtering (<code>from</code> and <code>target</code>)</strong>:
+<ul>
+<li><code>from:self</code> listens on <code>elt</code> directly (<code>fromElts = [elt]</code>), and Layer 1 drops bubbled events where <code>evt.target !== elt</code>.</li>
+<li><code>from:outside</code> attaches the listener to <code>document</code> (<code>fromElts = [document]</code> at line 755) and drops any event where <code>elt.contains(evt.target)</code> is true.</li>
+<li><code>target:&lt;selector&gt;</code> verifies <code>evt.target?.matches?.(spec.target)</code>.</li>
+</ul>
+</li>
+<li><strong>Synchronous JS Filter Evaluation (<code>filter</code>, lines 809–812)</strong>: Copies all purely alphabetic properties (<code>/^[a-z]+$/i</code>) from <code>evt</code> (such as <code>ctrlKey</code>, <code>key</code>, <code>detail</code>, <code>target</code>) into <code>evtArgs</code> and invokes <code>__executeJavaScript(elt, evtArgs, filter, true, false)</code> with <code>expression = true</code> and <code>isAsync = false</code>. Because it uses synchronous <code>#Function</code> rather than <code>#AsyncFunction</code>, the filter returns a boolean immediately without yielding to the microtask queue.</li>
+<li><strong>Cross-Trigger Timer Cancellation (lines 814–819)</strong>: Whenever any non-<code>every</code> trigger passes Layer 1 guards on <code>elt</code>, htmx iterates over <strong>all</strong> <code>this.__htmxProp(elt).triggerSpecs</code> on that element and clears <code>other.timeout</code> and <code>other.throttledEvent = null</code>. For example, if an <code>&lt;input&gt;</code> has <code>hx-trigger=&quot;keyup delay:500ms, change&quot;</code>, firing <code>change</code> immediately cancels any pending <code>keyup</code> debounce timer so duplicate requests are never sent.</li>
+</ul>
+<h3>Layer 2: Timing Wrapper (<code>timed</code>, Lines 778–801)</h3>
+<p>If neither <code>spec.delay</code> nor <code>spec.throttle</code> is present, <code>timed</code> points directly to <code>inner</code>. Otherwise, <code>timed</code> wraps <code>inner</code> using <code>parseInterval(str)</code> (lines 1578–1584, which converts <code>ms</code> -&gt; <code>×1</code>, <code>s</code> -&gt; <code>×1000</code>, <code>m</code> -&gt; <code>×60000</code>, or bare numbers):</p>
+<ul>
+<li><strong>Debounce (<code>spec.delay</code>, lines 779–783)</strong>: Clears <code>spec.timeout</code> and schedules a new <code>setTimeout(() =&gt; inner(evt), this.parseInterval(spec.delay))</code>.</li>
+<li><strong>Leading + Trailing Throttle (<code>spec.throttle</code>, lines 784–800)</strong>:
+<ul>
+<li>On the <strong>first event</strong> (<code>!spec.throttled</code>), sets <code>spec.throttled = true</code>, calls <code>inner(evt)</code> immediately (leading edge), and starts <code>spec.throttleTimeout</code>.</li>
+<li>If additional events arrive while <code>spec.throttled</code> is true, it stores the latest event in <code>spec.throttledEvent = evt</code>.</li>
+<li>When <code>spec.throttleTimeout</code> expires, it resets <code>spec.throttled = false</code>; if <code>spec.throttledEvent</code> was captured during the window, it consumes <code>spec.throttledEvent</code> and recursively invokes <code>timed(e)</code> (trailing-edge replay).</li>
+</ul>
+</li>
+</ul>
+<h3>Layer 3: Inner Execution Closure (<code>inner</code>, Lines 759–775)</h3>
+<p><code>inner(evt)</code> executes only after the timing wrapper resolves:</p>
+<pre><code class="language-javascript"><span class="kd">let</span><span class="w"> </span><span class="nx">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">halt</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">spec</span><span class="p">.</span><span class="nx">prevent</span><span class="p">)</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">halt</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">spec</span><span class="p">.</span><span class="nx">stop</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">spec</span><span class="p">.</span><span class="nx">consume</span><span class="p">)</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">changed</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__htmxState</span><span class="p">(</span><span class="nx">elt</span><span class="p">).</span><span class="nx">changedValues</span><span class="w"> </span><span class="o">??=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">WeakMap</span><span class="p">();</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">target</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="s1">'checkbox'</span><span class="p">,</span><span class="w"> </span><span class="s1">'radio'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">target</span><span class="o">?</span><span class="p">.</span><span class="nx">type</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">target</span><span class="o">?</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">values</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">target</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">values</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">target</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">values</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">once</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">info</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">spec</span><span class="p">.</span><span class="nx">listeners</span><span class="p">)</span><span class="w"> </span><span class="nx">info</span><span class="p">.</span><span class="nx">fromElt</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="nx">info</span><span class="p">.</span><span class="nx">eventName</span><span class="p">,</span><span class="w"> </span><span class="nx">info</span><span class="p">.</span><span class="nx">handler</span><span class="p">,</span><span class="w"> </span><span class="nx">info</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">handler</span><span class="p">(</span><span class="nx">evt</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre>
+<ul>
+<li><strong>Event Propagation Modifiers</strong>: <code>prevent</code> calls <code>evt.preventDefault()</code>, <code>stop</code> and <code>consume</code> call <code>evt.stopPropagation()</code>, and <code>halt</code> calls both.</li>
+<li><strong>Per-Target <code>changed</code> Tracking (<code>WeakMap</code>, lines 762–770)</strong>: Rather than storing a single string on <code>elt</code>, htmx initializes a <code>WeakMap</code> at <code>this.__htmxState(elt).changedValues</code> keyed by <code>evt.target</code>. This allows a single parent container with <code>hx-trigger=&quot;keyup changed delay:300ms from:findAll input&quot;</code> to track previous <code>.value</code> strings independently for every child <code>&lt;input&gt;</code> without leaking memory when inputs are removed. Checkboxes and radio buttons are excluded (<code>!['checkbox', 'radio'].includes(target?.type)</code>).</li>
+<li><strong>One-Shot Listener Removal (<code>spec.once</code>, lines 771–773)</strong>: Iterates through <code>spec.listeners</code> and removes every registered listener before invoking <code>handler(evt)</code>.</li>
+</ul>
+<h3>Synthetic Lifecycle Triggers (Lines 824–855)</h3>
+<p>Before registering DOM listeners on <code>fromElts</code>, <code>__onTrigger</code> checks for four special lifecycle trigger names:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Trigger Token</th>
+<th style="text-align:left">Backing Browser Primitive</th>
+<th style="text-align:left">Lifecycle &amp; Teardown Mechanics (<code>src/htmx.js</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>intersect</code></td>
+<td style="text-align:left"><code>new IntersectionObserver</code> (L824–840)</td>
+<td style="text-align:left">Configures <code>{rootMargin: spec.rootMargin, root: __findOrWarn(elt, spec.root), threshold: parseFloat(spec.threshold)}</code>. Rewrites <code>eventName = 'intersect'</code>, observes all <code>fromElts</code>, and dispatches a non-bubbling <code>'intersect'</code> custom event whenever <code>entries[i].isIntersecting</code> is true.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>revealed</code></td>
+<td style="text-align:left"><code>new IntersectionObserver</code> (L824–840)</td>
+<td style="text-align:left">Shares the <code>intersect</code> observer path with <code>isRevealed = true</code>, calling <code>spec.observer.disconnect()</code> immediately upon the first intersecting entry (L833).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>every &lt;interval&gt;</code></td>
+<td style="text-align:left"><code>setInterval</code> (L843–849)</td>
+<td style="text-align:left">Extracts the interval key (<code>Object.keys(spec).find(k =&gt; k !== 'name')</code>). On each tick, checks <code>if (elt.isConnected) this.__trigger(elt, 'every', {}, false)</code> and self-cleans via <code>clearInterval(spec.interval)</code> if disconnected.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>load</code></td>
+<td style="text-align:left"><code>new CustomEvent('load')</code> (L852–855)</td>
+<td style="text-align:left">Immediately invokes <code>spec.handler(new CustomEvent('load'))</code> during initialization and executes <code>continue</code>, skipping <code>addEventListener</code> registration altogether.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3.4 The Extended CSS Selector Engine (<code>__findAllExt</code>)</h2>
+<p>Attributes across htmx—including <code>hx-target</code>, <code>hx-include</code>, <code>hx-indicator</code>, <code>hx-disable</code>, <code>hx-sync</code>, and <code>hx-trigger=&quot;... from:&lt;sel&gt;&quot;</code>—resolve DOM nodes through <code>__findAllExt(eltOrSelector, maybeSelector, thisAttr, global)</code> (lines 1900–1956) and its single-element wrappers <code>__findExt</code> and <code>__findOrWarn</code>.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/03_trigger_and_selector_parsers/arch_c03_selector_engine_flow.png" alt="03_trigger_and_selector_parsers_3" />
+  <figcaption class="drawlib-caption">Extended CSS Selector Resolution Pipeline in __findAllExt() (L1895-1994)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.fonts</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontRoboto</span><span class="p">,</span> <span class="n">FontSourceCode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">)</span>
+
+<span class="n">title_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">sub_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_REGULAR</span><span class="p">)</span>
+<span class="n">hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+<span class="n">white_hdr_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontRoboto</span><span class="o">.</span><span class="n">ROBOTO_BOLD</span><span class="p">)</span>
+<span class="n">white_code_s</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">text_font</span><span class="o">=</span><span class="n">FontSourceCode</span><span class="o">.</span><span class="n">ROBOTO_MONO</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">73.5</span><span class="p">),</span> <span class="s2">"__findAllExt(eltOrSelector, maybeSelector, thisAttr, global) Engine"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">title_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">69.5</span><span class="p">),</span> <span class="s2">"Splits composite selectors via HCON.split(), resolves relative/Shadow DOM tokens, and deduplicates results"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">sub_s</span><span class="p">)</span>
+
+<span class="c1"># Top Row: Pre-processing stages</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">61.3</span><span class="p">),</span> <span class="s2">"1. Prefix &amp; Root Scope"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">56.1</span><span class="p">),</span> <span class="s2">"global -&gt; slice(7), global=true</span><span class="se">\n</span><span class="s2">getRootNode(</span><span class="si">{composed}</span><span class="s2">)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">61.3</span><span class="p">),</span> <span class="s2">"2. HCON.split &amp; &lt;.../&gt; Strip"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">56.1</span><span class="p">),</span> <span class="s2">"HCON.split(selector)</span><span class="se">\n</span><span class="s2">strip '&lt;' and '/&gt;' wrapper"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">61.3</span><span class="p">),</span> <span class="s2">"3. Token Router Loop"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">56.1</span><span class="p">),</span> <span class="s2">"for (const part of parts)</span><span class="se">\n</span><span class="s2">relative vs standard CSS"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">code_s</span><span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">46.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">51.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">92.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">97.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">))</span>
+
+<span class="c1"># Stem down from box 3 to horizontal bus at y=50.5</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">118.0</span><span class="p">,</span> <span class="mf">52.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">118.0</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.4</span><span class="p">))</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">21.5</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">122.0</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.4</span><span class="p">))</span>
+
+<span class="c1"># Middle Row: 4 Token Categories</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">21.5</span><span class="p">,</span> <span class="s2">"Subtree &amp; Ancestor"</span><span class="p">,</span> <span class="s2">"closest &lt;sel&gt;</span><span class="se">\n</span><span class="s2"> -&gt; elt.closest()</span><span class="se">\n</span><span class="s2">find &lt;sel&gt;</span><span class="se">\n</span><span class="s2"> -&gt; elt.querySelector()</span><span class="se">\n</span><span class="s2">findAll &lt;sel&gt;</span><span class="se">\n</span><span class="s2"> -&gt; querySelectorAll()"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">55.0</span><span class="p">,</span> <span class="s2">"Document-Order Scan"</span><span class="p">,</span> <span class="s2">"next / previous</span><span class="se">\n</span><span class="s2"> -&gt; next/prevSibling</span><span class="se">\n</span><span class="s2">next &lt;sel&gt; (mask === 2)</span><span class="se">\n</span><span class="s2"> -&gt; __scanForwardQuery()</span><span class="se">\n</span><span class="s2">previous &lt;sel&gt; (mask===4)</span><span class="se">\n</span><span class="s2"> -&gt; __scanBackwards()"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">88.5</span><span class="p">,</span> <span class="s2">"Context &amp; Inheritance"</span><span class="p">,</span> <span class="s2">"this (with thisAttr):</span><span class="se">\n</span><span class="s2"> -&gt; __findThisElements()</span><span class="se">\n</span><span class="s2">this (default) -&gt; elt</span><span class="se">\n</span><span class="s2">host -&gt; rootNode.host</span><span class="se">\n</span><span class="s2">document / window / body"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">122.0</span><span class="p">,</span> <span class="s2">"Standard CSS Batch"</span><span class="p">,</span> <span class="s2">"unprocessed.join(',')</span><span class="se">\n</span><span class="s2">rootNode = __getRootNode(</span><span class="se">\n</span><span class="s2">  elt, !!global</span><span class="se">\n</span><span class="s2">)</span><span class="se">\n</span><span class="s2">rootNode.querySelectorAll</span><span class="se">\n</span><span class="s2">  (standardSelector)"</span><span class="p">,</span> <span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">c_title</span><span class="p">,</span> <span class="n">c_body</span><span class="p">,</span> <span class="n">c_style</span><span class="p">,</span> <span class="n">is_focal</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+    <span class="n">rectangle</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">33.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">31.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">c_style</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+    <span class="n">line</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="mf">46.0</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.4</span><span class="p">))</span>
+    <span class="n">line</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">),</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mf">1.4</span><span class="p">))</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">42.0</span><span class="p">),</span> <span class="n">c_title</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">hdr_s</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">((</span><span class="n">cx</span><span class="p">,</span> <span class="mf">30.2</span><span class="p">),</span> <span class="n">c_body</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span> <span class="k">if</span> <span class="n">is_focal</span> <span class="k">else</span> <span class="n">code_s</span><span class="p">)</span>
+
+<span class="c1"># Bottom Row: Set Deduplication Output</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">),</span> <span class="s2">"4. Order-Preserving Deduplication — return [...new Set(result)] (L1955)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_hdr_s</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mf">7.2</span><span class="p">),</span> <span class="s2">"__findExt() returns result[0]  |  __findOrWarn() logs console.warn() if result[0] is undefined"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">white_code_s</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Normalization, <code>global</code> Scope &amp; Multi-Selector Splitting</h3>
+<pre><code class="language-javascript"><span class="nx">__stringHyperscriptStyleSelector</span><span class="p">(</span><span class="nx">selector</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">selector</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'&lt;'</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">'/&gt;'</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">2</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">s</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">__findAllExt</span><span class="p">(</span><span class="nx">eltOrSelector</span><span class="p">,</span><span class="w"> </span><span class="nx">maybeSelector</span><span class="p">,</span><span class="w"> </span><span class="nx">thisAttr</span><span class="p">,</span><span class="w"> </span><span class="nb">global</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">selector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">maybeSelector</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">eltOrSelector</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">maybeSelector</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__normalizeElement</span><span class="p">(</span><span class="nx">eltOrSelector</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nb">document</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">selector</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'global '</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__findAllExt</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">selector</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mf">7</span><span class="p">),</span><span class="w"> </span><span class="nx">thisAttr</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">parts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">selector</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="nx">selector</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">[];</span>
+</code></pre>
+<ol>
+<li><strong>Dual-Arity Call Convention</strong>: Like <code>htmx.find(eltOrSelector, selector)</code>, <code>__findAllExt</code> accepts either <code>(selector)</code> (defaulting <code>elt</code> to <code>document</code>) or <code>(elt, selector, thisAttr, global)</code>.</li>
+<li><strong>Shadow DOM Escape (<code>global </code> prefix, lines 1903–1905 &amp; 1975–1981)</strong>: By default, <code>__getRootNode(elt, false)</code> calls <code>elt.getRootNode({composed: false})</code>, scoping standard CSS queries and <code>next</code>/<code>previous</code> scans to the enclosing <code>ShadowRoot</code> or <code>Document</code>. Prefixing a selector with <code>global </code> recurses with <code>global = true</code>, causing <code>elt.getRootNode({composed: true})</code> to pierce open and closed Shadow DOM boundaries up to the top-level document.</li>
+<li><strong>Hyperscript <code>&lt;.../&gt;</code> Wrapper Stripping (<code>__stringHyperscriptStyleSelector</code>, lines 1895–1898)</strong>: Each comma-separated part produced by <code>HCON.split(selector)</code> is trimmed and stripped of optional <code>&lt;</code> and <code>/&gt;</code> delimiters (e.g., <code>&lt;closest tr/&gt;</code> -&gt; <code>closest tr</code>).</li>
+</ol>
+<h3>Relative Tokens, Inheritance-Aware <code>this</code> &amp; <code>host</code></h3>
+<p>Inside the <code>for (const part of parts)</code> loop (lines 1909–1947), <code>__findAllExt</code> evaluates relative and special tokens before falling back to standard CSS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Selector Token</th>
+<th style="text-align:left">DOM Resolution Expression (<code>src/htmx.js</code> L1912–1942)</th>
+<th style="text-align:left">Architectural Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>closest &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>elt.closest(selector.slice(8))</code></td>
+<td style="text-align:left">Walks up the ancestor chain starting at <code>elt</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>find &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>elt.querySelector(selector.slice(5))</code></td>
+<td style="text-align:left">Returns the <strong>first</strong> matching descendant inside <code>elt</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>findAll &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>result.push(...elt.querySelectorAll(selector.slice(8)))</code></td>
+<td style="text-align:left">Pushes <strong>all</strong> matching descendants inside <code>elt</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>next</code> / <code>nextElementSibling</code></td>
+<td style="text-align:left"><code>elt.nextElementSibling</code></td>
+<td style="text-align:left">Immediate next element sibling in the same parent.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>next &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>this.__scanForwardQuery(elt, selector.slice(5), !!global)</code></td>
+<td style="text-align:left">First element in document order after <code>elt</code> matching <code>&lt;sel&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>previous</code> / <code>previousElementSibling</code></td>
+<td style="text-align:left"><code>elt.previousElementSibling</code></td>
+<td style="text-align:left">Immediate previous element sibling in the same parent.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>previous &lt;sel&gt;</code></td>
+<td style="text-align:left"><code>this.__scanBackwardsQuery(elt, selector.slice(9), !!global)</code></td>
+<td style="text-align:left">Closest preceding element in document order before <code>elt</code> matching <code>&lt;sel&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>document</code> / <code>window</code> / <code>body</code></td>
+<td style="text-align:left"><code>document</code> / <code>window</code> / <code>document.body</code></td>
+<td style="text-align:left">Global event/scroll targets (<code>window</code> is valid for <code>from:window</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>host</code></td>
+<td style="text-align:left"><code>(elt.getRootNode()).host</code></td>
+<td style="text-align:left">Resolves the custom element hosting the current <code>ShadowRoot</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>this</code></td>
+<td style="text-align:left"><code>__findThisElements(elt, thisAttr)</code> or <code>elt</code></td>
+<td style="text-align:left">Inheritance-aware self reference when <code>thisAttr</code> is supplied.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why <code>this</code> Requires <code>__findThisElements(elt, thisAttr)</code> (lines 280–286)</strong>:
+Suppose a parent <code>&lt;div hx-target:inherited=&quot;this&quot;&gt;</code> wraps a child <code>&lt;button hx-get=&quot;/items&quot;&gt;</code>. When the child button is clicked, <code>elt</code> is the <code>&lt;button&gt;</code>, not the <code>&lt;div&gt;</code>. If <code>this</code> simply returned <code>elt</code>, the response would replace the button instead of the parent <code>&lt;div&gt;</code> that declared <code>hx-target:inherited=&quot;this&quot;</code>. By passing <code>thisAttr</code> (such as <code>&quot;hx-target&quot;</code>, <code>&quot;hx-indicator&quot;</code>, or <code>&quot;hx-disable&quot;</code>), <code>__findThisElements</code> invokes <code>__attributeValue</code> with an <code>eltCollector</code> callback (lines 282–284) that walks the inheritance chain (<code>:inherited</code> and <code>:append</code>) and collects every ancestor whose attribute value explicitly contained the token <code>'this'</code>.</p>
+<h3>Document-Order Bitmask Scanning (<code>next &lt;sel&gt;</code> &amp; <code>previous &lt;sel&gt;</code>)</h3>
+<p>Unlike <code>nextElementSibling</code>, <code>next &lt;sel&gt;</code> and <code>previous &lt;sel&gt;</code> can match elements anywhere in the root tree (for example, jumping from an <code>&lt;input&gt;</code> inside one table cell to the next <code>&lt;input&gt;</code> in the next row). htmx implements this without manual tree walkers by combining <code>rootNode.querySelectorAll(match)</code> with <code>Node.prototype.compareDocumentPosition</code> (lines 1958–1973):</p>
+<pre><code class="language-javascript"><span class="nx">__scanForwardQuery</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">,</span><span class="w"> </span><span class="nb">global</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__scanUntilComparison</span><span class="p">(</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__getRootNode</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nb">global</span><span class="p">).</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="nx">match</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">start</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">Node</span><span class="p">.</span><span class="nx">DOCUMENT_POSITION_PRECEDING</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__scanBackwardsQuery</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">match</span><span class="p">,</span><span class="w"> </span><span class="nb">global</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[...</span><span class="k">this</span><span class="p">.</span><span class="nx">__getRootNode</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nb">global</span><span class="p">).</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="nx">match</span><span class="p">)].</span><span class="nx">reverse</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__scanUntilComparison</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">Node</span><span class="p">.</span><span class="nx">DOCUMENT_POSITION_FOLLOWING</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__scanUntilComparison</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span><span class="w"> </span><span class="nx">start</span><span class="p">,</span><span class="w"> </span><span class="nx">comparison</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">compareDocumentPosition</span><span class="p">(</span><span class="nx">start</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">comparison</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">elt</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>How the bitmask comparison works:</p>
+<ol>
+<li><strong><code>elt.compareDocumentPosition(start)</code></strong> returns a bitmask describing <code>start</code>'s position relative to candidate <code>elt</code>.</li>
+<li><strong>Forward Scan (<code>next &lt;sel&gt;</code>)</strong>: Iterates candidates in forward document order (<code>querySelectorAll</code> order) and checks <code>elt.compareDocumentPosition(start) === Node.DOCUMENT_POSITION_PRECEDING</code> (<code>2</code>). Because it uses strict equality (<code>===</code>), any candidate that <strong>contains</strong> <code>start</code> (which would set <code>DOCUMENT_POSITION_CONTAINS = 8</code>, yielding bitmask <code>2 | 8 = 10</code>) is automatically skipped! The first candidate where <code>start</code> strictly precedes <code>elt</code> is returned.</li>
+<li><strong>Backward Scan (<code>previous &lt;sel&gt;</code>)</strong>: Reverses the <code>querySelectorAll</code> array and checks <code>elt.compareDocumentPosition(start) === Node.DOCUMENT_POSITION_FOLLOWING</code> (<code>4</code>). Again, strict equality (<code>=== 4</code>) automatically excludes ancestor containers of <code>start</code> (which would have <code>DOCUMENT_POSITION_CONTAINED_BY = 16</code> or <code>CONTAINS = 8</code>), returning the closest preceding element in document order.</li>
+<li><strong>Batching &amp; Deduplication (lines 1949–1955)</strong>: Any selector parts that did not match a special keyword are joined with <code>,</code> into a single <code>rootNode.querySelectorAll(standardSelector)</code> call, and the final array is deduplicated via <code>[...new Set(result)]</code> before returning to the request pipeline detailed in <a href="04_fetch_context_and_sync_queue.html">Chapter 4</a>.</li>
+</ol>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

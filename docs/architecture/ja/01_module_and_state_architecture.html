@@ -1,0 +1,862 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. モジュールと状態管理構造</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 は、ハイパーメディアランタイム全体を 2,373 行の単一 ES2022 モジュール（src/htmx.js）内にカプセル化しています。ファイル内部は 3 つのトップレベル構造（HCON、RequestQueue、class Htmx）、ビルド時の sed…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 アーキテクチャ">
+    <meta property="og:title" content="1. モジュールと状態管理構造 — htmx v4 アーキテクチャ">
+    <meta property="og:description" content="htmx v4.0.1 は、ハイパーメディアランタイム全体を 2,373 行の単一 ES2022 モジュール（src/htmx.js）内にカプセル化しています。ファイル内部は 3 つのトップレベル構造（HCON、RequestQueue、class Htmx）、ビルド時の sed…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="1. モジュールと状態管理構造 — htmx v4 アーキテクチャ">
+    <meta name="twitter:description" content="htmx v4.0.1 は、ハイパーメディアランタイム全体を 2,373 行の単一 ES2022 モジュール（src/htmx.js）内にカプセル化しています。ファイル内部は 3 つのトップレベル構造（HCON、RequestQueue、class Htmx）、ビルド時の sed…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 アーキテクチャ">
+                    
+                    htmx v4 アーキテクチャ
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >アーキテクチャ概要</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">コアエンジン内部構造</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item active">
+                                <a href="01_module_and_state_architecture.html" >1. モジュールと状態管理構造</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. 属性継承とHCONパーサ</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_trigger_and_selector_parsers.html" >3. トリガーと拡張セレクタ解析</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">通信とDOM更新パイプライン</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetchコンテキストと同期キュー</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap・SettleとMorphエンジン</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extension_and_security_internals.html" >6. 拡張機構とセキュリティ内部構造</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">ポータル &amp; レポート</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">1. モジュールと状態管理構造</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">日本語</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="../en/01_module_and_state_architecture.html" class="lang-option" lang="en" hreflang="en" >
+                                <span>English</span>
+                                
+                            </a>
+                            
+                            <a href="01_module_and_state_architecture.html" class="lang-option active" lang="ja" hreflang="ja" aria-current="page">
+                                <span>日本語</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>1. モジュールと状態管理構造</h1>
+<p><strong>htmx v4.0.1</strong> は、ハイパーメディアランタイム全体を <strong>2,373 行の単一 ES2022 モジュール</strong>（<code>src/htmx.js</code>）内にカプセル化しています。ファイル内部は 3 つのトップレベル構造（<code>HCON</code>、<code>RequestQueue</code>、<code>class Htmx</code>）、ビルド時の <code>sed</code> によるプライベートフィールド変換パイプライン（<code>__</code> $\rightarrow$ <code>#</code>）、CSP に抵触しない Constructable Stylesheets（<code>CSSStyleSheet</code>）、要素単位の二層状態ストア（<code>elt._htmx</code> と <code>elt._htmx_state</code>）、および <code>process()</code> と事前コンパイル済み <code>XPathEvaluator</code> クエリによる決定論的な DOM サブツリー走査によって構成されています。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/01_module_and_state_architecture/arch_c01_module_lowering_hero.png" alt="01_module_and_state_architecture_1" />
+  <figcaption class="drawlib-caption">src/htmx.js の IIFE クラストポロジーとビルド時の __ から # へのプライベートフィールド変換パイプライン</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Left Panel: src/htmx.js Source Topology</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">74</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">74</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">file_js</span><span class="p">((</span><span class="mf">10.5</span><span class="p">,</span> <span class="mf">74.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mf">74.5</span><span class="p">),</span>
+    <span class="s2">"src/htmx.js — Source &amp; Unit Test Target (2,373 LOC)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Outer IIFE box inside Left Panel</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">39.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">68</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">67.5</span><span class="p">),</span>
+    <span class="s2">"var htmx = (() =&gt; { ... return new Htmx() })() (L1–2373)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Top Two Peer Constructs: HCON &amp; RequestQueue</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">25.5</span><span class="p">,</span> <span class="mi">58</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">25.5</span><span class="p">,</span> <span class="mf">61.2</span><span class="p">),</span> <span class="s2">"const HCON (L10–88)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">25.5</span><span class="p">,</span> <span class="mf">55.2</span><span class="p">),</span> <span class="s2">"parse() • split() • merge()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">58.5</span><span class="p">,</span> <span class="mi">58</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">58.5</span><span class="p">,</span> <span class="mf">61.2</span><span class="p">),</span> <span class="s2">"class RequestQueue (L90)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">58.5</span><span class="p">,</span> <span class="mf">55.2</span><span class="p">),</span> <span class="s2">"#current • #queue • admit()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+
+<span class="c1"># Main Class Htmx Box</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">29.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">39</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">46.0</span><span class="p">),</span>
+    <span class="s2">"class Htmx (L130–2368) — 3 Visibility Tiers"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">38.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">40.8</span><span class="p">),</span>
+    <span class="s2">"1. Always-Private # Fields (12 fields, L137–148):"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.6</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">),</span>
+    <span class="s2">"#internalAPI, #Function, #ttPolicy, #hxOnQuery, #verbs"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">26.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">29.2</span><span class="p">),</span>
+    <span class="s2">"2. Testable __ Members (68 methods / 4 fields):"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">),</span>
+    <span class="s2">"__HCON, __attributeValue, __issueRequest, __morph</span><span class="se">\n</span><span class="s2">Callable by test/ suites; lowered to # in dist/ via sed"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span>
+    <span class="s2">"3. Public API: process, ajax, swap, find, on, trigger"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.6</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Center Arrow &amp; Build Step</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">79</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span> <span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">91</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">91</span><span class="p">,</span> <span class="mf">56.5</span><span class="p">),</span> <span class="s2">"sed Lowering"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">91</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="s2">"s/__/#/g</span><span class="se">\n</span><span class="s2">(__proto__ safe)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+
+<span class="c1"># Right Panel: Production Artifacts (dist/)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">74</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">package</span><span class="p">((</span><span class="mi">109</span><span class="p">,</span> <span class="mf">74.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">129</span><span class="p">,</span> <span class="mf">74.5</span><span class="p">),</span>
+    <span class="s2">"dist/ Build Artifacts"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">41</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">63.5</span><span class="p">),</span> <span class="s2">"dist/htmx.js &amp; .min.js"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+    <span class="s2">"build:iife + terser --mangle</span><span class="se">\n</span><span class="s2">All #__ methods become</span><span class="se">\n</span><span class="s2">#private &amp; mangled"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">38.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">41</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">43.0</span><span class="p">),</span> <span class="s2">"dist/htmx.esm.js"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span>
+    <span class="s2">"build:esm (L31)</span><span class="se">\n</span><span class="s2">window.htmx = htmx;</span><span class="se">\n</span><span class="s2">export default htmx;"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">17.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">41</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">127</span><span class="p">,</span> <span class="mf">22.5</span><span class="p">),</span> <span class="s2">"dist/htmax.js &amp; .min.js"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+    <span class="s2">"build:htmax (L28)</span><span class="se">\n</span><span class="s2">Core + 11 extensions</span><span class="se">\n</span><span class="s2">historyCache.disable = true"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>1. 単一ファイル IIFE とクラス構造（<code>src/htmx.js</code> L1–2373）</h2>
+<p>4,000 行超のクロージャ内に多数のヘルパー関数を並べていた htmx 2.x とは異なり、htmx v4.0.1 は即時実行関数式（<code>var htmx = (() =&gt; { ... return new Htmx() })()</code>）の内部に以下の 3 つのトップレベル宣言のみを配置するクリーンな構造を採用しています。</p>
+<ol>
+<li><strong><code>const HCON</code>（<code>L10–88</code>）</strong>：htmx Configuration Object Notation を解析・統合するステートレスなパーサおよびディープマージャ（<code>HCON.parse</code>, <code>HCON.split</code>, <code>HCON.merge</code>）です。詳細は<a href="02_attribute_inheritance_and_hcon.html">第2章</a>で解説します。</li>
+<li><strong><code>class RequestQueue</code>（<code>L90–128</code>）</strong>：ネイティブの <code>#</code> プライベートフィールド（<code>#current = null</code>, <code>#queue = []</code>）を用いたコンパクトな有限状態機械（FSM）であり、要素単位の <code>hx-sync</code> 並行リクエスト制御（<code>admit</code>, <code>continue</code>, <code>abort</code>）を担います（<a href="04_fetch_context_and_sync_queue.html">第4章</a>参照）。</li>
+<li><strong><code>class Htmx</code>（<code>L130–2368</code>）</strong>：<code>L2370</code>（<code>return new Htmx()</code>）でシングルトンとしてインスタンス化されるコアランタイムクラスであり、グローバル設定（<code>this.config</code>）、拡張レジストリ（<code>__extMethods</code>, <code>__registeredExt</code>）、DOM 走査（<code>process</code>, <code>__cleanup</code>）、通信パイプライン（<code>__issueRequest</code>）、および DOM 差分調整（<code>swap</code>, <code>__morph</code>）を統括します。</li>
+</ol>
+<h3>1.1 コンストラクタによるブートストラップと遅延初期化（<code>L150–228</code>, <code>L1251–1265</code>）</h3>
+<p><code>new Htmx()</code> が実行されると（<code>L150–182</code>）、コンストラクタはドキュメント本体の準備が整うまで DOM 走査を遅延させつつ、以下の 6 つの同期ブートストラップ処理を順に実行します。</p>
+<ol>
+<li><strong>デフォルト設定の初期化と <code>&lt;meta name=&quot;htmx-config&quot;&gt;</code> のマージ（<code>__initHtmxConfig</code>, <code>L184–213</code>）</strong>：<code>this.version = '4.0.1'</code> を設定し、<code>this.config</code> の全 19 個のデフォルトプロパティを初期化した後、<code>document.querySelector('meta[name=&quot;htmx-config&quot;]')</code> を検索してその <code>content</code> 属性（HCON 記法または JSON）を <code>HCON.merge(metaConfig.content, this.config)</code> でマージします。最後に <code>this.__approvedExt = this.config.extensions</code> をスナップショット保存し、起動後に許可拡張リストが改ざんされるのを防ぎます。</li>
+<li><strong>Constructable Stylesheets によるインジケータ CSS 注入（<code>__initRequestIndicatorCss</code>, <code>L215–228</code>）</strong>：<code>this.config.includeIndicatorCSS === false</code> でない限り、メモリ上で <code>new CSSStyleSheet()</code> を生成し、<code>replaceSync()</code> で <code>.htmx-indicator</code> と <code>.htmx-request</code> の透過度・可視性トランジション規則を設定した上で <code>document.adoptedStyleSheets.push(this.indicatorStyleSheet)</code> によりドキュメントへ適用します。htmx 2.x のように <code>&lt;head&gt;</code> へインライン <code>&lt;style&gt;</code> 要素を挿入しないため、<strong>厳格な Content Security Policy（<code>style-src</code> で <code>'unsafe-inline'</code> を禁止する環境）でも CSP 違反が一切発生しません</strong>。</li>
+<li><strong>アクション属性セレクタの事前コンパイル（<code>#actionSelector</code>, <code>L153</code>）</strong>：<code>this.__prefixSelector('[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[hx-query]')</code> を呼び出し、標準の <code>hx-*</code> とプレフィックス付き <code>data-hx-*</code> の双方にマッチする CSS セレクタ文字列を生成・保持します。</li>
+<li><strong>XPath 式の事前コンパイル（<code>#hxOnQuery</code>, <code>L154</code>）</strong>：<code>new XPathEvaluator().createExpression(...)</code> を 1 度だけコンパイルし、JavaScript ループを使わずに任意の DOM サブツリーからワイルドカード属性 <code>hx-on*</code> / <code>data-hx-on*</code> を高速抽出できるようにします。</li>
+<li><strong>拡張ブリッジ <code>#internalAPI</code> のバインド（<code>#internalAPI</code>, <code>L155–175</code>）</strong>：<code>this</code> にバインドされた 15 個の内部プリミティブ（<code>HCON</code>, <code>attributeValue</code>, <code>parseTriggerSpecs</code>, <code>determineMethodAndAction</code>, <code>createRequestContext</code>, <code>collectFormData</code>, <code>getAttributeObject</code>, <code>insertContent</code>, <code>morph</code>, <code>isSoftMatch</code>, <code>initSecurity</code>, <code>onTrigger</code>, <code>htmxProp</code>, <code>triggerHtmxEvent</code>, <code>executeJavaScript</code>）をプライベートフィールド <code>#internalAPI</code> に格納します。このオブジェクトは <code>registerExtension()</code>（<code>L234</code>）における <code>extension.init(this.#internalAPI)</code> にのみ渡されます。</li>
+<li><strong>遅延 <code>initialize()</code> スケジューリングと Navigation API 配線（<code>L176–181</code>, <code>L1251–1265</code>）</strong>：<code>document.readyState === 'loading'</code> の場合は <code>document.addEventListener(&quot;DOMContentLoaded&quot;, init)</code> を登録し、すでに読み込み済みの場合は <code>setTimeout(init)</code> で次ティックへ遅延させることで、<code>htmx.js</code> 直後の <code>&lt;script&gt;</code> タグや拡張登録が初回 DOM 走査前に完了できるようにします。<code>initialize()</code>（<code>L1251–1265</code>）が実行されると、履歴復元リスナを一度だけ初期化（<code>#historyInitialized = true</code>）し、Chromium / WebKit 環境では最新の <strong>Navigation API</strong>（<code>!/firefox/i.test(navigator.userAgent)</code> で Firefox を除外しつつ <code>window.navigation.addEventListener('navigate', ...)</code> で <code>traverse</code> ナビゲーションをインターセプト）を優先使用し、非対応環境では <code>window.addEventListener('popstate', ...)</code> にフォールバックした上で、<code>this.process(document.body)</code> を呼び出します。</li>
+</ol>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L150–182, L215–228, L1251–1265 — Constructor Bootstrap, CSSStyleSheet &amp; initialize()</span>
+<span class="kr">constructor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__initHtmxConfig</span><span class="p">();</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__initRequestIndicatorCss</span><span class="p">();</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="n">#actionSelector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__prefixSelector</span><span class="p">(</span><span class="s1">'[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[hx-query]'</span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="n">#hxOnQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">XPathEvaluator</span><span class="p">().</span><span class="nx">createExpression</span><span class="p">(</span>
+<span class="w">        </span><span class="sb">`.//*[@*[</span><span class="si">${</span><span class="k">this</span><span class="p">.</span><span class="nx">__prefixes</span><span class="p">(</span><span class="s2">"hx-on"</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="sb">`starts-with(name(), "</span><span class="si">${</span><span class="nx">p</span><span class="si">}</span><span class="sb">")`</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">' or '</span><span class="p">)</span><span class="si">}</span><span class="sb">]]`</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="n">#internalAPI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">HCON</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">attributeValue</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span>
+<span class="w">        </span><span class="nx">parseTriggerSpecs</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__parseTriggerSpecs</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span>
+<span class="w">        </span><span class="c1">// ... 12 additional bound primitives (see Chapter 6)</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">initialize</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">readyState</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'loading'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">"DOMContentLoaded"</span><span class="p">,</span><span class="w"> </span><span class="nx">init</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">init</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">__initRequestIndicatorCss</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">includeIndicatorCSS</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">indicator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">indicatorClass</span><span class="p">;</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">requestClass</span><span class="p">;</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">indicatorStyleSheet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">CSSStyleSheet</span><span class="p">();</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">indicatorStyleSheet</span><span class="p">.</span><span class="nx">replaceSync</span><span class="p">(</span>
+<span class="w">                </span><span class="sb">`.</span><span class="si">${</span><span class="nx">indicator</span><span class="si">}</span><span class="sb">{opacity:0;visibility: hidden} `</span><span class="w"> </span><span class="o">+</span>
+<span class="w">                </span><span class="sb">`.</span><span class="si">${</span><span class="nx">request</span><span class="si">}</span><span class="sb"> .</span><span class="si">${</span><span class="nx">indicator</span><span class="si">}</span><span class="sb">, .</span><span class="si">${</span><span class="nx">request</span><span class="si">}</span><span class="sb">.</span><span class="si">${</span><span class="nx">indicator</span><span class="si">}</span><span class="sb">{opacity:1;visibility: visible;transition: opacity 200ms ease-in}`</span>
+<span class="w">            </span><span class="p">);</span>
+<span class="w">            </span><span class="nb">document</span><span class="p">.</span><span class="nx">adoptedStyleSheets</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">indicatorStyleSheet</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">history</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="n">#historyInitialized</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#historyInitialized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">navigation</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="sr">/firefox/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">navigation</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'navigate'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">navigationType</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'traverse'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">canIntercept</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">event</span><span class="p">.</span><span class="nx">hashChange</span><span class="p">)</span>
+<span class="w">                    </span><span class="nx">event</span><span class="p">.</span><span class="nx">intercept</span><span class="p">({</span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__restoreHistory</span><span class="p">()});</span>
+<span class="w">            </span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'popstate'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__restoreHistory</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">state</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<hr />
+<h2>2. テスト可能なプライベートフィールド変換トリック（<code>package.json</code> L27–37）</h2>
+<p>JavaScript ライブラリのアーキテクチャ設計における古典的なジレンマは、<strong>ホワイトボックス単体テストの容易性</strong>と<strong>カプセル化およびバンドルサイズ最小化</strong>の両立です。ES2022 ネイティブの <code>#private</code> フィールドを使用すると、実行時の完全なカプセル化が保証され、Terser 等のミニファイアがプライベートメンバ名を <code>#a</code>, <code>#b</code> のような 2 文字トークンへ圧縮（マングリング）できる一方、外部の単体テストコードから内部パーサやヘルパーメソッドを直接呼び出すことができなくなります。</p>
+<p>htmx v4 は、<code>src/htmx.js</code> における 2 段階の命名規則と <code>package.json</code> のビルド時 <code>sed</code> 変換パイプラインを組み合わせることで、このトレードオフを鮮やかに解決しています。</p>
+<ul>
+<li><strong><code>src/htmx.js</code> でも常時 <code>#private</code> なフィールド（<code>L137–148</code>）</strong>：12 個のフィールド（<code>#internalAPI</code>, <code>#Function</code>, <code>#AsyncFunction</code>, <code>#ttPolicy</code>, <code>#actionSelector</code>, <code>#boostSelector</code>, <code>#verbs</code>, <code>#hxOnQuery</code>, <code>#transitionQueue</code>, <code>#historyAbort</code>, <code>#historyInitialized</code>, <code>#processingTransition</code>）はソースコード段階からネイティブ <code>#</code> 構文で宣言されています。これにより、<code>#Function</code> や <code>#ttPolicy</code>、<code>#internalAPI</code> といったセキュリティ上重要な参照が外部スクリプトから改ざんされることを防ぎます。</li>
+<li><strong><code>src/htmx.js</code> における二重アンダースコア <code>__</code> メンバ</strong>：4 個の内部フィールド（<code>__HCON</code>, <code>__extMethods</code>, <code>__approvedExt</code>, <code>__registeredExt</code>, <code>L132–135</code>）および全 68 個の内部メソッド（<code>__attributeValue</code>, <code>__parseTriggerSpecs</code>, <code>__issueRequest</code>, <code>__morph</code> など）は先頭に <code>__</code> を付与しています。<code>web-test-runner</code> が <code>src/htmx.js</code> に対して単体テストを実行する際、テストスイートは <code>htmx.__HCON.parse(...)</code> や <code>htmx.__parseTriggerSpecs(...)</code> を直接呼び出して検証できます。</li>
+<li><strong>単一アンダースコアの <code>_loc</code> フック（<code>L136</code>）</strong>：<code>_loc = window.location</code> は単一アンダースコアで定義されているため、<code>sed</code> 変換後もパブリックプロパティとして残り、ビルド済みバンドルに対する結合テストでもロケーション状態をモック可能です。</li>
+<li><strong>ビルド時の <code>sed</code> による <code>#</code> への一括変換（<code>build:iife</code> &amp; <code>build:esm</code>, <code>package.json</code> L30–31）</strong>：ビルド実行時、<code>sed</code> はまず <code>HCON.merge</code>（<code>L75</code>）のプロトタイプ汚染ガード内に含まれる <code>__proto__</code> を一時プレースホルダ <code>@@PROTOKEY@@</code> に退避させた上で、残るすべての <code>__</code> を <code>#</code> に置換し、最後に <code>__proto__</code> を復元します。</li>
+</ul>
+<pre><code class="language-bash"><span class="c1"># package.json L28, L30–32 — Private field lowering, minification, and htmax bundle assembly</span>
+<span class="c1"># 1. Lower __ to native ES2022 # private fields for IIFE distribution (protecting __proto__ at L75)</span>
+sed<span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/__proto__/@@PROTOKEY@@/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/__/#/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/@@PROTOKEY@@/__proto__/g'</span><span class="w"> </span>src/htmx.js<span class="w"> </span>&gt;<span class="w"> </span>dist/htmx.js
+
+<span class="c1"># 2. Lower __ to # and append ESM default export + global window binding</span>
+sed<span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/__proto__/@@PROTOKEY@@/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/__/#/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/@@PROTOKEY@@/__proto__/g'</span><span class="w"> </span>src/htmx.js<span class="w"> </span>&gt;<span class="w"> </span>dist/htmx.esm.js<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'\nif (typeof window !== "undefined") window.htmx = htmx;\nexport default htmx;\n'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>dist/htmx.esm.js
+
+<span class="c1"># 3. Compress and mangle private # fields with Terser</span>
+terser<span class="w"> </span>--compress<span class="w"> </span>--mangle<span class="w"> </span>--source-map<span class="w"> </span>-o<span class="w"> </span>dist/htmx.min.js<span class="w"> </span>dist/htmx.js
+
+<span class="c1"># 4. Assemble dist/htmax.js (Core + 11 official extensions pre-bundled)</span>
+<span class="nv">EXTS</span><span class="o">=</span><span class="s1">'hx-sse hx-ws hx-preload hx-browser-indicator hx-download hx-pending hx-targets hx-live hx-history-cache hx-upsert hx-alpine-compat'</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">{</span><span class="w"> </span>cat<span class="w"> </span>dist/htmx.js<span class="p">;</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'\nhtmx.version += "-htmax";\nhtmx.config.historyCache ??= { disable: true };\n'</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span>e<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$EXTS</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>cat<span class="w"> </span>dist/ext/<span class="nv">$e</span>.js<span class="p">;</span><span class="w"> </span><span class="k">done</span><span class="p">;</span><span class="w"> </span><span class="o">}</span><span class="w"> </span>&gt;<span class="w"> </span>dist/htmax.js
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">メンバ階層</th>
+<th style="text-align:left"><code>src/htmx.js</code> での構文</th>
+<th style="text-align:left"><code>dist/htmx.js</code> での構文</th>
+<th style="text-align:left">代表的なメンバ例（<code>src/htmx.js</code>）</th>
+<th style="text-align:left">設計目的と可視性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>セキュリティ・シングルトン状態</strong></td>
+<td style="text-align:left"><code>#name</code></td>
+<td style="text-align:left"><code>#name</code>（<code>.min.js</code> で短縮）</td>
+<td style="text-align:left"><code>#internalAPI</code>, <code>#Function</code>, <code>#AsyncFunction</code>, <code>#ttPolicy</code>, <code>#hxOnQuery</code>, <code>#transitionQueue</code>（<code>L137–148</code>）</td>
+<td style="text-align:left"><code>src/</code> と <code>dist/</code> の双方で <code>class Htmx</code> 外部からアクセス不可。CSP / 動的関数コンストラクタを保護。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>テスト可能なエンジン内部実装</strong></td>
+<td style="text-align:left"><code>__name</code></td>
+<td style="text-align:left"><code>#name</code>（<code>.min.js</code> で短縮）</td>
+<td style="text-align:left"><code>__HCON</code>, <code>__extMethods</code>, <code>__attributeValue</code>, <code>__onTrigger</code>, <code>__issueRequest</code>, <code>__morph</code></td>
+<td style="text-align:left"><code>src/htmx.js</code> テスト時はパブリック。<code>dist/</code> ビルド時にネイティブ ES2022 <code>#</code> プライベートメンバへ変換。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>モック用テストフック</strong></td>
+<td style="text-align:left"><code>_loc</code></td>
+<td style="text-align:left"><code>_loc</code></td>
+<td style="text-align:left"><code>_loc = window.location</code>（<code>L136</code>）</td>
+<td style="text-align:left">単一アンダースコアにより <code>sed</code> 置換を回避し、ナビゲーションテストでの URL モックを許容。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>パブリック Hypermedia API</strong></td>
+<td style="text-align:left"><code>name</code></td>
+<td style="text-align:left"><code>name</code></td>
+<td style="text-align:left"><code>process</code>, <code>initialize</code>, <code>ajax</code>, <code>swap</code>, <code>find</code>, <code>findAll</code>, <code>on</code>, <code>trigger</code>, <code>registerExtension</code>, <code>config</code></td>
+<td style="text-align:left"><code>window.htmx</code> に公開され、<code>__apiMethods()</code>（<code>L890–909</code>）でインライン JS スコープにも注入される公開 API。</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. 要素単位の二層状態ストア：<code>elt._htmx</code> と <code>elt._htmx_state</code>（<code>L353–363</code>）</h2>
+<p>htmx v4 は、DOM 要素に紐づくすべてのメタデータを単一のオブジェクトに詰め込むのではなく、その状態が<strong>静的な属性配線ライフサイクル</strong>に属するか、あるいは<strong>進行中の通信・ランタイム協調状態</strong>に属するかに基づいて、<strong><code>elt._htmx</code></strong>（<code>__htmxProp(elt)</code>）と <strong><code>elt._htmx_state</code></strong>（<code>__htmxState(elt)</code>）という 2 つの独立した Expando プロパティに分離しています。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/01_module_and_state_architecture/arch_c01_element_state_stores.png" alt="01_module_and_state_architecture_2" />
+  <figcaption class="drawlib-caption">要素単位の二層 Expando ストア：ライフサイクル連動の elt._htmx と再初期化後も永続する elt._htmx_state</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Top DOM Element Node</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mi">69</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">116</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">code</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mf">71.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">71.0</span><span class="p">),</span>
+    <span class="s1">'DOM Element (elt) — Stamped with data-htmx-powered="true" (L356)'</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span>
+    <span class="s1">'Ignored during DOM morphing via config.morphIgnore: ["data-htmx-powered"] (L199, L2205)'</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.6</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Branches to two stores</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">54</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span> <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">55</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">102</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span> <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mi">55</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+
+<span class="c1"># Left Store: elt._htmx (__htmxProp)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">41</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.2</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">sliders_horizontal</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span>
+    <span class="s2">"elt._htmx — __htmxProp(elt) (L353–359)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">45.8</span><span class="p">),</span>
+    <span class="s2">"Wiring &amp; Extension Store (Torn down by __cleanup)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">41</span><span class="p">,</span> <span class="mf">33.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">39.5</span><span class="p">),</span>
+    <span class="s2">"Core Wiring Fields:"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">31.0</span><span class="p">),</span>
+    <span class="s2">"• initialized: true (L368) • boosted: hxBoost (L968)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• onInitialized: true (L1738) • abortInitialized: true (L2009)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• eventHandler: async (evt) =&gt; ... (L369)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• listeners: [{fromElt, eventName, handler, capture, passive}]</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• triggerSpecs: [{name, listeners, timeout, interval, observer}]"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">41</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">19.3</span><span class="p">),</span>
+    <span class="s2">"Extension Namespaces (via #internalAPI.htmxProp):"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">),</span>
+    <span class="s2">"• sse (EventSource) • ws (WebSocket) • multipart</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• preload • liveRuns (hx-live reactive scopes)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Right Store: elt._htmx_state (__htmxState)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">115</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.2</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">activity</span><span class="p">((</span><span class="mi">86</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">117</span><span class="p">,</span> <span class="mf">50.5</span><span class="p">),</span>
+    <span class="s2">"elt._htmx_state — __htmxState(elt) (L361–363)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mf">45.8</span><span class="p">),</span>
+    <span class="s2">"Ephemeral Runtime Store (Survives process(elt, true))"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">115</span><span class="p">,</span> <span class="mf">33.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mf">39.5</span><span class="p">),</span>
+    <span class="s2">"Concurrency &amp; Reference Counters:"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mf">31.0</span><span class="p">),</span>
+    <span class="s2">"• rq: new RequestQueue() (L704) — hx-sync active &amp; queued</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"  requests; preserved even if element attributes re-initialize</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• rc: number (L1770) — Active .htmx-request indicator ref count</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• dc: number (L1792) — Active hx-disable element ref count"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">115</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mf">19.3</span><span class="p">),</span>
+    <span class="s2">"Stateful Trigger Memory:"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">),</span>
+    <span class="s2">"• changedValues: WeakMap&lt;Element, string&gt; (L763)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"  Tracks last seen input value for 'changed' modifier"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>3.1 なぜ 2 つの独立した状態ストアが存在するのか</h3>
+<ol>
+<li><strong><code>elt._htmx</code>（<code>__htmxProp(elt)</code>, <code>L353–359</code>）— 属性配線およびクリーンアップ対象ストア</strong>：
+<ul>
+<li>要素に対して <code>hx-*</code> アクション、<code>hx-boost</code>、<code>hx-on:*</code>、<code>htmx:abort</code> リスナ、または拡張状態が配線される際に遅延生成されます。</li>
+<li>生成と同時に <code>elt.setAttribute('data-htmx-powered', 'true')</code>（<code>L356</code>）を DOM 属性として刻印します。この属性はネイティブ C++ セレクタエンジン用の高速インデックスとして機能し、<code>__cleanup(elt, force)</code>（<code>L1008</code>）が JavaScript で全 DOM ノードを走査することなく <code>elt.querySelectorAll('[data-htmx-powered]')</code> の一発呼び出しで配下の全 htmx 要素を収集できるようにします。</li>
+<li>さらに <code>config.morphIgnore</code> のデフォルト値に <code>[&quot;data-htmx-powered&quot;]</code>（<code>L199</code>）が登録されているため、DOM Morphing 時の属性同期（<code>__copyAttributes</code> <code>L2205–2225</code>）においてサーバ応答断片（<code>data-htmx-powered</code> を持たない）によってこの属性が誤って削除されることはありません。<code>hx-*</code> 属性自体が変更された場合（<code>needsReinit = true</code>, <code>L2226</code>）にのみ <code>__cleanup(destination, true)</code> が呼ばれて再初期化されます。</li>
+</ul>
+</li>
+<li><strong><code>elt._htmx_state</code>（<code>__htmxState(elt)</code>, <code>L361–363</code>）— 再初期化を跨いで生存するランタイム状態</strong>：
+<ul>
+<li>リクエスト通信中に <code>htmx.process(elt, true)</code> や Morphing による属性更新（<code>__copyAttributes</code> <code>L2226</code> $\rightarrow$ <code>__cleanup(destination, true)</code>）が発生して <code>elt._htmx</code> が破棄・再構築された場合でも、<strong>絶対に失われてはならない実行時状態</strong>を保持します。</li>
+<li><strong>インジケータ参照カウント（<code>rc</code>, <code>L1770–1781</code>）と Disable 参照カウント（<code>dc</code>, <code>L1792–1803</code>）</strong>：複数の並行リクエストが同一のスピナー（<code>hx-indicator=&quot;#global-spinner&quot;</code>）や同一の送信ボタン（<code>hx-disable=&quot;#submit-btn&quot;</code>）を共有する場合があります。<code>__showIndicators</code> は <code>s.rc = (s.rc || 0) + 1</code> をインクリメントし、<code>__hideIndicators</code> は <code>--s.rc &lt;= 0</code> になった時点でのみ <code>.htmx-request</code> クラスを除去して <code>s.rc</code> を削除します。同様に <code>__disableElements</code> は <code>s.dc</code> を加算し、<code>__enableElements</code> は <code>--s.dc &lt;= 0</code> になった時点でのみ <code>indicator.disabled = false</code> に戻します。</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>4. サブツリー走査（<code>process</code>）、XPath 高速探索、およびリソース解放（<code>__cleanup</code>）</h2>
+<p>htmx v4.0.1 では、htmx 2.x が <code>document.body</code> に常駐させていたグローバルな <code>MutationObserver</code> を完全に廃止しました。代わりに、コアの DOM 初期化は以下の 3 つの明確なライフサイクル境界でのみ決定論的に実行されます。</p>
+<ol>
+<li><strong>初回ドキュメント起動時</strong>：<code>initialize()</code> が <code>this.process(document.body)</code>（<code>L1264</code>）を呼び出します。</li>
+<li><strong>Swap 完了後の Settle フェーズ</strong>：<code>__insertContent()</code> が 새로挿入された各要素に対して <code>this.process(elt)</code>（<code>L1505</code>）を呼び出します。</li>
+<li><strong>Morph プレースホルダの水和（Hydration）</strong>：<code>__morphChildren()</code> が永続 ID を含む新規サブツリーの挿入時に <code>this.process(placeholder)</code>（<code>L2091</code>）を呼び出します。</li>
+</ol>
+<p><em>(※ なお、リアクティブバインディング拡張である <code>src/ext/hx-live.js</code> のみが、<code>[hx-live]</code> スコープがマウントされた際に独自の <code>MutationObserver</code> を使用します。)</em></p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/01_module_and_state_architecture/arch_c01_process_and_cleanup.png" alt="01_module_and_state_architecture_3" />
+  <figcaption class="drawlib-caption">process(root, force) における決定論的3フェーズ走査と __cleanup(elt, force) によるリソース解放</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChevronProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">73.5</span><span class="p">),</span>
+    <span class="s2">"process(root, force) — Guard Checks &amp; 3-Phase Subtree Initialization (L935–960)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Top Row: Guards &amp; Pre-Process</span>
+<span class="n">guards</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">guards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"1. Connected &amp; Root"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"!root?.isConnected -&gt; exit</span><span class="se">\n</span><span class="s2">ShadowRoot -&gt; recurse children"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">guards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"2. Force Teardown"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"if (force)</span><span class="se">\n</span><span class="s2">__cleanup(root, true) (L941)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">guards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. Ignore Guard"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"__ignore(root) (L240)</span><span class="se">\n</span><span class="s2">closest('[hx-ignore]')"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">guards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"4. Before Event"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"htmx:before:process (L943)</span><span class="se">\n</span><span class="s2">Cancelable via preventDefault()"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">guards</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Middle Row: 3 Initialization Phases</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">28</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">lightning</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Phase 1: #hxOnQuery XPath"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">29.5</span><span class="p">),</span>
+    <span class="s2">"L944–952 &amp; L1723–1755</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Single C++ XPathEvaluator pass</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Fires htmx:before:on:init</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Parses inline 'event -&gt; code'</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Expands 'hx-on::' -&gt; 'htmx:'"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">play_circle</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Phase 2: #actionSelector"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">29.5</span><span class="p">),</span>
+    <span class="s2">"__initializeElement(elt) (L365)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Matches [hx-action], [hx-get],</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"  [hx-post], [hx-put], [hx-patch],</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"  [hx-delete], [hx-query]</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Wires __initializeTriggers(elt)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="p">(</span><span class="mi">106</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">128</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">rocket_launch</span><span class="p">((</span><span class="mi">110</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">130</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Phase 3: #boostSelector"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mf">29.5</span><span class="p">),</span>
+    <span class="s2">"__maybeBoost(elt) (L962–984)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Scans 'a,form' with hx-boost</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Verifies __isSameOrigin(url)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Skips [download], '#' anchors,</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"  target!='_self', method='dialog'"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Bottom Panel: __cleanup(elt, force)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">broom</span><span class="p">((</span><span class="mi">16</span><span class="p">,</span> <span class="mf">12.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">12.5</span><span class="p">),</span>
+    <span class="s2">"__cleanup(elt, force) (L1007–1025) — Deterministic Resource Teardown via [data-htmx-powered]"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">),</span>
+    <span class="s2">"Clears spec.interval, spec.timeout, spec.throttleTimeout • Disconnects spec.observer • Removes DOM listeners • Deletes elt._htmx if force=true"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>4.1 <code>XPathEvaluator</code> による高速探索と 2 種類の <code>hx-on</code> 構文（<code>L154</code>, <code>L944–952</code>, <code>L1721–1755</code>）</h3>
+<p>標準の CSS セレクタ（<code>querySelectorAll</code>）は完全一致の属性名（<code>[hx-on]</code>）や属性値の前方一致（<code>[class^=&quot;foo&quot;]</code>）にはマッチできますが、<code>hx-on:click</code> や <code>hx-on:keyup</code>、<code>hx-on::before:request</code> のような<strong>ワイルドカード属性名にマッチする構文を一切持っていません</strong>。</p>
+<p>JavaScript で全 DOM 要素とその <code>elt.attributes</code> を総当たり走査するオーバーヘッドを回避するため、htmx v4 はコンストラクタ（<code>L154</code>）で以下の XPath 1.0 式を事前コンパイルします。</p>
+<pre><code class="language-text">.//*[@*[starts-with(name(), "hx-on") or starts-with(name(), "data-hx-on")]]
+</code></pre>
+<p><code>process(root, force)</code> のフェーズ 1（<code>L944–952</code>）において、<code>this.#hxOnQuery.evaluate(root)</code> はブラウザのネイティブ C++ XPath エンジン内で実行され、該当する全子孫ノードのイテレータを返します（<code>root</code> 自身も <code>L944</code> で <code>hxOnNodes</code> の先頭に追加されます）。<code>__ignore</code> で除外されておらず <code>htmx:before:on:init</code> イベントがキャンセルされなかった各ノードに対し、<code>__handleHxOnAttributes(node)</code>（<code>L1723–1755</code>）は <code>this.__htmxProp(node).onInitialized = true</code> を設定し、以下の 2 つのイベントバインディング構文を処理します。</p>
+<ol>
+<li><strong>マルチハンドラ・インライン矢印構文（<code>hx-on=&quot;click once -&gt; doA(); blur -&gt; doB()&quot;</code>, <code>L1741–1747</code>）</strong>：属性名にサフィックスがない場合（<code>!rest</code>）、後続に <code>-&gt;</code> を伴うセミコロン（<code>/;(?=[^;]*-&gt;)/</code>）で属性値を分割し、<code>-&gt;</code> の左辺にあるトリガー仕様（<code>click once</code> や <code>keyup delay:300ms</code> などの全修飾子をサポート）と右辺のハンドラコードを抽出して <code>this.__onTrigger(node, triggerSpec, handler(code))</code> で配線します。</li>
+<li><strong>イベント名サフィックス属性構文（<code>hx-on:click=&quot;...&quot;</code> &amp; <code>hx-on::before:request=&quot;...&quot;</code>, <code>L1749–1754</code>）</strong>：属性名の残余部分が <code>mc</code>（<code>this.config.metaCharacter || ':'</code>）で始まる場合、先頭の <code>mc</code> を取り除きます。もし残りのイベント名がさらに 2 つ目の <code>mc</code> で始まっている場合（<code>hx-on::before:request</code>）、二重コロン省略記法を <code>'htmx' + mc + eventName.substring(1)</code>（$\rightarrow$ <code>htmx:before:request</code>）へと展開します。いずれの構文でも、ハンドラ本体は <code>with(event?.detail||{}){${code}}</code>（<code>L1730</code>）でラップされるため、イベントの <code>detail</code> プロパティをインライン式から直接参照できます。</li>
+</ol>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L935–960, L1007–1025, L1723–1755 — process(), __cleanup(), and __handleHxOnAttributes()</span>
+<span class="nx">process</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="nx">force</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">root</span><span class="o">?</span><span class="p">.</span><span class="nx">isConnected</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">root</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">Element</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// ShadowRoot traversal</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">root</span><span class="p">.</span><span class="nx">children</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">[])</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">force</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">force</span><span class="p">)</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__cleanup</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__ignore</span><span class="p">(</span><span class="nx">root</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:before:process"</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">hxOnNodes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nx">root</span><span class="p">];</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#hxOnQuery</span><span class="p">.</span><span class="nx">evaluate</span><span class="p">(</span><span class="nx">root</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nx">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">iter</span><span class="p">.</span><span class="nx">iterateNext</span><span class="p">())</span><span class="w"> </span><span class="nx">hxOnNodes</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">hxOnNode</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">hxOnNodes</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">__ignore</span><span class="p">(</span><span class="nx">hxOnNode</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">hxOnNode</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:before:on:init"</span><span class="p">,</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="kc">true</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__handleHxOnAttributes</span><span class="p">(</span><span class="nx">hxOnNode</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__queryEltAndDescendants</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#actionSelector</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__initializeElement</span><span class="p">(</span><span class="nx">elt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">elt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__queryEltAndDescendants</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#boostSelector</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__maybeBoost</span><span class="p">(</span><span class="nx">elt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:after:process"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__cleanup</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">force</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">elts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">elt</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="o">?</span><span class="p">.(</span><span class="s1">'[data-htmx-powered]'</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">[]];</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">elts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">e</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:before:cleanup"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">spec</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">.</span><span class="nx">triggerSpecs</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">interval</span><span class="p">)</span><span class="w"> </span><span class="nx">clearInterval</span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">interval</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">timeout</span><span class="p">)</span><span class="w"> </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">timeout</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">throttleTimeout</span><span class="p">)</span><span class="w"> </span><span class="nx">clearTimeout</span><span class="p">(</span><span class="nx">spec</span><span class="p">.</span><span class="nx">throttleTimeout</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">spec</span><span class="p">.</span><span class="nx">observer</span><span class="o">?</span><span class="p">.</span><span class="nx">disconnect</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">info</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">.</span><span class="nx">listeners</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">info</span><span class="p">.</span><span class="nx">fromElt</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="nx">info</span><span class="p">.</span><span class="nx">eventName</span><span class="p">,</span><span class="w"> </span><span class="nx">info</span><span class="p">.</span><span class="nx">handler</span><span class="p">,</span><span class="w"> </span><span class="nx">info</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="nx">e</span><span class="p">.</span><span class="nx">removeAttribute</span><span class="p">(</span><span class="s1">'data-htmx-powered'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:after:cleanup"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">force</span><span class="p">)</span><span class="w"> </span><span class="ow">delete</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">_htmx</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

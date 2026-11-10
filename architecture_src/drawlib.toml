@@ -1,0 +1,26 @@
+[project]
+name = "architecture"
+type = "site"
+title = "htmx v4 Internal Architecture Guide (Unofficial)"
+description = "Source-level internal architecture guide to htmx v4.0.1: single-class Htmx & private field lowering, HCON & explicit :inherited resolution, trigger lexer & RequestQueue state machine, fetch() streaming & <hx-partial> extraction, Idiomorph DOM reconciliation, and #internalAPI extension hooks."
+style = "default"
+
+[i18n]
+default_lang = "en"
+langs = ["en", "ja"]
+
+[i18n.labels]
+en = "English"
+ja = "日本語"
+
+[i18n.descriptions]
+en = "Source-level internal architecture guide to htmx v4.0.1: single-class Htmx & private field lowering, HCON & explicit :inherited resolution, trigger lexer & RequestQueue state machine, fetch() streaming & <hx-partial> extraction, Idiomorph DOM reconciliation, and #internalAPI extension hooks."
+ja = "htmx v4.0.1 の内部アーキテクチャ解説（非公式）：単一クラスHtmxとプライベートフィールド変換、HCON・明示的:inherited解決、トリガー字句解析とRequestQueue状態機械、fetch()パイプラインと<hx-partial>抽出、内蔵DOM Morphingエンジン、#internalAPI拡張フック。"
+
+[seo]
+site_url = "https://htmx.drawlib.com/architecture"
+og_image = "_assets/ogp.png"
+twitter_card = "summary_large_image"
+sitemap = true
+robots = true
+llms_txt = true

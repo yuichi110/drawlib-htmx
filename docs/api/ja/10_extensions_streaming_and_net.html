@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストリーミング＆ネットワーク拡張機能 — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/10_extensions_streaming_and_net.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 は、サーバーからクライアントへの持続的ストリーミング（hx-sse、hx-ws、hx-multipart）およびネットワーク転送最適化（hx-preload、hx-ptag、hx-download）のための 6 つの公式拡張機能を提供します。すべての拡張機能はスクリプト読み込み時に…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="ストリーミング＆ネットワーク拡張機能 — htmx v4 API Reference">
+    <meta property="og:description" content="htmx v4.0.1 は、サーバーからクライアントへの持続的ストリーミング（hx-sse、hx-ws、hx-multipart）およびネットワーク転送最適化（hx-preload、hx-ptag、hx-download）のための 6 つの公式拡張機能を提供します。すべての拡張機能はスクリプト読み込み時に…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/ja/10_extensions_streaming_and_net.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ストリーミング＆ネットワーク拡張機能 — htmx v4 API Reference">
+    <meta name="twitter:description" content="htmx v4.0.1 は、サーバーからクライアントへの持続的ストリーミング（hx-sse、hx-ws、hx-multipart）およびネットワーク転送最適化（hx-preload、hx-ptag、hx-download）のための 6 つの公式拡張機能を提供します。すべての拡張機能はスクリプト読み込み時に…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API リファレンス · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="項目を絞り込み..." autocomplete="off" spellcheck="false" aria-label="項目を絞り込み...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">カテゴリ &amp; 項目</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="すべて展開" data-collapse-label="すべて折りたたむ">すべて折りたたむ</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API 全体概要" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API 全体概要</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="パッケージエクスポート＆配布バンドル">
+                                <a href="00_overview.html#パッケージエクスポート-配布バンドル" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">パッケージエクスポート＆配布バンドル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性接頭辞 (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#属性接頭辞-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性接頭辞 (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ポータル間リンク（4ポータル構成）">
+                                <a href="00_overview.html#ポータル間リンク-4ポータル構成" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ポータル間リンク（4ポータル構成）</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="コアリクエスト属性 (Core Request Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">コアリクエスト属性 (Core Request Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)">
+                                <a href="01_core_request_attributes.html#読み取り-クエリ系メソッド-read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="状態変更系メソッド (State-Mutating Verbs)">
+                                <a href="01_core_request_attributes.html#状態変更系メソッド-state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">状態変更系メソッド (State-Mutating Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)">
+                                <a href="01_core_request_attributes.html#統合アクション-メソッド属性-unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="トリガーと同期属性 (Trigger &amp; Synchronization Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">トリガーと同期属性 (Trigger &amp; Synchronization Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="イベントトリガー指定 (Event Trigger Specification)">
+                                <a href="02_trigger_and_sync_attributes.html#イベントトリガー指定-event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">イベントトリガー指定 (Event Trigger Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)">
+                                <a href="02_trigger_and_sync_attributes.html#リクエストキューと並行同期制御-request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)">
+                                <a href="02_trigger_and_sync_attributes.html#ユーザー確認-非同期確認ゲート-user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="ターゲットとスワップ属性 (Target &amp; Swap Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">ターゲットとスワップ属性 (Target &amp; Swap Attributes)</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)">
+                                <a href="03_target_and_swap_attributes.html#メインターゲットとスワップ方式の指定-primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-マルチターゲット更新-out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンス抽出フィルタ属性 (Response Filtering Attributes)">
+                                <a href="03_target_and_swap_attributes.html#レスポンス抽出フィルタ属性-response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンス抽出フィルタ属性 (Response Filtering Attributes)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)">
+                                <a href="03_target_and_swap_attributes.html#domモーフィング保護-要素状態保持属性-dom-morphing-state-preservation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="データ・検証・設定属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">データ・検証・設定属性</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストペイロード・パラメータ属性">
+                                <a href="04_data_and_config_attributes.html#リクエストペイロード-パラメータ属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストペイロード・パラメータ属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="フォーム検証・Fetch設定・ステータスルーティング">
+                                <a href="04_data_and_config_attributes.html#フォーム検証-fetch設定-ステータスルーティング" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">フォーム検証・Fetch設定・ステータスルーティング</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX・履歴・イベント・継承制御属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX・履歴・イベント・継承制御属性</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ナビゲーション・ブラウザ履歴属性">
+                                <a href="05_ux_history_and_control_attributes.html#ナビゲーション-ブラウザ履歴属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ナビゲーション・ブラウザ履歴属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="通信中 UX・セキュリティ・インラインスクリプト">
+                                <a href="05_ux_history_and_control_attributes.html#通信中-ux-セキュリティ-インラインスクリプト" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">通信中 UX・セキュリティ・インラインスクリプト</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性継承モディファイア">
+                                <a href="05_ux_history_and_control_attributes.html#属性継承モディファイア" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性継承モディファイア</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP リクエスト・レスポンスヘッダ" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP リクエスト・レスポンスヘッダ</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストヘッダ">
+                                <a href="06_http_headers.html#リクエストヘッダ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストヘッダ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンスヘッダ">
+                                <a href="06_http_headers.html#レスポンスヘッダ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンスヘッダ</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API と TypeScript 型定義" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API と TypeScript 型定義</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="コア JavaScript メソッド">
+                                <a href="07_javascript_api.html#コア-javascript-メソッド" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">コア JavaScript メソッド</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript コンテキスト・オプション型定義">
+                                <a href="07_javascript_api.html#typescript-コンテキスト-オプション型定義" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript コンテキスト・オプション型定義</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="設定オプションと CSS ステートクラス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">設定オプションと CSS ステートクラス</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="設定エントリポイント">
+                                <a href="08_configuration_options.html#設定エントリポイント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">設定エントリポイント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig プロパティ">
+                                <a href="08_configuration_options.html#htmxconfig-プロパティ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig プロパティ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS ステートクラス">
+                                <a href="08_configuration_options.html#css-ステートクラス" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS ステートクラス</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="イベント＆拡張機能フック リファレンス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">イベント＆拡張機能フック リファレンス</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="要素ライフサイクルイベント">
+                                <a href="09_events_reference.html#要素ライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">要素ライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストライフサイクルイベント">
+                                <a href="09_events_reference.html#リクエストライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="スワップ＆セトルイベント">
+                                <a href="09_events_reference.html#スワップ-セトルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">スワップ＆セトルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="履歴＆ビュートランジションイベント">
+                                <a href="09_events_reference.html#履歴-ビュートランジションイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">履歴＆ビュートランジションイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能専用フック">
+                                <a href="09_events_reference.html#拡張機能専用フック" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能専用フック</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="ストリーミング＆ネットワーク拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">ストリーミング＆ネットワーク拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ストリーミング拡張機能">
+                                <a href="#ストリーミング拡張機能" class="catalog-nav-sublink is-prose-sublink" data-target="ストリーミング拡張機能">
+                                    
+                                    <span class="catalog-nav-sym-text">ストリーミング拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ネットワーク＆転送拡張機能">
+                                <a href="#ネットワーク-転送拡張機能" class="catalog-nav-sublink is-prose-sublink" data-target="ネットワーク-転送拡張機能">
+                                    
+                                    <span class="catalog-nav-sym-text">ネットワーク＆転送拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="リアクティブ DOM スクリプティング＆ DOM 操作拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">リアクティブ DOM スクリプティング＆ DOM 操作拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#リアクティブ-dom-スクリプティング-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM 操作＆ UX 拡張機能">
+                                <a href="11_extensions_reactive_and_dom.html#dom-操作-ux-拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM 操作＆ UX 拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="セキュリティ・互換性・内部 API・CLI ツール" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">セキュリティ・互換性・内部 API・CLI ツール</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="サマリーテーブル">
+                                <a href="12_extensions_security_compat_and_cli.html#サマリーテーブル" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">サマリーテーブル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="セキュリティ・キャッシュ・互換性拡張機能">
+                                <a href="12_extensions_security_compat_and_cli.html#セキュリティ-キャッシュ-互換性拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">セキュリティ・キャッシュ・互換性拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能内部 API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#拡張機能内部-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能内部 API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="マイグレーション CLI ツール (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#マイグレーション-cli-ツール-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">マイグレーション CLI ツール (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>一致する項目が見つかりません。</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API リファレンス</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">ストリーミング＆ネットワーク拡張機能</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">日本語</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <a href="../en/10_extensions_streaming_and_net.html" class="lang-option" role="option" hreflang="">
+                                    <span>English</span>
+                                </a>
+                                
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>日本語</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">ストリーミング＆ネットワーク拡張機能</h1>
+<p>htmx v4.0.1 は、サーバーからクライアントへの持続的ストリーミング（<code>hx-sse</code>、<code>hx-ws</code>、<code>hx-multipart</code>）およびネットワーク転送最適化（<code>hx-preload</code>、<code>hx-ptag</code>、<code>hx-download</code>）のための 6 つの公式拡張機能を提供します。すべての拡張機能はスクリプト読み込み時に <code>htmx.registerExtension()</code> を通じてグローバルに登録され、Fetch ベースの <code>ctx</code> リクエストパイプラインに直接統合されます。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">シンボル</th>
+<th style="text-align:left">登録名</th>
+<th style="text-align:left">スクリプトファイル</th>
+<th style="text-align:left">カテゴリ</th>
+<th style="text-align:left">主な役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-sse-sse"><code>hx-sse</code></a></td>
+<td style="text-align:left"><code>sse</code></td>
+<td style="text-align:left"><code>src/ext/hx-sse.js</code></td>
+<td style="text-align:left">ストリーミング</td>
+<td style="text-align:left"><code>text/event-stream</code>（SSE）レスポンスをストリーミングし、無名メッセージのスワップと名前付き DOM イベントの発火を行います。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-ws-ws"><code>hx-ws</code></a></td>
+<td style="text-align:left"><code>ws</code></td>
+<td style="text-align:left"><code>src/ext/hx-ws.js</code></td>
+<td style="text-align:left">ストリーミング</td>
+<td style="text-align:left">双方向 WebSocket 接続（<code>hx-ws:connect</code>、<code>hx-ws:send</code>）と送信キュー付き JSON シリアライズ、HTML/JSON スワップを提供します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-multipart-hx-multipart"><code>hx-multipart</code></a></td>
+<td style="text-align:left"><code>hx-multipart</code></td>
+<td style="text-align:left"><code>src/ext/hx-multipart.js</code></td>
+<td style="text-align:left">ストリーミング</td>
+<td style="text-align:left"><code>multipart/mixed</code>（順次）および <code>multipart/parallel</code>（並列）パートをパート別 <code>HX-*</code> ヘッダと <code>Response.prototype.parts()</code> でストリーミングします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-preload-preload"><code>hx-preload</code></a></td>
+<td style="text-align:left"><code>preload</code></td>
+<td style="text-align:left"><code>src/ext/hx-preload.js</code></td>
+<td style="text-align:left">ネットワーク＆転送</td>
+<td style="text-align:left">トリガーイベントや <code>hx-boost</code> リンクの <code>mousedown</code>/<code>touchstart</code> で <code>GET</code> リクエストを事前取得し、<code>ctx.fetch</code> をオーバーライドします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-ptag-ptag"><code>hx-ptag</code></a></td>
+<td style="text-align:left"><code>ptag</code></td>
+<td style="text-align:left"><code>src/ext/hx-ptag.js</code></td>
+<td style="text-align:left">ネットワーク＆転送</td>
+<td style="text-align:left"><code>hx-ptag</code> 属性と <code>HX-PTag</code> ヘッダで要素単位のポーリングタグを追跡し、<code>304 Not Modified</code> によるスワップ省略を実現します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-download-download"><code>hx-download</code></a></td>
+<td style="text-align:left"><code>download</code></td>
+<td style="text-align:left"><code>src/ext/hx-download.js</code></td>
+<td style="text-align:left">ネットワーク＆転送</td>
+<td style="text-align:left"><code>hx-swap=&quot;download&quot;</code>、<code>Content-Disposition: attachment</code>、または <code>HX-Download</code> で進捗イベント付きのファイルダウンロードを実行します。</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/10_extensions_streaming_and_net/cat_10_streaming_net_extensions_ja.png" alt="10_extensions_streaming_and_net_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 ストリーミング＆ネットワーク拡張機能アーキテクチャ</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">86</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">43</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mf">78.5</span><span class="p">),</span>
+    <span class="s2">"ストリーミング＆ネットワーク拡張機能パイプライン (src/ext/)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Core Request Pipeline (Focal Point 1)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mf">67.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">162</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_left_right</span><span class="p">((</span><span class="mi">16</span><span class="p">,</span> <span class="mf">67.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">67.5</span><span class="p">),</span>
+    <span class="s2">"htmx コア Fetch パイプライン: htmx:config:request -&gt; ctx.fetch() -&gt; htmx:before:response -&gt; htmx.swap(ctx)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Left Group: Persistent Streaming Extensions</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mi">29</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">broadcast</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mf">48.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">49</span><span class="p">,</span> <span class="mf">48.5</span><span class="p">),</span> <span class="s2">"ストリーミング拡張機能 (持続的リーダー)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="c1"># SSE Card</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">38.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">40.3</span><span class="p">),</span> <span class="s2">"hx-sse ('sse') — text/event-stream"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">36.3</span><span class="p">),</span> <span class="s2">"hx-sse:connect | Last-Event-ID | event: hx:release"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># WS Card</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">27.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">28.8</span><span class="p">),</span> <span class="s2">"hx-ws ('ws') — WebSocket 双方向通信"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">24.8</span><span class="p">),</span> <span class="s2">"hx-ws:connect / hx-ws:send | 送信キュー (最大 100 件)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Multipart Card</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">17.3</span><span class="p">),</span> <span class="s2">"hx-multipart ('hx-multipart') — mixed &amp; parallel"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mf">13.3</span><span class="p">),</span> <span class="s2">"Response.parts() | パート別 HX-* | HX-Last-Part-ID"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Right Group: Network &amp; Transfer Extensions</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mi">29</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">cloud_arrow_down</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mf">48.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">135</span><span class="p">,</span> <span class="mf">48.5</span><span class="p">),</span> <span class="s2">"ネットワーク＆転送拡張機能"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="c1"># Preload Card</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">38.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">40.3</span><span class="p">),</span> <span class="s2">"hx-preload ('preload') — 先読み GET"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">36.3</span><span class="p">),</span> <span class="s2">"ctx.fetch 置換 | autoBoost mousedown/touchstart"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># PTag Card</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">27.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">28.8</span><span class="p">),</span> <span class="s2">"hx-ptag ('ptag') — 条件付きポーリング"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">24.8</span><span class="p">),</span> <span class="s2">"hx-ptag &lt;-&gt; HX-PTag ヘッダ | 304 Not Modified"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Download Card (Focal Point 2)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">17.3</span><span class="p">),</span> <span class="s2">"hx-download ('download') — Blob ストリーム保存"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mf">13.3</span><span class="p">),</span> <span class="s2">"hx-swap='download' | Content-Disposition | HX-Download"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Connectors to Core Pipeline</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">47</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"&lt;-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">133</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"&lt;-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="ストリーミング拡張機能" class="catalog-section-heading"><span>ストリーミング拡張機能</span><a class="header-anchor" href="#ストリーミング拡張機能" aria-label="Permalink to ストリーミング拡張機能">#</a></h2>
+<h3 id="hx-sse-sse"><code>hx-sse</code> (<code>sse</code>)<a class="header-anchor" href="#hx-sse-sse" aria-label="Permalink">#</a></h3>
+<p>Fetch の <code>ReadableStream</code> を用いて Server-Sent Events（<code>text/event-stream</code>）をストリーミングし、指数バックオフ再接続、<code>Last-Event-ID</code> 追跡、無名メッセージの自動 HTML スワップ、および名前付き DOM イベントの発火を行います。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-sse.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:sse"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 専用 SSE ストリーム接続 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-sse:connect</span><span class="o">=</span><span class="s">"/events/live"</span>
+     <span class="na">hx-sse:close</span><span class="o">=</span><span class="s">"stream-complete"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"load"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span>
+     <span class="na">hx-config</span><span class="o">=</span><span class="s">"sse.reconnectDelay:1s, sse.releaseOn:immediate"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'sse'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('sse', ...)</code></td>
+<td style="text-align:left">すべての htmx リクエストの <code>Accept</code> ヘッダに <code>text/event-stream</code> を追加し、<code>htmx_before_response</code> で <code>Content-Type: text/event-stream</code> レスポンスをインターセプトします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-sse:connect</code></td>
+<td style="text-align:left"><code>string</code> (URL)</td>
+<td style="text-align:left"><code>hx-trigger</code>（デフォルトは <code>load</code>）発火時に <code>GET</code> SSE ストリームを開きます。旧 <code>sse-connect</code> は非推奨警告付きで変換され、<code>sse-swap</code> は廃止されました。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-sse:close</code></td>
+<td style="text-align:left"><code>string</code> (イベント名)</td>
+<td style="text-align:left"><code>event: &lt;name&gt;</code> フレームを受信した時点で SSE ストリームを正常終了（<code>reason: 'message'</code>）します。旧 <code>sse-close</code> も非推奨警告付きで変換されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>特殊フレーム</strong></td>
+<td style="text-align:left"><code>event: hx:release</code></td>
+<td style="text-align:left">サーバー SSE イベント</td>
+<td style="text-align:left">ストリームを維持したまま <code>ctx.extensionPromise</code> を早期解決し、<code>hx-indicator</code>・<code>hx-disable</code>・<code>hx-sync</code> のロックを解放します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>ヘッダ</strong></td>
+<td style="text-align:left"><code>Last-Event-ID</code></td>
+<td style="text-align:left">リクエストヘッダ</td>
+<td style="text-align:left">NULL バイト（<code>\0</code>）を含まない <code>id:</code> フィールドを受信していた場合、再接続時のリクエストヘッダに自動付与されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnect</code></td>
+<td style="text-align:left"><code>boolean</code> (<code>hx-sse:connect</code> 時は <code>true</code>、他は <code>false</code>)</td>
+<td style="text-align:left"><code>htmx.config.sse</code> または要素の <code>hx-config=&quot;sse.{...}&quot;</code> で自動再接続を有効化します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectDelay</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>500</code>)</td>
+<td style="text-align:left">再接続の基本待機時間（ミリ秒、<code>base * 2^(attempt - 1)</code>）。サーバーの <code>retry:</code> フィールドで動的に更新されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectMaxDelay</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>60000</code>)</td>
+<td style="text-align:left">指数バックオフ待機時間の上限（ミリ秒）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectMaxAttempts</code></td>
+<td style="text-align:left"><code>number</code> (<code>Infinity</code>)</td>
+<td style="text-align:left">再接続を試行する最大連続回数。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectJitter</code></td>
+<td style="text-align:left"><code>number</code> (<code>0.3</code>)</td>
+<td style="text-align:left">再接続待機時間に加えるランダムジッター係数（<code>±30%</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>connectTimeout</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>defaultTimeout</code>)</td>
+<td style="text-align:left">初回接続および再接続 <code>fetch()</code> のタイムアウト時間（ミリ秒）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>pauseOnBackground</code></td>
+<td style="text-align:left"><code>boolean</code> (<code>hx-sse:connect</code> 時は <code>true</code>、他は <code>false</code>)</td>
+<td style="text-align:left"><code>document.hidden</code> 時にストリームリーダーを中断し、タブ復帰時にバックオフをリセットして即座に再接続します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>releaseOn</code></td>
+<td style="text-align:left"><code>'immediate' | 'first' | 'end'</code></td>
+<td style="text-align:left"><code>ctx.extensionPromise</code> の解放タイミング：<code>hx-sse:connect</code> は <code>'immediate'</code>、標準リクエストは <code>'end'</code> がデフォルト（<code>'first'</code> は初回スワップ後）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:before:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">初回接続・再接続の前に発火。<code>preventDefault()</code> または <code>connection.cancelled = true</code> でキャンセル可能。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:after:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">ストリームレスポンスの確立後に発火（<code>connection.status</code> が設定済み）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:before:message</code></td>
+<td style="text-align:left"><code>{ connection, message, cancelled, waitUntil }</code></td>
+<td style="text-align:left">メッセージ処理前に発火（<code>message: { data, event, id }</code>）。<code>waitUntil(promise)</code> で非同期処理を待機可能。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:after:message</code></td>
+<td style="text-align:left"><code>{ connection, message }</code></td>
+<td style="text-align:left">無名メッセージのスワップ完了後、または名前付きイベントの発火後に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:error</code></td>
+<td style="text-align:left"><code>{ connection, error, status?, url? }</code></td>
+<td style="text-align:left">通信エラー、ストリーム読み取り例外、または再接続時の非 2xx ステータス時に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:sse:close</code></td>
+<td style="text-align:left"><code>{ connection, reason }</code></td>
+<td style="text-align:left">ストリーム終了・クリーンアップ時に発火（<code>reason</code>: <code>'cancelled' | 'message' | 'ended' | 'removed' | 'cleanup'</code>）。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-html"><span class="cm">&lt;!-- 1. text/event-stream を返す通常の POST リクエストを自動インターセプト --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/ai/chat"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#transcript"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">"prompt"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"質問を入力..."</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>ストリーム回答<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"transcript"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. 無名 HTML フレームをスワップしつつ、名前付き SSE イベントを hx-on で処理 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-sse:connect</span><span class="o">=</span><span class="s">"/build/logs"</span>
+     <span class="na">hx-sse:close</span><span class="o">=</span><span class="s">"done"</span>
+     <span class="na">hx-on:progress</span><span class="o">=</span><span class="s">"document.querySelector('#bar').value = event.detail.data"</span>
+     <span class="na">hx-on:htmx:sse:close</span><span class="o">=</span><span class="s">"console.log('Closed:', event.detail.reason)"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-ws-ws"><code>hx-ws</code> (<code>ws</code>)<a class="header-anchor" href="#hx-ws-ws" aria-label="Permalink">#</a></h3>
+<p>URL 自動正規化、フォーム値・<code>hx-vals</code> の JSON シリアライズ、送信待ちキュー、および生 HTML または構造化 JSON のスワップを備えた双方向 WebSocket 接続（<code>hx-ws:connect</code>、<code>hx-ws:send</code>）を提供します。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-ws.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:ws"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- WebSocket 接続とメッセージ送信 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-ws:connect</span><span class="o">=</span><span class="s">"/chat/room-42"</span> <span class="na">hx-config</span><span class="o">=</span><span class="s">"ws.reconnectDelay:1s"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"messages"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-ws:send</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">"text"</span> <span class="na">required</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>送信<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'ws'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('ws', ...)</code></td>
+<td style="text-align:left"><code>htmx.config.ws</code> を初期化し、<code>[hx-ws:connect]</code> と <code>[hx-ws:send]</code> を処理します。<code>window</code> の <code>pagehide</code> 時に全ソケットをコード <code>1000</code> で閉じます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-ws:connect</code></td>
+<td style="text-align:left"><code>string</code> (URL)</td>
+<td style="text-align:left"><code>hx-trigger</code>（デフォルトは <code>load</code>）で WebSocket を開きます。<code>http(s)://</code>・<code>//</code>・<code>/path</code>・相対パスを <code>ws://</code> または <code>wss://</code> に正規化します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-ws:send</code></td>
+<td style="text-align:left">論理属性（値なし）</td>
+<td style="text-align:left"><code>hx-trigger</code>（<code>&lt;form&gt;</code> は <code>submit</code>、入力要素は <code>change</code>、他は <code>click</code>）発火時にフォーム値・<code>hx-vals</code>・<code>HX-*</code> ヘッダを <code>{ ...values, headers }</code> の JSON として送信します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>受信ペイロード</strong></td>
+<td style="text-align:left">生 HTML または JSON</td>
+<td style="text-align:left"><code>string</code> または <code>{ content, target?, swap?, select? }</code></td>
+<td style="text-align:left">非 JSON 文字列は HTML として直接スワップ。<code>content</code>（旧 <code>payload</code>）を持つ JSON は <code>target</code>・<code>swap</code>（<code>swapEmpty:false</code> 付与）・<code>select</code> を適用してスワップ。<code>content</code> なし JSON はイベント処理用のデータ専用メッセージとなります。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnect</code></td>
+<td style="text-align:left"><code>boolean</code> (<code>true</code>)</td>
+<td style="text-align:left"><code>reconnectCodes</code> に含まれるコードで切断された際に指数バックオフ再接続を行います。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectCodes</code></td>
+<td style="text-align:left"><code>number[]</code> (<code>[1001, 1005, 1006, 1011, 1012, 1013, 1014]</code>)</td>
+<td style="text-align:left">自動再接続の対象となる WebSocket クローズコード一覧。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectDelay</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>500</code>)</td>
+<td style="text-align:left">初回再接続の待機時間（ミリ秒）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectMaxDelay</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>60000</code>)</td>
+<td style="text-align:left">再接続待機時間の上限（ミリ秒）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectMaxAttempts</code></td>
+<td style="text-align:left"><code>number</code> (<code>Infinity</code>)</td>
+<td style="text-align:left">再接続を試行する最大回数。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnectJitter</code></td>
+<td style="text-align:left"><code>number</code> (<code>0.3</code>)</td>
+<td style="text-align:left">再接続待機時間のランダムジッター係数（<code>±30%</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>pauseOnBackground</code></td>
+<td style="text-align:left"><code>boolean</code> (<code>true</code>)</td>
+<td style="text-align:left"><code>document.hidden</code> 時にソケットを閉じ、タブ再表示時に <code>attempt = 0</code> で再接続します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>maxOutgoingMessagesQueueSize</code></td>
+<td style="text-align:left"><code>number</code> (<code>100</code>)</td>
+<td style="text-align:left">接続確立前に <code>connection.queue</code> に保持する最大送信メッセージ数。超過時は <code>htmx:ws:error</code> を発火します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>protocols</code></td>
+<td style="text-align:left"><code>string | string[] | undefined</code></td>
+<td style="text-align:left"><code>new WebSocket(url, protocols)</code> に渡すサブプロトコル指定。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:before:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">ソケット生成・再接続前に発火（キャンセル可能）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:after:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">ソケットの <code>open</code> 発火時（送信キューのフラッシュ前）に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:before:message:outgoing</code></td>
+<td style="text-align:left"><code>{ connection, message, cancelled, waitUntil }</code></td>
+<td style="text-align:left">送信前に発火（<code>message: { headers, values, data }</code>）。<code>message.data</code> を上書きして独自形式の送信が可能。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:after:message:outgoing</code></td>
+<td style="text-align:left"><code>{ connection, message }</code></td>
+<td style="text-align:left"><code>connection.socket.send(message.data)</code> の直後に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:before:message:incoming</code></td>
+<td style="text-align:left"><code>{ connection, message, cancelled, waitUntil }</code></td>
+<td style="text-align:left">受信メッセージの解析・スワップ前に発火（<code>message: { data, text(), json() }</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:after:message:incoming</code></td>
+<td style="text-align:left"><code>{ connection, message }</code></td>
+<td style="text-align:left">受信メッセージの処理および DOM スワップ完了後に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:error</code></td>
+<td style="text-align:left"><code>{ connection?, url?, error }</code></td>
+<td style="text-align:left">ソケットエラー、接続未確立、送信キュー上限超過、またはハンドラ例外時に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:ws:close</code></td>
+<td style="text-align:left"><code>{ connection, reason, code }</code></td>
+<td style="text-align:left">ソケット切断時に発火（<code>reason</code>: <code>'closed' | 'cancelled' | 'removed'</code>）。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-javascript"><span class="c1">// サーバーから特定ターゲット・スワップ方式を指定する JSON メッセージ例:</span>
+<span class="c1">// {</span>
+<span class="c1">//   "content": "&lt;li id='msg-99'&gt;WebSocket からの新着メッセージ&lt;/li&gt;",</span>
+<span class="c1">//   "target": "#messages",</span>
+<span class="c1">//   "swap": "beforeend"</span>
+<span class="c1">// }</span>
+
+<span class="c1">// 送信ペイロード形式を JavaScript でカスタマイズする例:</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'htmx:ws:before:message:outgoing'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">message</span><span class="p">.</span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'chat.message'</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="nx">message</span><span class="p">.</span><span class="nx">values</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">meta</span><span class="o">:</span><span class="w"> </span><span class="nx">message</span><span class="p">.</span><span class="nx">headers</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="hx-multipart-hx-multipart"><code>hx-multipart</code> (<code>hx-multipart</code>)<a class="header-anchor" href="#hx-multipart-hx-multipart" aria-label="Permalink">#</a></h3>
+<p><code>multipart/mixed</code>（順次パートスワップ）および <code>multipart/parallel</code>（並列パートスワップ）レスポンスをストリーミング処理します。パート単位の <code>HX-*</code> ヘッダ、<code>HX-Last-Part-ID</code> によるチェックポイント再開、<code>Response.prototype.parts()</code> パーサーのプロリーフィルを内蔵しています。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-multipart.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:hx-multipart"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 持続的マルチパートストリーム --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-multipart:connect</span><span class="o">=</span><span class="s">"/dashboard/stream"</span>
+     <span class="na">hx-multipart:close</span><span class="o">=</span><span class="s">"click from:#stop-btn"</span>
+     <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main-panel"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"stop-btn"</span> <span class="na">type</span><span class="o">=</span><span class="s">"button"</span><span class="p">&gt;</span>ストリーム停止<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'hx-multipart'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('hx-multipart', ...)</code></td>
+<td style="text-align:left">全 htmx リクエストの <code>Accept</code> に <code>multipart/mixed, multipart/parallel</code> を追加し、<code>Response.prototype.parts()</code> と <code>BodyPart.prototype.parts()</code> を登録します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-multipart:connect</code></td>
+<td style="text-align:left"><code>string</code> (URL)</td>
+<td style="text-align:left"><code>hx-trigger</code>（デフォルトは <code>load</code>）で <code>reconnect: true</code>・<code>pauseOnBackground: true</code> のストリーミング <code>GET</code> リクエストを開始します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-multipart:close</code></td>
+<td style="text-align:left"><code>string</code> (トリガー指定)</td>
+<td style="text-align:left">指定されたトリガーが発火した際にマルチパート接続を終了（<code>reason: 'part'</code>）します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>MIME タイプ</strong></td>
+<td style="text-align:left"><code>multipart/mixed</code>, <code>multipart/parallel</code></td>
+<td style="text-align:left"><code>Content-Type</code> ヘッダ</td>
+<td style="text-align:left"><code>multipart/mixed</code> は各パートのスワップ完了を順番に待機し、<code>multipart/parallel</code> は受信したパートを並列にスワップします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>パート別ヘッダ</strong></td>
+<td style="text-align:left"><code>HX-Target</code>, <code>HX-Swap</code>, <code>HX-Select</code>, <code>HX-Retarget</code>, <code>HX-Reswap</code>, <code>HX-Reselect</code></td>
+<td style="text-align:left">パート HTTP ヘッダ</td>
+<td style="text-align:left">個々の <code>BodyPart</code> に対して、親レスポンスや要素のデフォルト設定（<code>target</code>、<code>swap</code>、<code>select</code>）を上書きします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>パート別ヘッダ</strong></td>
+<td style="text-align:left"><code>HX-Part-ID</code> / <code>HX-Last-Part-ID</code></td>
+<td style="text-align:left">パート / リクエストヘッダ</td>
+<td style="text-align:left"><code>HX-Part-ID</code> はチェックポイント ID を記録します。順序通りに完了した最新 ID が再接続時に <code>HX-Last-Part-ID</code> ヘッダとして送信されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>パート別ヘッダ</strong></td>
+<td style="text-align:left"><code>HX-Trigger</code>, <code>HX-Location</code>, <code>HX-Redirect</code>, <code>HX-Refresh</code></td>
+<td style="text-align:left">パート HTTP ヘッダ</td>
+<td style="text-align:left">個別パートの処理時にクライアント側イベントの発火やページ遷移を実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Prollyfill API</strong></td>
+<td style="text-align:left"><code>Response.prototype.parts()</code></td>
+<td style="text-align:left"><code>() =&gt; AsyncIterable&lt;BodyPart&gt;</code></td>
+<td style="text-align:left"><code>Content-Length</code> 高速パスと境界文字列探索（Boyer-Moore-Horspool）を備えたストリーミングマルチパートパーサー。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>reconnect</code>, <code>reconnectDelay</code>, <code>reconnectMaxDelay</code>, <code>reconnectMaxAttempts</code>, <code>reconnectJitter</code>, <code>connectTimeout</code>, <code>pauseOnBackground</code></td>
+<td style="text-align:left"><code>htmx.config.multipart</code></td>
+<td style="text-align:left"><code>hx-sse</code> と同様の再接続・バックグラウンド一時停止オプション（<code>htmx.config.multipart</code> または <code>ctx.request.multipart</code> で設定）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:before:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">初回接続・再接続の前に発火（キャンセル可能）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:after:connection</code></td>
+<td style="text-align:left"><code>{ connection }</code></td>
+<td style="text-align:left">マルチパート接続または再接続の確立後に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:before:part</code></td>
+<td style="text-align:left"><code>{ connection, ctx, part, cancelled, waitUntil }</code></td>
+<td style="text-align:left">個別 <code>BodyPart</code> の本文読み取り・スワップ前に発火（キャンセルおよび <code>waitUntil</code> 対応）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:after:part</code></td>
+<td style="text-align:left"><code>{ connection, ctx, part }</code></td>
+<td style="text-align:left">個別 <code>BodyPart</code> のスワップとチェックポイント更新完了後に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:error</code></td>
+<td style="text-align:left"><code>{ connection, error, status? }</code></td>
+<td style="text-align:left"><code>MultipartParseError</code>、通信失敗、または再接続時の不正な <code>Content-Type</code> 時に発火。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:multipart:close</code></td>
+<td style="text-align:left"><code>{ connection, reason }</code></td>
+<td style="text-align:left">ストリーム終了時に発火（<code>reason</code>: <code>'cancelled' | 'part' | 'ended' | 'removed' | 'cleanup'</code>）。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/mixed; boundary=frame</span>
+
+<span class="err">--frame</span>
+<span class="nt">Content-Type:</span><span class="w"> </span><span class="nl">text</span><span class="dl">/</span><span class="nl">html</span>
+<span class="c">HX-Target: #metrics-kpi</span>
+<span class="c">HX-Swap: innerHTML</span>
+<span class="c">HX-Part-ID: seq-101</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"kpi"</span><span class="p">&gt;</span>稼働率 99.98%<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+--frame
+Content-Type: text/html
+HX-Target: #activity-log
+HX-Swap: afterbegin
+HX-Trigger: {"partLoaded": {"id": "seq-102"}}
+HX-Part-ID: seq-102
+
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>デプロイ #402 の検証が完了しました<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+--frame--
+</code></pre>
+<hr />
+<h2 id="ネットワーク-転送拡張機能" class="catalog-section-heading"><span>ネットワーク＆転送拡張機能</span><a class="header-anchor" href="#ネットワーク-転送拡張機能" aria-label="Permalink to ネットワーク＆転送拡張機能">#</a></h2>
+<h3 id="hx-preload-preload"><code>hx-preload</code> (<code>preload</code>)<a class="header-anchor" href="#hx-preload-preload" aria-label="Permalink">#</a></h3>
+<p>ユーザーが要素をアクティブ化する前（または <code>hx-boost</code> リンクの <code>mousedown</code>/<code>touchstart</code> 時）に <code>GET</code> レスポンスを先読みし、進行中または完了済みの <code>fetch()</code> Promise で <code>ctx.fetch</code> をオーバーライドします。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-preload.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:preload"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- トリガーと有効期限 (timeout) を指定した明示的プリロード --&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/reports/q4"</span>
+   <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main"</span>
+   <span class="na">hx-preload</span><span class="o">=</span><span class="s">"mouseenter timeout:10s"</span><span class="p">&gt;</span>
+  第4四半期レポート
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'preload'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('preload', ...)</code></td>
+<td style="text-align:left"><code>htmx_after_init</code>（リスナー登録）、<code>htmx_before_request</code>（<code>ctx.fetch</code> 差し替え）、<code>htmx_before_cleanup</code>（リスナー解除）をフックします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-preload</code></td>
+<td style="text-align:left"><code>string</code> (トリガー指定)</td>
+<td style="text-align:left">パッシブな先読み <code>GET</code> を開始するトリガー指定（<code>api.parseTriggerSpecs()</code> で解析）。キャッシュ有効期限を指定する <code>timeout:&lt;interval&gt;</code> 修飾子（デフォルト <code>5000</code> ミリ秒）に対応。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>自動 Boost 動作</strong></td>
+<td style="text-align:left">Boost された <code>&lt;a href&gt;</code></td>
+<td style="text-align:left"><code>mousedown</code> + <code>touchstart</code></td>
+<td style="text-align:left">ブーストされた <code>&lt;a&gt;</code>（またはブースト有効な <code>hx-get</code> 要素）に <code>hx-preload</code> がない場合、<code>autoBoost: false</code> でない限り <code>mousedown</code> と <code>touchstart</code> で自動先読みします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>htmx.config.preload.autoBoost</code></td>
+<td style="text-align:left"><code>boolean</code> (<code>true</code>)</td>
+<td style="text-align:left"><code>false</code> に設定すると、明示的な <code>hx-preload</code> 属性を持たない <code>hx-boost</code> リンクの自動先読みを無効化します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>htmx.config.preload.boostEvent</code></td>
+<td style="text-align:left"><code>string</code> (<code>&quot;mousedown&quot;</code>)</td>
+<td style="text-align:left">自動 <code>hx-boost</code> 先読みで <code>&quot;touchstart&quot;</code> と併用されるデスクトップ向けイベント名。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定</strong></td>
+<td style="text-align:left"><code>htmx.config.preload.boostTimeout</code></td>
+<td style="text-align:left"><code>number | string</code> (<code>5000</code>)</td>
+<td style="text-align:left">自動ブースト先読みキャッシュの有効期限（ミリ秒、<code>elt._htmx.preload.expiresAt</code>）。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-html"><span class="cm">&lt;!-- グローバルな自動 Boost プリロード設定のカスタマイズ --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">preload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">autoBoost</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">boostEvent</span><span class="o">:</span><span class="w"> </span><span class="s1">'mouseover'</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">boostTimeout</span><span class="o">:</span><span class="w"> </span><span class="s1">'8s'</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 配下のリンクは mouseover / touchstart で自動的に先読みされる --&gt;</span>
+<span class="p">&lt;</span><span class="nt">nav</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/overview"</span><span class="p">&gt;</span>概要<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/analytics"</span><span class="p">&gt;</span>アナリティクス<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-ptag-ptag"><code>hx-ptag</code> (<code>ptag</code>)<a class="header-anchor" href="#hx-ptag-ptag" aria-label="Permalink">#</a></h3>
+<p>要素単位のポーリングタグ（<code>hx-ptag</code> 属性および <code>HX-PTag</code> リクエスト／レスポンスヘッダ）を管理し、ポーリング対象のフラグメントに変化がない場合にサーバーが <code>304 Not Modified</code> を返して不要な DOM スワップをスキップできるようにします。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-ptag.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:ptag"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 初期 PTag を指定した条件付きポーリング --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/notifications/feed"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"every 5s"</span>
+     <span class="na">hx-ptag</span><span class="o">=</span><span class="s">"v1-8f92a"</span><span class="p">&gt;</span>
+  新着通知はありません。
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'ptag'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('ptag', ...)</code></td>
+<td style="text-align:left"><code>htmx_after_init</code> で <code>hx-ptag</code> を読み取り、<code>htmx_config_request</code> で <code>HX-PTag</code> を送信し、<code>htmx_after_request</code> で最新タグを保存します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>属性</strong></td>
+<td style="text-align:left"><code>hx-ptag</code></td>
+<td style="text-align:left"><code>string</code> (初期タグ)</td>
+<td style="text-align:left">要素初期化時に <code>api.htmxProp(elt).ptag</code> に初期値を設定します（<code>api.attributeValue()</code> により <code>:inherited</code> もサポート）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>リクエストヘッダ</strong></td>
+<td style="text-align:left"><code>HX-PTag</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left"><code>elt._htmx.ptag</code> が存在する場合、その要素からのリクエストに自動付与されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>レスポンスヘッダ</strong></td>
+<td style="text-align:left"><code>HX-PTag</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">サーバーから返却されると <code>elt._htmx.ptag</code> を更新します。HTTP <code>304 Not Modified</code>（<code>htmx.config.noSwap</code> の既定値）と組み合わせることで未変更時のスワップを省略できます。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-javascript"><span class="c1">// Express / Node.js での HX-PTag ハンドリング例:</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/notifications/feed'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">currentTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getFeedVersionTag</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'HX-PTag'</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">currentTag</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">304</span><span class="p">).</span><span class="nx">end</span><span class="p">();</span><span class="w"> </span><span class="c1">// スワップをスキップ (304 は htmx.config.noSwap に含まれる)</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'HX-PTag'</span><span class="p">,</span><span class="w"> </span><span class="nx">currentTag</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">renderNotificationsHtml</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">));</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="hx-download-download"><code>hx-download</code> (<code>download</code>)<a class="header-anchor" href="#hx-download-download" aria-label="Permalink">#</a></h3>
+<p><code>htmx_before_response</code> でレスポンスをインターセプトし、DOM スワップの代わりにレスポンスストリームを <code>Blob</code> として読み取ってファイルダウンロードを実行します。進捗イベントの発火と RFC 5987 ファイル名解析をサポートします。</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 登録とホワイトリスト指定 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-download.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"htmx-config"</span> <span class="na">content</span><span class="o">=</span><span class="s">"extensions:download"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- プログレスバー付きの明示的ダウンロード --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/exports/audit-log.csv"</span>
+        <span class="na">hx-swap</span><span class="o">=</span><span class="s">"download"</span>
+        <span class="na">hx-on:htmx:download:progress</span><span class="o">=</span><span class="s">"</span>
+<span class="s">          q('#dl-bar').value = event.detail.percent ?? 0</span>
+<span class="s">        "</span><span class="p">&gt;</span>
+  CSV エクスポート
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">progress</span> <span class="na">id</span><span class="o">=</span><span class="s">"dl-bar"</span> <span class="na">max</span><span class="o">=</span><span class="s">"100"</span> <span class="na">value</span><span class="o">=</span><span class="s">"0"</span><span class="p">&gt;&lt;/</span><span class="nt">progress</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">種別</th>
+<th style="text-align:left">名前</th>
+<th style="text-align:left">型 / デフォルト値</th>
+<th style="text-align:left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>登録名</strong></td>
+<td style="text-align:left"><code>'download'</code></td>
+<td style="text-align:left"><code>htmx.registerExtension('download', ...)</code></td>
+<td style="text-align:left"><code>htmx_before_response</code> で対象レスポンスを補足し、<code>ctx.requestTimeout</code> を解除して <code>ctx.extensionPromise</code> で完了までリクエストを維持します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>スワップ方式</strong></td>
+<td style="text-align:left"><code>hx-swap=&quot;download&quot;</code></td>
+<td style="text-align:left"><code>ctx.swap === 'download'</code></td>
+<td style="text-align:left">レスポンスヘッダに関わらず、レスポンスボディをファイルダウンロードとしてストリーミング保存します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>レスポンスヘッダ</strong></td>
+<td style="text-align:left"><code>Content-Disposition</code></td>
+<td style="text-align:left"><code>attachment; filename=...</code></td>
+<td style="text-align:left"><code>Content-Disposition</code> に <code>attachment</code> が含まれる場合に自動でダウンロードを開始します。RFC 5987 の <code>filename*=UTF-8''...</code>（URL デコード対応）を ASCII <code>filename=</code> より優先して解析します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>レスポンスヘッダ</strong></td>
+<td style="text-align:left"><code>HX-Download</code></td>
+<td style="text-align:left"><code>&lt;url&gt;</code></td>
+<td style="text-align:left">メインの htmx レスポンス処理を妨げずに、指定された <code>&lt;url&gt;</code> を非同期で <code>fetch()</code> してダウンロードします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:download:start</code></td>
+<td style="text-align:left"><code>{ total, ctx }</code></td>
+<td style="text-align:left">ストリーミング開始時に <code>ctx.sourceElement</code> で発火（<code>total</code> は <code>Content-Length</code> の数値または <code>null</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:download:progress</code></td>
+<td style="text-align:left"><code>{ loaded, total, percent, ctx }</code></td>
+<td style="text-align:left">各 <code>ReadableStream</code> チャンクの受信ごとに発火（<code>percent</code> は <code>0</code>〜<code>100</code> の整数または <code>null</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>イベント</strong></td>
+<td style="text-align:left"><code>htmx:download:complete</code></td>
+<td style="text-align:left"><code>{ filename, size, ctx }</code></td>
+<td style="text-align:left"><code>Blob</code> URL のダウンロードリンククリックおよび解放後に発火（<code>size</code> は <code>blob.size</code> のバイト数）。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-html"><span class="cm">&lt;!-- フォーム送信から Content-Disposition または HX-Download でダウンロードを開始する例 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/invoices/generate"</span>
+      <span class="na">hx-target</span><span class="o">=</span><span class="s">"#status"</span>
+      <span class="na">hx-on:htmx:download:complete</span><span class="o">=</span><span class="s">"</span>
+<span class="s">        this.querySelector('#status').textContent = `${event.detail.filename} (${event.detail.size} bytes) を保存しました`</span>
+<span class="s">      "</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="na">name</span><span class="o">=</span><span class="s">"month"</span> <span class="na">value</span><span class="o">=</span><span class="s">"2026-11"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>請求書 PDF を生成<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"status"</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="09_events_reference.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; 前へ</span>
+                        <span class="catalog-pager-title">イベント＆拡張機能フック リファレンス</span>
+                    </a>
+                    
+                    
+                    <a href="11_extensions_reactive_and_dom.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">次へ &rarr;</span>
+                        <span class="catalog-pager-title">リアクティブ DOM スクリプティング＆ DOM 操作拡張機能</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Request Attributes — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/01_core_request_attributes.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html">
+    
+    
+    
+    <meta name="description" content="The core request attributes declare that an HTML element issues an asynchronous HTTP request when triggered. In htmx v4.0.1, you can declare requests using…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/01_core_request_attributes.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="Core Request Attributes — htmx v4 API Reference">
+    <meta property="og:description" content="The core request attributes declare that an HTML element issues an asynchronous HTTP request when triggered. In htmx v4.0.1, you can declare requests using…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/01_core_request_attributes.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Core Request Attributes — htmx v4 API Reference">
+    <meta name="twitter:description" content="The core request attributes declare that an HTML element issues an asynchronous HTTP request when triggered. In htmx v4.0.1, you can declare requests using…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink" data-target="read-safe-query-verbs">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink" data-target="state-mutating-verbs">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink" data-target="unified-action-method-attributes">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">Core Request Attributes</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/01_core_request_attributes.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">Core Request Attributes</h1>
+<p>The core request attributes declare that an HTML element issues an asynchronous HTTP request when triggered. In htmx v4.0.1, you can declare requests using either the six verb-specific attributes (<code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-patch</code>, <code>hx-delete</code>, <code>hx-query</code>) or the unified <code>hx-action</code> + <code>hx-method</code> pair.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Symbol</th>
+<th style="text-align:left">HTTP Verb</th>
+<th style="text-align:left">Parameter Encoding</th>
+<th style="text-align:left">Enclosing <code>&lt;form&gt;</code> Auto-Inclusion</th>
+<th style="text-align:left">Inheritance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-get"><code>hx-get</code></a></td>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left">URL Query String (<code>?k=v</code>)</td>
+<td style="text-align:left">Only if element is <code>&lt;form&gt;</code> (or via <code>hx-include</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-post"><code>hx-post</code></a></td>
+<td style="text-align:left"><code>POST</code></td>
+<td style="text-align:left">Request Body (<code>URLSearchParams</code> / <code>FormData</code>)</td>
+<td style="text-align:left">Yes (<code>elt.form || elt.closest('form')</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-put"><code>hx-put</code></a></td>
+<td style="text-align:left"><code>PUT</code></td>
+<td style="text-align:left">Request Body (<code>URLSearchParams</code> / <code>FormData</code>)</td>
+<td style="text-align:left">Yes (<code>elt.form || elt.closest('form')</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-patch"><code>hx-patch</code></a></td>
+<td style="text-align:left"><code>PATCH</code></td>
+<td style="text-align:left">Request Body (<code>URLSearchParams</code> / <code>FormData</code>)</td>
+<td style="text-align:left">Yes (<code>elt.form || elt.closest('form')</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-delete"><code>hx-delete</code></a></td>
+<td style="text-align:left"><code>DELETE</code></td>
+<td style="text-align:left">URL Query String (<code>?k=v</code>)</td>
+<td style="text-align:left">Only if element is <code>&lt;form&gt;</code> (or via <code>hx-include</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-query"><code>hx-query</code></a></td>
+<td style="text-align:left"><code>QUERY</code></td>
+<td style="text-align:left">Request Body (<code>URLSearchParams</code> / <code>FormData</code>)</td>
+<td style="text-align:left">Yes (<code>elt.form || elt.closest('form')</code>)</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-action"><code>hx-action</code></a></td>
+<td style="text-align:left">Determined by <code>hx-method</code></td>
+<td style="text-align:left">Matches resolved verb (<code>GET</code>/<code>DELETE</code> vs body)</td>
+<td style="text-align:left">Matches resolved verb</td>
+<td style="text-align:left">Non-inherited</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-method"><code>hx-method</code></a></td>
+<td style="text-align:left">Any HTTP method string</td>
+<td style="text-align:left">Pairs with <code>hx-action</code></td>
+<td style="text-align:left">Matches resolved verb</td>
+<td style="text-align:left">Inherited by default</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/01_core_request_attributes/cat_01_core_request_verbs.png" alt="01_core_request_attributes_1" />
+  <figcaption class="drawlib-caption">Figure 1: HTTP Method Resolution and Payload Encoding Pipeline in htmx v4.0.1</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mf">78.5</span><span class="p">),</span> <span class="s2">"HTTP Method Resolution &amp; Payload Encoding Pipeline"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.0</span><span class="p">))</span>
+
+<span class="c1"># Column 1: Attribute Resolution</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"1. Attribute Resolution"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Verb Shorthand Attributes</span><span class="se">\n</span><span class="s2">hx-get | hx-post | hx-put</span><span class="se">\n</span><span class="s2">hx-patch | hx-delete | hx-query"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Unified Action Pair</span><span class="se">\n</span><span class="s2">hx-action=</span><span class="se">\"</span><span class="s2">/url</span><span class="se">\"</span><span class="s2"> (local)</span><span class="se">\n</span><span class="s2">+ hx-method=</span><span class="se">\"</span><span class="s2">POST</span><span class="se">\"</span><span class="s2"> (inherited)"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Boosted HTML Fallbacks</span><span class="se">\n</span><span class="s2">&lt;a href&gt; -&gt; GET</span><span class="se">\n</span><span class="s2">&lt;form action method&gt;"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Column 2: Parameter Collection</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"2. Parameter Collection"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Query-Param Verbs</span><span class="se">\n</span><span class="s2">GET &amp; DELETE</span><span class="se">\n</span><span class="s2">• Element value + hx-vals</span><span class="se">\n</span><span class="s2">• Parent &lt;form&gt; NOT included"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Body-Payload Verbs</span><span class="se">\n</span><span class="s2">POST, PUT, PATCH, QUERY</span><span class="se">\n</span><span class="s2">• Auto-includes parent &lt;form&gt;</span><span class="se">\n</span><span class="s2">• Merged with hx-vals/include"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Column 3: Fetch / Inline Dispatch</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"3. Fetch / Inline Dispatch"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">123</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"URL Query Dispatch</span><span class="se">\n</span><span class="s2">Appends ?key=val to URL</span><span class="se">\n</span><span class="s2">fetch(url, { body: null })"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Body Payload Dispatch</span><span class="se">\n</span><span class="s2">URLSearchParams (default)</span><span class="se">\n</span><span class="s2">or FormData (multipart)"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"js: / javascript: Action</span><span class="se">\n</span><span class="s2">Evaluates inline JS with params</span><span class="se">\n</span><span class="s2">(No network request)"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Connectors</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">57</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">57</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="read-safe-query-verbs" class="catalog-section-heading"><span>Read &amp; Safe Query Verbs</span><a class="header-anchor" href="#read-safe-query-verbs" aria-label="Permalink to Read &amp; Safe Query Verbs">#</a></h2>
+<p>Attributes in this section issue idempotent read or query operations. Note how <code>hx-get</code> encodes parameters into the URL query string while <code>hx-query</code> sends a structured request body.</p>
+<h3 id="hx-get">hx-get<a class="header-anchor" href="#hx-get" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>GET</code> request to the specified URL and swaps the returned HTML into the target DOM node.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"&lt;url&gt; | js:&lt;expression&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>GET</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Appended to the request URL query string (<code>URLSearchParams</code>). <code>ctx.request.body</code> is set to <code>null</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Does <strong>not</strong> automatically serialize an enclosing <code>&lt;form&gt;</code> unless <code>hx-get</code> is placed directly on the <code>&lt;form&gt;</code> element itself or <code>hx-include=&quot;closest form&quot;</code> is specified.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Special Prefixes</strong></td>
+<td style="text-align:left"><code>js:&lt;expr&gt;</code> or <code>javascript:&lt;expr&gt;</code> evaluates inline JavaScript instead of calling <code>fetch()</code> and swaps the returned string into the target.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Basic GET request swapping into a target container --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/users/42"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#user-profile"</span><span class="p">&gt;</span>
+  Load Profile
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"user-profile"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Live search input (explicitly includes enclosing form filters if needed) --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">id</span><span class="o">=</span><span class="s">"filter-form"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">select</span> <span class="na">name</span><span class="o">=</span><span class="s">"role"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">"all"</span><span class="p">&gt;</span>All Roles<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">"admin"</span><span class="p">&gt;</span>Admin<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"search"</span>
+         <span class="na">name</span><span class="o">=</span><span class="s">"q"</span>
+         <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/users/search"</span>
+         <span class="na">hx-include</span><span class="o">=</span><span class="s">"closest form"</span>
+         <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"input changed delay:300ms"</span>
+         <span class="na">hx-target</span><span class="o">=</span><span class="s">"#search-results"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"search-results"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-query">hx-query<a class="header-anchor" href="#hx-query" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>QUERY</code> request (IETF HTTP QUERY method) to the specified URL. Unlike <code>hx-get</code>, <code>hx-query</code> transmits parameters in the HTTP request body rather than the URL query string, making it ideal for complex filter payloads or sensitive search criteria that should not appear in server access logs or browser URL bars.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-query</span><span class="o">=</span><span class="s">"&lt;url&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>QUERY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Sent in the HTTP request body (<code>application/x-www-form-urlencoded</code> via <code>URLSearchParams</code> by default, or <code>FormData</code> when <code>hx-encoding=&quot;multipart/form-data&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Automatically includes all inputs from an enclosing <code>&lt;form&gt;</code> (<code>elt.form || elt.closest('form')</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Complex structured query sent in request body rather than URL --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-query</span><span class="o">=</span><span class="s">"/api/reports/aggregate"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#report-table"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"date"</span> <span class="na">name</span><span class="o">=</span><span class="s">"start_date"</span> <span class="na">value</span><span class="o">=</span><span class="s">"2026-01-01"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"date"</span> <span class="na">name</span><span class="o">=</span><span class="s">"end_date"</span> <span class="na">value</span><span class="o">=</span><span class="s">"2026-12-31"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">textarea</span> <span class="na">name</span><span class="o">=</span><span class="s">"filter_dsl"</span><span class="p">&gt;</span>status == "active" AND region IN ("us", "jp")<span class="p">&lt;/</span><span class="nt">textarea</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Run Query<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"report-table"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="state-mutating-verbs" class="catalog-section-heading"><span>State-Mutating Verbs</span><a class="header-anchor" href="#state-mutating-verbs" aria-label="Permalink to State-Mutating Verbs">#</a></h2>
+<p>State-mutating verb attributes modify server resources. In htmx v4.0.1, <code>POST</code>, <code>PUT</code>, and <code>PATCH</code> automatically collect inputs from their enclosing <code>&lt;form&gt;</code> and encode them in the request body, whereas <code>DELETE</code> encodes parameters into the URL query string.</p>
+<h3 id="hx-post">hx-post<a class="header-anchor" href="#hx-post" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>POST</code> request to the specified URL to create a resource or trigger a server-side action.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"&lt;url&gt; | js:&lt;expression&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>POST</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Sent in <code>ctx.request.body</code> (<code>URLSearchParams</code> by default; <code>FormData</code> if <code>hx-encoding=&quot;multipart/form-data&quot;</code> or enclosing <code>&lt;form enctype=&quot;multipart/form-data&quot;&gt;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Automatically serializes the enclosing <code>&lt;form&gt;</code> (<code>elt.form || elt.closest('form')</code>) plus the triggering submitter button's <code>name=value</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Validation</strong></td>
+<td style="text-align:left">Runs <code>form.reportValidity()</code> prior to request dispatch when triggered on a <code>&lt;form&gt;</code> (unless <code>novalidate</code> is present) or when <code>hx-validate=&quot;true&quot;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Standard form creation with append swap --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/todos"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#todo-list"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"append"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"title"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"New task..."</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Add Task<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">ul</span> <span class="na">id</span><span class="o">=</span><span class="s">"todo-list"</span><span class="p">&gt;&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-put">hx-put<a class="header-anchor" href="#hx-put" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>PUT</code> request to the specified URL to replace an existing server resource.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-put</span><span class="o">=</span><span class="s">"&lt;url&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>PUT</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Sent in <code>ctx.request.body</code> (<code>URLSearchParams</code> or <code>FormData</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Automatically serializes the enclosing <code>&lt;form&gt;</code> (<code>elt.form || elt.closest('form')</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Full resource replacement with outerMorph to preserve focus --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-put</span><span class="o">=</span><span class="s">"/api/settings/notifications"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"this"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"outerMorph"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="na">name</span><span class="o">=</span><span class="s">"email_alerts"</span> <span class="na">value</span><span class="o">=</span><span class="s">"true"</span> <span class="na">checked</span><span class="p">&gt;</span>
+    Email Alerts
+  <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="na">name</span><span class="o">=</span><span class="s">"sms_alerts"</span> <span class="na">value</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+    SMS Alerts
+  <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Save Preferences<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-patch">hx-patch<a class="header-anchor" href="#hx-patch" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>PATCH</code> request to the specified URL to apply a partial update to an existing server resource.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-patch</span><span class="o">=</span><span class="s">"&lt;url&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>PATCH</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Sent in <code>ctx.request.body</code> (<code>URLSearchParams</code> or <code>FormData</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Automatically serializes the enclosing <code>&lt;form&gt;</code> (<code>elt.form || elt.closest('form')</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Inline field update triggered on change --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span>
+       <span class="na">name</span><span class="o">=</span><span class="s">"display_name"</span>
+       <span class="na">value</span><span class="o">=</span><span class="s">"Ada Lovelace"</span>
+       <span class="na">hx-patch</span><span class="o">=</span><span class="s">"/api/users/42/name"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"change"</span>
+       <span class="na">hx-target</span><span class="o">=</span><span class="s">"#save-status"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"save-status"</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-delete">hx-delete<a class="header-anchor" href="#hx-delete" aria-label="Permalink">#</a></h3>
+<p>Issues an HTTP <code>DELETE</code> request to the specified URL to remove a server resource.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"&lt;url&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HTTP Method</strong></td>
+<td style="text-align:left"><code>DELETE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Parameter Encoding</strong></td>
+<td style="text-align:left">Appended to the request URL query string (<code>usesQueryParams = /GET|DELETE/.test(method)</code>). <code>ctx.request.body</code> is set to <code>null</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Inclusion</strong></td>
+<td style="text-align:left">Does <strong>not</strong> automatically serialize an enclosing <code>&lt;form&gt;</code> unless <code>hx-delete</code> is placed directly on the <code>&lt;form&gt;</code> or <code>hx-include</code> is used. Use <code>hx-vals</code> to pass additional query parameters if needed.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Delete a row and remove the closest &lt;tr&gt; on 200 OK --&gt;</span>
+<span class="p">&lt;</span><span class="nt">tr</span> <span class="na">id</span><span class="o">=</span><span class="s">"row-108"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Invoice #108<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/api/invoices/108"</span>
+            <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"Permanently delete Invoice #108?"</span>
+            <span class="na">hx-target</span><span class="o">=</span><span class="s">"closest tr"</span>
+            <span class="na">hx-swap</span><span class="o">=</span><span class="s">"delete"</span><span class="p">&gt;</span>
+      Delete
+    <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="unified-action-method-attributes" class="catalog-section-heading"><span>Unified Action &amp; Method Attributes</span><a class="header-anchor" href="#unified-action-method-attributes" aria-label="Permalink to Unified Action &amp; Method Attributes">#</a></h2>
+<p>In addition to the verb-specific shorthand attributes (<code>hx-get</code>, <code>hx-post</code>, etc.), htmx v4.0.1 introduces <code>hx-action</code> and <code>hx-method</code> so you can separate the target endpoint URL from the HTTP verb—or inherit a shared HTTP method across a group of action buttons.</p>
+<h3 id="hx-action">hx-action<a class="header-anchor" href="#hx-action" aria-label="Permalink">#</a></h3>
+<p>Specifies the request endpoint URL independently of the HTTP method. When <code>hx-action</code> is present on an element, htmx resolves the HTTP method from <code>hx-method</code> (which can be inherited from an ancestor), falling back to <code>submitter.formmethod</code>, <code>elt.getAttribute('method')</code>, or <code>'GET'</code>.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"&lt;url&gt; | js:&lt;expression&gt;"</span> <span class="err">[</span><span class="na">hx-method</span><span class="o">=</span><span class="s">"&lt;VERB&gt;"</span><span class="err">]</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Resolution Precedence</strong></td>
+<td style="text-align:left">Evaluated <strong>before</strong> <code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-patch</code>, <code>hx-delete</code>, and <code>hx-query</code> in <code>__determineMethodAndAction()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Default Method</strong></td>
+<td style="text-align:left">Uses <code>hx-method</code> if present (on the element or inherited), else <code>evt.submitter?.formmethod</code>, else <code>elt.getAttribute('method')</code>, else <code>'GET'</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left">Non-inherited (<code>allowInheritance = false</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inline JS Execution</strong></td>
+<td style="text-align:left">If <code>hx-action</code> starts with <code>js:</code> or <code>javascript:</code>, htmx evaluates the JavaScript expression with <code>Object.fromEntries(ctx.request.body)</code> in scope and swaps the returned string without making a network request.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Toolbar sharing an inherited POST method across multiple hx-action buttons --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-method</span><span class="o">=</span><span class="s">"POST"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#Selection-status"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"/api/items/archive"</span><span class="p">&gt;</span>Archive Selected<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"/api/items/publish"</span><span class="p">&gt;</span>Publish Selected<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"/api/items/purge"</span> <span class="na">hx-method</span><span class="o">=</span><span class="s">"DELETE"</span><span class="p">&gt;</span>Purge Selected<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"Selection-status"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Client-side computed fragment swap using js: prefix --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"js:`&lt;strong&gt;Timestamp: ${new Date().toISOString()}&lt;/strong&gt;`"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#clock-out"</span><span class="p">&gt;</span>
+  Stamp Local Time
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"clock-out"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-method">hx-method<a class="header-anchor" href="#hx-method" aria-label="Permalink">#</a></h3>
+<p>Specifies the HTTP method (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>QUERY</code>, or any custom HTTP verb) to use when paired with <code>hx-action</code>. Unlike <code>hx-action</code> and the shorthand verb attributes, <code>hx-method</code> <strong>is inherited by default</strong>, allowing a parent container or <code>&lt;form&gt;</code> to define the default HTTP verb for descendant <code>[hx-action]</code> elements.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-method</span><span class="o">=</span><span class="s">"GET | POST | PUT | PATCH | DELETE | QUERY | &lt;CUSTOM&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Case Normalization</strong></td>
+<td style="text-align:left">Automatically converted to uppercase (<code>method.toUpperCase()</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dialog Bypass</strong></td>
+<td style="text-align:left">If the resolved method is <code>'DIALOG'</code> (e.g., <code>&lt;form method=&quot;dialog&quot;&gt;</code>), htmx aborts network processing so native HTML <code>&lt;dialog&gt;</code> closing works seamlessly.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left"><strong>Inherited by default</strong> (<code>__getAttributeValue(elt, 'hx-method')</code> searches up the DOM tree). Can be blocked on a subtree using <code>:inherited</code> rules or overridden locally.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Form using hx-action + hx-method instead of hx-post --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-action</span><span class="o">=</span><span class="s">"/api/projects"</span> <span class="na">hx-method</span><span class="o">=</span><span class="s">"POST"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#project-list"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"prepend"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"name"</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Create Project<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"project-list"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="00_overview.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">htmx v4.0.1 API Surface Overview</span>
+                    </a>
+                    
+                    
+                    <a href="02_trigger_and_sync_attributes.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">Trigger &amp; Synchronization Attributes</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

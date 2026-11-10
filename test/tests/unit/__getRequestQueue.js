@@ -1,0 +1,386 @@
+describe('__getRequestQueue / RequestQueue unit tests', function() {
+
+    const noop = () => {}
+
+    beforeEach(function() {
+        setupTest();
+    });
+
+    afterEach(function() {
+        cleanupTest();
+    });
+
+    it('allows first request when queue is empty', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        assert.equal(queue.admit('queue first', noop, noop), 'run')
+    })
+
+    it('queues request with "queue all" strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        queue.admit('queue all', noop, noop)
+        let result = queue.admit('queue all', noop, noop)
+
+        assert.equal(result, 'queued')
+    })
+
+    it('drops request with "drop" strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        queue.admit('drop', noop, noop)
+        let result = queue.admit('drop', noop, noop)
+
+        assert.equal(result, 'dropped')
+    })
+
+    it('queues only last with "queue last" strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let started = []
+
+        queue.admit('queue last', () => started.push(1), noop)
+        queue.admit('queue last', () => started.push(2), noop)
+        let result = queue.admit('queue last', () => started.push(3), noop)
+
+        assert.equal(result, 'queued')
+
+        queue.continue(noop)
+        queue.continue(noop)
+
+        assert.deepEqual(started, [3])
+    })
+
+    it('replaces current request with "replace" strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('replace', noop, () => { aborted = true })
+        let result = queue.admit('replace', noop, noop)
+
+        assert.equal(result, 'run')
+        assert.isTrue(aborted)
+    })
+
+    it('defaults to "queue first" when strategy not specified', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let started = []
+
+        queue.admit('queue first', () => started.push(1), noop)
+        let second = queue.admit('queue first', () => started.push(2), noop)
+        let third = queue.admit('queue first', () => started.push(3), noop)
+
+        assert.equal(second, 'queued')
+        assert.equal(third, 'dropped')
+
+        queue.continue(noop)
+        queue.continue(noop)
+
+        assert.deepEqual(started, [2])
+    })
+
+    it('continue runs the next queued request once', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let started = []
+
+        queue.admit('queue all', () => started.push(1), noop)
+        queue.admit('queue all', () => started.push(2), noop)
+        queue.admit('queue all', () => started.push(3), noop)
+
+        queue.continue(noop)
+
+        assert.deepEqual(started, [2])
+    })
+
+    it('continue does nothing when the queue is empty', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        queue.continue(noop)
+    })
+
+    it('continue clears the current request', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        queue.admit('queue first', noop, noop)
+        queue.continue(noop)
+
+        assert.equal(queue.admit('queue first', noop, noop), 'run')
+    })
+
+    it('abort calls abort on the current request', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('queue first', noop, () => { aborted = true })
+        queue.abort()
+
+        assert.isTrue(aborted)
+    })
+
+    it('returns same queue for same element', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+
+        let queue1 = htmx.__getRequestQueue(div)
+        let queue2 = htmx.__getRequestQueue(div)
+
+        assert.equal(queue1, queue2)
+    })
+
+    it('returns different queue for different elements', function () {
+        let div1 = createProcessedHTML('<div hx-get="/test1"></div>')
+        let div2 = createProcessedHTML('<div hx-get="/test2"></div>')
+
+        let queue1 = htmx.__getRequestQueue(div1)
+        let queue2 = htmx.__getRequestQueue(div2)
+
+        assert.notEqual(queue1, queue2)
+    })
+
+    it('hx-sync="drop" without selector uses drop strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="drop"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        queue.admit(htmx.__determineSyncStrategy(div), noop, noop)
+        let result = queue.admit(htmx.__determineSyncStrategy(div), noop, noop)
+
+        assert.equal(result, 'dropped')
+    })
+
+    it('hx-sync="abort" without selector uses abort strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="abort"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit(htmx.__determineSyncStrategy(div), noop, () => { aborted = true })
+        let result = queue.admit(htmx.__determineSyncStrategy(div), noop, noop)
+
+        assert.equal(result, 'dropped')
+        assert.isFalse(aborted)
+    })
+
+    it('hx-sync="selector:drop" uses drop strategy', function () {
+        let container = createProcessedHTML('<div id="c"><div id="btn" hx-get="/test" hx-sync="#c:drop"></div></div>')
+        let btn = container.querySelector('#btn')
+        assert.equal(htmx.__determineSyncStrategy(btn), 'drop')
+    })
+
+    it('uses selector from hx-sync for queue', function () {
+        let container = createProcessedHTML('<div id="container"><div id="btn1" hx-get="/test1" hx-sync="#container:drop"></div><div id="btn2" hx-get="/test2" hx-sync="#container:drop"></div></div>')
+        let btn1 = container.querySelector('#btn1')
+        let btn2 = container.querySelector('#btn2')
+
+        let queue1 = htmx.__getRequestQueue(btn1)
+        let queue2 = htmx.__getRequestQueue(btn2)
+
+        assert.equal(queue1, queue2)
+    })
+
+    it('inherited hx-sync="this:replace" resolves queue to declaring parent', function () {
+        let parent = createProcessedHTML('<div id="parent" hx-sync:inherited="this:replace"><div id="a" hx-get="/a"></div><div id="b" hx-get="/b"></div></div>')
+        let a = parent.querySelector('#a')
+        let b = parent.querySelector('#b')
+
+        let queueA = htmx.__getRequestQueue(a)
+        let queueB = htmx.__getRequestQueue(b)
+
+        // Both children should share the parent's queue
+        assert.equal(queueA, queueB)
+        assert.equal(htmx.__htmxState(parent).rq, queueA)
+        assert.equal(htmx.__determineSyncStrategy(a), 'replace')
+    })
+
+    it('abort strategy: allows first abort request when queue is empty', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+
+        assert.equal(queue.admit('abort', noop, noop), 'run')
+    })
+
+    it('abort strategy: any request can abort an abortable request', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('abort', noop, () => { aborted = true })
+        let result = queue.admit('drop', noop, noop)
+
+        assert.equal(result, 'run')
+        assert.isTrue(aborted)
+    })
+
+    it('abort strategy: another abort request drops when abort request is in flight', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('abort', noop, () => { aborted = true })
+        let result = queue.admit('abort', noop, noop)
+
+        assert.equal(result, 'dropped')
+        assert.isFalse(aborted)
+    })
+
+    it('abort strategy: abort request drops itself if non-abortable request is in flight', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('drop', noop, () => { aborted = true })
+        let result = queue.admit('abort', noop, noop)
+
+        assert.equal(result, 'dropped')
+        assert.isFalse(aborted)
+    })
+
+    it('abort strategy: replace request can abort an abortable request', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('abort', noop, () => { aborted = true })
+        let result = queue.admit('replace', noop, noop)
+
+        assert.equal(result, 'run')
+        assert.isTrue(aborted)
+    })
+
+    it('abort strategy: queue-all request can abort an abortable request', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('abort', noop, () => { aborted = true })
+        let result = queue.admit('queue all', noop, noop)
+
+        assert.equal(result, 'run')
+        assert.isTrue(aborted)
+    })
+
+    it('abort strategy: abort request drops itself when replace request is in flight', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('replace', noop, () => { aborted = true })
+        let result = queue.admit('abort', noop, noop)
+
+        assert.equal(result, 'dropped')
+        assert.isFalse(aborted)
+    })
+
+    it('abort strategy: abort request drops itself when queue-first request is in flight', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+
+        queue.admit('queue first', noop, () => { aborted = true })
+        let result = queue.admit('abort', noop, noop)
+
+        assert.equal(result, 'dropped')
+        assert.isFalse(aborted)
+    })
+
+    for (let strategy of ['replace', 'abort']) {
+        it(`ignores cleanup of a replaced ${strategy} request`, async function () {
+            let div = createProcessedHTML('<div hx-get="/test"></div>')
+            let queue = htmx.__getRequestQueue(div)
+            let cleanup
+            let abortFirst = () => { cleanup = Promise.resolve().then(() => queue.continue(abortFirst)) }
+            let secondAborted = false
+            let abortSecond = () => { secondAborted = true }
+            let queuedStarted = false
+
+            assert.equal(queue.admit(strategy, noop, abortFirst), 'run')
+            assert.equal(queue.admit('replace', noop, abortSecond), 'run')
+            assert.equal(queue.admit('queue all', () => { queuedStarted = true }, noop), 'queued')
+            await cleanup
+
+            assert.isFalse(queuedStarted)
+            assert.equal(queue.admit('drop', noop, noop), 'dropped')
+            assert.equal(queue.admit('replace', noop, noop), 'run')
+            assert.isTrue(secondAborted)
+        })
+    }
+
+    // hx-sync value parsing tests
+
+    it('hx-sync="this" defaults to queue first strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="this"></div>')
+        assert.equal(htmx.__determineSyncStrategy(div), 'queue first')
+    })
+
+    it('hx-sync="this" uses same element for queue', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="this"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        assert.isOk(queue)
+    })
+
+    it('hx-sync="this:drop" uses drop strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="this:drop"></div>')
+        assert.equal(htmx.__determineSyncStrategy(div), 'drop')
+    })
+
+    it('hx-sync="this:replace" uses replace strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="this:replace"></div>')
+        assert.equal(htmx.__determineSyncStrategy(div), 'replace')
+    })
+
+    it('hx-sync="this:queue last" uses queue last strategy', function () {
+        let div = createProcessedHTML('<div hx-get="/test" hx-sync="this:queue last"></div>')
+        assert.equal(htmx.__determineSyncStrategy(div), 'queue last')
+    })
+
+    it('hx-sync="closest form" uses closest form for queue with default strategy', function () {
+        let form = createProcessedHTML('<form><div id="btn" hx-get="/test" hx-sync="closest form"></div></form>')
+        let btn = form.querySelector('#btn')
+        assert.equal(htmx.__determineSyncStrategy(btn), 'queue first')
+        // queue should be on the form, not the button
+        let queue = htmx.__getRequestQueue(btn)
+        assert.equal(htmx.__htmxState(form).rq, queue)
+    })
+
+    it('hx-sync="closest form:replace" uses closest form with replace strategy', function () {
+        let form = createProcessedHTML('<form><div id="btn" hx-get="/test" hx-sync="closest form:replace"></div></form>')
+        let btn = form.querySelector('#btn')
+        assert.equal(htmx.__determineSyncStrategy(btn), 'replace')
+        let queue = htmx.__getRequestQueue(btn)
+        assert.equal(htmx.__htmxState(form).rq, queue)
+    })
+
+    it('hx-sync with "this" shares queue between sibling elements synced to parent', function () {
+        let container = createProcessedHTML('<div id="c"><div id="a" hx-get="/a" hx-sync="#c:drop"></div><div id="b" hx-get="/b" hx-sync="#c:drop"></div></div>')
+        let a = container.querySelector('#a')
+        let b = container.querySelector('#b')
+        assert.equal(htmx.__getRequestQueue(a), htmx.__getRequestQueue(b))
+    })
+
+    it('replace strategy clears queued requests when aborting current', function () {
+        let div = createProcessedHTML('<div hx-get="/test"></div>')
+        let queue = htmx.__getRequestQueue(div)
+        let aborted = false
+        let started = []
+
+        queue.admit('drop', noop, () => { aborted = true })
+        queue.admit('queue all', () => started.push(2), noop)
+        queue.admit('queue all', () => started.push(3), noop)
+
+        let result = queue.admit('replace', noop, noop)
+
+        assert.equal(result, 'run')
+        assert.isTrue(aborted)
+
+        queue.continue(noop)
+
+        assert.deepEqual(started, [])
+    })
+
+});

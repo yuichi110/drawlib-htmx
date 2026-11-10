@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger &amp; Synchronization Attributes — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/02_trigger_and_sync_attributes.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html">
+    
+    
+    
+    <meta name="description" content="Trigger and synchronization attributes control when an element initiates an HTTP request, whether it requires explicit user or programmatic confirmation, and…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="Trigger &amp; Synchronization Attributes — htmx v4 API Reference">
+    <meta property="og:description" content="Trigger and synchronization attributes control when an element initiates an HTTP request, whether it requires explicit user or programmatic confirmation, and…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/02_trigger_and_sync_attributes.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Trigger &amp; Synchronization Attributes — htmx v4 API Reference">
+    <meta name="twitter:description" content="Trigger and synchronization attributes control when an element initiates an HTTP request, whether it requires explicit user or programmatic confirmation, and…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink" data-target="event-trigger-specification">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink" data-target="request-queue-concurrency-synchronization">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink" data-target="user-programmatic-confirmation">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">Trigger &amp; Synchronization Attributes</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/02_trigger_and_sync_attributes.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">Trigger &amp; Synchronization Attributes</h1>
+<p>Trigger and synchronization attributes control <strong>when</strong> an element initiates an HTTP request, <strong>whether</strong> it requires explicit user or programmatic confirmation, and <strong>how</strong> concurrent requests compete or queue on shared coordination scopes.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Symbol</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Default Behavior</th>
+<th style="text-align:left">Inheritance</th>
+<th style="text-align:left">Key Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-trigger"><code>hx-trigger</code></a></td>
+<td style="text-align:left">Event &amp; Timing Spec</td>
+<td style="text-align:left"><code>submit</code> (<code>form</code>), <code>change</code> (<code>input</code>/<code>select</code>/<code>textarea</code>), <code>click</code> (others)</td>
+<td style="text-align:left">Non-inherited</td>
+<td style="text-align:left">Event filters <code>[expr]</code>, <code>once</code>, <code>changed</code>, <code>delay:</code>, <code>throttle:</code>, <code>from:</code>, <code>target:</code>, <code>prevent</code>, <code>stop</code>/<code>consume</code>, <code>halt</code>, <code>capture</code>, <code>passive</code>, <code>load</code>, <code>revealed</code>, <code>intersect</code>, <code>every &lt;time&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-sync"><code>hx-sync</code></a></td>
+<td style="text-align:left">Concurrency Queue</td>
+<td style="text-align:left">Per-element <code>RequestQueue</code> (<code>queue last</code> on self if unsynced)</td>
+<td style="text-align:left">Inherited by default</td>
+<td style="text-align:left"><code>[&lt;selector&gt;:]&lt;strategy&gt;</code> (<code>queue first</code>, <code>queue last</code>, <code>queue all</code>, <code>drop</code>, <code>abort</code>, <code>replace</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-confirm"><code>hx-confirm</code></a></td>
+<td style="text-align:left">Confirmation Gate</td>
+<td style="text-align:left">None (fires <code>htmx:confirm</code> on every request)</td>
+<td style="text-align:left">Inherited by default</td>
+<td style="text-align:left">Native <code>window.confirm()</code>, <code>js:</code> sync/async <code>Promise&lt;boolean&gt;</code>, custom modal integration via <code>issueRequest()</code> / <code>dropRequest()</code></td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/02_trigger_and_sync_attributes/cat_02_trigger_and_sync_queue.png" alt="02_trigger_and_sync_attributes_1" />
+  <figcaption class="drawlib-caption">Figure 1: Trigger Evaluation, Confirmation Gate, and RequestQueue Synchronization in htmx v4.0.1</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mf">78.5</span><span class="p">),</span> <span class="s2">"Trigger Evaluation, Confirmation Gate &amp; RequestQueue Synchronization"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.5</span><span class="p">))</span>
+
+<span class="c1"># Stage 1: Trigger Spec</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"1. hx-trigger Pipeline"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Event Source &amp; Target</span><span class="se">\n</span><span class="s2">DOM Event | load | revealed</span><span class="se">\n</span><span class="s2">intersect | every | from:&lt;sel&gt;"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Filter &amp; Value Guards</span><span class="se">\n</span><span class="s2">[JS filter] • once • changed</span><span class="se">\n</span><span class="s2">prevent | stop/consume | halt"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">31</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Rate-Limiting Timers</span><span class="se">\n</span><span class="s2">delay:&lt;time&gt; (Debounce)</span><span class="se">\n</span><span class="s2">throttle:&lt;time&gt; (Cooldown)"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Stage 2: Confirmation Gate</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"2. hx-confirm Gate"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"htmx:confirm Event</span><span class="se">\n</span><span class="s2">detail: { ctx, question,</span><span class="se">\n</span><span class="s2">issueRequest, dropRequest }"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Confirmation Evaluator</span><span class="se">\n</span><span class="s2">• Text -&gt; window.confirm()</span><span class="se">\n</span><span class="s2">• js:&lt;expr&gt; -&gt; bool | Promise</span><span class="se">\n</span><span class="s2">• true -&gt; issueRequest()"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Stage 3: RequestQueue Sync</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"3. hx-sync RequestQueue"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mi">123</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Coordination Host</span><span class="se">\n</span><span class="s2">Self or resolved &lt;selector&gt;</span><span class="se">\n</span><span class="s2">Holds active + queued tasks"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Queue Strategies</span><span class="se">\n</span><span class="s2">queue first (default)</span><span class="se">\n</span><span class="s2">queue last | queue all"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s2">"Preemption Strategies</span><span class="se">\n</span><span class="s2">drop | abort | replace</span><span class="se">\n</span><span class="s2">(Cancel active + clear queue)"</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Flow arrows</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">57</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="event-trigger-specification" class="catalog-section-heading"><span>Event Trigger Specification</span><a class="header-anchor" href="#event-trigger-specification" aria-label="Permalink to Event Trigger Specification">#</a></h2>
+<h3 id="hx-trigger">hx-trigger<a class="header-anchor" href="#hx-trigger" aria-label="Permalink">#</a></h3>
+<p>Specifies one or more DOM events, synthetic lifecycle triggers, or polling intervals that cause the element to issue its configured htmx request. Multiple trigger specifications can be separated by commas.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"&lt;event&gt;[&lt;filter&gt;] [modifiers...], ..."</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="natural-default-triggers">Natural Default Triggers</h4>
+<p>When <code>hx-trigger</code> is omitted, htmx v4.0.1 selects a natural default event based on the element's tag and type:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Element Selector</th>
+<th style="text-align:left">Default Trigger Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>form</code></td>
+<td style="text-align:left"><code>submit</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>input:not([type=button]):not([type=submit]), select, textarea</code></td>
+<td style="text-align:left"><code>change</code></td>
+</tr>
+<tr>
+<td style="text-align:left">All other elements (<code>button</code>, <code>a</code>, <code>div</code>, <code>input[type=button]</code>, etc.)</td>
+<td style="text-align:left"><code>click</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="trigger-modifiers-filters-reference">Trigger Modifiers &amp; Filters Reference</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Modifier / Syntax</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Description &amp; Behavior in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>[&lt;expr&gt;]</code></td>
+<td style="text-align:left">Filter</td>
+<td style="text-align:left">Boolean JavaScript expression evaluated in the scope of the triggering <code>Event</code> and <code>Element</code> (e.g., <code>keyup[key=='Enter' &amp;&amp; ctrlKey]</code>). Request only proceeds when truthy.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>once</code></td>
+<td style="text-align:left">Lifecycle</td>
+<td style="text-align:left">Ensures the trigger fires at most once. For standard DOM events, passes <code>{ once: true }</code> to <code>addEventListener</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>changed</code></td>
+<td style="text-align:left">Value Guard</td>
+<td style="text-align:left">Fires only if the element's value has changed since the last triggered request. For checkboxes/radios, compares <code>.checked</code>; for other inputs, stores previous <code>.value</code> in <code>elt._htmx_state.changedValues</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>delay:&lt;time&gt;</code></td>
+<td style="text-align:left">Rate Limit</td>
+<td style="text-align:left"><strong>Debounces</strong> the trigger by <code>&lt;time&gt;</code> (<code>ms</code>, <code>s</code>, or <code>m</code>). Resets the timer if another matching event arrives before <code>&lt;time&gt;</code> elapses.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>throttle:&lt;time&gt;</code></td>
+<td style="text-align:left">Rate Limit</td>
+<td style="text-align:left"><strong>Throttles</strong> the trigger by <code>&lt;time&gt;</code> (<code>ms</code>, <code>s</code>, or <code>m</code>). Fires immediately on the leading edge, then queues the latest arriving event during the cooldown window to fire when the window expires.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>from:&lt;selector&gt;</code></td>
+<td style="text-align:left">Delegation</td>
+<td style="text-align:left">Listens for the event on external node(s) resolved by <code>&lt;selector&gt;</code> (<code>document</code>, <code>window</code>, <code>body</code>, <code>host</code>, <code>this</code>, <code>self</code>, <code>outside</code>, <code>closest &lt;sel&gt;</code>, <code>find &lt;sel&gt;</code>, <code>findAll &lt;sel&gt;</code>, <code>next [sel]</code>, <code>previous [sel]</code>, <code>global &lt;sel&gt;</code>). Using <code>from:outside</code> triggers when the event target is outside the element.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target:&lt;selector&gt;</code></td>
+<td style="text-align:left">Filter</td>
+<td style="text-align:left">Restricts triggering so the <code>event.target</code> must match the CSS <code>&lt;selector&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>prevent</code></td>
+<td style="text-align:left">Event Control</td>
+<td style="text-align:left">Calls <code>evt.preventDefault()</code> when the trigger matches.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>stop</code> / <code>consume</code></td>
+<td style="text-align:left">Event Control</td>
+<td style="text-align:left">Calls <code>evt.stopPropagation()</code> when the trigger matches (<code>consume</code> is an alias for <code>stop</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>halt</code></td>
+<td style="text-align:left">Event Control</td>
+<td style="text-align:left">Shorthand for <code>prevent stop</code> (calls both <code>evt.preventDefault()</code> and <code>evt.stopPropagation()</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>capture</code></td>
+<td style="text-align:left">Listener Option</td>
+<td style="text-align:left">Registers the underlying <code>addEventListener</code> with <code>{ capture: true }</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>passive</code></td>
+<td style="text-align:left">Listener Option</td>
+<td style="text-align:left">Registers the underlying <code>addEventListener</code> with <code>{ passive: true }</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="special-synthetic-observer-triggers">Special Synthetic &amp; Observer Triggers</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Trigger Name</th>
+<th style="text-align:left">Options / Modifiers</th>
+<th style="text-align:left">Description &amp; Behavior in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>load</code></td>
+<td style="text-align:left"><code>delay:&lt;time&gt;</code></td>
+<td style="text-align:left">Fires immediately when the element is initialized by htmx in the DOM (optionally delayed by <code>delay:&lt;time&gt;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>revealed</code></td>
+<td style="text-align:left">Standard modifiers</td>
+<td style="text-align:left">Uses an <code>IntersectionObserver</code> (<code>threshold: 0</code>) that triggers once as soon as the element enters the viewport and then disconnects.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>intersect</code></td>
+<td style="text-align:left"><code>once</code>, <code>root:&lt;sel&gt;</code>, <code>rootMargin:&lt;margin&gt;</code>, <code>threshold:&lt;0.0-1.0&gt;</code></td>
+<td style="text-align:left">Uses an <code>IntersectionObserver</code> that triggers whenever the element intersects <code>root</code> with the configured <code>rootMargin</code> and <code>threshold</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>every &lt;time&gt;</code></td>
+<td style="text-align:left"><code>[&lt;filter&gt;]</code></td>
+<td style="text-align:left">Polls the endpoint repeatedly every <code>&lt;time&gt;</code> (<code>500ms</code>, <code>2s</code>, <code>1m</code>) using <code>setInterval</code> as long as <code>elt.isConnected</code> is <code>true</code>. Supports conditional polling filters such as <code>every 2s [document.hasFocus()]</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 1. Debounced live search with value-change guard and keyboard shortcut --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"search"</span>
+       <span class="na">name</span><span class="o">=</span><span class="s">"q"</span>
+       <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/search"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"input changed delay:250ms, search, keyup[key=='/' &amp;&amp; ctrlKey] from:document"</span>
+       <span class="na">hx-target</span><span class="o">=</span><span class="s">"#results"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Infinite scroll sentinel using revealed --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/feed?page=2"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"revealed"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"outerHTML"</span><span class="p">&gt;</span>
+  Loading more items...
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 3. Custom IntersectionObserver with threshold and rootMargin --&gt;</span>
+<span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/analytics/impression"</span>
+         <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"intersect once threshold:0.5"</span>
+         <span class="na">hx-swap</span><span class="o">=</span><span class="s">"none"</span><span class="p">&gt;</span>
+  Promoted Content Block
+<span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 4. Conditional polling every 5 seconds while tab is visible --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/jobs/status"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"every 5s [document.visibilityState === 'visible']"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  Checking job progress...
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="request-queue-concurrency-synchronization" class="catalog-section-heading"><span>Request Queue &amp; Concurrency Synchronization</span><a class="header-anchor" href="#request-queue-concurrency-synchronization" aria-label="Permalink to Request Queue &amp; Concurrency Synchronization">#</a></h2>
+<h3 id="hx-sync">hx-sync<a class="header-anchor" href="#hx-sync" aria-label="Permalink">#</a></h3>
+<p>Coordinates concurrent requests across a single element or a shared ancestor/group of elements (such as a <code>&lt;form&gt;</code> and its child inputs). Under the hood, htmx v4.0.1 attaches a <code>RequestQueue</code> instance to the resolved sync target element (<code>elt._htmx_state.queue</code>).</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-sync</span><span class="o">=</span><span class="s">"[&lt;selector&gt;:]&lt;strategy&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<ul>
+<li>If <code>&lt;selector&gt;:</code> is omitted, the synchronization scope is the element itself (<code>this</code>).</li>
+<li>If only <code>&lt;selector&gt;</code> is provided without a colon or strategy (e.g., <code>hx-sync=&quot;closest form&quot;</code>), the strategy defaults to <code>queue first</code>.</li>
+<li><code>hx-sync</code> <strong>is inherited by default</strong>.</li>
+</ul>
+<h4 id="synchronization-strategies">Synchronization Strategies</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Strategy</th>
+<th style="text-align:left">Behavior When a Request Is Already In-Flight on the Sync Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>drop</code></td>
+<td style="text-align:left">Silently drops the newly triggered request if an existing request is currently active.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>abort</code></td>
+<td style="text-align:left">Allows the request to start, but registers an internal callback that aborts this request if <em>another</em> request is triggered on the same sync target while it is in flight.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>replace</code></td>
+<td style="text-align:left">Immediately aborts the currently active request (<code>active.abort()</code>), clears any pending queued requests, and starts the new request immediately.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>queue</code> / <code>queue first</code></td>
+<td style="text-align:left"><strong>(Default)</strong> Queues only the <strong>first</strong> arriving request while one is in flight; subsequent arrivals while the queue is non-empty are ignored.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>queue last</code></td>
+<td style="text-align:left">Queues only the <strong>most recent</strong> arriving request (<code>queue = [newTask]</code>), overwriting any previously queued task so it runs after the active request finishes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>queue all</code></td>
+<td style="text-align:left">Appends every arriving request to a FIFO queue (<code>queue.push(newTask)</code>) and executes them sequentially one after another.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Prevent double-submission on a payment button by dropping concurrent clicks --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/checkout/pay"</span> <span class="na">hx-sync</span><span class="o">=</span><span class="s">"this:drop"</span><span class="p">&gt;</span>
+  Submit Payment
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Typeahead search: abort in-flight request and replace with latest keystroke --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"search"</span>
+       <span class="na">name</span><span class="o">=</span><span class="s">"q"</span>
+       <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/autocomplete"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"input changed delay:150ms"</span>
+       <span class="na">hx-sync</span><span class="o">=</span><span class="s">"this:replace"</span>
+       <span class="na">hx-target</span><span class="o">=</span><span class="s">"#suggestions"</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Coordinate field validation and form submission: form submit replaces pending validation --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/register"</span> <span class="na">hx-sync</span><span class="o">=</span><span class="s">"this:replace"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"email"</span>
+         <span class="na">name</span><span class="o">=</span><span class="s">"email"</span>
+         <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/validate-email"</span>
+         <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"change"</span>
+         <span class="na">hx-sync</span><span class="o">=</span><span class="s">"closest form:abort"</span>
+         <span class="na">hx-target</span><span class="o">=</span><span class="s">"next .error-msg"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">"error-msg"</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Create Account<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="user-programmatic-confirmation" class="catalog-section-heading"><span>User &amp; Programmatic Confirmation</span><a class="header-anchor" href="#user-programmatic-confirmation" aria-label="Permalink to User &amp; Programmatic Confirmation">#</a></h2>
+<h3 id="hx-confirm">hx-confirm<a class="header-anchor" href="#hx-confirm" aria-label="Permalink">#</a></h3>
+<p>Requires confirmation before issuing a request. In htmx v4.0.1, <code>hx-confirm</code> supports both static confirmation prompts (displayed via <code>window.confirm()</code>) and dynamic JavaScript expressions (<code>js:</code> or <code>javascript:</code>) that can return either a synchronous boolean or an asynchronous <code>Promise&lt;boolean&gt;</code>.</p>
+<p><strong>Syntax</strong></p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">element</span> <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"&lt;message&gt; | js:&lt;boolean-or-promise-expression&gt;"</span><span class="p">&gt;&lt;/</span><span class="nt">element</span><span class="p">&gt;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Mode / Event Property</th>
+<th style="text-align:left">Specification in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Plain Text Prompt</strong></td>
+<td style="text-align:left">Calls native <code>window.confirm(question)</code>. Proceeds via <code>issueRequest()</code> if <code>true</code>, or cancels via <code>dropRequest()</code> if <code>false</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>js:</code> / <code>javascript:</code> Prefix</strong></td>
+<td style="text-align:left">Evaluates the JavaScript expression in the element's scope (<code>event</code> is available). If the result is a <code>Promise</code>, htmx awaits <code>Promise.resolve(result)</code> and calls <code>issueRequest()</code> on truthy resolution or <code>dropRequest()</code> on falsy resolution.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>htmx:confirm</code> Event</strong></td>
+<td style="text-align:left">Fired before <strong>every</strong> request (even when <code>hx-confirm</code> is not present, in which case <code>detail.question</code> is <code>undefined</code>). Calling <code>event.preventDefault()</code> pauses the request until <code>event.detail.issueRequest()</code> or <code>event.detail.dropRequest()</code> is invoked.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left"><strong>Inherited by default</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Usage Examples</strong></p>
+<pre><code class="language-html"><span class="cm">&lt;!-- 1. Standard browser confirmation dialog --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/api/account"</span>
+        <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"Are you sure you want to permanently close your account?"</span><span class="p">&gt;</span>
+  Close Account
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Async Promise confirmation using js: prefix (e.g. custom modal library) --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/api/deployments/production"</span>
+        <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"js:MyModal.confirm({ title: 'Deploy to Production?', danger: true })"</span><span class="p">&gt;</span>
+  Deploy Now
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 3. Intercepting htmx:confirm globally for a custom &lt;dialog&gt; component --&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">"htmx:confirm"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">question</span><span class="p">,</span><span class="w"> </span><span class="nx">issueRequest</span><span class="p">,</span><span class="w"> </span><span class="nx">dropRequest</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">question</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// No hx-confirm attribute set; allow default execution</span>
+<span class="w">    </span><span class="nx">evt</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span><span class="w">  </span><span class="c1">// Pause request execution</span>
+<span class="w">    </span><span class="nx">showCustomConfirmDialog</span><span class="p">(</span><span class="nx">question</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">confirmed</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">confirmed</span><span class="p">)</span><span class="w"> </span><span class="nx">issueRequest</span><span class="p">();</span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="nx">dropRequest</span><span class="p">();</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="01_core_request_attributes.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">Core Request Attributes</span>
+                    </a>
+                    
+                    
+                    <a href="03_target_and_swap_attributes.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">Target &amp; Swap Attributes</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

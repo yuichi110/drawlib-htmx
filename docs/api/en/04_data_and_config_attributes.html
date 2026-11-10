@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data, Validation &amp; Configuration Attributes — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/04_data_and_config_attributes.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html">
+    
+    
+    
+    <meta name="description" content="htmx v4 provides declarative attributes for assembling request parameters, injecting custom HTTP headers, enforcing HTML5 constraint validation, tuning…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="Data, Validation &amp; Configuration Attributes — htmx v4 API Reference">
+    <meta property="og:description" content="htmx v4 provides declarative attributes for assembling request parameters, injecting custom HTTP headers, enforcing HTML5 constraint validation, tuning…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/04_data_and_config_attributes.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Data, Validation &amp; Configuration Attributes — htmx v4 API Reference">
+    <meta name="twitter:description" content="htmx v4 provides declarative attributes for assembling request parameters, injecting custom HTTP headers, enforcing HTML5 constraint validation, tuning…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink" data-target="request-payload-parameter-attributes">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink" data-target="validation-fetch-options-status-routing">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">Data, Validation &amp; Configuration Attributes</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/04_data_and_config_attributes.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">Data, Validation &amp; Configuration Attributes</h1>
+<p>htmx v4 provides declarative attributes for assembling request parameters, injecting custom HTTP headers, enforcing HTML5 constraint validation, tuning <code>fetch()</code> request options, and routing responses based on HTTP status codes. Unlike htmx 2, htmx v4 parses configuration values through <strong>HCON</strong> (htmx Configuration Object Notation, a superset of JSON), evaluates <code>js:</code> expressions both synchronously and asynchronously, and routes <code>4xx</code>/<code>5xx</code> responses declaratively via <code>hx-status:XXX</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Attribute</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Value Format</th>
+<th style="text-align:left">Default / Inheritance</th>
+<th style="text-align:left">Core Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-vals"><code>hx-vals</code></a></td>
+<td style="text-align:left">Request Data</td>
+<td style="text-align:left">HCON / JSON / <code>js:&lt;expr&gt;</code></td>
+<td style="text-align:left">Explicit (<code>:inherited</code> / <code>:append</code>)</td>
+<td style="text-align:left">Merges static or dynamic key-value pairs into the request <code>FormData</code> and exposes them on <code>ctx.vals</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-headers"><code>hx-headers</code></a></td>
+<td style="text-align:left">Request Headers</td>
+<td style="text-align:left">HCON / JSON / <code>js:&lt;expr&gt;</code></td>
+<td style="text-align:left">Explicit (<code>:inherited</code> / <code>:append</code>)</td>
+<td style="text-align:left">Appends or overrides HTTP request headers on <code>ctx.request.headers</code> (all values coerced with <code>String(...)</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-include"><code>hx-include</code></a></td>
+<td style="text-align:left">Request Data</td>
+<td style="text-align:left">CSS / Extended Selector</td>
+<td style="text-align:left">Explicit (<code>:inherited</code> / <code>:append</code>)</td>
+<td style="text-align:left">Collects input values from additional DOM elements or enclosing <code>&lt;form&gt;</code> containers into the request payload.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-encoding"><code>hx-encoding</code></a></td>
+<td style="text-align:left">Request Encoding</td>
+<td style="text-align:left">MIME Type String</td>
+<td style="text-align:left"><code>application/x-www-form-urlencoded</code></td>
+<td style="text-align:left">Preserves raw <code>FormData</code> when set to <code>multipart/form-data</code> for binary file uploads on non-<code>GET</code>/<code>DELETE</code> requests.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-validate"><code>hx-validate</code></a></td>
+<td style="text-align:left">Form Validation</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code></td>
+<td style="text-align:left"><code>&quot;true&quot;</code> on <code>&lt;form&gt;</code> (unless <code>novalidate</code>), <code>&quot;false&quot;</code> otherwise; not inherited</td>
+<td style="text-align:left">Runs <code>reportValidity()</code> on the enclosing form, triggering element, and <code>hx-include</code> targets before <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-config"><code>hx-config</code></a></td>
+<td style="text-align:left">Fetch Configuration</td>
+<td style="text-align:left">HCON / JSON</td>
+<td style="text-align:left">Explicit (<code>:inherited</code> / <code>:append</code>)</td>
+<td style="text-align:left">Merges per-element <code>HtmxRequestOptions</code> (<code>timeout</code>, <code>credentials</code>, <code>cache</code>, extension keys) into <code>ctx.request</code> while locking <code>mode</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-status-xxx"><code>hx-status:XXX</code></a></td>
+<td style="text-align:left">Response Routing</td>
+<td style="text-align:left">HCON / JSON</td>
+<td style="text-align:left">Explicit (<code>:inherited</code> / <code>:append</code>)</td>
+<td style="text-align:left">Overrides <code>ctx</code> swap/target/select/history properties for matching HTTP status codes (<code>422</code>, <code>50x</code>, <code>4xx</code>, <code>5xx</code>).</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_data_and_config_attributes/cat_04_data_config_pipeline.png" alt="04_data_and_config_attributes_1" />
+  <figcaption class="drawlib-caption">htmx v4 Request Data Assembly, Fetch Configuration, and HTTP Status Routing Pipeline</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span><span class="p">,</span> <span class="n">lines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer container frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">152</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">62.0</span><span class="p">),</span>
+    <span class="s2">"htmx v4 Data Assembly, Fetch Config &amp; Status Routing Pipeline"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Top Row: 4 Outbound Stages (y = 43)</span>
+<span class="n">y_top</span> <span class="o">=</span> <span class="mf">43.0</span>
+<span class="n">card_w</span> <span class="o">=</span> <span class="mf">32.0</span>
+<span class="n">card_h</span> <span class="o">=</span> <span class="mf">20.0</span>
+<span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">x_3</span><span class="p">,</span> <span class="n">x_4</span> <span class="o">=</span> <span class="mf">24.0</span><span class="p">,</span> <span class="mf">61.0</span><span class="p">,</span> <span class="mf">98.0</span><span class="p">,</span> <span class="mf">135.0</span>
+
+<span class="c1"># Stage 1: Form &amp; Validation</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_1</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">check_square</span><span class="p">((</span><span class="n">x_1</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_1</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="s2">"1. Form &amp; Validate"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-include selectors</span><span class="se">\n</span><span class="s2">hx-validate reportValidity()"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="n">x_1</span> <span class="o">+</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_2</span> <span class="o">-</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="c1"># Stage 2: Dynamic Values &amp; Headers</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_2</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">sliders</span><span class="p">((</span><span class="n">x_2</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_2</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="s2">"2. Vals &amp; Headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-vals -&gt; FormData, ctx.vals</span><span class="se">\n</span><span class="s2">hx-headers -&gt; String(val)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="n">x_2</span> <span class="o">+</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_3</span> <span class="o">-</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="c1"># Stage 3: Fetch Configuration</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_3</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">gear</span><span class="p">((</span><span class="n">x_3</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_3</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="s2">"3. Fetch Options"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_3</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"hx-config -&gt; ctx.request</span><span class="se">\n</span><span class="s2">mode locked to config.mode"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="n">x_3</span> <span class="o">+</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_4</span> <span class="o">-</span> <span class="mf">16.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="c1"># Stage 4: Encoding &amp; Dispatch (Focal Point 1)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_4</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">paper_plane_tilt</span><span class="p">((</span><span class="n">x_4</span> <span class="o">-</span> <span class="mf">12.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_4</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.5</span><span class="p">),</span> <span class="s2">"4. Encode &amp; Fetch"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_4</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"GET/DELETE: URL query</span><span class="se">\n</span><span class="s2">POST: URLParams / FormData"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Bottom Row: Response &amp; Status Routing (y = 16)</span>
+<span class="n">y_bot</span> <span class="o">=</span> <span class="mf">16.0</span>
+
+<span class="c1"># Stage 5: HTTP Response Arrival</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">42.5</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">69.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">18.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_split</span><span class="p">((</span><span class="mf">14.0</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">4.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">45.0</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">4.5</span><span class="p">),</span> <span class="s2">"5. HTTP Response &amp; noSwap Check"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">42.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"4xx/5xx fire htmx:response:error (still swap by default)</span><span class="se">\n</span><span class="s2">config.noSwap [204, 304] sets ctx.swap = 'none'"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Stage 6: Status Code Routing (Focal Point 2)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">118.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">66.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">18.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">git_branch</span><span class="p">((</span><span class="mf">91.0</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">4.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">120.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">4.5</span><span class="p">),</span> <span class="s2">"6. hx-status:XXX Routing"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">118.0</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"Order: Exact (422) -&gt; Decade (50x) -&gt; Class (5xx)</span><span class="se">\n</span><span class="s2">Merges target, swap, select, push, replace into ctx"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Connectors between Top Row and Bottom Row</span>
+<span class="n">lines</span><span class="p">([(</span><span class="n">x_4</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">10.0</span><span class="p">),</span> <span class="p">(</span><span class="n">x_4</span><span class="p">,</span> <span class="mf">29.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">42.5</span><span class="p">,</span> <span class="mf">29.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">42.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">9.0</span><span class="p">)],</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mf">77.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="p">(</span><span class="mf">85.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="request-payload-parameter-attributes" class="catalog-section-heading"><span>Request Payload &amp; Parameter Attributes</span><a class="header-anchor" href="#request-payload-parameter-attributes" aria-label="Permalink to Request Payload &amp; Parameter Attributes">#</a></h2>
+<h3 id="hx-vals">hx-vals<a class="header-anchor" href="#hx-vals" aria-label="Permalink">#</a></h3>
+<p>Adds static or dynamically computed key-value pairs to the outgoing request payload. In htmx v4, <code>hx-vals</code> is parsed with <strong>HCON</strong> (which accepts both concise <code>key:value</code> syntax and strict JSON) or evaluated as JavaScript when prefixed with <code>js:</code> or <code>javascript:</code>.</p>
+<h4 id="syntax-signature">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- HCON shorthand syntax --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/items"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">"category:books, priority:1, active:true"</span><span class="p">&gt;</span>Create<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Standard JSON syntax --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/items"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">'{"category": "books", "priority": 1}'</span><span class="p">&gt;</span>Create<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Dynamic synchronous or asynchronous JavaScript evaluation --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/items"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">"js:{ token: await getAuthToken(), ts: Date.now() }"</span><span class="p">&gt;</span>Create<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="value-formats-execution-mechanics">Value Formats &amp; Execution Mechanics</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Format / Feature</th>
+<th style="text-align:left">Syntax Example</th>
+<th style="text-align:left">Internal Mechanics (<code>src/htmx.js</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HCON Object</strong></td>
+<td style="text-align:left"><code>hx-vals=&quot;page:2, sort:'desc'&quot;</code></td>
+<td style="text-align:left">Parsed synchronously via <code>HCON.parse(hxAttr)</code>. Numeric and boolean literals (<code>2</code>, <code>true</code>) are JSON-parsed automatically.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>JSON Object</strong></td>
+<td style="text-align:left"><code>hx-vals='{&quot;page&quot;: 2, &quot;sort&quot;: &quot;desc&quot;}'</code></td>
+<td style="text-align:left">Any string starting with <code>{</code> is delegated directly to <code>JSON.parse(string)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dynamic Sync JS</strong></td>
+<td style="text-align:left"><code>hx-vals=&quot;js:{ width: window.innerWidth }&quot;</code></td>
+<td style="text-align:left">Strips <code>js:</code> / <code>javascript:</code>, wraps in <code>{...}</code> if needed, and executes via <code>AsyncFunction</code> with <code>this</code> bound to the element and <code>{ctx}</code> in scope.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dynamic Async JS</strong></td>
+<td style="text-align:left"><code>hx-vals=&quot;js:{ sig: await signPayload(ctx) }&quot;</code></td>
+<td style="text-align:left">Because <code>__executeJavaScript</code> uses <code>AsyncFunction</code> (<code>isAsync = true</code>), <code>await</code> expressions inside <code>js:</code> resolve before <code>htmx:config:request</code> fires.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Form Override</strong></td>
+<td style="text-align:left"><code>body.set(key, obj[key])</code></td>
+<td style="text-align:left">Iterates over the resolved object and calls <code>FormData.prototype.set()</code>, overriding any identically named form or <code>hx-include</code> field.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Extension Hook</strong></td>
+<td style="text-align:left"><code>ctx.vals = obj</code></td>
+<td style="text-align:left">Stores the raw unserialized object on <code>ctx.vals</code> so JSON or custom serialization extensions can inspect typed values.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left"><code>hx-vals:inherited</code> / <code>hx-vals:append</code></td>
+<td style="text-align:left">Requires <code>:inherited</code> on ancestor elements. Child elements can merge additional keys with <code>hx-vals:append=&quot;extra:1&quot;</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Static HCON values overriding a form input --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/orders"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"hidden"</span> <span class="na">name</span><span class="o">=</span><span class="s">"source"</span> <span class="na">value</span><span class="o">=</span><span class="s">"default"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Sends source="quick-buy" and express="true" --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">"source:'quick-buy', express:true"</span><span class="p">&gt;</span>
+    Instant Checkout
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Async Web Crypto signature computed just before htmx:config:request --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/transfer"</span>
+        <span class="na">hx-vals</span><span class="o">=</span><span class="s">"js:{ nonce: crypto.randomUUID(), digest: await computeHmac(ctx.request.action) }"</span><span class="p">&gt;</span>
+  Authorize Transfer
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-headers">hx-headers<a class="header-anchor" href="#hx-headers" aria-label="Permalink">#</a></h3>
+<p>Adds or overrides custom HTTP headers on <code>ctx.request.headers</code> before the request is dispatched. Like <code>hx-vals</code>, it accepts HCON, JSON, or a <code>js:</code> / <code>javascript:</code> dynamic expression, and coerces every resolved property value via <code>String(obj[key])</code>.</p>
+<h4 id="syntax-signature-2">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Static HCON headers --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/api/widgets"</span> <span class="na">hx-headers</span><span class="o">=</span><span class="s">"X-Client-Version: 4.0.1, X-Tenant: acme"</span><span class="p">&gt;</span>
+  Load Widgets
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Inherited CSRF header on body or layout root --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-headers:inherited</span><span class="o">=</span><span class="s">'{"X-CSRF-Token": "9f86d081884c7d659a2feaa0c55ad015"}'</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/account/session"</span><span class="p">&gt;</span>Sign Out<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="value-formats-execution-mechanics-2">Value Formats &amp; Execution Mechanics</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Format / Feature</th>
+<th style="text-align:left">Syntax Example</th>
+<th style="text-align:left">Internal Mechanics (<code>src/htmx.js</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>HCON / JSON</strong></td>
+<td style="text-align:left"><code>hx-headers=&quot;X-Mode:compact&quot;</code></td>
+<td style="text-align:left">Parsed via <code>__getAttributeObject(elt, &quot;hx-headers&quot;, ...)</code> and assigned to <code>ctx.request.headers[key] = String(obj[key])</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dynamic <code>js:</code> Prefix</strong></td>
+<td style="text-align:left"><code>hx-headers=&quot;js:{ Authorization: 'Bearer ' + await getJwt() }&quot;</code></td>
+<td style="text-align:left">Evaluates asynchronously with <code>this</code> bound to the source element and <code>ctx</code> in scope, awaiting any returned <code>Promise</code> before <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Core Header Precedence</strong></td>
+<td style="text-align:left">Overrides <code>Accept</code> or <code>HX-*</code></td>
+<td style="text-align:left">Executed after <code>__createCoreHeaders()</code>, allowing <code>hx-headers</code> to override <code>Accept: text/html</code> or custom headers before <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Explicit Inheritance</strong></td>
+<td style="text-align:left"><code>hx-headers:inherited=&quot;...&quot;</code></td>
+<td style="text-align:left">Place <code>hx-headers:inherited</code> on <code>&lt;body&gt;</code> or <code>&lt;main&gt;</code> to propagate CSRF or tenant headers to all descendant htmx requests. Combine with <code>:append</code> on children to add route-specific headers.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-2">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Global CSRF protection via explicit inheritance + child header append --&gt;</span>
+<span class="p">&lt;</span><span class="nt">main</span> <span class="na">hx-headers:inherited</span><span class="o">=</span><span class="s">"X-CSRF-Token: 'tok_live_88a9c'"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/posts/publish"</span>
+          <span class="na">hx-headers:append</span><span class="o">=</span><span class="s">"X-Idempotency-Key: 'pub_2026_01'"</span><span class="p">&gt;</span>
+    Publish Article
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Dynamic bearer token lookup per request --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/metrics/realtime"</span>
+     <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"every 10s"</span>
+     <span class="na">hx-headers</span><span class="o">=</span><span class="s">"js:{ 'X-Trace-Id': crypto.randomUUID() }"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-include">hx-include<a class="header-anchor" href="#hx-include" aria-label="Permalink">#</a></h3>
+<p>Includes additional input elements or form containers in the outgoing request data collection phase (<code>__collectFormData</code>). In htmx v4, <strong>only non-<code>GET</code>/<code>DELETE</code> requests (<code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>QUERY</code>) automatically include their enclosing <code>&lt;form&gt;</code></strong>; <code>GET</code> and <code>DELETE</code> requests outside a <code>&lt;form&gt;</code> element itself must use <code>hx-include</code> to pull in surrounding form controls.</p>
+<h4 id="syntax-signature-3">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Include an enclosing form on a GET request --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">id</span><span class="o">=</span><span class="s">"filter-form"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"q"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"Filter..."</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">select</span> <span class="na">name</span><span class="o">=</span><span class="s">"status"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/items"</span> <span class="na">hx-include</span><span class="o">=</span><span class="s">"closest form"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#list"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">"open"</span><span class="p">&gt;</span>Open<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">"closed"</span><span class="p">&gt;</span>Closed<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="supported-selectors-collection-rules">Supported Selectors &amp; Collection Rules</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Selector / Rule</th>
+<th style="text-align:left">Example</th>
+<th style="text-align:left">Behavior in <code>__collectFormData</code> &amp; <code>__addInputValues</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Standard CSS Selector</strong></td>
+<td style="text-align:left"><code>hx-include=&quot;#global-filters, .extra-input&quot;</code></td>
+<td style="text-align:left">Queries matching elements in the root node (<code>document</code> or <code>ShadowRoot</code>) and collects all enabled <code>[name]:not(button)</code> descendants.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>closest &lt;selector&gt;</code></strong></td>
+<td style="text-align:left"><code>hx-include=&quot;closest form&quot;</code></td>
+<td style="text-align:left">Traverses up the DOM via <code>elt.closest(...)</code> to include the nearest ancestor form or container.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>find &lt;selector&gt;</code> / <code>findAll &lt;selector&gt;</code></strong></td>
+<td style="text-align:left"><code>hx-include=&quot;find input.active&quot;</code></td>
+<td style="text-align:left">Queries first descendant (<code>find</code>) or all descendants (<code>findAll</code>) relative to the triggering element.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>next [&lt;selector&gt;]</code> / <code>previous [&lt;selector&gt;]</code></strong></td>
+<td style="text-align:left"><code>hx-include=&quot;previous input&quot;</code></td>
+<td style="text-align:left">Includes adjacent or DOM-ordered sibling inputs before or after the triggering element.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>this</code></strong></td>
+<td style="text-align:left"><code>hx-include=&quot;this&quot;</code></td>
+<td style="text-align:left">Includes input controls inside the element bearing the <code>hx-include</code> attribute (respects inherited <code>this</code> via <code>__findThisElements</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GET</code> / <code>DELETE</code> Form Rule</strong></td>
+<td style="text-align:left"><code>usesQueryParams = /GET|DELETE/.test(method)</code></td>
+<td style="text-align:left">When <code>method</code> is <code>GET</code> or <code>DELETE</code>, htmx only auto-collects <code>form</code> if the triggering element <strong>is</strong> the <code>&lt;form&gt;</code> (<code>elt.matches('form')</code>). Child controls (<code>&lt;button hx-get&gt;</code>, <code>&lt;input hx-get&gt;</code>) only send their own value unless <code>hx-include=&quot;closest form&quot;</code> is set.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Deduplication (<code>included</code> Set)</strong></td>
+<td style="text-align:left">Automatic <code>Set</code> tracking</td>
+<td style="text-align:left">Each input element is tracked in an <code>included</code> <code>Set</code> so overlapping form and <code>hx-include</code> selectors never duplicate values.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-3">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Bulk DELETE button including checked row checkboxes from a separate table --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/users/bulk"</span>
+        <span class="na">hx-include</span><span class="o">=</span><span class="s">"#users-table input[name='ids']:checked"</span>
+        <span class="na">hx-confirm</span><span class="o">=</span><span class="s">"Delete selected users?"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#users-table"</span><span class="p">&gt;</span>
+  Delete Selected
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">table</span> <span class="na">id</span><span class="o">=</span><span class="s">"users-table"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="na">name</span><span class="o">=</span><span class="s">"ids"</span> <span class="na">value</span><span class="o">=</span><span class="s">"101"</span><span class="p">&gt;&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Alice<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"checkbox"</span> <span class="na">name</span><span class="o">=</span><span class="s">"ids"</span> <span class="na">value</span><span class="o">=</span><span class="s">"102"</span><span class="p">&gt;&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Bob<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-encoding">hx-encoding<a class="header-anchor" href="#hx-encoding" aria-label="Permalink">#</a></h3>
+<p>Specifies the request body encoding format for non-<code>GET</code>/<code>DELETE</code> requests. By default, htmx converts the collected <code>FormData</code> object into <code>application/x-www-form-urlencoded</code> (<code>new URLSearchParams(ctx.request.body)</code>). Setting <code>hx-encoding=&quot;multipart/form-data&quot;</code> (or <code>enctype=&quot;multipart/form-data&quot;</code> on the enclosing <code>&lt;form&gt;</code>) preserves the raw <code>FormData</code> instance so the browser's <code>fetch()</code> API streams binary file uploads with an automatically generated multipart boundary.</p>
+<h4 id="syntax-signature-4">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- On a form or standalone button uploading files --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/upload/avatar"</span> <span class="na">hx-encoding</span><span class="o">=</span><span class="s">"multipart/form-data"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#preview"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"file"</span> <span class="na">name</span><span class="o">=</span><span class="s">"avatar"</span> <span class="na">accept</span><span class="o">=</span><span class="s">"image/png,image/jpeg"</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Upload Avatar<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="encoding-values-behavior">Encoding Values &amp; Behavior</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Value</th>
+<th style="text-align:left">Enclosing <code>&lt;form enctype&gt;</code> Fallback</th>
+<th style="text-align:left">Resulting <code>ctx.request.body</code> Passed to <code>fetch()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><em>(omitted / default)</em></td>
+<td style="text-align:left">Falls back to <code>form?.enctype</code></td>
+<td style="text-align:left">Converted to <code>new URLSearchParams(ctx.request.body)</code> (<code>Content-Type: application/x-www-form-urlencoded;charset=UTF-8</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;multipart/form-data&quot;</code></td>
+<td style="text-align:left">Equivalent to <code>&lt;form enctype=&quot;multipart/form-data&quot;&gt;</code></td>
+<td style="text-align:left">Retains the native <code>FormData</code> object (<code>Content-Type: multipart/form-data; boundary=...</code> set automatically by browser <code>fetch()</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>(Ignored on <code>GET</code>/<code>DELETE</code>)</em></td>
+<td style="text-align:left">N/A</td>
+<td style="text-align:left"><code>GET</code> and <code>DELETE</code> serialize <code>ctx.request.body</code> into <code>url.searchParams</code> and set <code>ctx.request.body = null</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-4">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Standalone file upload without a wrapping &lt;form&gt; using hx-encoding + hx-include --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"uploader"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">"doc-file"</span> <span class="na">type</span><span class="o">=</span><span class="s">"file"</span> <span class="na">name</span><span class="o">=</span><span class="s">"documents"</span> <span class="na">multiple</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/documents/import"</span>
+          <span class="na">hx-encoding</span><span class="o">=</span><span class="s">"multipart/form-data"</span>
+          <span class="na">hx-include</span><span class="o">=</span><span class="s">"#doc-file"</span>
+          <span class="na">hx-indicator</span><span class="o">=</span><span class="s">"#upload-spinner"</span><span class="p">&gt;</span>
+    Import Files
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"upload-spinner"</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator"</span><span class="p">&gt;</span>Uploading...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="validation-fetch-options-status-routing" class="catalog-section-heading"><span>Validation, Fetch Options &amp; Status Routing</span><a class="header-anchor" href="#validation-fetch-options-status-routing" aria-label="Permalink to Validation, Fetch Options &amp; Status Routing">#</a></h2>
+<h3 id="hx-validate">hx-validate<a class="header-anchor" href="#hx-validate" aria-label="Permalink">#</a></h3>
+<p>Controls whether htmx runs native HTML5 constraint validation (<code>reportValidity()</code>) on collected inputs before firing <code>htmx:config:request</code> and issuing the network request.</p>
+<h4 id="syntax-signature-5">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Force validation on a standalone input or button outside a form --&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"email"</span> <span class="na">name</span><span class="o">=</span><span class="s">"email"</span> <span class="na">required</span>
+       <span class="na">hx-post</span><span class="o">=</span><span class="s">"/newsletter/subscribe"</span>
+       <span class="na">hx-validate</span><span class="o">=</span><span class="s">"true"</span>
+       <span class="na">hx-target</span><span class="o">=</span><span class="s">"#sub-status"</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="validation-rules-defaults">Validation Rules &amp; Defaults</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Element Context</th>
+<th style="text-align:left">Default <code>hx-validate</code> Value</th>
+<th style="text-align:left">Validation Target &amp; Behavior (<code>__collectFormData</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&lt;form&gt;</code> without <code>novalidate</code></td>
+<td style="text-align:left"><code>&quot;true&quot;</code> (unless submitter has <code>formnovalidate</code>)</td>
+<td style="text-align:left">Calls <code>form.reportValidity()</code>. If <code>false</code>, aborts immediately before <code>hx-vals</code> or <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;form novalidate&gt;</code></td>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">Skips <code>form.reportValidity()</code> unless <code>hx-validate=&quot;true&quot;</code> is explicitly set on the form.</td>
+</tr>
+<tr>
+<td style="text-align:left">Non-<code>&lt;form&gt;</code> element (<code>&lt;input&gt;</code>, <code>&lt;button&gt;</code>)</td>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">When <code>hx-validate=&quot;true&quot;</code> is set directly on the element, calls <code>elt.reportValidity()</code> (if no enclosing form) and <code>node.reportValidity()</code> on every element matched by <code>hx-include</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Inheritance</strong></td>
+<td style="text-align:left"><strong>Not inherited</strong> (<code>allowInheritance = false</code>)</td>
+<td style="text-align:left">Looked up with <code>this.__attributeValue(sourceElement, &quot;hx-validate&quot;, ..., false)</code> — must be placed directly on the triggering element.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-5">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Validate both a standalone input and included fields without a &lt;form&gt; tag --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"profile-fields"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"username"</span> <span class="na">minlength</span><span class="o">=</span><span class="s">"3"</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"url"</span> <span class="na">name</span><span class="o">=</span><span class="s">"website"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"https://example.com"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-put</span><span class="o">=</span><span class="s">"/profile"</span>
+        <span class="na">hx-include</span><span class="o">=</span><span class="s">"#profile-fields"</span>
+        <span class="na">hx-validate</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  Save Profile
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-config">hx-config<a class="header-anchor" href="#hx-config" aria-label="Permalink">#</a></h3>
+<p>Provides per-element overrides for the underlying <code>fetch()</code> request options (<code>ctx.request</code>, typed as <code>HtmxRequestOptions</code>), replacing htmx 2's <code>hx-request</code> attribute. Accepts HCON or JSON and deep-merges into <code>ctx.request</code> during context creation (<code>__createRequestContext</code>).</p>
+<h4 id="syntax-signature-6">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Custom timeout, credentials, and cache mode via HCON --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"https://api.example.com/feed"</span>
+        <span class="na">hx-config</span><span class="o">=</span><span class="s">"timeout:5s, credentials:include, cache:'no-store'"</span><span class="p">&gt;</span>
+  Sync External Feed
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="configurable-htmxrequestoptions-keys">Configurable <code>HtmxRequestOptions</code> Keys</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Key</th>
+<th style="text-align:left">Type / Values</th>
+<th style="text-align:left">Default</th>
+<th style="text-align:left">Description &amp; Security Invariants</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>timeout</code></td>
+<td style="text-align:left"><code>number</code> | <code>string</code> (<code>5000</code>, <code>&quot;5s&quot;</code>, <code>&quot;1m&quot;</code>, <code>0</code>)</td>
+<td style="text-align:left"><code>htmx.config.defaultTimeout</code> (<code>60000</code>)</td>
+<td style="text-align:left">Per-request timeout parsed via <code>htmx.parseInterval()</code>. Aborts <code>ctx.request.signal</code> with reason <code>'timeout'</code> and fires <code>htmx:error</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>credentials</code></td>
+<td style="text-align:left"><code>'same-origin'</code> | <code>'include'</code> | <code>'omit'</code></td>
+<td style="text-align:left"><code>'same-origin'</code></td>
+<td style="text-align:left">Controls whether <code>fetch()</code> sends cookies and HTTP auth headers on same-origin or cross-origin requests.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>cache</code></td>
+<td style="text-align:left"><code>'default'</code> | <code>'no-store'</code> | <code>'reload'</code> | <code>'no-cache'</code> | <code>'force-cache'</code></td>
+<td style="text-align:left">Browser default</td>
+<td style="text-align:left">Passed directly to <code>window.fetch(action, ctx.request)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sse.*</code> / <code>ws.*</code> / <code>&lt;ext&gt;.*</code></td>
+<td style="text-align:left">Dotted HCON path (<code>sse.mode:once</code>)</td>
+<td style="text-align:left">Extension-defined</td>
+<td style="text-align:left">HCON dotted keys expand into nested objects (<code>{sse: {mode: 'once'}}</code>) on <code>ctx.request</code> for extensions to read.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>mode</code> (Locked)</strong></td>
+<td style="text-align:left"><code>'same-origin'</code> | <code>'cors'</code> | <code>'no-cors'</code></td>
+<td style="text-align:left"><code>htmx.config.mode</code> (<code>'same-origin'</code>)</td>
+<td style="text-align:left"><strong>Security Invariant</strong>: Immediately after <code>HCON.merge(hxConfig, ctx.request)</code>, htmx enforces <code>ctx.request.mode = this.config.mode</code>. Per-element <code>mode</code> overrides are always ignored to prevent markup injection from escalating CORS privileges.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-6">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Fast 3-second timeout with no-store cache for a health check button --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/healthz"</span>
+        <span class="na">hx-config</span><span class="o">=</span><span class="s">"timeout:3s, cache:'no-store'"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#health-badge"</span><span class="p">&gt;</span>
+  Ping Server
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Inherited request configuration for an admin panel section --&gt;</span>
+<span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-config:inherited</span><span class="o">=</span><span class="s">'{"timeout": "15s", "credentials": "include"}'</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/admin/reindex"</span><span class="p">&gt;</span>Trigger Search Reindex<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-status-xxx">hx-status:XXX<a class="header-anchor" href="#hx-status-xxx" aria-label="Permalink">#</a></h3>
+<p>Declaratively reconfigures how htmx swaps, targets, selects, or updates browser history when the server responds with a specific HTTP status code or wildcard range. Unlike htmx 2 (which ignored <code>4xx</code>/<code>5xx</code> bodies by default), <strong>htmx v4 swaps all status codes except <code>htmx.config.noSwap</code> (<code>[204, 304]</code>)</strong> and applies <code>hx-status:XXX</code> overrides right before calling <code>htmx.swap(ctx)</code>.</p>
+<h4 id="syntax-signature-7">Syntax &amp; Signature</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/users"</span>
+      <span class="na">hx-target</span><span class="o">=</span><span class="s">"#user-list"</span>
+      <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span>
+      <span class="na">hx-status:422</span><span class="o">=</span><span class="s">"target:#form-errors, swap:innerHTML, select:#error-summary"</span>
+      <span class="na">hx-status:50x</span><span class="o">=</span><span class="s">"target:#toast-container, swap:beforeend"</span>
+      <span class="na">hx-status:5xx</span><span class="o">=</span><span class="s">"swap:none"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"email"</span> <span class="na">name</span><span class="o">=</span><span class="s">"email"</span> <span class="na">required</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"form-errors"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Create User<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<h4 id="pattern-matching-precedence-supported-context-overrides">Pattern Matching Precedence &amp; Supported Context Overrides</h4>
+<p>htmx evaluates status patterns in strict specificity order (<code>[str, str.slice(0, 2) + 'x', str[0] + 'xx']</code>), stopping at the <strong>first matching pattern</strong> in <code>htmx.config.noSwap</code> or <code>hx-status:&lt;pattern&gt;</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Precedence / HCON Key</th>
+<th style="text-align:left">Pattern / Value Type</th>
+<th style="text-align:left">Behavior in <code>__handleStatusCodes(ctx)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. Exact Status (<code>NNN</code>)</strong></td>
+<td style="text-align:left"><code>hx-status:422</code>, <code>hx-status:404</code>, <code>hx-status:201</code></td>
+<td style="text-align:left">Checked first against the exact 3-digit HTTP status code string (e.g. <code>&quot;422&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. Decade Wildcard (<code>NNx</code>)</strong></td>
+<td style="text-align:left"><code>hx-status:50x</code>, <code>hx-status:40x</code></td>
+<td style="text-align:left">Checked second if no exact match exists (matches <code>500</code>–<code>509</code> or <code>400</code>–<code>409</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. Class Wildcard (<code>Nxx</code>)</strong></td>
+<td style="text-align:left"><code>hx-status:4xx</code>, <code>hx-status:5xx</code>, <code>hx-status:2xx</code></td>
+<td style="text-align:left">Checked third as a broad fallback for any <code>400</code>–<code>499</code> or <code>500</code>–<code>599</code> status code.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left">Swap spec string (<code>innerHTML</code>, <code>none</code>, <code>outerMorph</code>)</td>
+<td style="text-align:left">Overrides <code>ctx.swap</code> for the response (e.g., <code>swap:none</code> to suppress swapping on <code>5xx</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left">CSS / Extended selector (<code>#errors</code>, <code>closest .card</code>)</td>
+<td style="text-align:left">Overrides <code>ctx.target</code> (resolved via <code>__resolveTarget</code> inside <code>__processMainSwap</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left">CSS selector (<code>#error-list</code>)</td>
+<td style="text-align:left">Overrides <code>ctx.select</code> to extract a specific fragment from the error response HTML.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left">OOB selector spec (<code>#flash:outerHTML</code>)</td>
+<td style="text-align:left">Overrides <code>ctx.selectOOB</code> for out-of-band extractions on that status code.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code> / <code>replace</code></td>
+<td style="text-align:left"><code>true</code> | <code>false</code> | URL string (<code>'/login'</code>)</td>
+<td style="text-align:left">Overrides <code>ctx.push</code> (<code>hx-push-url</code>) or <code>ctx.replace</code> (<code>hx-replace-url</code>) during history resolution.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>transition</code></td>
+<td style="text-align:left"><code>true</code> | <code>false</code></td>
+<td style="text-align:left">Enables or disables View Transitions for the status-specific swap.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-7">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Global 401/403 &amp; 5xx status policy inherited across an entire application layout --&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-status:401:inherited</span><span class="o">=</span><span class="s">"target:#auth-modal, swap:innerHTML, push:false"</span>
+      <span class="na">hx-status:5xx:inherited</span><span class="o">=</span><span class="s">"target:#global-alert, swap:innerHTML, push:false"</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"auth-modal"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"global-alert"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="cm">&lt;!-- Local 422 validation error routing on a registration form --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/register"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main-view"</span>
+        <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"/welcome"</span>
+        <span class="na">hx-status:422</span><span class="o">=</span><span class="s">"target:#field-errors, swap:innerMorph, push:false"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"handle"</span> <span class="na">required</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"field-errors"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Register<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="03_target_and_swap_attributes.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">Target &amp; Swap Attributes</span>
+                    </a>
+                    
+                    
+                    <a href="05_ux_history_and_control_attributes.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">UX, History, Events &amp; Inheritance Control Attributes</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

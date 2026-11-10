@@ -1,0 +1,189 @@
+# HTMX WebSocket Extension - Interactive Demo
+
+A beautiful, comprehensive demonstration of the `hx-ws` extension showcasing real-time bidirectional communication with WebSockets.
+
+## 🚀 Quick Start
+
+1. **Install dependencies** (if you haven't already):
+   ```bash
+   npm install ws
+   ```
+
+2. **Start the WebSocket server**:
+   ```bash
+   node test/manual/ws-server.js
+   ```
+
+3. **Open your browser**:
+   Navigate to `http://localhost:8080`
+
+## 🎯 What's Included
+
+### 1. **Live Chat**
+- Send and receive messages in real-time
+- See your messages and bot responses instantly
+- Demonstrates `hx-ws:send` with form submission
+
+### 2. **Live Notifications**
+- Receive random notifications every 5-8 seconds
+- Shows real-time server push
+- Uses `afterbegin` to prepend new notifications
+
+### 3. **Shared Counter**
+- Multiple clients share the same counter state
+- Increment, decrement, or reset from any client
+- All connected clients see updates instantly
+- Demonstrates bi-directional communication
+
+### 4. **Stock Ticker**
+- Live updating stock prices
+- Prices change every 2-3 seconds
+- Shows percentage changes with color coding
+- Demonstrates continuous server streaming
+
+### 5. **System Dashboard**
+- Real-time system metrics (CPU, Memory, Disk)
+- Multiple partial updates in a single message
+- Updates every second
+- Shows using multiple `<hx-partial>` elements
+
+### 6. **Event Log**
+- See all WebSocket events in real-time
+- Connection, disconnection, messages, errors
+- Demonstrates event listeners for debugging
+
+## 💡 Features Demonstrated
+
+- **Connection Management**: `hx-ws:connect` with different URLs
+- **Message Sending**: `hx-ws:send` with forms and buttons
+- **Partial Updates**: Using `<hx-partial>` elements for targeted swaps
+- **Multiple Connections**: Each demo card maintains its own WebSocket
+- **Event Handling**: Custom event listeners for debugging
+- **Reconnection**: Automatic reconnection on disconnect (try stopping the server!)
+- **Swap Strategies**: Different `hx-swap` values (innerHTML, beforeend, etc.)
+
+## 🎨 Key Concepts
+
+### HTML Message Format
+
+Server messages use `content` for HTML and may specify a target and serialized swap specification:
+
+```json
+{
+  "content": "<p>Content</p>",
+  "target": "#target-id",
+  "swap": "beforeend settle:10ms"
+}
+```
+
+### Message Flow
+
+Client sends:
+```json
+{
+  "headers": { "HX-Request": "true" },
+  "message": "Hello!"
+}
+```
+
+Server responds:
+
+```json
+{
+  "content": "<p>Saved</p>"
+}
+```
+
+### Multiple Partials
+
+Send multiple updates in one message:
+
+```html
+<hx-partial id="cpu">CPU: 45%</hx-partial>
+<hx-partial id="memory">Memory: 62%</hx-partial>
+<hx-partial id="disk">Disk: 73%</hx-partial>
+```
+
+## 🔧 Configuration
+
+The extension respects these config options:
+
+```javascript
+htmx.config.ws = {
+    reconnect: true,              // Auto-reconnect on disconnect
+    reconnectDelay: 500,          // Initial delay (ms)
+    reconnectMaxDelay: 60000,     // Max delay (ms)
+    reconnectMaxAttempts: Infinity,// Max reconnect attempts
+    reconnectJitter: 0.3,         // Jitter factor (0-1)
+    pauseOnBackground: true,      // Pause connection when tab is backgrounded
+    protocols: null               // Optional WebSocket subprotocols
+};
+```
+
+## 🎓 Learning Points
+
+1. **Connection Ownership**: Each connection element owns its WebSocket
+2. **Bi-directional**: Both client and server can initiate messages
+3. **Event-Driven**: Rich event system for monitoring and debugging
+4. **Swap Strategies**: Flexible content replacement strategies
+5. **Graceful Degradation**: Automatic reconnection and error handling
+
+## 📚 Code Examples
+
+### Basic Connection
+```html
+<div hx-ws:connect="ws://localhost:8080/chat" hx-trigger="load">
+    <div id="messages"></div>
+</div>
+```
+
+### Sending Messages
+```html
+<form hx-ws:send hx-trigger="submit">
+    <input name="message" type="text">
+    <button type="submit">Send</button>
+</form>
+```
+
+### Button Actions
+```html
+<button hx-ws:send hx-vals='{"action":"increment"}' hx-trigger="click">
+    Increment
+</button>
+```
+
+### Multiple Targets
+```html
+<div hx-ws:connect="ws://localhost:8080/dashboard" hx-trigger="load">
+    <div id="cpu"></div>
+    <div id="memory"></div>
+    <div id="disk"></div>
+</div>
+```
+
+## 🐛 Debugging
+
+The demo includes a live event log that shows:
+- Connection events (`htmx:ws:before:connection`, `htmx:ws:after:connection`)
+- Outgoing message events (`htmx:ws:before:message:outgoing`, `htmx:ws:after:message:outgoing`)
+- Message events (`htmx:ws:before:message:incoming`, `htmx:ws:after:message:incoming`)
+- Error events (`htmx:ws:error`, `htmx:ws:close`)
+
+## 🤝 Contributing
+
+Try modifying the demos to learn:
+- Change swap strategies (`hx-swap="beforeend"`)
+- Add new message types
+- Implement custom channels
+- Add authentication
+- Create new demo cards
+
+## 📖 Documentation
+
+For full documentation, visit:
+- [htmx WebSocket Extension Docs](https://four.htmx.org/extensions/hx-ws)
+- [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+
+## 🎉 Have Fun!
+
+Open multiple browser windows to see real-time synchronization in action. The shared counter and chat work across all connected clients!

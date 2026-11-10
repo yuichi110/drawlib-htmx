@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Request &amp; Response Headers — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/06_http_headers.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    
+    
+    
+    <meta name="description" content="htmx v4 communicates rich client context to the server via HX- HTTP request headers and empowers the server to drive client-side navigation, DOM retargeting…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="HTTP Request &amp; Response Headers — htmx v4 API Reference">
+    <meta property="og:description" content="htmx v4 communicates rich client context to the server via HX- HTTP request headers and empowers the server to drive client-side navigation, DOM retargeting…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HTTP Request &amp; Response Headers — htmx v4 API Reference">
+    <meta name="twitter:description" content="htmx v4 communicates rich client context to the server via HX- HTTP request headers and empowers the server to drive client-side navigation, DOM retargeting…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="#request-headers" class="catalog-nav-sublink is-prose-sublink" data-target="request-headers">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="#response-headers" class="catalog-nav-sublink is-prose-sublink" data-target="response-headers">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="07_javascript_api.html#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="07_javascript_api.html#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">HTTP Request &amp; Response Headers</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/06_http_headers.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">HTTP Request &amp; Response Headers</h1>
+<p>htmx v4 communicates rich client context to the server via <code>HX-*</code> HTTP request headers and empowers the server to drive client-side navigation, DOM retargeting, history updates, and custom event dispatching via <code>HX-*</code> HTTP response headers. Compared to htmx 2, htmx v4 introduces <code>HX-Request-Type</code> (<code>&quot;full&quot;</code> vs <code>&quot;partial&quot;</code>), unifies element identifiers into <code>tag#id</code> format via <code>HX-Source</code> and <code>HX-Target</code> (replacing htmx 2's <code>HX-Trigger</code> request header and <code>HX-Trigger-Name</code>), and consolidates response event headers into <code>HX-Trigger</code> (removing <code>HX-Trigger-After-Swap</code> and <code>HX-Trigger-After-Settle</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Header</th>
+<th style="text-align:left">Direction</th>
+<th style="text-align:left">Value Format</th>
+<th style="text-align:left">Lifecycle Phase</th>
+<th style="text-align:left">Core Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-request"><code>HX-Request</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">Identifies every htmx-initiated HTTP request (<code>Accept: text/html</code> is also set).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-source"><code>HX-Source</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>tag</code> or <code>tag#id</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">Identifies the element that triggered the request (replaces htmx 2's <code>HX-Trigger</code> request header).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-target"><code>HX-Target</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>tag</code> or <code>tag#id</code></td>
+<td style="text-align:left"><code>__createRequestContext</code></td>
+<td style="text-align:left">Identifies the resolved swap target element (<code>__buildIdentifier(ctx.target)</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-current-url"><code>HX-Current-URL</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left">Full URL (<code>location.href</code>)</td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">Reports the browser's current document URL when the request was initiated.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-request-type"><code>HX-Request-Type</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>&quot;full&quot;</code> | <code>&quot;partial&quot;</code></td>
+<td style="text-align:left"><code>__issueRequest</code> (pre-fetch)</td>
+<td style="text-align:left"><code>&quot;full&quot;</code> when <code>ctx.target === document.body</code> or <code>ctx.select</code> is set; <code>&quot;partial&quot;</code> otherwise (new in htmx 4).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-boosted"><code>HX-Boosted</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">Present when the request originates from an element enhanced by <code>hx-boost</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-history-restore-request"><code>HX-History-Restore-Request</code></a></td>
+<td style="text-align:left">Request</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__restoreHistory</code></td>
+<td style="text-align:left">Present when htmx fetches a page during back/forward history traversal.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-trigger"><code>HX-Trigger</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">CSV names or HCON / JSON</td>
+<td style="text-align:left"><code>__issueRequest</code> (<code>finally</code>)</td>
+<td style="text-align:left">Dispatches custom DOM events on <code>sourceElement</code> or a specified <code>detail.target</code> after the request finishes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-push-url"><code>HX-Push-Url</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL Path</td>
+<td style="text-align:left"><code>__resolveHistoryAction</code></td>
+<td style="text-align:left">Overrides <code>hx-push-url</code> to push a URL into <code>history.pushState</code> during swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-replace-url"><code>HX-Replace-Url</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL Path</td>
+<td style="text-align:left"><code>__resolveHistoryAction</code></td>
+<td style="text-align:left">Overrides <code>hx-replace-url</code> to replace the current URL via <code>history.replaceState</code> during swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-redirect"><code>HX-Redirect</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">URL String</td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">Aborts the swap and triggers a full-page browser navigation (<code>location.href = url</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-location"><code>HX-Location</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">URL Path or HCON / JSON</td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">Aborts the current swap and issues a client-side AJAX <code>GET</code> navigation via <code>htmx.ajax()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-refresh"><code>HX-Refresh</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">Aborts the swap and reloads the entire page via <code>location.reload()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-retarget"><code>HX-Retarget</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">CSS / Extended Selector</td>
+<td style="text-align:left"><code>__issueRequest</code> (pre-swap)</td>
+<td style="text-align:left">Overrides <code>ctx.target</code> before <code>hx-status:XXX</code> evaluation and DOM swapping.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-reswap"><code>HX-Reswap</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">Swap Specification String</td>
+<td style="text-align:left"><code>__issueRequest</code> (pre-swap)</td>
+<td style="text-align:left">Overrides <code>ctx.swap</code> before <code>hx-status:XXX</code> evaluation and DOM swapping.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-reselect"><code>HX-Reselect</code></a></td>
+<td style="text-align:left">Response</td>
+<td style="text-align:left">CSS Selector</td>
+<td style="text-align:left"><code>__issueRequest</code> (pre-swap)</td>
+<td style="text-align:left">Overrides <code>ctx.select</code> before <code>hx-status:XXX</code> evaluation and DOM swapping.</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_http_headers/cat_06_http_headers_flow.png" alt="06_http_headers_1" />
+  <figcaption class="drawlib-caption">htmx v4 Outbound Request Header Construction and Inbound Response Header Execution Order</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span><span class="p">,</span> <span class="n">lines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer container frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mi">36</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">152</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">63.5</span><span class="p">),</span>
+    <span class="s2">"htmx v4 Request &amp; Response HTTP Header Processing Lifecycle"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">x_left</span> <span class="o">=</span> <span class="mf">43.0</span>
+<span class="n">x_right</span> <span class="o">=</span> <span class="mf">117.0</span>
+<span class="n">y_top</span> <span class="o">=</span> <span class="mf">45.0</span>
+<span class="n">y_bot</span> <span class="o">=</span> <span class="mf">17.5</span>
+<span class="n">card_w</span> <span class="o">=</span> <span class="mf">64.0</span>
+<span class="n">card_h</span> <span class="o">=</span> <span class="mf">20.5</span>
+
+<span class="c1"># 1. Outbound Request Headers (Top-Left, Focal Point 1)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">upload_simple</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"1. Outbound Request Headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"HX-Request: true | HX-Source &amp; HX-Target: tag#id</span><span class="se">\n</span><span class="s2">HX-Request-Type: full|partial | HX-Current-URL"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. Early-Exit Navigation Headers (Top-Right, Neutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_out</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"2. Early-Exit Response Headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"Checked before swap (keeps indicators active):</span><span class="se">\n</span><span class="s2">HX-Refresh -&gt; HX-Redirect -&gt; HX-Location (ajax GET)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Pre-Swap Overrides (Bottom-Left, PrimaryNeutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">sliders_horizontal</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"3. Pre-Swap Overrides (ctx.hx)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"Applied before __handleStatusCodes &amp; swap():</span><span class="se">\n</span><span class="s2">HX-Retarget | HX-Reswap | HX-Reselect"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 4. Swap History &amp; Finally Triggers (Bottom-Right, Focal Point 2)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">bell_ringing</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"4. History &amp; Finally Event Dispatch"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"Swap phase: HX-Push-Url / HX-Replace-Url</span><span class="se">\n</span><span class="s2">Finally block: HX-Trigger (CSV or HCON with target)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Flow connectors</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">lines</span><span class="p">([(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">10.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="mf">31.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="mf">31.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">10.25</span><span class="p">)],</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="request-headers" class="catalog-section-heading"><span>Request Headers</span><a class="header-anchor" href="#request-headers" aria-label="Permalink to Request Headers">#</a></h2>
+<h3 id="hx-request">HX-Request<a class="header-anchor" href="#hx-request" aria-label="Permalink">#</a></h3>
+<p>Sent on every HTTP request initiated by htmx, always carrying the string value <code>&quot;true&quot;</code>. Server frameworks inspect <code>HX-Request</code> to distinguish htmx AJAX requests from direct browser page loads (alongside <code>Accept: text/html</code>, which htmx sets by default in <code>__createCoreHeaders</code>).</p>
+<h4 id="syntax-signature">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err">HX-Request: true</span>
+<span class="err">Accept: text/html</span>
+</code></pre>
+<h4 id="header-specification">Header Specification</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Value / Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Header Name</strong></td>
+<td style="text-align:left"><code>HX-Request</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Value</strong></td>
+<td style="text-align:left">Always <code>&quot;true&quot;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Set During</strong></td>
+<td style="text-align:left"><code>__createCoreHeaders(sourceElement)</code> before <code>hx-headers</code> and <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Pairing with <code>HX-Request-Type</code></strong></td>
+<td style="text-align:left">Combine <code>HX-Request</code> with <code>HX-Request-Type</code> (<code>&quot;full&quot;</code> vs <code>&quot;partial&quot;</code>) to decide whether to render a full HTML layout or an isolated fragment.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples">Practical Examples</h4>
+<pre><code class="language-python"><span class="c1"># Python (FastAPI / Starlette) server check</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/contacts"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_contacts</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+    <span class="n">is_htmx</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-Request"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span>
+    <span class="n">req_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-Request-Type"</span><span class="p">)</span>  <span class="c1"># "full" or "partial"</span>
+    <span class="k">if</span> <span class="n">is_htmx</span> <span class="ow">and</span> <span class="n">req_type</span> <span class="o">==</span> <span class="s2">"partial"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="s2">"contacts/_table.html"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="n">request</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="s2">"contacts/index.html"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="n">request</span><span class="p">})</span>
+</code></pre>
+<hr />
+<h3 id="hx-source">HX-Source<a class="header-anchor" href="#hx-source" aria-label="Permalink">#</a></h3>
+<p>Identifies the DOM element that triggered the request (<code>ctx.sourceElement</code>), formatted by <code>__buildIdentifier(elt)</code> as lowercase <code>tag</code> or <code>tag#id</code> (with <code>encodeURI(elt.id)</code>). <strong>Replaces both <code>HX-Trigger</code> (request header) and <code>HX-Trigger-Name</code> from htmx 2.</strong></p>
+<h4 id="syntax-signature-2">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># Triggered by &lt;button id="save-btn" hx-post="/save"&gt;</span>
+<span class="err">HX-Source: button#save-btn</span>
+
+<span class="err"># Triggered by &lt;form hx-post="/save"&gt; without an id attribute</span>
+<span class="err">HX-Source: form</span>
+</code></pre>
+<h4 id="identifier-formatting-rules-buildidentifier">Identifier Formatting Rules (<code>__buildIdentifier</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Element Markup</th>
+<th style="text-align:left">Sent <code>HX-Source</code> Value</th>
+<th style="text-align:left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&lt;button id=&quot;submit-order&quot; hx-post=&quot;/order&quot;&gt;</code></td>
+<td style="text-align:left"><code>button#submit-order</code></td>
+<td style="text-align:left">Lowercase tag name + <code>#</code> + URI-encoded <code>id</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;input type=&quot;search&quot; name=&quot;q&quot; hx-get=&quot;/q&quot;&gt;</code></td>
+<td style="text-align:left"><code>input</code></td>
+<td style="text-align:left">When <code>elt.id</code> is empty, only the lowercase tag name is sent (<code>name</code> is not included).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.ajax('GET', '/data')</code> (no <code>source</code> option)</td>
+<td style="text-align:left"><code>body</code> (or <code>body#&lt;id&gt;</code>)</td>
+<td style="text-align:left">Defaults <code>sourceElt</code> to <code>document.body</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-2">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Two buttons sharing the same endpoint, distinguished on the server via HX-Source --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"title"</span> <span class="na">value</span><span class="o">=</span><span class="s">"htmx v4 Guide"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"btn-draft"</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>Save Draft<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"btn-publish"</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>Publish Now<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-target">HX-Target<a class="header-anchor" href="#hx-target" aria-label="Permalink">#</a></h3>
+<p>Identifies the resolved target DOM element (<code>ctx.target</code>) where the response will be swapped, formatted by <code>__buildIdentifier(ctx.target)</code> as lowercase <code>tag</code> or <code>tag#id</code>.</p>
+<h4 id="syntax-signature-3">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># When hx-target="#search-results" matches &lt;div id="search-results"&gt;</span>
+<span class="err">HX-Target: div#search-results</span>
+
+<span class="err"># When hx-boost="true" defaults target to document.body</span>
+<span class="err">HX-Target: body</span>
+</code></pre>
+<h4 id="resolution-formatting-rules">Resolution &amp; Formatting Rules</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Target Configuration</th>
+<th style="text-align:left">Sent <code>HX-Target</code> Value</th>
+<th style="text-align:left">Internal Mechanics (<code>__createRequestContext</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Explicit <code>hx-target=&quot;#results&quot;</code></td>
+<td style="text-align:left"><code>div#results</code> (assuming <code>&lt;div id=&quot;results&quot;&gt;</code>)</td>
+<td style="text-align:left">Set after <code>ctx.target = this.__resolveTarget(sourceElement, ctx.target)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left">Default target (no <code>hx-target</code> or <code>hx-boost</code>)</td>
+<td style="text-align:left">Same as <code>HX-Source</code> (<code>tag</code> or <code>tag#id</code>)</td>
+<td style="text-align:left">Because <code>ctx.target</code> defaults to <code>sourceElement</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left">Boosted element (<code>hx-boost=&quot;true&quot;</code>)</td>
+<td style="text-align:left"><code>body</code> (or <code>body#&lt;id&gt;</code>)</td>
+<td style="text-align:left">Boosted elements default <code>ctx.target</code> to <code>document.body</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left">Unmatched selector (<code>ctx.target == null</code>)</td>
+<td style="text-align:left"><em>(Header omitted)</em></td>
+<td style="text-align:left">Only set when <code>if (ctx.target)</code> is truthy.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-3">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Server can inspect HX-Target to tailor the returned component structure --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/notifications"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#BadgeCounter"</span><span class="p">&gt;</span>Refresh Count<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/notifications"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#DrawerList"</span><span class="p">&gt;</span>Open Drawer<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-current-url">HX-Current-URL<a class="header-anchor" href="#hx-current-url" aria-label="Permalink">#</a></h3>
+<p>Contains the browser's full current URL (<code>window.location.href</code>) at the moment the request context is created. Useful on the server for analytics, relative redirect resolution, or rendering context-sensitive navigation state.</p>
+<h4 id="syntax-signature-4">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err">HX-Current-URL: https://app.example.com/projects/12/settings?tab=security#keys</span>
+</code></pre>
+<h4 id="header-specification-2">Header Specification</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Value / Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Header Name</strong></td>
+<td style="text-align:left"><code>HX-Current-URL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Value</strong></td>
+<td style="text-align:left"><code>location.href</code> (includes origin, pathname, query string, and hash fragment if present in <code>location.href</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Set During</strong></td>
+<td style="text-align:left"><code>__createCoreHeaders(sourceElement)</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-4">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/Language/Switch</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Current-URL</span><span class="o">:</span> <span class="l">https://app.example.com/docs/getting-started</span>
+<span class="na">HX-Source</span><span class="o">:</span> <span class="l">button#lang-ja</span>
+
+HTTP/1.1 200 OK
+HX-Redirect: https://app.example.com/ja/docs/getting-started
+</code></pre>
+<hr />
+<h3 id="hx-request-type">HX-Request-Type<a class="header-anchor" href="#hx-request-type" aria-label="Permalink">#</a></h3>
+<p><strong>New in htmx v4.</strong> Indicates whether htmx expects a full page document or an isolated HTML fragment. Computed in <code>__issueRequest()</code> immediately before firing <code>htmx:before:request</code>:</p>
+<pre><code class="language-javascript"><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">"HX-Request-Type"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">select</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"full"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"partial"</span><span class="p">;</span>
+</code></pre>
+<h4 id="syntax-signature-5">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># Targeted fragment swap (e.g. hx-target="#list" without hx-select)</span>
+<span class="err">HX-Request-Type: partial</span>
+
+<span class="err"># Boosted page navigation or request using hx-select="#content"</span>
+<span class="err">HX-Request-Type: full</span>
+</code></pre>
+<h4 id="value-determination-matrix">Value Determination Matrix</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Condition (<code>__issueRequest</code>)</th>
+<th style="text-align:left"><code>HX-Request-Type</code> Value</th>
+<th style="text-align:left">Server Rendering Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>ctx.target === document.body</code> (e.g. <code>hx-boost=&quot;true&quot;</code> or <code>hx-target=&quot;body&quot;</code>)</td>
+<td style="text-align:left"><code>&quot;full&quot;</code></td>
+<td style="text-align:left">Return the full HTML page (or full <code>&lt;body&gt;</code> layout) — htmx will swap <code>document.body</code> and extract <code>&lt;title&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Boolean(ctx.select)</code> is truthy (e.g. <code>hx-select=&quot;#main&quot;</code>)</td>
+<td style="text-align:left"><code>&quot;full&quot;</code></td>
+<td style="text-align:left">Return the full HTML page — htmx relies on the full template being rendered so <code>ctx.select</code> can query and extract <code>#main</code> on the client.</td>
+</tr>
+<tr>
+<td style="text-align:left">Any other <code>ctx.target</code> without <code>ctx.select</code></td>
+<td style="text-align:left"><code>&quot;partial&quot;</code></td>
+<td style="text-align:left">Skip outer layout wrappers (<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, navbars) and render only the partial template for <code>ctx.target</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-5">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Sends HX-Request-Type: partial -&gt; Server renders only the &lt;tr&gt; rows --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/invoices?page=2"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#invoice-rows"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span><span class="p">&gt;</span>
+  Load More
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Sends HX-Request-Type: full -&gt; Server renders full page, htmx extracts #invoice-table --&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/invoices?status=paid"</span>
+   <span class="na">hx-get</span><span class="o">=</span><span class="s">"/invoices?status=paid"</span>
+   <span class="na">hx-select</span><span class="o">=</span><span class="s">"#invoice-table"</span>
+   <span class="na">hx-target</span><span class="o">=</span><span class="s">"#invoice-table"</span>
+   <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  Paid Invoices
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-boosted">HX-Boosted<a class="header-anchor" href="#hx-boosted" aria-label="Permalink">#</a></h3>
+<p>Sent with value <code>&quot;true&quot;</code> when the request was triggered by an <code>&lt;a&gt;</code> or <code>&lt;form&gt;</code> element enhanced via <code>hx-boost</code>.</p>
+<h4 id="syntax-signature-6">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err">HX-Request: true</span>
+<span class="err">HX-Boosted: true</span>
+<span class="err">HX-Request-Type: full</span>
+<span class="err">HX-Target: body</span>
+</code></pre>
+<h4 id="header-specification-3">Header Specification</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Value / Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Header Name</strong></td>
+<td style="text-align:left"><code>HX-Boosted</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Value</strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code> when <code>this.__isBoosted(elt)</code> is truthy; omitted otherwise.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Relationship to <code>HX-Request-Type</code></strong></td>
+<td style="text-align:left">Unless <code>hx-target</code> was overridden on the boosted element without <code>hx-select</code>, a boosted request targets <code>document.body</code> and therefore also sends <code>HX-Request-Type: full</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-6">Practical Examples</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">nav</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Clicking sends HX-Boosted: true and HX-Request-Type: full --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/analytics"</span><span class="p">&gt;</span>Analytics<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-history-restore-request">HX-History-Restore-Request<a class="header-anchor" href="#hx-history-restore-request" aria-label="Permalink">#</a></h3>
+<p>Sent with value <code>&quot;true&quot;</code> when htmx issues an automatic <code>GET</code> request inside <code>__restoreHistory()</code> to restore the DOM during browser back/forward navigation.</p>
+<h4 id="syntax-signature-7">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="nf">GET</span> <span class="nn">/projects/12</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-History-Restore-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Request-Type</span><span class="o">:</span> <span class="l">full</span>
+</code></pre>
+<h4 id="header-specification-4">Header Specification</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Value / Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Header Name</strong></td>
+<td style="text-align:left"><code>HX-History-Restore-Request</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Value</strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code> (only present during <code>__restoreHistory</code> AJAX fetches).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Client Swap Context</strong></td>
+<td style="text-align:left">Dispatched via <code>this.ajax('GET', path, { target: historyElt, swap: 'outerSync', select: historyElt !== document.body ? '[hx-history-elt],[data-hx-history-elt]' : undefined })</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-7">Practical Examples</h4>
+<pre><code class="language-python"><span class="c1"># Server endpoint ensuring full page or [hx-history-elt] wrapper is returned on history restore</span>
+<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-History-Restore-Request"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">render_full_page</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</code></pre>
+<hr />
+<h2 id="response-headers" class="catalog-section-heading"><span>Response Headers</span><a class="header-anchor" href="#response-headers" aria-label="Permalink to Response Headers">#</a></h2>
+<h3 id="hx-trigger">HX-Trigger<a class="header-anchor" href="#hx-trigger" aria-label="Permalink">#</a></h3>
+<p>Triggers one or more client-side DOM events inside the <code>finally</code> block of <code>__issueRequest()</code> after the response has been processed and swapped. <strong>In htmx v4, <code>HX-Trigger-After-Swap</code> and <code>HX-Trigger-After-Settle</code> have been removed</strong> — <code>HX-Trigger</code> handles all server-dispatched client events.</p>
+<h4 id="syntax-signature-8">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># 1. Comma-separated event names (dispatched on ctx.sourceElement with empty detail {})</span>
+<span class="err">HX-Trigger: itemSaved, refreshMetrics</span>
+
+<span class="err"># 2. HCON or JSON object with event detail payload</span>
+<span class="err">HX-Trigger: {"showToast": {"message": "Saved!", "level": "success"}}</span>
+
+<span class="err"># 3. Targeting a specific DOM element via detail.target</span>
+<span class="err">HX-Trigger: {" reloadTable": {"target": "#orders-table", "page": 1}}</span>
+</code></pre>
+<h4 id="parsing-dispatch-rules-handletriggerheader">Parsing &amp; Dispatch Rules (<code>__handleTriggerHeader</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Header Value Format</th>
+<th style="text-align:left">Target Element</th>
+<th style="text-align:left">Event <code>detail</code> Passed to <code>htmx.trigger()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Plain / CSV String</strong> (<code>&quot;evtA, evtB&quot;</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code> (or <code>document</code> if disconnected)</td>
+<td style="text-align:left"><code>{}</code> (empty object) for each trimmed event name. Events bubble up through <code>document.body</code> and <code>document</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Object with Primitive Value</strong> (<code>'{&quot;countUpdated&quot;: 42}'</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code></td>
+<td style="text-align:left"><code>{ value: 42 }</code> (non-object values are wrapped in <code>{ value: detail }</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Object with Detail Object</strong> (<code>'{&quot;toast&quot;: {&quot;msg&quot;: &quot;OK&quot;}}'</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code></td>
+<td style="text-align:left"><code>{ msg: &quot;OK&quot; }</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Object with <code>detail.target</code></strong> (<code>'{&quot;refresh&quot;: {&quot;target&quot;: &quot;#grid&quot;}}'</code>)</td>
+<td style="text-align:left"><code>htmx.find(detail.target)</code></td>
+<td style="text-align:left">Resolves <code>detail.target</code> via <code>this.find(detail.target)</code> (supporting extended selectors) and dispatches the event directly on that element.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-8">Practical Examples</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- Client listens for server-sent HX-Trigger event on body or via detail.target --&gt;</span>
+<span class="p">&lt;</span><span class="nt">table</span> <span class="na">id</span><span class="o">=</span><span class="s">"contacts-table"</span>
+       <span class="na">hx-get</span><span class="o">=</span><span class="s">"/contacts/rows"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"contactsChanged from:body"</span><span class="p">&gt;</span>
+  ...
+<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-on:show-toast</span><span class="o">=</span><span class="s">"from:body"</span>
+     <span class="na">hx-on</span><span class="o">=</span><span class="s">"show-toast from:body -&gt; showNotification(event.detail.message)"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-push-url">HX-Push-Url<a class="header-anchor" href="#hx-push-url" aria-label="Permalink">#</a></h3>
+<p>Instructs htmx to push a URL into the browser's session history stack (<code>history.pushState({htmx: true}, '', path)</code>) during <code>htmx.swap()</code>, overriding any <code>hx-push-url</code> or <code>hx-replace-url</code> attribute on the triggering element.</p>
+<h4 id="syntax-signature-9">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># Push the final request/response URL into browser history</span>
+<span class="err">HX-Push-Url: true</span>
+
+<span class="err"># Push a specific canonical URL path</span>
+<span class="err">HX-Push-Url: /invoices/2026-0042</span>
+
+<span class="err"># Prevent URL pushing (e.g. when returning an inline validation error on a boosted form)</span>
+<span class="err">HX-Push-Url: false</span>
+</code></pre>
+<h4 id="value-resolution-resolvehistoryaction">Value Resolution (<code>__resolveHistoryAction</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Header Value</th>
+<th style="text-align:left">Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Pushes <code>url.pathname + url.search + (#anchor)</code> derived from `response.raw.url</td>
+</tr>
+<tr>
+<td style="text-align:left">Custom URL / Path (<code>&quot;/items/9&quot;</code>)</td>
+<td style="text-align:left">Pushes the exact string into <code>history.pushState({htmx: true}, '', path)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">Suppresses history pushing (cancels <code>hx-push-url</code> or <code>hx-boost</code> default push).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-9">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/articles</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 201 Created
+HX-Push-Url: /articles/htmx-v4-deep-dive
+Content-Type: text/html
+
+&lt;article id="main-article"&gt;...&lt;/article&gt;
+</code></pre>
+<hr />
+<h3 id="hx-replace-url">HX-Replace-Url<a class="header-anchor" href="#hx-replace-url" aria-label="Permalink">#</a></h3>
+<p>Instructs htmx to replace the current browser history entry (<code>history.replaceState({htmx: true}, '', path)</code>) during <code>htmx.swap()</code>, overriding any <code>hx-replace-url</code> or <code>hx-push-url</code> attribute on the element.</p>
+<h4 id="syntax-signature-10">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># Replace current URL with the request/response URL</span>
+<span class="err">HX-Replace-Url: true</span>
+
+<span class="err"># Replace current URL with a specific step or filter URL</span>
+<span class="err">HX-Replace-Url: /checkout?step=shipping</span>
+
+<span class="err"># Disable history replacement</span>
+<span class="err">HX-Replace-Url: false</span>
+</code></pre>
+<h4 id="value-resolution-resolvehistoryaction-2">Value Resolution (<code>__resolveHistoryAction</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Header Value</th>
+<th style="text-align:left">Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Replaces the current entry with <code>url.pathname + url.search + (#anchor)</code> from `response.raw.url</td>
+</tr>
+<tr>
+<td style="text-align:left">Custom URL / Path</td>
+<td style="text-align:left">Calls <code>history.replaceState({htmx: true}, '', path)</code> with the provided path.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">Suppresses history replacement (note: when <code>HX-Replace-Url</code> is present on the response without <code>HX-Push-Url</code>, <code>push</code> is cleared to <code>undefined</code>).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-10">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/search/save-preset</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Replace-Url: /search?preset=saved_77
+Content-Type: text/html
+
+&lt;div id="preset-banner"&gt;Preset saved!&lt;/div&gt;
+</code></pre>
+<hr />
+<h3 id="hx-redirect">HX-Redirect<a class="header-anchor" href="#hx-redirect" aria-label="Permalink">#</a></h3>
+<p>Triggers an immediate full-page browser navigation to the specified URL (<code>window.location.href = ctx.hx.redirect</code>) after <code>htmx:after:request</code> (and <code>htmx:response:error</code> if status <code>&gt;= 400</code>), skipping DOM swapping entirely.</p>
+<h4 id="syntax-signature-11">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Redirect</span><span class="o">:</span> <span class="l">/login?expired=1</span>
+</code></pre>
+<h4 id="execution-mechanics-handleheadersandmaybereturnearly">Execution Mechanics (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Execution Order</strong></td>
+<td style="text-align:left">Checked second inside <code>__handleHeadersAndMaybeReturnEarly(ctx)</code> (immediately after <code>HX-Refresh</code> and before <code>HX-Location</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Swap Suppression</strong></td>
+<td style="text-align:left">Returns <code>true</code>, causing <code>__issueRequest()</code> to set <code>ctx.keepIndicators = true</code> and return before <code>htmx.swap(ctx)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Indicator Persistence</strong></td>
+<td style="text-align:left">Because <code>ctx.keepIndicators = true</code> is set, active <code>hx-indicator</code> spinners and <code>hx-disable</code> states remain active while the browser unloads the page.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-11">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/session/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Redirect: /welcome
+</code></pre>
+<hr />
+<h3 id="hx-location">HX-Location<a class="header-anchor" href="#hx-location" aria-label="Permalink">#</a></h3>
+<p>Performs a client-side AJAX redirect without a full page reload by invoking <code>htmx.ajax('GET', path, opts)</code> and skipping the current response's swap. Accepts either a plain URL path string or an <strong>HCON / JSON configuration object</strong>.</p>
+<h4 id="syntax-signature-12">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="err"># 1. Simple URL path (pushes URL to history and swaps into document.body by default)</span>
+<span class="err">HX-Location: /dashboard</span>
+
+<span class="err"># 2. HCON configuration string</span>
+<span class="err">HX-Location: path:/dashboard/metrics, target:#metrics-panel, swap:outerMorph, push:false</span>
+
+<span class="err"># 3. JSON configuration object</span>
+<span class="err">HX-Location: {"path": "/users/42", "target": "#main", "select": "#profile", "swap": "innerHTML"}</span>
+</code></pre>
+<h4 id="supported-hcon-json-options-handleheadersandmaybereturnearly">Supported HCON / JSON Options (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Option Key</th>
+<th style="text-align:left">Type / Default</th>
+<th style="text-align:left">Behavior Passed to <code>htmx.ajax('GET', path, opts)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>path</code></td>
+<td style="text-align:left"><code>string</code> (Required in object form)</td>
+<td style="text-align:left">The destination URL for the follow-up <code>GET</code> request (<code>delete opts.path</code> before calling <code>ajax</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left">CSS / Extended selector (Default: <code>document.body</code>)</td>
+<td style="text-align:left">Element where the follow-up <code>GET</code> response will be swapped.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left">Swap spec string (Default: <code>htmx.config.defaultSwap</code>)</td>
+<td style="text-align:left">Swap strategy for the follow-up request (<code>innerHTML</code>, <code>outerMorph</code>, etc.).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left">CSS selector</td>
+<td style="text-align:left">Extracts matching elements from the follow-up response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left">OOB selector spec</td>
+<td style="text-align:left">Out-of-band extractions for the follow-up response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code> / <code>replace</code></td>
+<td style="text-align:left"><code>boolean</code> | <code>string</code> (Default: <code>push = 'true'</code>)</td>
+<td style="text-align:left">If both <code>opts.push</code> and <code>opts.replace</code> are omitted, htmx defaults <code>opts.push = 'true'</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>values</code> / <code>headers</code></td>
+<td style="text-align:left">Object</td>
+<td style="text-align:left">Additional request values or headers merged into the follow-up <code>GET</code> request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>source</code></td>
+<td style="text-align:left">CSS selector</td>
+<td style="text-align:left">Source element for the follow-up request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Indicator Hand-off</strong></td>
+<td style="text-align:left"><code>opts.indicators = ctx.indicators</code></td>
+<td style="text-align:left">Carries over the active <code>ctx.indicators</code> and <code>ctx.disabledElements</code> arrays (<code>ctx.keepIndicators = true</code>) so spinners and disabled buttons stay active until the follow-up <code>htmx.ajax()</code> request completes!</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-12">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/projects</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 201 Created
+HX-Location: {"path": "/projects/99", "target": "#app-main", "select": "#app-main", "swap": "outerMorph"}
+</code></pre>
+<hr />
+<h3 id="hx-refresh">HX-Refresh<a class="header-anchor" href="#hx-refresh" aria-label="Permalink">#</a></h3>
+<p>When set to <code>&quot;true&quot;</code>, aborts the DOM swap and forces a full browser reload of the current page via <code>window.location.reload()</code>.</p>
+<h4 id="syntax-signature-13">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Refresh</span><span class="o">:</span> <span class="l">true</span>
+</code></pre>
+<h4 id="execution-mechanics-handleheadersandmaybereturnearly-2">Execution Mechanics (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Strict Value Check</strong></td>
+<td style="text-align:left">Must be exactly <code>ctx.hx.refresh === 'true'</code>. Any other value is ignored.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Highest Priority</strong></td>
+<td style="text-align:left">Evaluated first in <code>__handleHeadersAndMaybeReturnEarly(ctx)</code> before <code>HX-Redirect</code> and <code>HX-Location</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Indicator Persistence</strong></td>
+<td style="text-align:left">Sets <code>ctx.keepIndicators = true</code> so loading indicators remain visible while the browser reloads.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-13">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/settings/theme</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Refresh: true
+</code></pre>
+<hr />
+<h3 id="hx-retarget">HX-Retarget<a class="header-anchor" href="#hx-retarget" aria-label="Permalink">#</a></h3>
+<p>Overrides <code>ctx.target</code> with a new CSS or extended selector (<code>#errors</code>, <code>closest .row</code>, <code>this</code>, <code>body</code>) before status routing (<code>__handleStatusCodes</code>) and DOM swapping (<code>htmx.swap</code>).</p>
+<h4 id="syntax-signature-14">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">422</span> <span class="ne">Unprocessable Entity</span>
+<span class="na">HX-Retarget</span><span class="o">:</span> <span class="l">#validation-banner</span>
+<span class="na">HX-Reswap</span><span class="o">:</span> <span class="l">innerHTML</span>
+</code></pre>
+<h4 id="execution-order-interaction-with-hx-status-xxx">Execution Order &amp; Interaction with <code>hx-status:XXX</code></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Step in <code>__issueRequest</code></th>
+<th style="text-align:left">Internal Code (<code>src/htmx.js</code>)</th>
+<th style="text-align:left">Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. <code>HX-Retarget</code> Applied</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.retarget) ctx.target = ctx.hx.retarget;</code></td>
+<td style="text-align:left">Replaces <code>ctx.target</code> with the selector string from the header.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. <code>hx-status:XXX</code> Applied</strong></td>
+<td style="text-align:left"><code>this.__handleStatusCodes(ctx);</code></td>
+<td style="text-align:left">Runs <strong>after</strong> <code>HX-Retarget</code>. If the element also has a matching <code>hx-status:XXX=&quot;target:...&quot;</code>, the client's <code>hx-status</code> <code>target</code> will overwrite <code>ctx.target</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. Target Resolved in Swap</strong></td>
+<td style="text-align:left"><code>this.__resolveTarget(ctx.sourceElement || document.body, swapSpec.target || ctx.target)</code></td>
+<td style="text-align:left">Resolves the selector relative to <code>ctx.sourceElement</code> (supporting extended selectors like <code>closest form</code> or <code>find .errors</code>).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-14">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/comments</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Target</span><span class="o">:</span> <span class="l">div#comment-list</span>
+
+HTTP/1.1 400 Bad Request
+HX-Retarget: #comment-form-errors
+HX-Reswap: innerHTML
+Content-Type: text/html
+
+&lt;p class="error"&gt;Comment body cannot contain external links.&lt;/p&gt;
+</code></pre>
+<hr />
+<h3 id="hx-reswap">HX-Reswap<a class="header-anchor" href="#hx-reswap" aria-label="Permalink">#</a></h3>
+<p>Overrides <code>ctx.swap</code> with a new swap strategy and optional swap modifiers (<code>innerHTML</code>, <code>outerMorph</code>, <code>none</code>, <code>beforeend scroll:bottom</code>) before status routing and DOM swapping.</p>
+<h4 id="syntax-signature-15">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Reswap</span><span class="o">:</span> <span class="l">outerMorph transition:true</span>
+</code></pre>
+<h4 id="execution-mechanics">Execution Mechanics</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Assignment</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.reswap) ctx.swap = ctx.hx.reswap;</code> (runs right before <code>__handleStatusCodes(ctx)</code> and <code>this.swap(ctx)</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Modifier Support</strong></td>
+<td style="text-align:left">Parsed by <code>__parseSwapSpec(ctx.swap)</code>, supporting all <code>hx-swap</code> styles and modifiers (<code>swap:</code>, <code>settle:</code>, <code>transition:</code>, <code>scroll:</code>, <code>show:</code>, <code>ignoreTitle:</code>, <code>strip:</code>, <code>focusScroll:</code>, <code>swapEmpty:</code>, <code>target:</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Suppressing Swap</strong></td>
+<td style="text-align:left">Sending <code>HX-Reswap: none</code> skips the main swap while still processing any <code>&lt;hx-partial&gt;</code>, <code>hx-swap-oob</code>, and <code>HX-Trigger</code> headers in the response.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-15">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/cart/items</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Reswap: none
+HX-Trigger: {"cartUpdated": {"count": 4}}
+Content-Type: text/html
+
+&lt;hx-partial hx-target="#cart-badge" hx-swap="innerHTML"&gt;4&lt;/hx-partial&gt;
+</code></pre>
+<hr />
+<h3 id="hx-reselect">HX-Reselect<a class="header-anchor" href="#hx-reselect" aria-label="Permalink">#</a></h3>
+<p>Overrides <code>ctx.select</code> (<code>hx-select</code>) with a CSS selector specifying which elements to extract from the response HTML fragment before inserting into the target.</p>
+<h4 id="syntax-signature-16">Syntax &amp; Signature</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Reselect</span><span class="o">:</span> <span class="l">#updated-card-content</span>
+</code></pre>
+<h4 id="execution-mechanics-2">Execution Mechanics</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Aspect</th>
+<th style="text-align:left">Behavior in <code>src/htmx.js</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Assignment</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.reselect) ctx.select = ctx.hx.reselect;</code> (applied before <code>__handleStatusCodes(ctx)</code> and <code>this.swap(ctx)</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Extraction in <code>__processMainSwap</code></strong></td>
+<td style="text-align:left">Runs <code>let selected = fragment.querySelectorAll(ctx.select);</code> and replaces <code>fragment</code> with a new <code>DocumentFragment</code> containing all matched nodes.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="practical-examples-16">Practical Examples</h4>
+<pre><code class="language-http"><span class="nf">GET</span> <span class="nn">/reports/full-view</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Target</span><span class="o">:</span> <span class="l">div#summary-widget</span>
+
+HTTP/1.1 200 OK
+HX-Reselect: #kpi-summary-cards
+Content-Type: text/html
+
+&lt;div id="full-report"&gt;
+  &lt;div id="kpi-summary-cards"&gt;...&lt;/div&gt;
+  &lt;table id="detailed-ledger"&gt;...&lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="05_ux_history_and_control_attributes.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">UX, History, Events &amp; Inheritance Control Attributes</span>
+                    </a>
+                    
+                    
+                    <a href="07_javascript_api.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">JavaScript API &amp; TypeScript Interfaces</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

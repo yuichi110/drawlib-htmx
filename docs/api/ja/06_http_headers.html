@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP リクエスト・レスポンスヘッダ — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/06_http_headers.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/06_http_headers.html">
+    
+    
+    
+    <meta name="description" content="htmx v4 は、HX- HTTP リクエストヘッダを通じて豊富なクライアントコンテキストをサーバーへ伝達し、サーバーからは HX- HTTP レスポンスヘッダを通じてクライアント側の画面遷移、DOM ターゲット変更、ブラウザ履歴更新、およびカスタムイベント発火を自在に制御できるようにします。htmx 2…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/ja/06_http_headers.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="HTTP リクエスト・レスポンスヘッダ — htmx v4 API Reference">
+    <meta property="og:description" content="htmx v4 は、HX- HTTP リクエストヘッダを通じて豊富なクライアントコンテキストをサーバーへ伝達し、サーバーからは HX- HTTP レスポンスヘッダを通じてクライアント側の画面遷移、DOM ターゲット変更、ブラウザ履歴更新、およびカスタムイベント発火を自在に制御できるようにします。htmx 2…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/ja/06_http_headers.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HTTP リクエスト・レスポンスヘッダ — htmx v4 API Reference">
+    <meta name="twitter:description" content="htmx v4 は、HX- HTTP リクエストヘッダを通じて豊富なクライアントコンテキストをサーバーへ伝達し、サーバーからは HX- HTTP レスポンスヘッダを通じてクライアント側の画面遷移、DOM ターゲット変更、ブラウザ履歴更新、およびカスタムイベント発火を自在に制御できるようにします。htmx 2…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API リファレンス · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="項目を絞り込み..." autocomplete="off" spellcheck="false" aria-label="項目を絞り込み...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">カテゴリ &amp; 項目</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="すべて展開" data-collapse-label="すべて折りたたむ">すべて折りたたむ</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API 全体概要" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API 全体概要</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="パッケージエクスポート＆配布バンドル">
+                                <a href="00_overview.html#パッケージエクスポート-配布バンドル" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">パッケージエクスポート＆配布バンドル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性接頭辞 (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#属性接頭辞-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性接頭辞 (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ポータル間リンク（4ポータル構成）">
+                                <a href="00_overview.html#ポータル間リンク-4ポータル構成" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ポータル間リンク（4ポータル構成）</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="コアリクエスト属性 (Core Request Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">コアリクエスト属性 (Core Request Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)">
+                                <a href="01_core_request_attributes.html#読み取り-クエリ系メソッド-read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="状態変更系メソッド (State-Mutating Verbs)">
+                                <a href="01_core_request_attributes.html#状態変更系メソッド-state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">状態変更系メソッド (State-Mutating Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)">
+                                <a href="01_core_request_attributes.html#統合アクション-メソッド属性-unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="トリガーと同期属性 (Trigger &amp; Synchronization Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">トリガーと同期属性 (Trigger &amp; Synchronization Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="イベントトリガー指定 (Event Trigger Specification)">
+                                <a href="02_trigger_and_sync_attributes.html#イベントトリガー指定-event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">イベントトリガー指定 (Event Trigger Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)">
+                                <a href="02_trigger_and_sync_attributes.html#リクエストキューと並行同期制御-request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)">
+                                <a href="02_trigger_and_sync_attributes.html#ユーザー確認-非同期確認ゲート-user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="ターゲットとスワップ属性 (Target &amp; Swap Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">ターゲットとスワップ属性 (Target &amp; Swap Attributes)</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)">
+                                <a href="03_target_and_swap_attributes.html#メインターゲットとスワップ方式の指定-primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-マルチターゲット更新-out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンス抽出フィルタ属性 (Response Filtering Attributes)">
+                                <a href="03_target_and_swap_attributes.html#レスポンス抽出フィルタ属性-response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンス抽出フィルタ属性 (Response Filtering Attributes)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)">
+                                <a href="03_target_and_swap_attributes.html#domモーフィング保護-要素状態保持属性-dom-morphing-state-preservation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="データ・検証・設定属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">データ・検証・設定属性</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストペイロード・パラメータ属性">
+                                <a href="04_data_and_config_attributes.html#リクエストペイロード-パラメータ属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストペイロード・パラメータ属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="フォーム検証・Fetch設定・ステータスルーティング">
+                                <a href="04_data_and_config_attributes.html#フォーム検証-fetch設定-ステータスルーティング" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">フォーム検証・Fetch設定・ステータスルーティング</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX・履歴・イベント・継承制御属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX・履歴・イベント・継承制御属性</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ナビゲーション・ブラウザ履歴属性">
+                                <a href="05_ux_history_and_control_attributes.html#ナビゲーション-ブラウザ履歴属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ナビゲーション・ブラウザ履歴属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="通信中 UX・セキュリティ・インラインスクリプト">
+                                <a href="05_ux_history_and_control_attributes.html#通信中-ux-セキュリティ-インラインスクリプト" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">通信中 UX・セキュリティ・インラインスクリプト</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性継承モディファイア">
+                                <a href="05_ux_history_and_control_attributes.html#属性継承モディファイア" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性継承モディファイア</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="HTTP リクエスト・レスポンスヘッダ" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP リクエスト・レスポンスヘッダ</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストヘッダ">
+                                <a href="#リクエストヘッダ" class="catalog-nav-sublink is-prose-sublink" data-target="リクエストヘッダ">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストヘッダ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンスヘッダ">
+                                <a href="#レスポンスヘッダ" class="catalog-nav-sublink is-prose-sublink" data-target="レスポンスヘッダ">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンスヘッダ</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API と TypeScript 型定義" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API と TypeScript 型定義</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="コア JavaScript メソッド">
+                                <a href="07_javascript_api.html#コア-javascript-メソッド" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">コア JavaScript メソッド</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript コンテキスト・オプション型定義">
+                                <a href="07_javascript_api.html#typescript-コンテキスト-オプション型定義" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript コンテキスト・オプション型定義</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="設定オプションと CSS ステートクラス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">設定オプションと CSS ステートクラス</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="設定エントリポイント">
+                                <a href="08_configuration_options.html#設定エントリポイント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">設定エントリポイント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig プロパティ">
+                                <a href="08_configuration_options.html#htmxconfig-プロパティ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig プロパティ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS ステートクラス">
+                                <a href="08_configuration_options.html#css-ステートクラス" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS ステートクラス</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="イベント＆拡張機能フック リファレンス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">イベント＆拡張機能フック リファレンス</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="要素ライフサイクルイベント">
+                                <a href="09_events_reference.html#要素ライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">要素ライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストライフサイクルイベント">
+                                <a href="09_events_reference.html#リクエストライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="スワップ＆セトルイベント">
+                                <a href="09_events_reference.html#スワップ-セトルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">スワップ＆セトルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="履歴＆ビュートランジションイベント">
+                                <a href="09_events_reference.html#履歴-ビュートランジションイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">履歴＆ビュートランジションイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能専用フック">
+                                <a href="09_events_reference.html#拡張機能専用フック" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能専用フック</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="ストリーミング＆ネットワーク拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">ストリーミング＆ネットワーク拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ストリーミング拡張機能">
+                                <a href="10_extensions_streaming_and_net.html#ストリーミング拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ストリーミング拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ネットワーク＆転送拡張機能">
+                                <a href="10_extensions_streaming_and_net.html#ネットワーク-転送拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ネットワーク＆転送拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="リアクティブ DOM スクリプティング＆ DOM 操作拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">リアクティブ DOM スクリプティング＆ DOM 操作拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#リアクティブ-dom-スクリプティング-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM 操作＆ UX 拡張機能">
+                                <a href="11_extensions_reactive_and_dom.html#dom-操作-ux-拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM 操作＆ UX 拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="セキュリティ・互換性・内部 API・CLI ツール" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">セキュリティ・互換性・内部 API・CLI ツール</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="サマリーテーブル">
+                                <a href="12_extensions_security_compat_and_cli.html#サマリーテーブル" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">サマリーテーブル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="セキュリティ・キャッシュ・互換性拡張機能">
+                                <a href="12_extensions_security_compat_and_cli.html#セキュリティ-キャッシュ-互換性拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">セキュリティ・キャッシュ・互換性拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能内部 API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#拡張機能内部-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能内部 API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="マイグレーション CLI ツール (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#マイグレーション-cli-ツール-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">マイグレーション CLI ツール (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>一致する項目が見つかりません。</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API リファレンス</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">HTTP リクエスト・レスポンスヘッダ</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">日本語</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <a href="../en/06_http_headers.html" class="lang-option" role="option" hreflang="">
+                                    <span>English</span>
+                                </a>
+                                
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>日本語</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">HTTP リクエスト・レスポンスヘッダ</h1>
+<p>htmx v4 は、<code>HX-*</code> HTTP リクエストヘッダを通じて豊富なクライアントコンテキストをサーバーへ伝達し、サーバーからは <code>HX-*</code> HTTP レスポンスヘッダを通じてクライアント側の画面遷移、DOM ターゲット変更、ブラウザ履歴更新、およびカスタムイベント発火を自在に制御できるようにします。htmx 2 と比較して、htmx v4 では <code>HX-Request-Type</code>（<code>&quot;full&quot;</code> または <code>&quot;partial&quot;</code>）が新設され、要素識別子が <code>HX-Source</code> と <code>HX-Target</code> の <code>tag#id</code> 形式に統一され（htmx 2 のリクエストヘッダ <code>HX-Trigger</code> と <code>HX-Trigger-Name</code> を廃止）、レスポンスイベント発火ヘッダが <code>HX-Trigger</code> に一本化されました（<code>HX-Trigger-After-Swap</code> と <code>HX-Trigger-After-Settle</code> を廃止）。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ヘッダ名</th>
+<th style="text-align:left">方向</th>
+<th style="text-align:left">値の形式</th>
+<th style="text-align:left">処理フェーズ</th>
+<th style="text-align:left">主な役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="#hx-request"><code>HX-Request</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">htmx が発行したすべての HTTP リクエストであることを示します（標準で <code>Accept: text/html</code> も付与）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-source"><code>HX-Source</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>tag</code> または <code>tag#id</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">リクエストを発火したトリガー要素を識別します（htmx 2 のリクエストヘッダ <code>HX-Trigger</code> の後継）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-target"><code>HX-Target</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>tag</code> または <code>tag#id</code></td>
+<td style="text-align:left"><code>__createRequestContext</code></td>
+<td style="text-align:left">解決済みのスワップ先ターゲット要素を識別します（<code>__buildIdentifier(ctx.target)</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-current-url"><code>HX-Current-URL</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left">完全 URL (<code>location.href</code>)</td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left">リクエスト開始時点でのブラウザの現在のドキュメント URL を通知します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-request-type"><code>HX-Request-Type</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>&quot;full&quot;</code> | <code>&quot;partial&quot;</code></td>
+<td style="text-align:left"><code>__issueRequest</code>（fetch 直前）</td>
+<td style="text-align:left"><code>ctx.target === document.body</code> または <code>ctx.select</code> 指定時は <code>&quot;full&quot;</code>、それ以外は <code>&quot;partial&quot;</code>（htmx 4 で新設）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-boosted"><code>HX-Boosted</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__createCoreHeaders</code></td>
+<td style="text-align:left"><code>hx-boost</code> によって拡張されたリンクやフォームからのリクエストである場合に付与されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-history-restore-request"><code>HX-History-Restore-Request</code></a></td>
+<td style="text-align:left">リクエスト</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__restoreHistory</code></td>
+<td style="text-align:left">戻る・進むナビゲーション時の履歴復元リクエストである場合に付与されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-trigger"><code>HX-Trigger</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">CSV イベント名 / HCON / JSON</td>
+<td style="text-align:left"><code>__issueRequest</code> (<code>finally</code>)</td>
+<td style="text-align:left">リクエスト完了後に <code>sourceElement</code> または指定した <code>detail.target</code> 上でカスタム DOM イベントを発火します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-push-url"><code>HX-Push-Url</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL パス</td>
+<td style="text-align:left"><code>__resolveHistoryAction</code></td>
+<td style="text-align:left"><code>hx-push-url</code> を上書きし、スワップ時に <code>history.pushState</code> で URL をブラウザ履歴へ追加します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-replace-url"><code>HX-Replace-Url</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left"><code>&quot;true&quot;</code> | <code>&quot;false&quot;</code> | URL パス</td>
+<td style="text-align:left"><code>__resolveHistoryAction</code></td>
+<td style="text-align:left"><code>hx-replace-url</code> を上書きし、スワップ時に <code>history.replaceState</code> で現在の履歴 URL を置換します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-redirect"><code>HX-Redirect</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">URL 文字列</td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">スワップを中止し、ブラウザのページ全体遷移（<code>location.href = url</code>）を実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-location"><code>HX-Location</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">URL パス / HCON / JSON</td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">現在のスワップを中止し、<code>htmx.ajax()</code> によるクライアントサイド AJAX <code>GET</code> 遷移を実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-refresh"><code>HX-Refresh</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly</code></td>
+<td style="text-align:left">スワップを中止し、<code>location.reload()</code> でページ全体を再読み込みします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-retarget"><code>HX-Retarget</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">CSS / 拡張セレクタ</td>
+<td style="text-align:left"><code>__issueRequest</code>（スワップ前）</td>
+<td style="text-align:left"><code>hx-status:XXX</code> 評価および DOM スワップの前に <code>ctx.target</code> を上書きします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-reswap"><code>HX-Reswap</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">スワップ指定文字列</td>
+<td style="text-align:left"><code>__issueRequest</code>（スワップ前）</td>
+<td style="text-align:left"><code>hx-status:XXX</code> 評価および DOM スワップの前に <code>ctx.swap</code> を上書きします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="#hx-reselect"><code>HX-Reselect</code></a></td>
+<td style="text-align:left">レスポンス</td>
+<td style="text-align:left">CSS セレクタ</td>
+<td style="text-align:left"><code>__issueRequest</code>（スワップ前）</td>
+<td style="text-align:left"><code>hx-status:XXX</code> 評価および DOM スワップの前に <code>ctx.select</code> を上書きします。</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_http_headers/cat_06_http_headers_flow_ja.png" alt="06_http_headers_1" />
+  <figcaption class="drawlib-caption">htmx v4 リクエストヘッダ構築とレスポンスヘッダ評価順序のライフサイクル</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span><span class="p">,</span> <span class="n">lines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer container frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mi">36</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">152</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">63.5</span><span class="p">),</span>
+    <span class="s2">"htmx v4 リクエスト・レスポンス HTTP ヘッダ処理のライフサイクル"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">x_left</span> <span class="o">=</span> <span class="mf">43.0</span>
+<span class="n">x_right</span> <span class="o">=</span> <span class="mf">117.0</span>
+<span class="n">y_top</span> <span class="o">=</span> <span class="mf">45.0</span>
+<span class="n">y_bot</span> <span class="o">=</span> <span class="mf">17.5</span>
+<span class="n">card_w</span> <span class="o">=</span> <span class="mf">64.0</span>
+<span class="n">card_h</span> <span class="o">=</span> <span class="mf">20.5</span>
+
+<span class="c1"># 1. Outbound Request Headers (Top-Left, Focal Point 1)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">upload_simple</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"1. 送信リクエストヘッダ構築"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"HX-Request: true | HX-Source &amp; HX-Target: tag#id</span><span class="se">\n</span><span class="s2">HX-Request-Type: full|partial | HX-Current-URL"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. Early-Exit Navigation Headers (Top-Right, Neutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_out</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"2. 早期リターン遷移ヘッダ"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"スワップ前に評価（スピナー・無効化状態を維持）:</span><span class="se">\n</span><span class="s2">HX-Refresh -&gt; HX-Redirect -&gt; HX-Location (ajax GET)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. Pre-Swap Overrides (Bottom-Left, PrimaryNeutral)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">sliders_horizontal</span><span class="p">((</span><span class="n">x_left</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"3. スワップ前オーバーライド (ctx.hx)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"__handleStatusCodes および swap() の直前に適用:</span><span class="se">\n</span><span class="s2">HX-Retarget | HX-Reswap | HX-Reselect"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># 4. Swap History &amp; Finally Triggers (Bottom-Right, Focal Point 2)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">card_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">card_h</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">bell_ringing</span><span class="p">((</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">26.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.4</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="n">x_right</span> <span class="o">+</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">"4. 履歴更新・Finally イベント発火"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">-</span> <span class="mf">3.5</span><span class="p">),</span>
+    <span class="s2">"スワップ中: HX-Push-Url / HX-Replace-Url</span><span class="se">\n</span><span class="s2">Finally 句: HX-Trigger（CSV または target 付き HCON）"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Flow connectors</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_top</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">lines</span><span class="p">([(</span><span class="n">x_right</span><span class="p">,</span> <span class="n">y_top</span> <span class="o">-</span> <span class="mf">10.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span><span class="p">,</span> <span class="mf">31.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="mf">31.25</span><span class="p">),</span> <span class="p">(</span><span class="n">x_left</span><span class="p">,</span> <span class="n">y_bot</span> <span class="o">+</span> <span class="mf">10.25</span><span class="p">)],</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="n">x_left</span> <span class="o">+</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="p">(</span><span class="n">x_right</span> <span class="o">-</span> <span class="mf">32.0</span><span class="p">,</span> <span class="n">y_bot</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="リクエストヘッダ" class="catalog-section-heading"><span>リクエストヘッダ</span><a class="header-anchor" href="#リクエストヘッダ" aria-label="Permalink to リクエストヘッダ">#</a></h2>
+<h3 id="hx-request">HX-Request<a class="header-anchor" href="#hx-request" aria-label="Permalink">#</a></h3>
+<p>htmx が開始したすべての HTTP リクエストに付与され、常に文字列 <code>&quot;true&quot;</code> を持ちます。サーバーサイドのフレームワークは <code>HX-Request</code> を検査することで、ブラウザの直接ページ遷移と htmx の AJAX リクエストを判別できます（なお、<code>__createCoreHeaders</code> では同時に <code>Accept: text/html</code> も設定されます）。</p>
+<h4 id="構文-シグネチャ">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err">HX-Request: true</span>
+<span class="err">Accept: text/html</span>
+</code></pre>
+<h4 id="ヘッダ仕様">ヘッダ仕様</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における値・動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>ヘッダ名</strong></td>
+<td style="text-align:left"><code>HX-Request</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>値</strong></td>
+<td style="text-align:left">常に <code>&quot;true&quot;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定タイミング</strong></td>
+<td style="text-align:left"><code>hx-headers</code> 評価および <code>htmx:config:request</code> 発火前の <code>__createCoreHeaders(sourceElement)</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Request-Type</code> との併用</strong></td>
+<td style="text-align:left"><code>HX-Request</code> と <code>HX-Request-Type</code>（<code>&quot;full&quot;</code> または <code>&quot;partial&quot;</code>）を組み合わせることで、完全な HTML レイアウトを返すか部分フラグメントのみを返すかを正確に分岐できます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例">実践的な使用例</h4>
+<pre><code class="language-python"><span class="c1"># Python (FastAPI / Starlette) でのサーバー側判定例</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/contacts"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_contacts</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">):</span>
+    <span class="n">is_htmx</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-Request"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span>
+    <span class="n">req_type</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-Request-Type"</span><span class="p">)</span>  <span class="c1"># "full" または "partial"</span>
+    <span class="k">if</span> <span class="n">is_htmx</span> <span class="ow">and</span> <span class="n">req_type</span> <span class="o">==</span> <span class="s2">"partial"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="s2">"contacts/_table.html"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="n">request</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="s2">"contacts/index.html"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="n">request</span><span class="p">})</span>
+</code></pre>
+<hr />
+<h3 id="hx-source">HX-Source<a class="header-anchor" href="#hx-source" aria-label="Permalink">#</a></h3>
+<p>リクエストを発火させたトリガー DOM 要素（<code>ctx.sourceElement</code>）を識別するヘッダで、<code>__buildIdentifier(elt)</code> によって小文字の <code>tag</code> または <code>tag#id</code>（<code>id</code> は <code>encodeURI(elt.id)</code> 済み）の形式でフォーマットされます。<strong>htmx 2 のリクエストヘッダ <code>HX-Trigger</code> および <code>HX-Trigger-Name</code> を統合・置き換えるものです。</strong></p>
+<h4 id="構文-シグネチャ-2">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># &lt;button id="save-btn" hx-post="/save"&gt; から発火した場合</span>
+<span class="err">HX-Source: button#save-btn</span>
+
+<span class="err"># id 属性を持たない &lt;form hx-post="/save"&gt; から発火した場合</span>
+<span class="err">HX-Source: form</span>
+</code></pre>
+<h4 id="識別子フォーマット規則-buildidentifier">識別子フォーマット規則 (<code>__buildIdentifier</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">トリガー要素のマークアップ</th>
+<th style="text-align:left">送信される <code>HX-Source</code> 値</th>
+<th style="text-align:left">備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&lt;button id=&quot;submit-order&quot; hx-post=&quot;/order&quot;&gt;</code></td>
+<td style="text-align:left"><code>button#submit-order</code></td>
+<td style="text-align:left">小文字のタグ名 + <code>#</code> + URI エンコードされた <code>id</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;input type=&quot;search&quot; name=&quot;q&quot; hx-get=&quot;/q&quot;&gt;</code></td>
+<td style="text-align:left"><code>input</code></td>
+<td style="text-align:left"><code>elt.id</code> が空の場合は小文字のタグ名のみが送信されます（<code>name</code> 属性は含まれません）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.ajax('GET', '/data')</code>（<code>source</code> 未指定）</td>
+<td style="text-align:left"><code>body</code>（または <code>body#&lt;id&gt;</code>）</td>
+<td style="text-align:left"><code>sourceElt</code> のデフォルトが <code>document.body</code> になります。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-2">実践的な使用例</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- 同一エンドポイントを共有する2つのボタンをサーバー側で HX-Source により判別 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"title"</span> <span class="na">value</span><span class="o">=</span><span class="s">"htmx v4 Guide"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"btn-draft"</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>Save Draft<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"btn-publish"</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/articles/42"</span><span class="p">&gt;</span>Publish Now<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-target">HX-Target<a class="header-anchor" href="#hx-target" aria-label="Permalink">#</a></h3>
+<p>レスポンスがスワップされる解決済みのターゲット DOM 要素（<code>ctx.target</code>）を識別するヘッダで、<code>__buildIdentifier(ctx.target)</code> により小文字の <code>tag</code> または <code>tag#id</code> 形式で送信されます。</p>
+<h4 id="構文-シグネチャ-3">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># hx-target="#search-results" が &lt;div id="search-results"&gt; に一致した場合</span>
+<span class="err">HX-Target: div#search-results</span>
+
+<span class="err"># hx-boost="true" によりターゲットが document.body になった場合</span>
+<span class="err">HX-Target: body</span>
+</code></pre>
+<h4 id="ターゲット解決とフォーマット規則">ターゲット解決とフォーマット規則</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ターゲット設定</th>
+<th style="text-align:left">送信される <code>HX-Target</code> 値</th>
+<th style="text-align:left">内部メカニクス (<code>__createRequestContext</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">明示的な <code>hx-target=&quot;#results&quot;</code></td>
+<td style="text-align:left"><code>div#results</code>（<code>&lt;div id=&quot;results&quot;&gt;</code> の場合）</td>
+<td style="text-align:left"><code>ctx.target = this.__resolveTarget(sourceElement, ctx.target)</code> の解決後に設定されます。</td>
+</tr>
+<tr>
+<td style="text-align:left">デフォルト（<code>hx-target</code> / <code>hx-boost</code> なし）</td>
+<td style="text-align:left"><code>HX-Source</code> と同じ値（<code>tag</code> または <code>tag#id</code>）</td>
+<td style="text-align:left"><code>ctx.target</code> がデフォルトで <code>sourceElement</code> 自身になるためです。</td>
+</tr>
+<tr>
+<td style="text-align:left">Boost された要素（<code>hx-boost=&quot;true&quot;</code>）</td>
+<td style="text-align:left"><code>body</code>（または <code>body#&lt;id&gt;</code>）</td>
+<td style="text-align:left">Boost 要素のデフォルトターゲットは <code>document.body</code> です。</td>
+</tr>
+<tr>
+<td style="text-align:left">セレクタ不一致（<code>ctx.target == null</code>）</td>
+<td style="text-align:left"><em>(ヘッダ送信なし)</em></td>
+<td style="text-align:left"><code>if (ctx.target)</code> が真の場合のみヘッダが追加されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-3">実践的な使用例</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- サーバー側で HX-Target を検査し、バッジ用とドロワー用で異なる HTML フラグメントを返却 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/notifications"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#BadgeCounter"</span><span class="p">&gt;</span>Refresh Count<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/notifications"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#DrawerList"</span><span class="p">&gt;</span>Open Drawer<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-current-url">HX-Current-URL<a class="header-anchor" href="#hx-current-url" aria-label="Permalink">#</a></h3>
+<p>リクエストコンテキストが生成された時点でのブラウザの現在の完全 URL（<code>window.location.href</code>）を保持します。サーバー側でのアクセス解析、相対リダイレクト先の決定、または現在ページに応じたナビゲーション状態のレンダリングに利用できます。</p>
+<h4 id="構文-シグネチャ-4">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err">HX-Current-URL: https://app.example.com/projects/12/settings?tab=security#keys</span>
+</code></pre>
+<h4 id="ヘッダ仕様-2">ヘッダ仕様</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における値・動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>ヘッダ名</strong></td>
+<td style="text-align:left"><code>HX-Current-URL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>値</strong></td>
+<td style="text-align:left"><code>location.href</code>（オリジン、パス名、クエリ文字列、およびハッシュフラグメントを含む完全 URL）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>設定タイミング</strong></td>
+<td style="text-align:left"><code>__createCoreHeaders(sourceElement)</code>。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-4">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/Language/Switch</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Current-URL</span><span class="o">:</span> <span class="l">https://app.example.com/docs/getting-started</span>
+<span class="na">HX-Source</span><span class="o">:</span> <span class="l">button#lang-ja</span>
+
+HTTP/1.1 200 OK
+HX-Redirect: https://app.example.com/ja/docs/getting-started
+</code></pre>
+<hr />
+<h3 id="hx-request-type">HX-Request-Type<a class="header-anchor" href="#hx-request-type" aria-label="Permalink">#</a></h3>
+<p><strong>htmx v4 で新設されたヘッダです。</strong> htmx がページ全体の HTML ドキュメントを必要としているか（<code>&quot;full&quot;</code>）、部分的な HTML フラグメントのみを必要としているか（<code>&quot;partial&quot;</code>）を示します。<code>__issueRequest()</code> 内で <code>htmx:before:request</code> を発火する直前に以下の式で決定されます。</p>
+<pre><code class="language-javascript"><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">"HX-Request-Type"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">target</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">select</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">"full"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">"partial"</span><span class="p">;</span>
+</code></pre>
+<h4 id="構文-シグネチャ-5">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># 特定要素への部分スワップ（hx-target="#list" かつ hx-select なし）</span>
+<span class="err">HX-Request-Type: partial</span>
+
+<span class="err"># hx-boost によるページ遷移、または hx-select="#content" を指定したリクエスト</span>
+<span class="err">HX-Request-Type: full</span>
+</code></pre>
+<h4 id="判定条件マトリクス">判定条件マトリクス</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">条件 (<code>__issueRequest</code>)</th>
+<th style="text-align:left"><code>HX-Request-Type</code> の値</th>
+<th style="text-align:left">サーバー側の推奨レンダリング方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>ctx.target === document.body</code>（例: <code>hx-boost=&quot;true&quot;</code> または <code>hx-target=&quot;body&quot;</code>）</td>
+<td style="text-align:left"><code>&quot;full&quot;</code></td>
+<td style="text-align:left">完全な HTML ページ（または完全な <code>&lt;body&gt;</code> レイアウト）を返却してください。htmx が <code>document.body</code> をスワップし <code>&lt;title&gt;</code> を更新します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Boolean(ctx.select)</code> が真（例: <code>hx-select=&quot;#main&quot;</code>）</td>
+<td style="text-align:left"><code>&quot;full&quot;</code></td>
+<td style="text-align:left">完全な HTML ページを返却してください。クライアント側の <code>ctx.select</code> が完全なレスポンスから <code>#main</code> を抽出することを前提としています。</td>
+</tr>
+<tr>
+<td style="text-align:left">上記以外の <code>ctx.target</code>（かつ <code>ctx.select</code> なし）</td>
+<td style="text-align:left"><code>&quot;partial&quot;</code></td>
+<td style="text-align:left">外側のレイアウト（<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, ナビゲーションバー等）を省き、<code>ctx.target</code> 用の部分テンプレートのみを返却してください。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-5">実践的な使用例</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- HX-Request-Type: partial を送信 -&gt; サーバーは追加の &lt;tr&gt; 行のみを返却 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/invoices?page=2"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#invoice-rows"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span><span class="p">&gt;</span>
+  Load More
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- HX-Request-Type: full を送信 -&gt; サーバーは完全なページを返し、htmx が #invoice-table を抽出 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/invoices?status=paid"</span>
+   <span class="na">hx-get</span><span class="o">=</span><span class="s">"/invoices?status=paid"</span>
+   <span class="na">hx-select</span><span class="o">=</span><span class="s">"#invoice-table"</span>
+   <span class="na">hx-target</span><span class="o">=</span><span class="s">"#invoice-table"</span>
+   <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  Paid Invoices
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-boosted">HX-Boosted<a class="header-anchor" href="#hx-boosted" aria-label="Permalink">#</a></h3>
+<p><code>hx-boost</code> によって拡張された <code>&lt;a&gt;</code> または <code>&lt;form&gt;</code> 要素からリクエストが発火した場合に、値 <code>&quot;true&quot;</code> で送信されます。</p>
+<h4 id="構文-シグネチャ-6">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err">HX-Request: true</span>
+<span class="err">HX-Boosted: true</span>
+<span class="err">HX-Request-Type: full</span>
+<span class="err">HX-Target: body</span>
+</code></pre>
+<h4 id="ヘッダ仕様-3">ヘッダ仕様</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における値・動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>ヘッダ名</strong></td>
+<td style="text-align:left"><code>HX-Boosted</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>値</strong></td>
+<td style="text-align:left"><code>this.__isBoosted(elt)</code> が真のとき <code>&quot;true&quot;</code>（それ以外はヘッダ自体が省略されます）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Request-Type</code> との関係</strong></td>
+<td style="text-align:left">Boost された要素で <code>hx-target</code> を別要素へ変更しない限り、<code>ctx.target</code> は <code>document.body</code> となるため、同時に <code>HX-Request-Type: full</code> も送信されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-6">実践的な使用例</h4>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">nav</span> <span class="na">hx-boost:inherited</span><span class="o">=</span><span class="s">"true"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- クリック時に HX-Boosted: true と HX-Request-Type: full を送信 --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/analytics"</span><span class="p">&gt;</span>Analytics<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-history-restore-request">HX-History-Restore-Request<a class="header-anchor" href="#hx-history-restore-request" aria-label="Permalink">#</a></h3>
+<p>ブラウザの戻る・進むナビゲーション時に、htmx が <code>__restoreHistory()</code> 内で DOM 状態を復元するために自動発行する <code>GET</code> リクエストにおいて、値 <code>&quot;true&quot;</code> で送信されます。</p>
+<h4 id="構文-シグネチャ-7">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="nf">GET</span> <span class="nn">/projects/12</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-History-Restore-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Request-Type</span><span class="o">:</span> <span class="l">full</span>
+</code></pre>
+<h4 id="ヘッダ仕様-4">ヘッダ仕様</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における値・動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>ヘッダ名</strong></td>
+<td style="text-align:left"><code>HX-History-Restore-Request</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>値</strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code>（<code>__restoreHistory</code> の AJAX 取得時のみ付与）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>クライアント側のスワップ設定</strong></td>
+<td style="text-align:left"><code>this.ajax('GET', path, { target: historyElt, swap: 'outerSync', select: historyElt !== document.body ? '[hx-history-elt],[data-hx-history-elt]' : undefined })</code> として発行されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-7">実践的な使用例</h4>
+<pre><code class="language-python"><span class="c1"># 履歴復元リクエスト時には確実に完全ページ（または [hx-history-elt] を含むレイアウト）を返却</span>
+<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HX-History-Restore-Request"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">render_full_page</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</code></pre>
+<hr />
+<h2 id="レスポンスヘッダ" class="catalog-section-heading"><span>レスポンスヘッダ</span><a class="header-anchor" href="#レスポンスヘッダ" aria-label="Permalink to レスポンスヘッダ">#</a></h2>
+<h3 id="hx-trigger">HX-Trigger<a class="header-anchor" href="#hx-trigger" aria-label="Permalink">#</a></h3>
+<p>レスポンスの処理とスワップが完了した後の <code>__issueRequest()</code> の <code>finally</code> ブロック内で、1つ以上のクライアントサイド DOM イベントを発火させます。<strong>htmx v4 では <code>HX-Trigger-After-Swap</code> と <code>HX-Trigger-After-Settle</code> は廃止され、<code>HX-Trigger</code> に一本化されました。</strong></p>
+<h4 id="構文-シグネチャ-8">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># 1. カンマ区切りのイベント名（ctx.sourceElement 上で空の detail {} を伴い発火）</span>
+<span class="err">HX-Trigger: itemSaved, refreshMetrics</span>
+
+<span class="err"># 2. イベントの detail ペイロードを持つ HCON または JSON オブジェクト</span>
+<span class="err">HX-Trigger: {"showToast": {"message": "Saved!", "level": "success"}}</span>
+
+<span class="err"># 3. detail.target による発火先 DOM 要素の直接指定</span>
+<span class="err">HX-Trigger: {"reloadTable": {"target": "#orders-table", "page": 1}}</span>
+</code></pre>
+<h4 id="解析およびイベント発火ルール-handletriggerheader">解析およびイベント発火ルール (<code>__handleTriggerHeader</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ヘッダ値の形式</th>
+<th style="text-align:left">発火先ターゲット要素</th>
+<th style="text-align:left"><code>htmx.trigger()</code> に渡される <code>detail</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>プレーン / CSV 文字列</strong> (<code>&quot;evtA, evtB&quot;</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code>（DOM から切断済みの場合は <code>document</code>）</td>
+<td style="text-align:left">各イベント名に対して空オブジェクト <code>{}</code>。イベントは <code>document.body</code> / <code>document</code> までバブリングします。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>プリミティブ値を持つオブジェクト</strong> (<code>'{&quot;countUpdated&quot;: 42}'</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code></td>
+<td style="text-align:left"><code>{ value: 42 }</code>（非オブジェクト値は <code>{ value: detail }</code> にラップされます）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>詳細オブジェクト</strong> (<code>'{&quot;toast&quot;: {&quot;msg&quot;: &quot;OK&quot;}}'</code>)</td>
+<td style="text-align:left"><code>ctx.sourceElement</code></td>
+<td style="text-align:left"><code>{ msg: &quot;OK&quot; }</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>detail.target</code> 付きオブジェクト</strong> (<code>'{&quot;refresh&quot;: {&quot;target&quot;: &quot;#grid&quot;}}'</code>)</td>
+<td style="text-align:left"><code>htmx.find(detail.target)</code></td>
+<td style="text-align:left"><code>this.find(detail.target)</code>（拡張セレクタ対応）で要素を検索し、その要素上で直接イベントを発火します。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-8">実践的な使用例</h4>
+<pre><code class="language-html"><span class="cm">&lt;!-- サーバーからの HX-Trigger イベントを body 経由でリッスンしてテーブルを再取得 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">table</span> <span class="na">id</span><span class="o">=</span><span class="s">"contacts-table"</span>
+       <span class="na">hx-get</span><span class="o">=</span><span class="s">"/contacts/rows"</span>
+       <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"contactsChanged from:body"</span><span class="p">&gt;</span>
+  ...
+<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-on</span><span class="o">=</span><span class="s">"show-toast from:body -&gt; showNotification(event.detail.message)"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-push-url">HX-Push-Url<a class="header-anchor" href="#hx-push-url" aria-label="Permalink">#</a></h3>
+<p>トリガー要素の <code>hx-push-url</code> や <code>hx-replace-url</code> 属性を上書きし、<code>htmx.swap()</code> 実行中にブラウザのセッション履歴スタックへ URL を追加します（<code>history.pushState({htmx: true}, '', path)</code>）。</p>
+<h4 id="構文-シグネチャ-9">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># 最終的なリクエスト/レスポンス URL をブラウザ履歴へ push</span>
+<span class="err">HX-Push-Url: true</span>
+
+<span class="err"># 特定の正規 URL パスを履歴へ push</span>
+<span class="err">HX-Push-Url: /invoices/2026-0042</span>
+
+<span class="err"># URL の push を抑止（例: Boost されたフォームでバリデーションエラーを返す場合）</span>
+<span class="err">HX-Push-Url: false</span>
+</code></pre>
+<h4 id="値の解決仕様-resolvehistoryaction">値の解決仕様 (<code>__resolveHistoryAction</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ヘッダ値</th>
+<th style="text-align:left">動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>response.raw.url || ctx.request.action</code> から算出した <code>url.pathname + url.search + (#anchor)</code> を履歴へ push します。</td>
+</tr>
+<tr>
+<td style="text-align:left">カスタム URL / パス (<code>&quot;/items/9&quot;</code>)</td>
+<td style="text-align:left">指定された文字列をそのまま <code>history.pushState({htmx: true}, '', path)</code> に渡します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">履歴への push を抑止します（<code>hx-push-url</code> や <code>hx-boost</code> のデフォルト push を打ち消します）。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-9">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/articles</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 201 Created
+HX-Push-Url: /articles/htmx-v4-deep-dive
+Content-Type: text/html
+
+&lt;article id="main-article"&gt;...&lt;/article&gt;
+</code></pre>
+<hr />
+<h3 id="hx-replace-url">HX-Replace-Url<a class="header-anchor" href="#hx-replace-url" aria-label="Permalink">#</a></h3>
+<p>要素の <code>hx-replace-url</code> や <code>hx-push-url</code> 属性を上書きし、<code>htmx.swap()</code> 実行中に現在のブラウザ履歴エントリを置換します（<code>history.replaceState({htmx: true}, '', path)</code>）。</p>
+<h4 id="構文-シグネチャ-10">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># 現在の URL をリクエスト/レスポンス URL で置換</span>
+<span class="err">HX-Replace-Url: true</span>
+
+<span class="err"># 現在の URL を特定のステップやフィルタ URL で置換</span>
+<span class="err">HX-Replace-Url: /checkout?step=shipping</span>
+
+<span class="err"># 履歴の置換を無効化</span>
+<span class="err">HX-Replace-Url: false</span>
+</code></pre>
+<h4 id="値の解決仕様-resolvehistoryaction-2">値の解決仕様 (<code>__resolveHistoryAction</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ヘッダ値</th>
+<th style="text-align:left">動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left"><code>response.raw.url || ctx.request.action</code> から算出した <code>url.pathname + url.search + (#anchor)</code> で現在のエントリを置換します。</td>
+</tr>
+<tr>
+<td style="text-align:left">カスタム URL / パス</td>
+<td style="text-align:left">指定されたパスで <code>history.replaceState({htmx: true}, '', path)</code> を実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&quot;false&quot;</code></td>
+<td style="text-align:left">履歴の置換を抑止します（なお、レスポンスに <code>HX-Push-Url</code> がなく <code>HX-Replace-Url</code> のみが存在する場合、<code>push</code> 側もクリアされます）。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-10">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/search/save-preset</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Replace-Url: /search?preset=saved_77
+Content-Type: text/html
+
+&lt;div id="preset-banner"&gt;Preset saved!&lt;/div&gt;
+</code></pre>
+<hr />
+<h3 id="hx-redirect">HX-Redirect<a class="header-anchor" href="#hx-redirect" aria-label="Permalink">#</a></h3>
+<p><code>htmx:after:request</code>（およびステータス <code>&gt;= 400</code> の場合は <code>htmx:response:error</code>）の発火直後に DOM スワップをスキップし、指定された URL へのブラウザ全体のページ遷移（<code>window.location.href = ctx.hx.redirect</code>）を即座に実行します。</p>
+<h4 id="構文-シグネチャ-11">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Redirect</span><span class="o">:</span> <span class="l">/login?expired=1</span>
+</code></pre>
+<h4 id="実行メカニクス-handleheadersandmaybereturnearly">実行メカニクス (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>評価順序</strong></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly(ctx)</code> 内で <code>HX-Refresh</code> の次（<code>HX-Location</code> の前）に評価されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>スワップのスキップ</strong></td>
+<td style="text-align:left"><code>true</code> を返し、<code>__issueRequest()</code> で <code>ctx.keepIndicators = true</code> を設定して <code>htmx.swap(ctx)</code> の前に終了します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>インジケータの維持</strong></td>
+<td style="text-align:left"><code>ctx.keepIndicators = true</code> により、ブラウザが新しいページへ遷移し終えるまで <code>hx-indicator</code> のスピナーや <code>hx-disable</code> の無効化状態が維持されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-11">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/session/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Redirect: /welcome
+</code></pre>
+<hr />
+<h3 id="hx-location">HX-Location<a class="header-anchor" href="#hx-location" aria-label="Permalink">#</a></h3>
+<p>現在のレスポンスのスワップをスキップし、<code>htmx.ajax('GET', path, opts)</code> を呼び出すことで、ページ全体のリロードを伴わないクライアントサイド AJAX リダイレクトを実行します。単一の URL パス文字列、または <strong>HCON / JSON 設定オブジェクト</strong>を指定できます。</p>
+<h4 id="構文-シグネチャ-12">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="err"># 1. シンプルな URL パス（デフォルトで URL を履歴へ push し、document.body へスワップ）</span>
+<span class="err">HX-Location: /dashboard</span>
+
+<span class="err"># 2. HCON 設定文字列</span>
+<span class="err">HX-Location: path:/dashboard/metrics, target:#metrics-panel, swap:outerMorph, push:false</span>
+
+<span class="err"># 3. JSON 設定オブジェクト</span>
+<span class="err">HX-Location: {"path": "/users/42", "target": "#main", "select": "#profile", "swap": "innerHTML"}</span>
+</code></pre>
+<h4 id="対応する-hcon-json-オプション-handleheadersandmaybereturnearly">対応する HCON / JSON オプション (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">オプションキー</th>
+<th style="text-align:left">型・デフォルト</th>
+<th style="text-align:left"><code>htmx.ajax('GET', path, opts)</code> に渡される動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>path</code></td>
+<td style="text-align:left"><code>string</code>（オブジェクト形式では必須）</td>
+<td style="text-align:left">後続の <code>GET</code> リクエスト先 URL（<code>ajax</code> 呼び出し前に <code>delete opts.path</code> されます）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left">CSS / 拡張セレクタ（デフォルト: <code>document.body</code>）</td>
+<td style="text-align:left">後続の <code>GET</code> レスポンスをスワップするターゲット要素。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left">スワップ指定文字列（デフォルト: <code>htmx.config.defaultSwap</code>）</td>
+<td style="text-align:left">後続リクエストのスワップ方式（<code>innerHTML</code>, <code>outerMorph</code> 等）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left">CSS セレクタ</td>
+<td style="text-align:left">後続レスポンスから特定要素を抽出するセレクタ。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left">OOB セレクタ指定</td>
+<td style="text-align:left">後続レスポンスの Out-of-Band 抽出指定。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code> / <code>replace</code></td>
+<td style="text-align:left"><code>boolean</code> | <code>string</code>（デフォルト: <code>push = 'true'</code>）</td>
+<td style="text-align:left"><code>opts.push</code> と <code>opts.replace</code> が両方省略された場合、デフォルトで <code>opts.push = 'true'</code> が設定されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>values</code> / <code>headers</code></td>
+<td style="text-align:left">オブジェクト</td>
+<td style="text-align:left">後続の <code>GET</code> リクエストに追加するパラメータまたはヘッダ。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>source</code></td>
+<td style="text-align:left">CSS セレクタ</td>
+<td style="text-align:left">後続リクエストのソース要素。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>インジケータの引き継ぎ</strong></td>
+<td style="text-align:left"><code>opts.indicators = ctx.indicators</code></td>
+<td style="text-align:left">現在のリクエストの <code>ctx.indicators</code> と <code>ctx.disabledElements</code> 配列が後続の <code>htmx.ajax()</code> リクエストへ引き継がれ（<code>ctx.keepIndicators = true</code>）、遷移完了までスピナーとボタン無効化が途切れず維持されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-12">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/projects</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 201 Created
+HX-Location: {"path": "/projects/99", "target": "#app-main", "select": "#app-main", "swap": "outerMorph"}
+</code></pre>
+<hr />
+<h3 id="hx-refresh">HX-Refresh<a class="header-anchor" href="#hx-refresh" aria-label="Permalink">#</a></h3>
+<p><code>&quot;true&quot;</code> が指定された場合、DOM スワップを中止し、<code>window.location.reload()</code> によって現在のページ全体のブラウザリロードを強制します。</p>
+<h4 id="構文-シグネチャ-13">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Refresh</span><span class="o">:</span> <span class="l">true</span>
+</code></pre>
+<h4 id="実行メカニクス-handleheadersandmaybereturnearly-2">実行メカニクス (<code>__handleHeadersAndMaybeReturnEarly</code>)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>厳密な値判定</strong></td>
+<td style="text-align:left"><code>ctx.hx.refresh === 'true'</code> と完全一致する場合のみ実行されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>最優先評価</strong></td>
+<td style="text-align:left"><code>__handleHeadersAndMaybeReturnEarly(ctx)</code> 内で <code>HX-Redirect</code> や <code>HX-Location</code> よりも先に評価されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>インジケータの維持</strong></td>
+<td style="text-align:left"><code>ctx.keepIndicators = true</code> を設定するため、ブラウザのリロードが完了するまでローディング表示が維持されます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-13">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/settings/theme</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Refresh: true
+</code></pre>
+<hr />
+<h3 id="hx-retarget">HX-Retarget<a class="header-anchor" href="#hx-retarget" aria-label="Permalink">#</a></h3>
+<p>ステータスコードルーティング（<code>__handleStatusCodes</code>）および DOM スワップ（<code>htmx.swap</code>）が実行される前に、<code>ctx.target</code> を新しい CSS セレクタまたは拡張セレクタ（<code>#errors</code>, <code>closest .row</code>, <code>this</code>, <code>body</code>）で上書きします。</p>
+<h4 id="構文-シグネチャ-14">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">422</span> <span class="ne">Unprocessable Entity</span>
+<span class="na">HX-Retarget</span><span class="o">:</span> <span class="l">#validation-banner</span>
+<span class="na">HX-Reswap</span><span class="o">:</span> <span class="l">innerHTML</span>
+</code></pre>
+<h4 id="評価順序と-hx-status-xxx-との相互作用">評価順序と <code>hx-status:XXX</code> との相互作用</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><code>__issueRequest</code> 内のステップ</th>
+<th style="text-align:left">内部コード (<code>src/htmx.js</code>)</th>
+<th style="text-align:left">動作上の注意点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. <code>HX-Retarget</code> の適用</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.retarget) ctx.target = ctx.hx.retarget;</code></td>
+<td style="text-align:left"><code>ctx.target</code> をヘッダのセレクタ文字列で置き換えます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. <code>hx-status:XXX</code> の適用</strong></td>
+<td style="text-align:left"><code>this.__handleStatusCodes(ctx);</code></td>
+<td style="text-align:left"><code>HX-Retarget</code> の<strong>後</strong>に実行されます。要素に一致する <code>hx-status:XXX=&quot;target:...&quot;</code> がある場合、クライアント側の <code>hx-status</code> の <code>target</code> が優先されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. スワップ時の要素解決</strong></td>
+<td style="text-align:left"><code>this.__resolveTarget(ctx.sourceElement || document.body, swapSpec.target || ctx.target)</code></td>
+<td style="text-align:left"><code>ctx.sourceElement</code> を基準としてセレクタを解決します（<code>closest form</code> や <code>find .errors</code> などの拡張セレクタも使用可能）。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-14">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/comments</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Target</span><span class="o">:</span> <span class="l">div#comment-list</span>
+
+HTTP/1.1 400 Bad Request
+HX-Retarget: #comment-form-errors
+HX-Reswap: innerHTML
+Content-Type: text/html
+
+&lt;p class="error"&gt;Comment body cannot contain external links.&lt;/p&gt;
+</code></pre>
+<hr />
+<h3 id="hx-reswap">HX-Reswap<a class="header-anchor" href="#hx-reswap" aria-label="Permalink">#</a></h3>
+<p>ステータスコードルーティングおよび DOM スワップの前に、<code>ctx.swap</code> を新しいスワップ方式およびモディファイア（<code>innerHTML</code>, <code>outerMorph</code>, <code>none</code>, <code>beforeend scroll:bottom</code> 等）で上書きします。</p>
+<h4 id="構文-シグネチャ-15">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Reswap</span><span class="o">:</span> <span class="l">outerMorph transition:true</span>
+</code></pre>
+<h4 id="実行メカニクス">実行メカニクス</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>代入タイミング</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.reswap) ctx.swap = ctx.hx.reswap;</code>（<code>__handleStatusCodes(ctx)</code> と <code>this.swap(ctx)</code> の直前に実行）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>モディファイア対応</strong></td>
+<td style="text-align:left"><code>__parseSwapSpec(ctx.swap)</code> で解析されるため、<code>hx-swap</code> のすべてのスワップ方式およびモディファイア（<code>swap:</code>, <code>settle:</code>, <code>transition:</code>, <code>scroll:</code>, <code>show:</code>, <code>ignoreTitle:</code>, <code>strip:</code>, <code>focusScroll:</code>, <code>swapEmpty:</code>, <code>target:</code>）を指定できます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>メインスワップの抑止</strong></td>
+<td style="text-align:left"><code>HX-Reswap: none</code> を返すと、レスポンス内の <code>&lt;hx-partial&gt;</code>、<code>hx-swap-oob</code>、および <code>HX-Trigger</code> ヘッダのみを処理してメインターゲットのスワップをスキップできます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-15">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">POST</span> <span class="nn">/cart/items</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+
+HTTP/1.1 200 OK
+HX-Reswap: none
+HX-Trigger: {"cartUpdated": {"count": 4}}
+Content-Type: text/html
+
+&lt;hx-partial hx-target="#cart-badge" hx-swap="innerHTML"&gt;4&lt;/hx-partial&gt;
+</code></pre>
+<hr />
+<h3 id="hx-reselect">HX-Reselect<a class="header-anchor" href="#hx-reselect" aria-label="Permalink">#</a></h3>
+<p>ターゲットへ挿入する前にレスポンス HTML フラグメントからどの要素を抽出するかを指定する <code>ctx.select</code>（<code>hx-select</code>）を、サーバー指定の CSS セレクタで上書きします。</p>
+<h4 id="構文-シグネチャ-16">構文・シグネチャ</h4>
+<pre><code class="language-http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">HX-Reselect</span><span class="o">:</span> <span class="l">#updated-card-content</span>
+</code></pre>
+<h4 id="実行メカニクス-2">実行メカニクス</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left"><code>src/htmx.js</code> における動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>代入タイミング</strong></td>
+<td style="text-align:left"><code>if (ctx.hx.reselect) ctx.select = ctx.hx.reselect;</code>（<code>__handleStatusCodes(ctx)</code> と <code>this.swap(ctx)</code> の前に適用）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>__processMainSwap</code> での抽出</strong></td>
+<td style="text-align:left"><code>let selected = fragment.querySelectorAll(ctx.select);</code> を実行し、一致したすべてのノードを含む新しい <code>DocumentFragment</code> で <code>fragment</code> を置き換えます。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="実践的な使用例-16">実践的な使用例</h4>
+<pre><code class="language-http"><span class="nf">GET</span> <span class="nn">/reports/full-view</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HX-Request</span><span class="o">:</span> <span class="l">true</span>
+<span class="na">HX-Target</span><span class="o">:</span> <span class="l">div#summary-widget</span>
+
+HTTP/1.1 200 OK
+HX-Reselect: #kpi-summary-cards
+Content-Type: text/html
+
+&lt;div id="full-report"&gt;
+  &lt;div id="kpi-summary-cards"&gt;...&lt;/div&gt;
+  &lt;table id="detailed-ledger"&gt;...&lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="05_ux_history_and_control_attributes.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; 前へ</span>
+                        <span class="catalog-pager-title">UX・履歴・イベント・継承制御属性</span>
+                    </a>
+                    
+                    
+                    <a href="07_javascript_api.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">次へ &rarr;</span>
+                        <span class="catalog-pager-title">JavaScript API と TypeScript 型定義</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1031 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. スワップ・セトル・モーフエンジン (Swap, Settle &amp; Morph Engine)</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html">
+    
+    
+    
+    <meta name="description" content="fetch() パイプラインがレスポンスペイロードを解決しステータスコードによる上書きを適用した後、Htmx.prototype.swap(ctx) (src/htmx.js L1267–1326) は HTML フラグメントのパース、 テンプレートの書き換え、マルチタスク抽出…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 アーキテクチャ">
+    <meta property="og:title" content="5. スワップ・セトル・モーフエンジン (Swap, Settle &amp; Morph Engine) — htmx v4 アーキテクチャ">
+    <meta property="og:description" content="fetch() パイプラインがレスポンスペイロードを解決しステータスコードによる上書きを適用した後、Htmx.prototype.swap(ctx) (src/htmx.js L1267–1326) は HTML フラグメントのパース、 テンプレートの書き換え、マルチタスク抽出…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="5. スワップ・セトル・モーフエンジン (Swap, Settle &amp; Morph Engine) — htmx v4 アーキテクチャ">
+    <meta name="twitter:description" content="fetch() パイプラインがレスポンスペイロードを解決しステータスコードによる上書きを適用した後、Htmx.prototype.swap(ctx) (src/htmx.js L1267–1326) は HTML フラグメントのパース、 テンプレートの書き換え、マルチタスク抽出…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 アーキテクチャ">
+                    
+                    htmx v4 アーキテクチャ
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >アーキテクチャ概要</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">コアエンジン内部構造</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="01_module_and_state_architecture.html" >1. モジュールと状態管理構造</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. 属性継承とHCONパーサ</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_trigger_and_selector_parsers.html" >3. トリガーと拡張セレクタ解析</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">通信とDOM更新パイプライン</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetchコンテキストと同期キュー</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap・SettleとMorphエンジン</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extension_and_security_internals.html" >6. 拡張機構とセキュリティ内部構造</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">ポータル &amp; レポート</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">5. スワップ・セトル・モーフエンジン (Swap, Settle &amp; Morph Engine)</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">日本語</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="../en/05_swap_settle_and_morph_engine.html" class="lang-option" lang="en" hreflang="en" >
+                                <span>English</span>
+                                
+                            </a>
+                            
+                            <a href="05_swap_settle_and_morph_engine.html" class="lang-option active" lang="ja" hreflang="ja" aria-current="page">
+                                <span>日本語</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>5. スワップ・セトル・モーフエンジン (Swap, Settle &amp; Morph Engine)</h1>
+<p><code>fetch()</code> パイプラインがレスポンスペイロードを解決しステータスコードによる上書きを適用した後、<code>Htmx.prototype.swap(ctx)</code> (<code>src/htmx.js</code> <code>L1267–1326</code>) は HTML フラグメントのパース、<code>&lt;hx-*&gt;</code> テンプレートの書き換え、マルチタスク抽出 (<code>main</code>、<code>oob</code>、<code>partial</code>)、DOM 挿入または Idiomorph 方式のツリー照合 (Reconciliation)、CSS セトルトランジション、および直列化された View Transitions を統括します。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_swap_settle_and_morph_engine/arch_c05_swap_settle_pipeline.png" alt="05_swap_settle_and_morph_engine_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 マルチタスクスワップ・セトル・View Transition 実行パイプライン (src/htmx.js L1027–1510)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">ChevronProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">91</span><span class="p">),</span>
+    <span class="s2">"htmx v4.0.1 swap(ctx) Multi-Task Extraction &amp; DOM Settle Pipeline"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Top: 5-Stage End-to-End Swap &amp; Settle Pipeline</span>
+<span class="n">stages</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. __makeFragment"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"TrustedTypes + &lt;hx-*&gt;"</span><span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"2. Extract Tasks"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"OOB -&gt; Partials -&gt; Main"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. Route Queue"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Immediate vs ViewTrans"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"4. __insertContent"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"12 Styles + Pantry"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"5. Settle &amp; Process"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"CSS Restore + process()"</span><span class="p">)</span>
+<span class="n">stages</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">70.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">172.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span>
+
+<span class="c1"># Bottom-Left: Phase A — Fragment Parsing &amp; Task Ordering</span>
+<span class="n">col_left</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.8</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Pre-Parse Tag Rewriting (L1059)"</span><span class="p">,</span>
+    <span class="s2">"Rewrites &lt;hx-*&gt; to &lt;template hx&gt;;</span><span class="se">\n</span><span class="s2">parses via parseHTMLUnsafe(trusted, </span><span class="si">{}</span><span class="s2">)"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"A1"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"OOB &amp; Partial Extraction (L1112)"</span><span class="p">,</span>
+    <span class="s2">"Extracts hx-select-oob, [hx-swap-oob],</span><span class="se">\n</span><span class="s2">&lt;template hx&gt; &amp; htmx:process:*"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"A2"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">scissors</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Main Swap Prepending (L1285)"</span><span class="p">,</span>
+    <span class="s2">"Applies ctx.select, guards empty swap,</span><span class="se">\n</span><span class="s2">and unshifts mainSwap to index 0"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"A3"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">list_numbers</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">58.0</span><span class="p">)</span>
+
+<span class="c1"># Bottom-Right: Phase B — DOM Mutation, Pantry &amp; Settle</span>
+<span class="n">col_right</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.8</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Pantry &amp; Focus Backup (L1027)"</span><span class="p">,</span>
+    <span class="s2">"Moves [hx-preserve] to hidden pantry</span><span class="se">\n</span><span class="s2">via moveBefore(); backs up focus &amp; CSS"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"B1"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">archive_box</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"DOM Insertion &amp; Morph (L1360)"</span><span class="p">,</span>
+    <span class="s2">"Executes innerHTML, outerSync,</span><span class="se">\n</span><span class="s2">innerMorph/outerMorph, or handle_swap"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"B2"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_merge</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"CSS Settle &amp; Re-Hydration (L1476)"</span><span class="p">,</span>
+    <span class="s2">"Restores pantry &amp; focus, awaits settle,</span><span class="se">\n</span><span class="s2">and runs process(elt) &amp; scroll"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"B3"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">sparkle</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">94.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">58.0</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>1. HTML パース、<code>&lt;hx-*&gt;</code> 書き換えとパントリー保護 (Pantry Preservation)</h2>
+<p>DOM ノードの検査や挿入が行われる前に、htmx は生のレスポンス文字列をサニタイズ済みの不活性な <code>DocumentFragment</code> へと変換し、テーブル内にネストされたハイパーメディアタグや再生中のマルチメディア要素を保護します (<code>src/htmx.js</code> <code>L1027–1090</code>、<code>L1232–1245</code>)。</p>
+<h3>1.1 Trusted Types と <code>Document.parseHTMLUnsafe</code> (<code>__parseHTML</code>)</h3>
+<p><code>__parseHTML(resp)</code> (<code>L1053–1057</code>) は、レスポンス文字列を <code>this.#ttPolicy.createHTML(resp)</code> (デフォルトでは <code>L140</code> の恒等パススルー <code>{ createHTML: s =&gt; s, createScript: s =&gt; s }</code> ですが、<code>hx-csp</code> 拡張によって <code>#internalAPI.initSecurity</code> 経由で置き換え可能) に通し、モダンな <code>Document.parseHTMLUnsafe</code> API (未対応環境では <code>DOMParser</code> にフォールバック) を呼び出します。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1053–1057</span>
+<span class="nx">__parseHTML</span><span class="p">(</span><span class="nx">resp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">trusted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#ttPolicy</span><span class="p">.</span><span class="nx">createHTML</span><span class="p">(</span><span class="nx">resp</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// {} works around Chrome 150-156 dropping comments :/</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">Document</span><span class="p">.</span><span class="nx">parseHTMLUnsafe</span><span class="o">?</span><span class="p">.(</span><span class="nx">trusted</span><span class="p">,</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">DOMParser</span><span class="p">().</span><span class="nx">parseFromString</span><span class="p">(</span><span class="nx">trusted</span><span class="p">,</span><span class="w"> </span><span class="s1">'text/html'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<p><code>Document.parseHTMLUnsafe(trusted, {})</code> の第 2 引数として空のオプションオブジェクト <code>{}</code> を渡しているのは、Chromium 150〜156 において <code>parseHTMLUnsafe(html)</code> を 1 引数で呼び出すと HTML コメントノードが暗黙的に削除されてしまうリグレッションを回避するためです。</p>
+<h3>1.2 パース前の <code>&lt;hx-*&gt;</code> から <code>&lt;template hx&gt;</code> への書き換え (<code>__makeFragment</code>)</h3>
+<p>標準の HTML5 ツリー構築アルゴリズムでは、テーブルコンテキスト (<code>&lt;table&gt;</code>、<code>&lt;thead&gt;</code>、<code>&lt;tbody&gt;</code>、<code>&lt;tr&gt;</code>) の内部に厳格な Foster Parenting (里親養育) ルールが適用されます。そのため、<code>&lt;tr&gt;</code> の直下に <code>&lt;hx-partial&gt;</code> や <code>&lt;hx-upsert&gt;</code> のようなカスタム要素を配置してそのままパースすると、ブラウザの HTML パーサーによって <code>&lt;table&gt;</code> の<strong>外側</strong>へと強制的に追い出されてしまいます。一方、<code>&lt;template&gt;</code> 要素は HTML5 コンテンツモデルにおいて <code>&lt;table&gt;</code> や <code>&lt;tr&gt;</code> の直下を含む任意の場所に配置することが許可されています。</p>
+<p>サーバー側のマークアップの記述性を損なわずに Foster Parenting を防ぐため、<code>__makeFragment(text)</code> (<code>L1059–1090</code>) は <code>__parseHTML</code> を呼び出す<strong>前</strong>に、正規表現を用いてすべての <code>&lt;hx-([a-z]+)&gt;</code> タグを <code>&lt;template hx type=&quot;$1&quot;&gt;</code> に書き換えます。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1059–1090</span>
+<span class="nx">__makeFragment</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Convert &lt;hx-*&gt; tags (e.g. &lt;hx-partial&gt;, &lt;hx-oob&gt;) to &lt;template hx type="*"&gt;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">text</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;hx-([a-z]+)(\s+|&gt;)/gi</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;template hx type="$1"$2'</span><span class="p">)</span>
+<span class="w">                       </span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;\/hx-[a-z]+&gt;/gi</span><span class="p">,</span><span class="w"> </span><span class="s1">'&lt;/template&gt;'</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;head(\s[^&gt;]*)?&gt;[\s\S]*?&lt;\/head&gt;/i</span><span class="p">,</span><span class="w"> </span><span class="nx">m</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__parseHTML</span><span class="p">(</span><span class="nx">m</span><span class="p">).</span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="s1">''</span><span class="p">));</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">startTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/&lt;([a-z][^\/&gt;\x20\t\r\n\f]*)/i</span><span class="p">)</span><span class="o">?</span><span class="p">.[</span><span class="mf">1</span><span class="p">]</span><span class="o">?</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">doc</span><span class="p">,</span><span class="w"> </span><span class="nx">fragment</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">startTag</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'html'</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">startTag</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'body'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__parseHTML</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">fragment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createDocumentFragment</span><span class="p">();</span>
+<span class="w">        </span><span class="nx">fragment</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__parseHTML</span><span class="p">(</span><span class="sb">`&lt;template&gt;</span><span class="si">${</span><span class="nx">response</span><span class="si">}</span><span class="sb">&lt;/template&gt;`</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">fragment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">doc</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'template'</span><span class="p">).</span><span class="nx">content</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">titleElt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">fragment</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'title:not(svg title)'</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">titleElt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">titleElt</span><span class="p">.</span><span class="nx">textContent</span><span class="p">;</span>
+<span class="w">            </span><span class="nx">titleElt</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__processScripts</span><span class="p">(</span><span class="nx">fragment</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fragment</span><span class="p">,</span><span class="w"> </span><span class="nx">title</span><span class="w"> </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre>
+<p><code>__makeFragment(text)</code> 内の主要な処理メカニズムは以下の通りです。</p>
+<ol>
+<li><strong><code>&lt;head&gt;</code> の除去とタイトル抽出 (<code>L1063</code>、<code>L1076–1082</code>)</strong>: レスポンスに <code>&lt;head&gt;...&lt;/head&gt;</code> ブロックが含まれる場合、htmx はそれを単独でパースして <code>.title</code> を抽出し、<code>response</code> から <code>&lt;head&gt;</code> ブロックを取り除きます (なお、<code>hx-head</code> 拡張が読み込まれている場合は、より前の <code>htmx_before_response</code> フェーズで <code>&lt;head&gt;</code> をインターセプトします)。<code>&lt;head&gt;</code> が存在しない場合は、パース後のフラグメント内で <code>title:not(svg title)</code> を検索して <code>textContent</code> を抽出し、スワップ先の body DOM を汚染しないよう <code>&lt;title&gt;</code> 要素を削除します。</li>
+<li><strong>完全なドキュメント vs. <code>&lt;template&gt;</code> エンベロープ (<code>L1064–1074</code>)</strong>: <code>response</code> の先頭タグが <code>&lt;html&gt;</code> または <code>&lt;body&gt;</code> の場合、htmx は完全なドキュメントとしてパースし、新しい <code>DocumentFragment</code> に <code>doc.body</code> を追加します (これにより <code>__insertContent</code> が <code>&lt;body&gt;</code> の属性を検査できるよう <code>BODY</code> ラッパーが保持されます)。それ以外の場合は、マークアップを <code>&lt;template&gt;${response}&lt;/template&gt;</code> でラップすることで、<code>&lt;tr&gt;</code>、<code>&lt;td&gt;</code>、<code>&lt;option&gt;</code>、<code>&lt;colgroup&gt;</code> などの任意のトップレベルフラグメントを <code>&lt;body&gt;</code> なしで正確にパースします。</li>
+<li><strong>実行可能な <code>&lt;script&gt;</code> の再生成 (<code>__processScripts</code> <code>L1232–1245</code>)</strong>: <code>DOMParser</code> や <code>&lt;template&gt;</code> のパースによって生成された <code>&lt;script&gt;</code> 要素は、ブラウザ内部の <em>already started</em> フラグがセットされているため、そのままドキュメントに挿入しても実行されません。<code>__processScripts(container)</code> はすべての <code>&lt;script&gt;</code> を走査し、新しい <code>document.createElement('script')</code> を割り当てて全属性をコピーし、設定されている場合は <code>newScript.nonce = this.config.inlineScriptNonce</code> を刻印した上で、<code>newScript.textContent = this.#ttPolicy.createScript(oldScript.textContent)</code> を代入して不活性なスクリプトノードをその場で置き換えます。なお、<code>__processScripts</code> はトップレベルの <code>fragment</code> (<code>L1084</code>) と各 <code>&lt;template hx type=&quot;partial&quot;&gt;</code> のコンテンツツリー (<code>L1163</code>) の両方に対して呼び出されます。</li>
+</ol>
+<h3>1.3 アトミックなパントリー保護 (<code>[hx-preserve]</code>)</h3>
+<p><code>hx-preserve</code> が指定された要素 (再生中の <code>&lt;video&gt;</code>、<code>&lt;audio&gt;</code>、<code>&lt;iframe&gt;</code>、WebGL <code>&lt;canvas&gt;</code> ノードなど) は、ライブドキュメントツリーから切り離されることなく <code>innerHTML</code> や <code>outerHTML</code> の置換を生き延びる必要があります。要素が一度でもドキュメントから削除されると、iframe のブラウジングコンテキストやメディアの再生状態が即座にリセットされてしまうためです。</p>
+<p>htmx は <code>__handlePreservedElements(fragment)</code> と <code>__restorePreservedElements(pantry)</code> (<code>L1027–1051</code>) において、<code>document.body</code> の直後に挿入された非表示の<strong>パントリー (pantry)</strong> <code>&lt;div&gt;</code> と、<code>this.__moveBefore()</code> によるアトミックな移動を組み合わせることでこれを解決しています。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1027–1051</span>
+<span class="nx">__handlePreservedElements</span><span class="p">(</span><span class="nx">fragment</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">pantry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">pantry</span><span class="p">.</span><span class="nx">hidden</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">insertAdjacentElement</span><span class="p">(</span><span class="s1">'afterend'</span><span class="p">,</span><span class="w"> </span><span class="nx">pantry</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">newPreservedElts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">fragment</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="o">?</span><span class="p">.(</span><span class="k">this</span><span class="p">.</span><span class="nx">__prefixSelector</span><span class="p">(</span><span class="s1">'[hx-preserve]'</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">preservedElt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">newPreservedElts</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">currentElt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">preservedElt</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">currentElt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__moveBefore</span><span class="p">(</span><span class="nx">pantry</span><span class="p">,</span><span class="w"> </span><span class="nx">currentElt</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">pantry</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">__restorePreservedElements</span><span class="p">(</span><span class="nx">pantry</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">preservedElt</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="p">[...</span><span class="nx">pantry</span><span class="p">.</span><span class="nx">children</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">newElt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="nx">preservedElt</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">newElt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__moveBefore</span><span class="p">(</span><span class="nx">newElt</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span><span class="w"> </span><span class="nx">preservedElt</span><span class="p">,</span><span class="w"> </span><span class="nx">newElt</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__cleanup</span><span class="p">(</span><span class="nx">newElt</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">newElt</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">pantry</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre>
+<p><code>pantry</code> はライブな <code>Document</code> に接続されている (<code>document.body.insertAdjacentElement('afterend', pantry)</code>) ため、スワップ前に <code>Node.prototype.moveBefore()</code> で <code>currentElt</code> を <code>pantry</code> に退避し、スワップ後にプレースホルダー <code>newElt</code> の直前へ戻すことで、ノードの接続状態を一切途切れさせずに状態を 100% 維持します。</p>
+<hr />
+<h2>2. マルチタスク・スワップパイプライン (<code>swap(ctx)</code>)</h2>
+<p><code>swap(ctx)</code> (<code>L1267–1326</code>) は、単一のレスポンスフラグメントを順序付けられた個別のスワップ <code>tasks</code> 配列 (<code>{ type, fragment, target, swapSpec, sourceElement }</code>) へと分解します。</p>
+<h3>2.1 抽出順序 vs. 実行順序</h3>
+<p><code>swap(ctx)</code> における極めて重要な設計上のポイントは、<strong>OOB (Out-of-Band) タスクと Partial タスクを最初に <code>fragment</code> から抽出</strong> (抽出されたサブツリーを <code>fragment</code> から削除して変更) する一方で、<strong>実行時にはメインスワップ (Main Swap) が最初に実行される</strong>という点です。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ステップ</th>
+<th style="text-align:left">メソッド (<code>src/htmx.js</code>)</th>
+<th style="text-align:left">抽出メカニズム</th>
+<th style="text-align:left"><code>tasks[]</code> 内の最終位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. OOB 抽出</strong></td>
+<td style="text-align:left"><code>__processOOB</code> (<code>L1112–1133</code>) &amp; <code>__createOOBTask</code> (<code>L1092–1110</code>)</td>
+<td style="text-align:left">最初に <code>hx-select-oob</code> セレクターを <code>fragment</code> に対して実行 (カンマ区切りの各トークンを <code>:(.*)</code> で <code>[selector, oobValue = 'true']</code> に分割) し、次に <code>[hx-swap-oob]</code> を検索します。一致した各 <code>elt</code> を解決済みターゲットごとの <code>{ type: 'oob' }</code> タスクにクローンした後、<code>fragment</code> から削除します。</td>
+<td style="text-align:left">最初に追加 (<code>tasks.push(...oobTasks)</code>) $\rightarrow$ <strong>2 番目</strong>に実行 (<code>mainSwap</code> の後)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. Partial &amp; <code>&lt;hx-*&gt;</code> 抽出</strong></td>
+<td style="text-align:left"><code>__processPartials</code> (<code>L1154–1184</code>)</td>
+<td style="text-align:left"><code>template[hx]</code> を検索します。<code>type === 'partial'</code> の場合は <code>__processScripts(templateElt.content)</code> を実行し、<code>hx-swap</code> をパースして <code>hx-target</code> (または <code>#${CSS.escape(templateElt.id)}</code>) を解決し、<code>{ type: 'partial' }</code> タスクを追加します。その他の <code>type</code> (例: <code>&lt;hx-upsert&gt;</code>) の場合は拡張機能向けに <code>htmx:process:${type}</code> (<code>{ ctx, tasks }</code>) を発火します。その後 <code>templateElt</code> を削除します。</td>
+<td style="text-align:left">2 番目に追加 (<code>tasks.push(...partialTasks)</code>) $\rightarrow$ <strong>3 番目</strong>に実行。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. メインスワップ構築</strong></td>
+<td style="text-align:left"><code>__processMainSwap</code> (<code>L1328–1358</code>)</td>
+<td style="text-align:left">OOB と Partial を除去した後に <code>fragment</code> に残った内容を検査します。<code>ctx.select</code> が設定されていれば適用し、<code>ctx.sourceElement</code> がブーストされている場合は `swapSpec.show</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p><code>__createOOBTask</code> (<code>L1092–1110</code>) では、コロンの前に空白がない場合にマッチする従来の <code>swapStyle:selector</code> 構文 (<code>/^(\S+):(.+)/</code>) と、HCON スワップ仕様 (<code>innerHTML target:#sidebar</code>) の両方をサポートしています。さらに、<code>swapSpec.strip ??= !swapSpec.style.startsWith('outer')</code> により、<code>innerHTML</code> や <code>beforeend</code> などの非 <code>outer*</code> スワップスタイルを使用する際は、外側の OOB 要素ラッパーが自動的にアンラップされます。</p>
+<h3>2.2 空のメインスワップの抑制 (<code>hasPartials</code> と <code>swapEmpty</code>)</h3>
+<p>サーバーが <code>&lt;hx-partial&gt;</code> や <code>[hx-swap-oob]</code> 要素<strong>のみ</strong> (および周囲の空白文字) を返した場合、残った空白文字によってメインの <code>hx-target</code> の中身が消去されてしまうことは開発者の意図に反します。<code>__processMainSwap</code> (<code>L1280</code>、<code>L1334–1339</code>) は <code>hasPartials</code> を用いて意図しない空スワップを防止します。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1280</span>
+<span class="kd">let</span><span class="w"> </span><span class="nx">hasPartials</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">partialTasks</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="nx">oobTasks</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">allowEmptySwapAfterOOB</span><span class="p">);</span>
+
+<span class="c1">// src/htmx.js L1334–1339 (inside __processMainSwap)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="nx">swapSpec</span><span class="p">.</span><span class="nx">style</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'delete'</span><span class="w"> </span><span class="o">||</span><span class="w">    </span><span class="c1">// delete always runs regardless of content</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">fragment</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">fragment</span><span class="p">).</span><span class="nx">childElementCount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="c1">// or fragment has elements</span>
+<span class="w">    </span><span class="nx">fragment</span><span class="p">.</span><span class="nx">textContent</span><span class="p">.</span><span class="nx">trim</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w">    </span><span class="c1">// or fragment has text</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">swapSpec</span><span class="p">.</span><span class="nx">swapEmpty</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="o">!</span><span class="nx">hasPartials</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</code></pre>
+<p>これにより、<code>&lt;hx-partial&gt;</code> タスクが存在する場合、または <code>oobTasks</code> が存在する場合 (<code>htmx.config.allowEmptySwapAfterOOB === true</code> または <code>hx-swap</code> に <code>swapEmpty:true</code> 修飾子が明示的に指定されている場合を除く) は、残った空のフラグメントによるメインスワップが自動的にスキップされます。また、ストリーミング拡張 (<code>hx-sse.js</code> <code>L311</code> および <code>hx-ws.js</code> <code>L448</code>) は <code>swapEmpty:false</code> を自動的に付与するため、空メッセージや OOB のみのフレームによってストリームコンテナが消去されることはありません。</p>
+<h3>2.3 ヒストリー更新と View Transition タスクの分割</h3>
+<p><code>tasks</code> を構築した後、<code>swap(ctx)</code> (<code>L1288–1325</code>) は以下の順序で処理を進めます。</p>
+<ol>
+<li><code>{ ctx, tasks }</code> を伴う <code>htmx:before:swap</code> を発火します (<code>L1288</code>)。<code>hx-targets</code> (<code>src/ext/hx-targets.js</code> <code>L20–43</code>) などの拡張機能はこのイベントをインターセプトし、<code>main</code> タスクを複数のターゲットタスクへと分割 (splice) したり、<code>false</code> を返してスワップ全体をキャンセルしたりします。</li>
+<li><code>this.__handleHistoryUpdate(ctx)</code> (<code>L1292</code>、<code>L1699–1719</code>) を呼び出します。初回ページエントリー時に戻るボタンの遷移をインターセプトできるよう <code>history.replaceState({htmx: true}, '', location.href)</code> を刻印した上で、<code>push</code> または <code>replace</code> URL (<code>HX-Push-Url</code>、<code>HX-Replace-Url</code>、<code>hx-push-url</code>、<code>hx-replace-url</code>、または <code>hx-boost</code> のデフォルト) を解決し、<code>htmx:before:history:update</code> $\rightarrow$ <code>htmx:after:history:push|replace</code> $\rightarrow$ <code>htmx:after:history:update</code> を順次発火します。</li>
+<li><code>tasks</code> を即時実行用の <code>swapPromises</code> と View Transition 用の <code>transitionTasks</code> に分割します (<code>L1294–1314</code>)。
+<ul>
+<li><code>task.swapSpec?.transition ?? mainSwap?.transition ?? ctx.transition</code> が truthy であるタスクは <code>transitionTasks</code> に集められ、<code>cssTransition = false</code> (<code>__insertContent(task, false)</code>) を指定した単一のバッチクロージャとして <code>this.__submitTransitionTask(tasksWrapper, ctx)</code> に投入されます。</li>
+<li>それ以外のすべてのタスクは直ちに <code>this.__insertContent(task)</code> を実行します。</li>
+</ul>
+</li>
+<li><code>Promise.all(swapPromises)</code> を待機し、元のソース要素が <code>outerHTML</code> スワップによって置換されていた場合は <code>ctx.sourceElement = mainSwap.target</code> に向き直した上で (<code>L1316–1318</code>)、<code>htmx:after:swap</code> を発火し、<code>document.title</code> の更新と <code>ctx.request.anchor</code> へのスクロールを行い、<code>finally</code> ブロック内で <code>htmx:finally:swap</code> の発火を保証します。</li>
+</ol>
+<hr />
+<h2>3. DOM 挿入、セトル、トランジション (<code>__insertContent</code>)</h2>
+<p><code>__insertContent(task, cssTransition = true)</code> (<code>L1360–1510</code>) は、単一タスクの DOM 変更を実行し、フォーカスおよび CSS トランジションのスナップショットを管理し、スワップ後のセトル (Settle) ライフサイクルを実行します。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_swap_settle_and_morph_engine/arch_c05_swap_styles_and_transitions.png" alt="05_swap_settle_and_morph_engine_2" />
+  <figcaption class="drawlib-caption">12 種類の組み込みスワップスタイルおよび CSS セトル vs. 直列化 View Transition 実行エンジン</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">GridLayout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">92</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">87</span><span class="p">),</span>
+    <span class="s2">"htmx v4.0.1 Swap Strategies &amp; Dual Transition Engines (__insertContent L1360–1510)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Left: 3x4 GridLayout of the 12 Swap Styles (Bottom-Left at x=6, y=8)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span>
+    <span class="s2">"12 Built-In Swap Styles (+ handle_swap Ext Hook)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridLayout</span><span class="p">(</span>
+    <span class="n">num_column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">num_row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="c1"># Row 3 (Top): Morph &amp; Sync (v4 Flagships)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">"innerMorph</span><span class="se">\n</span><span class="s2">(Morph Children)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">"outerMorph</span><span class="se">\n</span><span class="s2">(Morph Self)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">"outerSync</span><span class="se">\n</span><span class="s2">(Attrs + Children)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="c1"># Row 2: Core Replacement</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"innerHTML</span><span class="se">\n</span><span class="s2">(replaceChildren)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"outerHTML</span><span class="se">\n</span><span class="s2">(Insert + Remove)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"textContent</span><span class="se">\n</span><span class="s2">(Escaped Text)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="c1"># Row 1: Positional Insertions (Aliases: before, prepend, append, after)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"beforebegin</span><span class="se">\n</span><span class="s2">(Alias: before)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"afterbegin</span><span class="se">\n</span><span class="s2">(Alias: prepend)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"beforeend</span><span class="se">\n</span><span class="s2">(Alias: append)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="c1"># Row 0 (Bottom): Afterend &amp; Control Styles</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"afterend</span><span class="se">\n</span><span class="s2">(Alias: after)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"delete</span><span class="se">\n</span><span class="s2">(Remove Target)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"none</span><span class="se">\n</span><span class="s2">(Skip Swap)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+
+<span class="n">grid</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mf">65.0</span><span class="p">,</span>
+    <span class="n">margin</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">outer_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Right: Dual Transition &amp; Settle Architecture (Bottom-Left at x=96, y=8)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">138</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span>
+    <span class="s2">"Settle &amp; View Transition Engines (L2288–2341)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">trans_cards</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">trans_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"1. Swap Delay (.htmx-swapping)"</span><span class="p">,</span>
+    <span class="s2">"Adds .htmx-swapping and awaits</span><span class="se">\n</span><span class="s2">swapSpec.swap interval before DOM edit"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"T1"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">trans_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"2. CSS Snapshot (__startCSSTransitions)"</span><span class="p">,</span>
+    <span class="s2">"Copies class/style/width/height from</span><span class="se">\n</span><span class="s2">old [id] nodes onto incoming [id] nodes"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"T2"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">trans_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. Settle Delay (.htmx-settling)"</span><span class="p">,</span>
+    <span class="s2">"Awaits settleDelay (1ms default),</span><span class="se">\n</span><span class="s2">then restores target CSS attributes"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"T3"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">trans_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"4. ViewTransition Queue (#transitionQueue)"</span><span class="p">,</span>
+    <span class="s2">"Serializes startViewTransition(task)</span><span class="se">\n</span><span class="s2">calls via #processingTransition lock"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"VT"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">trans_cards</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">96.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">82.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">65.0</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>3.1 スワップスタイルの正規化、<code>BODY</code> の昇格、全 12 種類のスワップ戦略</h3>
+<p><code>__parseSwapSpec(swapStr)</code> (<code>L1143–1152</code>) は、先頭のスワップスタイルトークンと後続の HCON 修飾子 (<code>swap:100ms settle:20ms scroll:top show:#header:top transition:true strip:true focusScroll:true ignoreTitle:true swapEmpty:true</code>) を分割し、<code>__normalizeSwapStyle(style)</code> (<code>L273–278</code>) によって短縮エイリアスを正規化します。</p>
+<ul>
+<li><code>before</code> $\rightarrow$ <code>beforebegin</code></li>
+<li><code>after</code> $\rightarrow$ <code>afterend</code></li>
+<li><code>prepend</code> $\rightarrow$ <code>afterbegin</code></li>
+<li><code>append</code> $\rightarrow$ <code>beforeend</code></li>
+</ul>
+<p>スワップを実行する前に、<code>__insertContent</code> (<code>L1372–1380</code>) は <code>BODY</code> の自動処理と外側要素のストリップを適用します。</p>
+<ul>
+<li><code>fragment.firstElementChild?.tagName === 'BODY'</code> の場合、htmx は <code>keepBody = target === document.body &amp;&amp; swapStyle.startsWith('outer')</code> を確認します。</li>
+<li><code>keepBody</code> が <code>true</code> かつ <code>swapStyle === 'outerHTML'</code> の場合、ブラウザでは body レベルのリスナーを失わずに <code>outerHTML</code> 挿入で <code>document.body</code> を置換することができないため、htmx は <strong><code>outerHTML</code> を <code>outerSync</code> へと自動的に昇格</strong>させます (<code>L1374</code>)。</li>
+<li><code>keepBody</code> が <code>false</code> の場合、<code>swapSpec.strip</code> のデフォルトは <code>true</code> となり、<code>&lt;body&gt;</code> タグがアンラップされてその子ノードのみがターゲットに挿入されます。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">スワップスタイル</th>
+<th style="text-align:left"><code>__insertContent</code> 内の実装 (<code>src/htmx.js</code> <code>L1387–1471</code>)</th>
+<th style="text-align:left">クリーンアップとターゲットの挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>innerHTML</code></strong> <em>(デフォルト)</em></td>
+<td style="text-align:left">すべての <code>target.children</code> に対して <code>this.__cleanup(child)</code> を呼び出し、<code>target.replaceChildren(...fragment.childNodes)</code> を実行します (<code>L1413–1417</code>)。</td>
+<td style="text-align:left"><code>target</code> 要素を保持し、フォーカスのバックアップと <code>__startCSSTransitions</code> を実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerHTML</code></strong></td>
+<td style="text-align:left"><code>target</code> の直前に <code>fragment</code> を挿入し、<code>this.__cleanup(target)</code> を呼び出して <code>target</code> を削除し、<code>target = newContent.find(n =&gt; n.nodeType === 1) || parentNode</code> に更新します (<code>L1423–1429</code>)。</td>
+<td style="text-align:left"><code>target === document.body</code> の場合は <code>outerSync</code> に昇格されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerSync</code></strong></td>
+<td style="text-align:left"><code>this.__copyAttributes(target, fragment.firstElementChild)</code> を呼び出し、<code>target.children</code> をクリーンアップした上で <code>target.replaceChildren(...fragment.firstElementChild.childNodes)</code> を実行します (<code>L1430–1436</code>)。</td>
+<td style="text-align:left"><code>document.body</code> のスワップおよび <code>hx-history-cache</code> の復元 (<code>L1656</code>) で使用されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>textContent</code></strong></td>
+<td style="text-align:left"><code>target.querySelectorAll('[data-htmx-powered]')</code> に対して <code>this.__cleanup(child)</code> を呼び出し、<code>target.textContent = fragment.textContent</code> を設定します (<code>L1418–1422</code>)。</td>
+<td style="text-align:left">HTML として解釈せず生のテキストとして描画します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>innerMorph</code></strong></td>
+<td style="text-align:left"><code>this.__morph(target, fragment, true)</code> を呼び出します (<code>L1437–1439</code>)。</td>
+<td style="text-align:left">組み込みの Idiomorph エンジンにより <code>target</code> の子ノードをインプレースで照合・更新します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerMorph</code></strong></td>
+<td style="text-align:left"><code>this.__morph(target, fragment, false)</code> を呼び出します (<code>L1440–1442</code>)。</td>
+<td style="text-align:left"><code>target.parentNode</code> 内で <code>target</code> 自体を含めて照合・更新します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>beforebegin</code> / <code>before</code></strong></td>
+<td style="text-align:left"><code>this.__insertNodes(parentNode, target, fragment)</code> を呼び出します (<code>L1443–1446</code>)。</td>
+<td style="text-align:left"><code>target</code> の直前に兄弟ノードとして挿入します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>afterbegin</code> / <code>prepend</code></strong></td>
+<td style="text-align:left"><code>this.__insertNodes(target, target.firstChild, fragment)</code> を呼び出します (<code>L1447–1449</code>)。</td>
+<td style="text-align:left"><code>target.firstChild</code> の直前に先頭挿入します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>beforeend</code> / <code>append</code></strong></td>
+<td style="text-align:left"><code>this.__insertNodes(target, null, fragment)</code> を呼び出します (<code>L1450–1451</code>)。</td>
+<td style="text-align:left"><code>target.lastChild</code> の直後に末尾追加します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>afterend</code> / <code>after</code></strong></td>
+<td style="text-align:left"><code>this.__insertNodes(parentNode, target.nextSibling, fragment)</code> を呼び出します (<code>L1452–1454</code>)。</td>
+<td style="text-align:left"><code>target</code> の直後に兄弟ノードとして挿入します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>delete</code></strong></td>
+<td style="text-align:left">任意の <code>swapSpec.swap</code> 遅延を待機した後、<code>this.__cleanup(target)</code> を実行して <code>target.parentNode</code> から <code>target</code> を削除し、早期リターンします (<code>L1387–1393</code>)。</td>
+<td style="text-align:left">空のレスポンスであっても <code>__processMainSwap</code> 内で常に実行されます (<code>L1335</code>)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>none</code></strong></td>
+<td style="text-align:left"><code>.htmx-swapping</code> を付与する前の <code>L1370</code> で即座にリターンします。</td>
+<td style="text-align:left"><code>204</code>/<code>304</code> ステータスコード (<code>config.noSwap</code>) や OOB のみの更新で使用されます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>カスタム (<code>handle_swap</code>)</em></td>
+<td style="text-align:left"><code>this.__extMethods.get('handle_swap')</code> を反復処理します (<code>L1456–1470</code>、例: <code>hx-upsert.js</code> の <code>upsert</code>)。</td>
+<td style="text-align:left">いずれの拡張も truthy を返さない場合は <code>Error('Unknown swap style: ...')</code> をスローします。</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 フォーカスと選択範囲の復元、CSS トランジション、セトルライフサイクル</h3>
+<p><code>innerHTML</code> および <code>outerHTML</code> スワップでは、DOM ノードを単純に置き換えると入力フォーカスや CSS トランジションの連続性が失われてしまうため、変更前後で状態をブリッジする仕組みが備わっています。</p>
+<ol>
+<li><strong>フォーカスとカーソル選択範囲のバックアップ (<code>L1401–1406</code>、<code>L1477–1483</code>)</strong>:
+<code>document.activeElement</code> が <code>id</code> を持っている場合、htmx は <code>{ elt: activeElt, start: activeElt.selectionStart, end: activeElt.selectionEnd }</code> を記録します。スワップとパントリーの復元後、元の要素が <code>:focus</code> に一致しなくなっている場合、htmx は <code>document.getElementById(focusInfo.elt.id)</code> を検索し、<code>__setFocus(newElt, { preventScroll }, focusInfo.start, focusInfo.end)</code> (<code>L1186–1195</code>) を呼び出してキーボードフォーカスと正確なテキスト選択範囲の両方を復元します。</li>
+<li><strong>属性スナップショットによる CSS トランジション (<code>__startCSSTransitions</code> <code>L2324–2341</code>)</strong>:
+<code>cssTransition</code> が有効かつ <code>settleDelay &gt; 0</code> (デフォルト <code>defaultSettleDelay: 1</code> ms) の場合、<code>__startCSSTransitions(fragment, target)</code> は旧 <code>target</code> と新しい <code>fragment</code> の両方に存在する、同一の <code>id</code> および <code>tagName</code> を持つすべての <code>[id]</code> 要素を検索します。一致した各要素について、新しい要素を浅くクローン (<code>let clone = elt.cloneNode(false)</code>) し、挿入前に新しい <code>elt</code> の <code>['class', 'style', 'width', 'height']</code> を<strong>旧要素</strong>の属性値で一時的に上書きした上で、復元タスクのクロージャ (<code>() =&gt; this.__copyAttributes(elt, clone)</code>) を返します。</li>
+<li><strong>セトル (Settle) フェーズ (<code>L1485–1510</code>)</strong>:
+<ul>
+<li><code>htmx:before:settle</code> (<code>{ task, newContent, settleTasks }</code>) を発火します。</li>
+<li><code>newContent</code> 内のすべての要素に <code>.htmx-added</code> クラスを付与します。</li>
+<li><code>settleTasks.length &gt; 0</code> の場合、<code>target</code> に <code>.htmx-settling</code> を付与し、<code>this.timeout(settleDelay)</code> を待機 (ブラウザに旧 CSS 状態で 1 フレーム描画させる時間を提供) した後、すべての <code>settleTask()</code> を実行して新しい <code>class</code>/<code>style</code>/<code>width</code>/<code>height</code> 属性を適用 (これにより滑らかな CSS トランジションが発火) し、<code>.htmx-settling</code> を削除します。</li>
+<li><code>htmx:after:settle</code> を発火し、<code>.htmx-added</code> を削除し、新しく挿入されたノードの <code>hx-*</code> 属性を配線するために <code>this.process(elt)</code> を呼び出し、<code>this.__handleAutoFocus(elt)</code> (<code>[autofocus]</code>) および <code>this.__handleScroll(swapSpec, target)</code> を実行します。</li>
+</ul>
+</li>
+</ol>
+<h3>3.3 直列化された View Transitions キュー (<code>#transitionQueue</code>)</h3>
+<p>ブラウザの View Transitions API (<code>document.startViewTransition()</code>) では、ある View Transition の実行中に新しい View Transition を開始すると、実行中のトランジションが即座に中断 (abort) されてしまいます。複数の独立したコンポーネントやストリーミング Partial が同時にスワップし得るハイパーメディアアプリケーションにおいて、<code>startViewTransition()</code> を無秩序に呼び出すと画面のちらつきやアニメーションの中断が発生します。</p>
+<p>htmx v4 は、内部の FIFO Promise キュー (<code>L2288–2322</code> の <code>#transitionQueue</code> と <code>#processingTransition</code>) によってこれを解決しています。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L2288–2322</span>
+<span class="nx">__submitTransitionTask</span><span class="p">(</span><span class="nx">task</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#transitionQueue</span><span class="w"> </span><span class="o">||=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#transitionQueue</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="w"> </span><span class="nx">task</span><span class="p">,</span><span class="w"> </span><span class="nx">resolve</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="p">});</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="n">#processingTransition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__processTransitionQueue</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="nx">__processTransitionQueue</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">#transitionQueue</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#processingTransition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="n">#processingTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">task</span><span class="p">,</span><span class="w"> </span><span class="nx">resolve</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#transitionQueue</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">startViewTransition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">task</span><span class="p">,</span><span class="w"> </span><span class="nx">ctx</span><span class="p">};</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:before:viewTransition"</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">);</span>
+<span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">startViewTransition</span><span class="p">(</span><span class="nx">detail</span><span class="p">.</span><span class="nx">task</span><span class="p">).</span><span class="nx">finished</span><span class="p">;</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__trigger</span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">sourceElement</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:after:viewTransition"</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="nx">task</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Transitions can be skipped/aborted - this is normal</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#processingTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">resolve</span><span class="p">();</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">__processTransitionQueue</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p><code>document.startViewTransition(detail.task)</code> を呼び出す<strong>前</strong>に <code>detail = { task, ctx }</code> が <code>htmx:before:viewTransition</code> に渡される点に注目してください。これにより、イベントリスナーや拡張機能が <code>detail.task</code> をラップし、旧状態のスクリーンショットがキャプチャされる前に動的に <code>view-transition-name</code> プロパティを設定するといった高度な制御が可能になります。</p>
+<hr />
+<h2>4. 組み込み Idiomorph 方式 DOM 照合エンジン (<code>__morph</code>)</h2>
+<p>htmx 2 では DOM モーフィングを行うために外部の <code>idiomorph</code> ライブラリを読み込む必要がありました。htmx v4.0.1 では、洗練された Idiomorph アルゴリズムが <code>src/htmx.js</code> (<code>L2018–2269</code>、約 250 行) に直接組み込まれ、<code>innerMorph</code> と <code>outerMorph</code> を駆動しています。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_swap_settle_and_morph_engine/arch_c05_morph_reconciliation_flow.png" alt="05_swap_settle_and_morph_engine_3" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Idiomorph 事前パス ID マッピングと 3 段階兄弟照合エンジン (src/htmx.js L2018–2269)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decision</span><span class="p">,</span> <span class="n">End</span><span class="p">,</span> <span class="n">FlowDiagram</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Start</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">188</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">98</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">FlowDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 __morph() ID-Set Pre-Pass &amp; __findBestMatch() Sibling Reconciliation"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">nt</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="n">wt</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># Column 1 (x=24), Column 2 (x=70), Column 3 (x=118), Column 4 (x=164)</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Start</span><span class="p">(</span><span class="s2">"__morph()</span><span class="se">\n</span><span class="s2">Entry"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">wt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">id_maps</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"__createIdMaps()</span><span class="se">\n</span><span class="s2">persistentIds &amp; idMap"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">find_match</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"__findBestMatch()</span><span class="se">\n</span><span class="s2">Scan &lt;= 10 Siblings"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">match_dec</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Decision</span><span class="p">(</span><span class="s2">"Sibling</span><span class="se">\n</span><span class="s2">Match?"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">rescue_dec</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Decision</span><span class="p">(</span><span class="s2">"In persistentIds?</span><span class="se">\n</span><span class="s2">(Target / Pantry)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">insert_new</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"Insert Node or</span><span class="se">\n</span><span class="s2">idMap Placeholder"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">recurse</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"Advance Sibling</span><span class="se">\n</span><span class="s2">&amp; Prune Old"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">move_before</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"Rescue by ID &amp;</span><span class="se">\n</span><span class="s2">__moveBefore()"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">wt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">evict_inter</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"Evict Skipped &amp;</span><span class="se">\n</span><span class="s2">__moveBefore()"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">morph_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Process</span><span class="p">(</span><span class="s2">"__morphNode() &amp;</span><span class="se">\n</span><span class="s2">__copyAttributes()"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">nt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">done</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">End</span><span class="p">(</span><span class="s2">"Cleanup Pantry</span><span class="se">\n</span><span class="s2">&amp; Finish"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">wt</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Orthogonal Non-Crossing Connections</span>
+<span class="n">start</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">id_maps</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">id_maps</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">find_match</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">find_match</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">match_dec</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">match_dec</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">evict_inter</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Yes"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">match_dec</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">rescue_dec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"No"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">rescue_dec</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">move_before</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Yes"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">rescue_dec</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">insert_new</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"No"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">move_before</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">evict_inter</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">evict_inter</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">morph_node</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">insert_new</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">recurse</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">morph_node</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">done</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">flow</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>4.1 ボトムアップの <code>idMap</code> と <code>persistentIds</code> 事前パス (<code>L2229–2269</code>)</h3>
+<p>一般的な仮想 DOM (Virtual DOM) の差分アルゴリズムは現在のツリー階層における兄弟ノード同士のみを単純比較するため、安定した <code>id</code> を持つノードが新しいコンテナ <code>&lt;div&gt;</code> でラップされたり、1 階層上へアンラップされたりすると状態を失ってしまいます。Idiomorph は、ツリーの走査を開始する前に旧ツリーと新ツリーの全体にわたって<strong>永続 ID セット (persistent ID sets)</strong> を事前計算することでこれを解決します。</p>
+<ol>
+<li><strong><code>__createPersistentIds(oldIdElements, newIdElements)</code> (<code>L2256–2269</code>)</strong>:
+<code>oldNode</code> と <code>newContent</code> 内のすべての <code>[id]</code> 要素をスキャンします。ある <code>id</code> が <code>persistentIds: Set&lt;string&gt;</code> に追加されるのは、以下のすべての条件を満たす場合のみです。
+<ul>
+<li><code>oldNode</code> と <code>newContent</code> の<strong>両方</strong>に存在すること。</li>
+<li>両方の要素が完全に同一の <code>tagName</code> を共有していること。</li>
+<li><code>oldNode</code> 内または <code>newContent</code> 内でその <code>id</code> が重複していないこと (<code>duplicateIds</code> は <code>L2267</code> で除外されます)。</li>
+</ul>
+</li>
+<li><strong><code>__populateIdMapWithTree(idMap, persistentIds, root, elements)</code> (<code>L2229–2244</code>)</strong>:
+<code>id</code> が <code>persistentIds</code> に含まれるすべての要素について、htmx は <code>root</code> (旧ツリーでは <code>oldNode.parentElement</code>、新フラグメントでは <code>newContent</code>) に到達するまで <code>current = current.parentElement</code> を辿って<strong>ボトムアップに上方向へ</strong>走査し、経路上にあるすべての祖先要素の <code>idMap.get(current): Set&lt;string&gt;</code> に <code>elt.id</code> を登録します。</li>
+</ol>
+<p>この結果、トップダウン走査中の <code>O(1)</code> 時間で、<code>ctx.idMap.get(node)</code> を参照するだけで「<code>node</code> のサブツリー内の<strong>どこか</strong>に含まれているすべての永続 <code>id</code> の正確な集合」を <code>__findBestMatch</code> が即座に把握できます。</p>
+<h3>4.2 3 段階の兄弟マッチングとスキャンウィンドウ (<code>__findBestMatch</code> <code>L2118–2151</code>)</h3>
+<p><code>__morphChildren</code> (<code>L2034–2105</code>) が <code>newParent</code> の各 <code>newChild</code> を反復処理する際、<code>__findBestMatch(ctx, newChild, insertionPoint, endPoint)</code> を呼び出して <code>insertionPoint</code> から後続の既存兄弟ノードを前方スキャンします。</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L2118–2151</span>
+<span class="nx">__findBestMatch</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">node</span><span class="p">,</span><span class="w"> </span><span class="nx">startPoint</span><span class="p">,</span><span class="w"> </span><span class="nx">endPoint</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// text nodes match positionally (patch in place via __morphNode), 3 = TEXT_NODE</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">nodeType</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">3</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">startPoint</span><span class="o">?</span><span class="p">.</span><span class="nx">nodeType</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">3</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">startPoint</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">node</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">Element</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">softMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nx">displaceMatchCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">scanLimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">morphScanLimit</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">newSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">idMap</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">node</span><span class="p">),</span><span class="w"> </span><span class="nx">nodeMatchCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">newSet</span><span class="o">?</span><span class="p">.</span><span class="nx">size</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// If node has a non-persistent ID, insert instead of soft matching</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nx">newSet</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">startPoint</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nx">cursor</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">cursor</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">endPoint</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">oldSet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">idMap</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">cursor</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">#internalAPI</span><span class="p">.</span><span class="nx">isSoftMatch</span><span class="p">(</span><span class="nx">cursor</span><span class="p">,</span><span class="w"> </span><span class="nx">node</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// Hard match: matching IDs found in both nodes</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">oldSet</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">newSet</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">[...</span><span class="nx">oldSet</span><span class="p">].</span><span class="nx">some</span><span class="p">(</span><span class="nx">id</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">newSet</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">id</span><span class="p">)))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">cursor</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">oldSet</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// Exact match: nodes are identical</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">scanLimit</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">cursor</span><span class="p">.</span><span class="nx">isEqualNode</span><span class="p">(</span><span class="nx">node</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">cursor</span><span class="p">;</span>
+<span class="w">                </span><span class="c1">// Soft match: same tag/type, save as fallback</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">softMatch</span><span class="p">)</span><span class="w"> </span><span class="nx">softMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cursor</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// Stop if too many ID elements would be displaced</span>
+<span class="w">        </span><span class="nx">displaceMatchCount</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="nx">oldSet</span><span class="o">?</span><span class="p">.</span><span class="nx">size</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">displaceMatchCount</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nx">nodeMatchCount</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Don't move elements containing a focused typeable input</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">activeElement</span><span class="o">?</span><span class="p">.</span><span class="nx">selectionStart</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">cursor</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">activeElement</span><span class="p">))</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Stop scanning if limit reached and no IDs to match</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">--</span><span class="nx">scanLimit</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">nodeMatchCount</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="nx">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">cursor</span><span class="p">.</span><span class="nx">nextSibling</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// Only return fallback softMatch if it does not match upcoming content</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">softMatch</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__matchesUpcomingSibling</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">softMatch</span><span class="p">,</span><span class="w"> </span><span class="nx">node</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">softMatch</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<p><code>__findBestMatch</code> の各行には重要な不変条件 (Invariant) が組み込まれています。</p>
+<ul>
+<li><strong>位置ベースのテキストノード照合 (<code>L2120</code>)</strong>: テキストノード (<code>nodeType === 3</code>) は、<code>startPoint</code> もテキストノードであれば即座にマッチ (<code>__morphNode</code> 内で <code>oldNode.nodeValue = newNode.nodeValue</code> を更新) し、テキスト更新時の不要な DOM ノード再生成を回避します。</li>
+<li><strong>非永続 ID ガード (<code>L2125</code>)</strong>: <code>node</code> が <code>ctx.idMap</code> に含まれない <code>id</code> を持っている場合 (新規に導入された <code>id</code> であるか、または <code>tagName</code> が変更された場合)、ソフトマッチによって無名の兄弟要素を誤って上書きしないよう、即座に <code>null</code> を返して新規挿入させます。</li>
+<li><strong>3 段階のマッチ優先度 (<code>L2129–2137</code>)</strong>:
+<ol>
+<li><strong>ハード ID マッチ (Hard ID Match)</strong>: <code>cursor</code> と <code>node</code> の両方がソフト互換 (<code>this.#internalAPI.isSoftMatch(cursor, node)</code>) であり、かつサブツリー内に少なくとも 1 つの共通する永続 ID を持つ場合 (<code>[...oldSet].some(id =&gt; newSet.has(id))</code>)、即座に <code>cursor</code> を返します。</li>
+<li><strong>完全一致ノードマッチ (Exact Node Match)</strong>: <code>cursor</code> が永続 ID を持たず (<code>!oldSet</code>)、<code>scanLimit</code> (<code>morphScanLimit: 10</code>) 以内にあり、かつ <code>cursor.isEqualNode(node)</code> が <code>true</code> の場合、即座に <code>cursor</code> を返します。</li>
+<li><strong>フォールバック・ソフトマッチ (Fallback Soft Match)</strong>: <code>!oldSet</code> かつ <code>isSoftMatch(cursor, node)</code> (<code>oldNode.tagName === newNode.tagName</code>、<code>&lt;script&gt;</code> の場合は <code>oldNode.isEqualNode(newNode)</code>、および <code>L2153–2160</code> の <code>!oldNode.id || oldNode.id === newNode.id</code>) を満たす最初の <code>cursor</code> を候補として記録します。</li>
+</ol>
+</li>
+<li><strong>3 つの早期終了スキャンガード (<code>L2140–2145</code>)</strong>:
+<ol>
+<li><strong>ID 退避バジェット (<code>displaceMatchCount &gt; nodeMatchCount</code>)</strong>: <code>node</code> 自身がマッチできる永続 ID の数よりも<strong>多くの</strong>永続 ID を含む候補サブツリーを飛び越えてスキャンし続けることを防ぎます。</li>
+<li><strong>フォーカス中のテキスト入力保護 (<code>document.activeElement?.selectionStart != null &amp;&amp; cursor.contains(document.activeElement)</code>)</strong>: ユーザーが現在フォーカスして入力中のテキスト入力を含む祖先要素を飛び越えたり移動させたりすることを防ぎ、カーソル位置の安定性と IME 変換状態を保護します。</li>
+<li><strong>上限付きスキャンウィンドウ (<code>--scanLimit &lt; 1 &amp;&amp; nodeMatchCount === 0</code>)</strong>: 永続 ID を持たない無名の Exact/Soft マッチを探す際、兄弟の先読み数を <code>htmx.config.morphScanLimit</code> (<code>10</code>) に制限することで、最悪ケースの兄弟スキャン計算量を <code>O(N²)</code> ではなく <code>O(N)</code> に抑えます。</li>
+</ol>
+</li>
+<li><strong>後続兄弟の先読みチェック (<code>__matchesUpcomingSibling</code> <code>L2107–2116</code>、<code>L2149</code>)</strong>: フォールバックの <code>softMatch</code> を返す前に、htmx は<strong>新しい</strong>フラグメント内で <code>node</code> の後ろに続く最大 <code>morphScanLimit</code> (<code>10</code>) 個の兄弟ノードを先読みします。もし後続の兄弟に対して <code>softMatch.isEqualNode(sibling)</code> が成立する場合、<code>softMatch</code> は <code>ctx.futureMatches</code> (<code>WeakSet</code>) にキャッシュされ、<code>__findBestMatch</code> は <code>null</code> を返します。これにより、<code>softMatch</code> を誤って上書きする代わりに <code>softMatch</code> の直前に <code>node</code> が綺麗に挿入されます。</li>
+</ul>
+<h3>4.3 パントリー退避、ツリー横断レスキュー、アトミックな <code>moveBefore</code></h3>
+<p><code>__morphChildren</code> (<code>L2046–2097</code>) が兄弟リストを前進する際、以下の処理が行われます。</p>
+<ol>
+<li><strong>先行する未マッチ兄弟の退避 (<code>L2047–2059</code>)</strong>: <code>matchedNode</code> が <code>insertionPoint</code> より前方で見つかった場合、<code>insertionPoint</code> と <code>matchedNode</code> の間にあるスキップされた各ノード <code>tempNode</code> が検査されます。
+<ul>
+<li><code>ctx.idMap.has(tempNode)</code> または <code>this.__matchesUpcomingSibling(ctx, tempNode, newChild)</code> が真であれば、後のループで再利用できるよう <code>this.__moveBefore(oldParent, tempNode, endPoint)</code> によって <code>oldParent</code> の末尾へ移動されます。</li>
+<li>それ以外の場合は、<code>this.__removeNode(ctx, tempNode)</code> (<code>L2162–2169</code>) によって、永続 ID を持つ場合は <code>ctx.pantry</code> へ移動され、持たない場合はクリーンアップ (<code>this.__cleanup(node)</code>) されて DOM から削除されます。</li>
+</ul>
+</li>
+<li><strong>ツリー横断の永続 ID レスキュー (<code>L2063–2077</code>)</strong>: <code>__findBestMatch</code> が <code>null</code> を返した場合 (たとえば永続 <code>id</code> を持つ要素が子コンテナから外へ移動されたか、先に <code>ctx.pantry</code> へ退避されていた場合)、htmx は <code>[id=&quot;${escapedId}&quot;]</code> によって <code>ctx.target</code> または <code>ctx.pantry</code> からその要素を直接救出 (レスキュー) し、旧祖先の <code>idMap</code> セットからその <code>id</code> を削除した上で、<code>this.__moveBefore(oldParent, matchedNode, insertionPoint)</code> によって <code>insertionPoint</code> へアトミックに移動させます。</li>
+<li><strong>サブツリー ID プレースホルダーの生成 (<code>L2087–2096</code>)</strong>: <code>newChild</code> 自体は新規のラッパーコンテナ (<code>!matchedNode</code>) であるものの、その子孫に永続 ID が含まれている (<code>ctx.idMap.has(newChild)</code>) 場合、htmx は <code>newChild</code> をそのまま直接挿入<strong>しません</strong> (<code>newChild</code> を直接挿入してしまうと、ライブ DOM から永続 ID 要素をレスキューする前に重複する ID 要素が挿入されてしまうためです)。代わりに、空の <code>placeholder = document.createElement(newChild.tagName)</code> を作成して挿入し、<code>placeholder</code> と <code>newChild</code> を再帰的にモーフさせることで、ライブ DOM 内の永続 ID 子孫要素を <code>__moveBefore</code> 経由で <code>placeholder</code> の中へと安全にレスキューします。</li>
+<li><strong>アトミックな DOM 再配置 (<code>__moveBefore</code> <code>L2171–2181</code>)</strong>:<pre><code class="language-javascript"><span class="c1">// src/htmx.js L2171–2181</span>
+<span class="nx">__moveBefore</span><span class="p">(</span><span class="nx">parentNode</span><span class="p">,</span><span class="w"> </span><span class="nx">element</span><span class="p">,</span><span class="w"> </span><span class="nx">after</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">moveBefore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">moveBefore</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span><span class="w"> </span><span class="nx">after</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// ignore and insertBefore instead</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span><span class="w"> </span><span class="nx">after</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+Web プラットフォームの <code>Node.prototype.moveBefore()</code> API を活用することで、htmx v4 はリストアイテムの並び替えやツリー階層を跨ぐ <code>[id]</code> 要素の移動を行う際にも、CSS アニメーション、<code>&lt;iframe src&gt;</code> のブラウジングコンテキスト、<code>&lt;video&gt;</code> の再生状態、およびフォーカス状態を完全に維持します。</li>
+</ol>
+<h3>4.4 ノードおよび属性のパッチ適用 (<code>__morphNode</code> と <code>__copyAttributes</code>)</h3>
+<p><code>oldNode</code> と <code>newNode</code> のペアが確定すると、<code>__morphNode(oldNode, newNode, ctx)</code> (<code>L2183–2202</code>) と <code>__copyAttributes(destination, source)</code> (<code>L2204–2227</code>) がインプレースで状態を同期します。</p>
+<ul>
+<li><strong>スキップセレクターと拡張フック (<code>L2188–2191</code>、<code>L2197</code>)</strong>:
+<ul>
+<li><code>oldNode.matches(this.config.morphSkip)</code> (デフォルトは <code>[hx-morph-skip]</code>) に一致する場合、<code>__morphNode</code> は即座にリターンし、要素とそのサブツリー全体を一切変更せずに維持します。</li>
+<li><code>this.__triggerExtensions(oldNode, &quot;htmx:before:morph:node&quot;, { oldNode, newNode })</code> を発火します。<code>false</code> が返された場合はそのノードのモーフィングをキャンセルします。</li>
+<li><code>oldNode.matches(this.config.morphSkipChildren)</code> (デフォルトは <code>[hx-morph-skip-children]</code>) に一致する場合、<code>oldNode</code> 自体の属性は同期されますが、<code>__morphChildren</code> はスキップされます。</li>
+</ul>
+</li>
+<li><strong>属性の同期とライブ入力値の保護 (<code>__copyAttributes</code> <code>L2204–2227</code>)</strong>:
+<ul>
+<li><code>this.config.morphIgnore</code> (デフォルトは <code>[&quot;data-htmx-powered&quot;]</code>) に一致する属性は無視されるため、サーバー側の HTML によって初期化済みマーカーが剥がされることはありません。</li>
+<li>変更された各属性を設定または削除する前に <code>htmx:before:morph:attr</code> (<code>{ attrName, newValue }</code>) を発火します (<code>hx-live</code> はこれをフックして変更された <code>:attr</code> バインディングをクリーンアップします)。</li>
+<li><code>HTMLInputElement</code> (<code>type !== &quot;file&quot;</code> かつ <code>document.activeElement !== destination</code> の場合) の <code>destination.value = attr.value</code> を更新し、<code>HTMLTextAreaElement</code> (<code>document.activeElement !== oldNode &amp;&amp; oldNode.defaultValue != newNode.defaultValue</code> の場合) の <code>oldNode.value = newNode.value</code> を更新します。</li>
+<li><strong><code>hx-*</code> 属性変更時の自動再初期化 (<code>needsReinit</code> <code>L2206–2226</code>)</strong>: 追加・変更・削除された属性のいずれかが <code>hx-</code> (または <code>config.prefix</code>) で始まる場合、<code>needsReinit</code> が <code>true</code> に設定され、<code>__copyAttributes</code> は <code>this.__cleanup(destination, true)</code> を実行して <code>destination._htmx</code> を削除します。これにより、続くセトルフェーズでの <code>this.process(elt)</code> 呼び出し時に、更新された <code>hx-*</code> 属性が確実に再配線されます。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>続いて <a href="06_extension_and_security_internals.html">第 6 章: 拡張機能とセキュリティの内部構造</a> に進み、<code>registerExtension</code>、<code>#internalAPI</code>、<code>hx-csp</code>、<code>hx-live</code>、<code>hx-multipart</code>、<code>hx-sse</code>、および <code>hx-ws</code> がこのパイプラインにどのようにフックするかを詳しく見ていきましょう。</p>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

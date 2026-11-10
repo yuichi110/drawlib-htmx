@@ -1,0 +1,906 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>htmx v4.0.1 — PNI501 Software Health Diagnostic Report</title>
+    
+    
+    
+    <meta name="description" content="Comprehensive PNI501 software health, architecture, runtime browser test coverage, and security diagnostic report for htmx v4.0.1.">
+    <link rel="canonical" href="https://htmx.drawlib.com/reports/pni501/en/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4.0.1 — PNI501 Software Health Diagnostic Report">
+    <meta property="og:title" content="htmx v4.0.1 — PNI501 Software Health Diagnostic Report">
+    <meta property="og:description" content="Comprehensive PNI501 software health, architecture, runtime browser test coverage, and security diagnostic report for htmx v4.0.1.">
+    <meta property="og:url" content="https://htmx.drawlib.com/reports/pni501/en/">
+    <meta property="og:image" content="https://htmx.drawlib.com/reports/pni501/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="htmx v4.0.1 — PNI501 Software Health Diagnostic Report">
+    <meta name="twitter:description" content="Comprehensive PNI501 software health, architecture, runtime browser test coverage, and security diagnostic report for htmx v4.0.1.">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/reports/pni501/_assets/ogp.png">
+    
+    
+    <link rel="icon" type="image/png" href="../_assets/favicon.png">
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body class="doc-body">
+    <main class="main-container">
+        
+        <section id="chapter-1-00_cover" class="doc-chapter pdf-chapter">
+<h1>htmx v4.0.1 — PNI501 Software Health Diagnostic Report</h1>
+<p><strong>Project</strong>: <code>htmx</code> (<code>v4.0.1</code>) | <strong>Language</strong>: <code>javascript</code> (<code>ES2022</code> + <code>TypeScript d.ts</code>) | <strong>Workflow</strong>: <code>pni501</code> (<code>wf-e3385881</code>)</p>
+<figure class="drawlib-image">
+  <img src="../images/00_cover/00_cover_scorecard.png" alt="00_cover_1" />
+  <figcaption class="drawlib-caption">PNI501 Software Health Scorecard for htmx v4.0.1 (Overall Score: 91/100, Grade S)</figcaption>
+</figure>
+<h2>Audit Metadata &amp; Scope Summary</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Attribute</th>
+<th style="text-align:left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Target Repository</strong></td>
+<td style="text-align:left"><code>htmx</code> (<code>v4.0.1</code>, upstream tag <code>8d112c71</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Primary Language &amp; Runtime</strong></td>
+<td style="text-align:left">JavaScript (<code>ES2022</code> classes &amp; <code>#</code> private fields) + TypeScript Declarations (<code>src/htmx.d.ts</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Runtime Profiles</strong></td>
+<td style="text-align:left">Browser Hypermedia Library (<code>dist/htmx.js</code>, <code>dist/htmx.esm.js</code>, <code>dist/htmax.js</code>) &amp; Node CLI (<code>src/scripts/upgrade-check.js</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Workflow &amp; Run ID</strong></td>
+<td style="text-align:left"><code>pni501</code> (<code>wf-e3385881</code>) — Evaluated <code>2026-11-10T12:15:56+00:00</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Overall Score &amp; Grade</strong></td>
+<td style="text-align:left"><strong>91 / 100 (<code>Grade S</code>)</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Codebase Footprint</strong></td>
+<td style="text-align:left"><code>18</code> source files (<code>5,521</code> non-blank LOC: <code>src/htmx.js</code> at <code>1,989</code> LOC + <code>17</code> extensions in <code>src/ext/*.js</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Hermetic Browser Verification</strong></td>
+<td style="text-align:left"><code>1,854</code> real-browser tests via <code>@web/test-runner</code> + Playwright Chromium (<code>1,849</code> passed, <code>1</code> timing race, <code>4</code> skipped)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Measured V8 Coverage</strong></td>
+<td style="text-align:left"><strong>93.5%</strong> line coverage (<code>6,267 / 6,706</code> statements) and <strong>92.3%</strong> branch coverage</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Companion Portals</strong></td>
+<td style="text-align:left"><a href="https://htmx.drawlib.com/">User Guide</a> • <a href="https://htmx.drawlib.com/api/">API Reference Catalog</a> • <a href="https://htmx.drawlib.com/architecture/">Internal Architecture Guide</a></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<nav class="doc-toc pdf-toc">
+  <h2>Table of Contents</h2>
+  <ul>
+    <li><a href="#chapter-2-01_executive_summary">1. Executive Summary</a></li>
+    <li><a href="#chapter-3-02_architecture_and_structure">2. Architecture & Source Code Structure</a></li>
+    <li><a href="#chapter-4-03_remediation_roadmap">3. Recommended Remediation Roadmap</a></li>
+    <li><a href="#chapter-5-04_standards_and_findings">4. Audit Standards, Rule Compliance & Findings</a></li>
+    <li><a href="#chapter-6-05_code_and_runtime_analysis">5. Deep Dive: Code Quality, Testing & Runtime</a></li>
+    <li><a href="#chapter-7-06_security_and_supply_chain">6. Deep Dive: Security, Supply Chain & API Surface</a></li>
+  </ul>
+</nav>
+
+<section id="chapter-2-01_executive_summary" class="doc-chapter pdf-chapter">
+<h1>1. Executive Summary</h1>
+<p><code>htmx</code> <code>v4.0.1</code> achieves an overall <strong>PNI501 Software Health Score of 91 / 100 (<code>Grade S</code>)</strong>, passing <code>10</code> of <code>14</code> active engineering rules with <code>4</code> warnings and <code>0</code> failures. The ground-up v4 rewrite replaces htmx 2's legacy <code>XMLHttpRequest</code> closure with a zero-dependency ES2022 class engine (<code>Htmx</code>, <code>RequestQueue</code>, <code>HCON</code>) backed by native <code>fetch()</code>, <code>AbortController</code>, <code>ReadableStream</code>, built-in Idiomorph DOM morphing, and <code>17</code> acyclic official extensions.</p>
+<figure class="drawlib-image">
+  <img src="../images/01_executive_summary/01_executive_radar.png" alt="01_executive_summary_1" />
+  <figcaption class="drawlib-caption">7-Dimension Engineering Health Radar & Category Score Breakdown for htmx v4.0.1</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/01_executive_summary/01_executive_strengths_risks.png" alt="01_executive_summary_2" />
+  <figcaption class="drawlib-caption">Headline Engineering Strengths vs. Top Prioritized Risks in htmx v4.0.1</figcaption>
+</figure>
+<h2>Key Executive Takeaways</h2>
+<h3>1. Seven-Axis Engineering Scorecard</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Axis</th>
+<th style="text-align:center">Score</th>
+<th style="text-align:center">Grade</th>
+<th style="text-align:left">Rationale Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Architecture</strong></td>
+<td style="text-align:center"><code>93</code></td>
+<td style="text-align:center"><strong>S</strong></td>
+<td style="text-align:left">Clean Microkernel + Event-Driven Extension Hook architecture: zero-dependency core (<code>src/htmx.js</code>, <code>1,989</code> non-blank LOC) with <code>17</code> acyclic IIFE extensions interacting solely through <code>htmx.registerExtension()</code> and a 15-method <code>#internalAPI</code> bridge.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Code Quality</strong></td>
+<td style="text-align:center"><code>88</code></td>
+<td style="text-align:center"><strong>A</strong></td>
+<td style="text-align:left">Idiomatic ES2022 classes (<code>HCON</code>, <code>RequestQueue</code>, <code>Htmx</code>) using native <code>fetch()</code>, <code>AbortController</code>, <code>ReadableStream</code>, and constructable <code>CSSStyleSheet</code>; minor deductions for <code>4</code> loose <code>!=</code> checks in morphing and <code>2</code> extension <code>fetch()</code> calls omitting <code>AbortSignal</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Typing</strong></td>
+<td style="text-align:center"><code>93</code></td>
+<td style="text-align:center"><strong>S</strong></td>
+<td style="text-align:left">Comprehensive <code>772</code>-line TypeScript contract (<code>src/htmx.d.ts</code>) typing <code>Htmx</code>, <code>HtmxConfig</code> (<code>36</code> options), <code>HtmxRequestCtx</code>, <code>HtmxEventMap</code> (<code>28</code> colon-separated events), and reactive <code>HxLive</code> proxies.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Testing</strong></td>
+<td style="text-align:center"><code>93</code></td>
+<td style="text-align:center"><strong>S</strong></td>
+<td style="text-align:left"><code>1,854</code> real-browser test cases (<code>1,849</code> passed, <code>4</code> skipped, <code>1</code> timing race in <code>hx-ws.js:299</code>), achieving <strong>93.5% line coverage</strong> (<code>6,267 / 6,706</code> statements) and <strong>92.3% branch coverage</strong> in headless Chromium.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Dependencies</strong></td>
+<td style="text-align:center"><code>88</code></td>
+<td style="text-align:center"><strong>A</strong></td>
+<td style="text-align:left">Zero production runtime dependencies (<code>dependencies: {}</code>) and a committed <code>package-lock.json</code>; deducted for <code>5</code> HIGH and <code>15</code> MEDIUM transitive advisories in <code>devDependencies</code> (<code>cross-spawn</code>, <code>ip-address</code>, <code>basic-ftp</code>, <code>qs</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Security</strong></td>
+<td style="text-align:center"><code>90</code></td>
+<td style="text-align:center"><strong>S</strong></td>
+<td style="text-align:left">Zero runtime supply-chain exposure, zero secrets, prototype pollution guard in <code>HCON.merge</code>, W3C Trusted Types (<code>#ttPolicy</code>), <code>hx-ignore</code> sandboxing, and eval-free <code>hx-csp.js</code>; <code>hx-live.js</code> and <code>hx-head.js</code> should route <code>.innerHTML</code> through <code>#ttPolicy</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Documentation</strong></td>
+<td style="text-align:center"><code>95</code></td>
+<td style="text-align:center"><strong>S</strong></td>
+<td style="text-align:left">Shipped developer/LLM skill guides (<code>src/skills/*.md</code>), <code>CHANGELOG.md</code>, <code>src/htmx.d.ts</code>, and a 4-portal bilingual documentation suite (<code>docs_src/</code>, <code>api_src/</code>, <code>architecture_src/</code>, <code>reports_src/</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Lowest-Scoring Audit Steps (Sorted Ascending)</h3>
+<ol>
+<li><strong><code>security_vulnerability_audit</code> (<code>88 / 100</code>, Grade A)</strong>: Zero production dependency CVEs and zero secrets; warnings recorded for <code>22</code> transitive <code>devDependency</code> CVEs in <code>package-lock.json</code> (<code>5</code> HIGH, <code>15</code> MEDIUM, <code>2</code> LOW), <code>2</code> extensions (<code>hx-live.js</code>, <code>hx-head.js</code>) bypassing core's Trusted Types wrapper on <code>.innerHTML</code>, and missing <code>SECURITY.md</code> / Dependabot automation.</li>
+<li><strong><code>javascript_ast_audit</code> (<code>89 / 100</code>, Grade A)</strong>: <code>100%</code> import hygiene and zero circular dependencies across <code>18</code> modules (<code>5,521</code> LOC); minor warnings for <code>4</code> loose <code>!=</code> checks in <code>src/htmx.js:2044,2100,2127,2194</code> and <code>2</code> extension <code>fetch()</code> calls (<code>hx-preload.js:54</code>, <code>hx-download.js:33</code>) without <code>AbortSignal</code>.</li>
+<li><strong><code>repo_structure_audit</code> (<code>90 / 100</code>, Grade S)</strong>: Clean zero-dependency package structure and complete multi-format export map (<code>main</code>, <code>module</code>, <code>jsdelivr</code>, <code>unpkg</code>, <code>types</code>, <code>web-types</code>, <code>bin</code>); minor note to add <code>engines.node</code> and a static linter script in <code>package.json</code>.</li>
+</ol>
+
+</section>
+
+<section id="chapter-3-02_architecture_and_structure" class="doc-chapter pdf-chapter">
+<h1>2. Architecture &amp; Source Code Structure</h1>
+<p><code>htmx</code> <code>v4.0.1</code> implements a <strong>Microkernel + Event-Driven Extension Hook Architecture</strong>. The core hypermedia engine resides in a single self-contained module (<code>src/htmx.js</code>, <code>1,989</code> non-blank LOC) that has <strong>zero outgoing imports</strong>, while <code>17</code> official opt-in extensions (<code>src/ext/*.js</code>, <code>3,532</code> combined non-blank LOC) register lifecycle hooks (<code>htmx_before_request</code>, <code>htmx_after_swap</code>, etc.) via <code>htmx.registerExtension()</code> and receive a curated 15-method <code>#internalAPI</code> bridge in <code>init(api)</code>.</p>
+<figure class="drawlib-image">
+  <img src="../images/02_architecture_and_structure/02_source_structure_tree.png" alt="02_architecture_and_structure_1" />
+  <figcaption class="drawlib-caption">Physical Repository Tree & Top Source Modules by Non-Blank Lines of Code (5,521 Total LOC)</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/02_architecture_and_structure/02_architecture_thermal_flow.png" alt="02_architecture_and_structure_2" />
+  <figcaption class="drawlib-caption">Layered Microkernel Dependency Graph with Thermal Risk Overlay (HeatmapOverlay) & Execution Flows</figcaption>
+</figure>
+<h2>Architectural Assessment &amp; Module Inventory</h2>
+<h3>1. Four-Layer Structural Separation</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Layer</th>
+<th style="text-align:left">Repository Paths</th>
+<th style="text-align:left">Allowed Dependencies</th>
+<th style="text-align:left">Responsibility &amp; Boundary Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Core Hypermedia Runtime &amp; DOM Reconciler</strong></td>
+<td style="text-align:left"><code>src/htmx.js</code>, <code>src/htmx.d.ts</code></td>
+<td style="text-align:left"><em>(None — zero imports)</em></td>
+<td style="text-align:left">Implements <code>HCON</code> relaxed configuration parser, <code>RequestQueue</code> concurrency coordinator, explicit <code>:inherited</code> attribute lookup, <code>fetch()</code> orchestration, <code>&lt;hx-partial&gt;</code> / OOB task extraction, and built-in Idiomorph DOM tree reconciliation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Streaming &amp; Transport Extensions</strong></td>
+<td style="text-align:left"><code>src/ext/hx-sse.js</code>, <code>src/ext/hx-ws.js</code>, <code>src/ext/hx-multipart.js</code>, <code>src/ext/hx-preload.js</code>, <code>src/ext/hx-ptag.js</code>, <code>src/ext/hx-download.js</code></td>
+<td style="text-align:left"><code>src/htmx.js</code></td>
+<td style="text-align:left">Extends the Fetch and event lifecycle with Server-Sent Events (<code>EventSource</code> + <code>ReadableStream</code>), bidirectional WebSockets with exponential backoff, <code>multipart/mixed</code> streaming swaps, speculative prefetching, and <code>HX-PTag</code> conditional polling.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Reactive Scripting, DOM &amp; Security Extensions</strong></td>
+<td style="text-align:left"><code>src/ext/hx-live.js</code>, <code>src/ext/hx-csp.js</code>, <code>src/ext/hx-history-cache.js</code>, <code>src/ext/hx-head.js</code>, <code>src/ext/hx-targets.js</code>, <code>src/ext/hx-upsert.js</code>, <code>src/ext/hx-pending.js</code>, <code>src/ext/hx-browser-indicator.js</code>, <code>src/ext/hx-prompt.js</code>, <code>src/ext/hx-alpine-compat.js</code>, <code>src/ext/htmx-2-compat.js</code></td>
+<td style="text-align:left"><code>src/htmx.js</code></td>
+<td style="text-align:left">Provides reactive DOM state proxies (<code>hx-live</code>), strict CSP AST expression evaluation without <code>eval</code> (<code>hx-csp</code>), <code>sessionStorage</code> history snapshot caching, <code>&lt;head&gt;</code> merging, and htmx 2 / Alpine.js compatibility bridges.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Migration &amp; Tooling Scripts</strong></td>
+<td style="text-align:left"><code>src/scripts/upgrade-check.js</code>, <code>src/scripts/upgrade-check.py</code></td>
+<td style="text-align:left"><em>(Standalone CLI)</em></td>
+<td style="text-align:left">Scans <code>.html</code>, <code>.js</code>, <code>.ts</code>, <code>.jinja</code>, <code>.erb</code>, and <code>.php</code> templates for htmx 2 to htmx 4 migration patterns (<code>hx-disable</code> -&gt; <code>hx-ignore</code>, colon-separated events, explicit <code>:inherited</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Complete Source Code Module Inventory &amp; Thermal Hotspots</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Module Path</th>
+<th style="text-align:center">Non-Blank LOC</th>
+<th style="text-align:center">Thermal Risk (<code>risk_score</code>)</th>
+<th style="text-align:left">Triggered Rules &amp; Findings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-live.js</code></td>
+<td style="text-align:center"><code>754</code></td>
+<td style="text-align:center"><strong><code>0.45</code></strong></td>
+<td style="text-align:left"><code>common/security_vulnerability</code> (<code>1 MEDIUM</code>: direct <code>.innerHTML</code>/<code>.outerHTML</code> at lines <code>612, 613, 796</code> bypassing <code>#ttPolicy</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/htmx.js</code></td>
+<td style="text-align:center"><code>1,989</code></td>
+<td style="text-align:center"><strong><code>0.20</code></strong></td>
+<td style="text-align:left"><code>javascript/code_quality</code> (<code>1 LOW</code>: <code>4</code> loose <code>!=</code> comparisons in <code>__morphChildren</code>, <code>__findBestMatch</code>, <code>__morphNode</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>package-lock.json</code></td>
+<td style="text-align:center"><em>(Lockfile)</em></td>
+<td style="text-align:center"><strong><code>0.15</code></strong></td>
+<td style="text-align:left"><code>common/security_vulnerability</code> (<code>1 MEDIUM</code>: <code>5 HIGH</code> / <code>15 MEDIUM</code> transitive <code>devDependency</code> CVEs)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>test/tests/ext/hx-ws.js</code></td>
+<td style="text-align:center"><em>(Test Suite)</em></td>
+<td style="text-align:center"><strong><code>0.15</code></strong></td>
+<td style="text-align:left"><code>common/runtime_verification</code> (<code>1 MEDIUM</code>: <code>1ms</code> <code>htmx.timeout(1)</code> race at line <code>299</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-multipart.js</code></td>
+<td style="text-align:center"><code>910</code></td>
+<td style="text-align:center"><strong><code>0.12</code></strong></td>
+<td style="text-align:left"><code>0</code> findings (<code>81.9%</code> line coverage across <code>1,191</code> statements)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-ws.js</code></td>
+<td style="text-align:center"><code>456</code></td>
+<td style="text-align:center"><strong><code>0.12</code></strong></td>
+<td style="text-align:left"><code>0</code> findings (<code>90.0%</code> line coverage across <code>588</code> statements)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-sse.js</code></td>
+<td style="text-align:center"><code>338</code></td>
+<td style="text-align:center"><strong><code>0.12</code></strong></td>
+<td style="text-align:left"><code>0</code> findings (<code>95.0%+</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-history-cache.js</code></td>
+<td style="text-align:center"><code>204</code></td>
+<td style="text-align:center"><strong><code>0.12</code></strong></td>
+<td style="text-align:left"><code>0</code> findings (<code>sessionStorage</code> history snapshot cache)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-csp.js</code></td>
+<td style="text-align:center"><code>140</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>73.5%</code> line coverage; eval-free recursive AST interpreter)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-head.js</code></td>
+<td style="text-align:center"><code>135</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left">Grouped under <code>hx-live.js:612</code> Trusted Types recommendation (<code>htmlDoc.innerHTML</code> at line <code>59</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-preload.js</code></td>
+<td style="text-align:center"><code>88</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>common/security</code> (<code>1 LOW</code>: <code>fetch()</code> at line <code>54</code> omits <code>AbortSignal</code> timeout)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-alpine-compat.js</code></td>
+<td style="text-align:center"><code>84</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>96.4%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/htmx-2-compat.js</code></td>
+<td style="text-align:center"><code>83</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>81.7%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-pending.js</code></td>
+<td style="text-align:center"><code>82</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-upsert.js</code></td>
+<td style="text-align:center"><code>70</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-browser-indicator.js</code></td>
+<td style="text-align:center"><code>69</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-download.js</code></td>
+<td style="text-align:center"><code>60</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left">Grouped under <code>hx-preload.js:54</code> (<code>fetch()</code> at line <code>33</code> omits <code>AbortSignal</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-targets.js</code></td>
+<td style="text-align:center"><code>27</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-ptag.js</code></td>
+<td style="text-align:center"><code>18</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-prompt.js</code></td>
+<td style="text-align:center"><code>14</code></td>
+<td style="text-align:center"><code>&lt; 0.10</code></td>
+<td style="text-align:left"><code>0</code> findings (<code>100%</code> line coverage)</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="chapter-4-03_remediation_roadmap" class="doc-chapter pdf-chapter">
+<h1>3. Recommended Remediation Roadmap</h1>
+<p>The PNI501 workflow identified <strong>8 prioritized engineering action items</strong> (<code>0</code> <code>P0</code> blockers, <code>3</code> <code>P1</code> high-value improvements, and <code>5</code> <code>P2</code> hardening &amp; polish enhancements). Because <code>htmx</code> <code>v4.0.1</code> already achieves <code>Grade S</code> (<code>91 / 100</code>) with zero production dependencies, this roadmap focuses on dev-lockfile CVE hygiene, Trusted Types consistency across extensions, and 100% deterministic offline browser testing.</p>
+<figure class="drawlib-image">
+  <img src="../images/03_remediation_roadmap/03_remediation_timeline.png" alt="03_remediation_roadmap_1" />
+  <figcaption class="drawlib-caption">Phased Remediation Roadmap (P1 High-Value Improvements -> P2 Hardening & Offline CI Polish)</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/03_remediation_roadmap/03_action_plan_matrix.png" alt="03_remediation_roadmap_2" />
+  <figcaption class="drawlib-caption">Action Plan Traceability Matrix (Priority, Target Files, Related Rules/CVEs, and Expected Impact)</figcaption>
+</figure>
+<h2>Detailed Action Items (<code>P1</code> -&gt; <code>P2</code>)</h2>
+<ol>
+<li>
+<p><strong><code>[P1]</code> Refresh transitive <code>devDependencies</code> in <code>package-lock.json</code> to resolve 5 HIGH CVEs</strong> (<code>dependencies</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>package-lock.json</code>, <code>package.json</code></li>
+<li><strong>Related Rules / CVEs</strong>: <code>common/security_vulnerability</code>, <code>CVE-2024-21538</code>, <code>CVE-2026-69192</code>, <code>CVE-2026-102990</code>, <code>CVE-2026-82417</code></li>
+<li><strong>Action</strong>: Update <code>package-lock.json</code> via <code>npm audit fix</code> or <code>package.json</code> <code>overrides</code> to bump <code>cross-spawn</code> to <code>&gt;=7.0.5</code>, <code>ip-address</code> to <code>&gt;=10.7.1</code>, <code>basic-ftp</code> to <code>&gt;=6.2.1</code>, and <code>qs</code> to <code>&gt;=6.16.0</code>.</li>
+<li><strong>Expected Impact</strong>: Eliminates all fixable HIGH and MEDIUM CVEs in the development and test toolchain lockfile.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P1]</code> Route <code>innerHTML</code>/<code>outerHTML</code> assignments in <code>hx-live.js</code> and <code>hx-head.js</code> through core Trusted Types policy</strong> (<code>security</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>src/ext/hx-live.js</code>, <code>src/ext/hx-head.js</code>, <code>src/htmx.js</code></li>
+<li><strong>Related Rules / CVEs</strong>: <code>common/security_vulnerability</code>, <code>CWE-79</code></li>
+<li><strong>Action</strong>: Expose a Trusted Types helper on <code>#internalAPI</code> in <code>src/htmx.js</code> and use it in <code>src/ext/hx-live.js:612,613,796</code> and <code>src/ext/hx-head.js:59</code> before assigning to <code>.innerHTML</code> or <code>.outerHTML</code>.</li>
+<li><strong>Expected Impact</strong>: Ensures full compatibility with <code>require-trusted-types-for 'script'</code> CSP policies across all official extensions.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P1]</code> Eliminate 1ms timer race in <code>hx-ws.js</code> message queue unit test</strong> (<code>testing</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>test/tests/ext/hx-ws.js</code></li>
+<li><strong>Related Rules</strong>: <code>common/runtime_verification</code>, <code>javascript/testing</code></li>
+<li><strong>Action</strong>: In <code>test/tests/ext/hx-ws.js:293-310</code>, trigger <code>mockWebSocket</code> open deterministically (or increase mock auto-open latency) after asserting <code>connection.queue.length === 1</code> instead of relying on <code>await htmx.timeout(1)</code>.</li>
+<li><strong>Expected Impact</strong>: Makes the 1,854-test Playwright browser suite 100% deterministic under high parallel concurrency.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P2]</code> Attach <code>AbortSignal</code> timeout to extension <code>fetch()</code> calls in <code>hx-preload</code> and <code>hx-download</code></strong> (<code>code_quality</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>src/ext/hx-preload.js</code>, <code>src/ext/hx-download.js</code></li>
+<li><strong>Related Rules</strong>: <code>common/security</code>, <code>javascript/code_quality</code></li>
+<li><strong>Action</strong>: Propagate <code>ctx.request.signal</code> or <code>AbortSignal.timeout(htmx.config.defaultTimeout)</code> into the <code>fetch()</code> options in <code>src/ext/hx-preload.js:54</code> and <code>src/ext/hx-download.js:33</code>.</li>
+<li><strong>Expected Impact</strong>: Prevents hung background prefetch or download requests from leaking browser connections.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P2]</code> Standardize strict equality (<code>!==</code>) in DOM morphing routines</strong> (<code>code_quality</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>src/htmx.js</code></li>
+<li><strong>Related Rules</strong>: <code>javascript/code_quality</code></li>
+<li><strong>Action</strong>: Replace loose <code>!=</code> checks at lines <code>2044</code>, <code>2100</code>, <code>2127</code>, and <code>2194</code> of <code>src/htmx.js</code> with strict <code>!==</code> comparisons.</li>
+<li><strong>Expected Impact</strong>: Eliminates coercive equality checks in hot DOM tree reconciliation loops.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P2]</code> Declare <code>engines.node</code> and static lint script in <code>package.json</code></strong> (<code>dependencies</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>package.json</code></li>
+<li><strong>Related Rules</strong>: <code>javascript/dependencies</code></li>
+<li><strong>Action</strong>: Add an <code>engines</code> field specifying <code>Node &gt;=20</code> and configure Biome or ESLint in <code>devDependencies</code> for static syntax/style verification.</li>
+<li><strong>Expected Impact</strong>: Enforces consistent Node runtime expectations and catches syntax regressions prior to browser test runs.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P2]</code> Add <code>SECURITY.md</code> and Dependabot configuration for automated supply-chain hygiene</strong> (<code>security</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>package.json</code></li>
+<li><strong>Related Rules</strong>: <code>common/supply_chain</code></li>
+<li><strong>Action</strong>: Create <code>SECURITY.md</code> with vulnerability reporting instructions and <code>.github/dependabot.yml</code> for automated <code>npm</code> lockfile PRs.</li>
+<li><strong>Expected Impact</strong>: Satisfies OpenSSF Scorecard supply-chain governance checks and prevents <code>devDependency</code> drift.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>[P2]</code> Vendor or declare <code>chai</code> in <code>devDependencies</code> for offline test execution</strong> (<code>testing</code>)</p>
+<ul>
+<li><strong>Target Files</strong>: <code>test/web-test-runner.config.mjs</code>, <code>package.json</code></li>
+<li><strong>Related Rules</strong>: <code>common/runtime_verification</code>, <code>javascript/dependencies</code></li>
+<li><strong>Action</strong>: Vendor <code>chai.js</code> under <code>test/lib/chai.js</code> (or add <code>chai</code> to <code>devDependencies</code>) and replace the <code>https://unpkg.com/chai@4.5.0/chai.js</code> script URL in <code>test/web-test-runner.config.mjs</code>.</li>
+<li><strong>Expected Impact</strong>: Allows <code>npm test</code> to execute in air-gapped and <code>--network=none</code> CI environments without external CDN access.</li>
+</ul>
+</li>
+</ol>
+
+</section>
+
+<section id="chapter-5-04_standards_and_findings" class="doc-chapter pdf-chapter">
+<h1>4. Audit Standards, Rule Compliance &amp; Findings</h1>
+<p>The PNI501 workflow evaluated <code>htmx</code> <code>v4.0.1</code> across <strong>6 executed audit steps</strong> (<code>security_vulnerability_audit</code>, <code>javascript_ast_audit</code>, <code>repo_structure_audit</code>, <code>container_runtime_audit</code>, <code>library_hygiene_audit</code>, and <code>javascript_test_audit</code>) and <strong>14 active engineering rules</strong>. Overall rule compliance stands at <strong>10 PASS, 4 WARN, and 0 FAIL</strong>, with <strong>8 raw findings</strong> consolidated into <strong>7 unique repository locations</strong>.</p>
+<figure class="drawlib-image">
+  <img src="../images/04_standards_and_findings/04_audit_steps_and_rules.png" alt="04_standards_and_findings_1" />
+  <figcaption class="drawlib-caption">Executed Audit Step Scores (Weakest -> Strongest) & Rule Compliance Summary</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/04_standards_and_findings/04_consolidated_findings_table.png" alt="04_standards_and_findings_2" />
+  <figcaption class="drawlib-caption">Consolidated Location Findings Evidence Table (7 Unique Locations from 8 Raw Findings)</figcaption>
+</figure>
+<h2>Full Rule Compliance &amp; Findings Reference</h2>
+<h3>1. Executed Audit Step Scores (Weakest -&gt; Strongest)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Audit Step ID</th>
+<th style="text-align:center">Score &amp; Grade</th>
+<th style="text-align:center">Verdict Counts</th>
+<th style="text-align:left">Step Synthesis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>security_vulnerability_audit</code></strong></td>
+<td style="text-align:center"><strong>88 / 100 (<code>A</code>)</strong></td>
+<td style="text-align:center"><code>pass=0, warn=2, fail=0</code></td>
+<td style="text-align:left">Production bundles (<code>dist/htmx.js</code>, <code>dist/htmx.esm.js</code>, <code>dist/htmax.js</code>) have <code>0</code> runtime dependencies, <code>0</code> leaked secrets, and <code>0</code> container misconfigurations. <code>package-lock.json</code> contains <code>22</code> <code>devDependency</code> advisories (<code>5</code> HIGH, <code>15</code> MEDIUM, <code>2</code> LOW), and <code>hx-live.js</code> / <code>hx-head.js</code> assign <code>.innerHTML</code> directly without core's <code>#ttPolicy</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>javascript_ast_audit</code></strong></td>
+<td style="text-align:center"><strong>89 / 100 (<code>A</code>)</strong></td>
+<td style="text-align:center"><code>pass=5, warn=1, fail=0</code></td>
+<td style="text-align:left"><code>18</code> source modules (<code>5,521</code> non-blank LOC) with <code>0</code> circular dependencies and a <code>772</code>-line TypeScript declaration file (<code>src/htmx.d.ts</code>). Warnings note <code>4</code> loose <code>!=</code> checks in morphing and <code>2</code> extension <code>fetch()</code> calls omitting <code>AbortSignal</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>repo_structure_audit</code></strong></td>
+<td style="text-align:center"><strong>90 / 100 (<code>S</code>)</strong></td>
+<td style="text-align:center"><code>pass=5, warn=0, fail=0</code></td>
+<td style="text-align:left">Zero runtime dependencies, <code>6</code> pinned <code>devDependencies</code> in <code>package-lock.json</code>, dual licensing (<code>LICENSE-HTMX</code> BSD-0-Clause + <code>LICENSE</code> Apache-2.0), and comprehensive multi-target exports in <code>package.json</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>container_runtime_audit</code></strong></td>
+<td style="text-align:center"><strong>92 / 100 (<code>S</code>)</strong></td>
+<td style="text-align:center"><code>pass=1, warn=1, fail=0</code></td>
+<td style="text-align:left">Hermetic Node 22 + Playwright Chromium image built in <code>127.33s</code>; <code>1,854</code> real-browser tests executed with <code>--network=none</code> in <code>61.33s</code> (<code>1,849</code> passed, <code>4</code> skipped, <code>1</code> timer race at <code>hx-ws.js:299</code>), achieving <strong>93.5% line coverage</strong> and <strong>92.3% branch coverage</strong>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>library_hygiene_audit</code></strong></td>
+<td style="text-align:center"><strong>94 / 100 (<code>S</code>)</strong></td>
+<td style="text-align:center"><code>pass=3, warn=0, fail=0</code></td>
+<td style="text-align:left">Strictly bounded public API (<code>12</code> public methods on <code>htmx</code>, <code>86</code> internal methods lowered via <code>sed</code> to ES2022 <code>#</code> private fields in <code>dist/</code>), silent-by-default logging (<code>logAll = false</code>), and multi-format bundles.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>javascript_test_audit</code></strong></td>
+<td style="text-align:center"><strong>94 / 100 (<code>S</code>)</strong></td>
+<td style="text-align:center"><code>pass=1, warn=0, fail=0</code></td>
+<td style="text-align:left"><code>88</code> browser test suites (<code>44</code> unit, <code>23</code> attributes, <code>6</code> end2end, <code>15</code> ext) with <code>1,849</code> Mocha/Chai <code>it()</code> blocks, deterministic <code>fetch-mock.js</code> isolation, and per-test DOM cleanup.</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Complete Rule Compliance Matrix (<code>FAIL -&gt; WARN -&gt; PASS</code>)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Status</th>
+<th style="text-align:left">Rule ID</th>
+<th style="text-align:left">Source Action</th>
+<th style="text-align:left">Deterministic Evidence &amp; Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>WARN</strong></td>
+<td style="text-align:left"><code>common/runtime_verification</code></td>
+<td style="text-align:left"><code>runtime_verification</code></td>
+<td style="text-align:left"><code>harness_build=passed (127.33s)</code>; offline tests <code>total=1854, passed=1849, failed=1</code> (<code>hx-ws.js:299</code> <code>1ms</code> timer race), <code>skipped=4</code>; V8 coverage <code>line=93.5%, branch=92.3%</code> (<code>6,267/6,706</code> statements); <code>smoke_check=passed</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>WARN</strong></td>
+<td style="text-align:left"><code>common/security_vulnerability</code></td>
+<td style="text-align:left"><code>security_vulnerability_audit</code></td>
+<td style="text-align:left"><code>0</code> production runtime dependencies in <code>package.json</code>; <code>0</code> secrets; <code>0</code> misconfigs; <code>22</code> <code>devDependencies</code> CVEs in <code>package-lock.json</code> (<code>5</code> HIGH: <code>CVE-2024-21538</code>, <code>CVE-2026-69192</code>, <code>CVE-2026-102990</code>, <code>CVE-2026-19693</code>, <code>CVE-2026-56876</code>); direct <code>innerHTML</code> assignments in <code>src/ext/hx-head.js:59</code> and <code>src/ext/hx-live.js:612,613,796</code> bypass core Trusted Types policy.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>WARN</strong></td>
+<td style="text-align:left"><code>common/supply_chain</code></td>
+<td style="text-align:left"><code>security_vulnerability_audit</code></td>
+<td style="text-align:left"><code>package-lock.json</code> committed (<code>0</code> unpinned specs); <code>LICENSE</code> present; <code>SECURITY.md=False</code>; <code>dependency_automation=False</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>WARN</strong></td>
+<td style="text-align:left"><code>javascript/code_quality</code></td>
+<td style="text-align:left"><code>ast_and_quality</code></td>
+<td style="text-align:left"><code>4</code> loose equality (<code>!=</code>) checks in <code>src/htmx.js:2044,2100,2127,2194</code>; <code>6</code> intentional progressive-fallback <code>catch {}</code> blocks in <code>src/htmx.js</code>; <code>2</code> <code>fetch()</code> calls without <code>AbortSignal</code> timeout in <code>src/ext/hx-download.js:33</code> and <code>src/ext/hx-preload.js:54</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/architecture</code></td>
+<td style="text-align:left"><code>ast_and_quality</code></td>
+<td style="text-align:left"><code>0</code> circular dependencies across <code>18</code> modules; clean hub-and-spoke extension architecture via <code>htmx.registerExtension()</code> and <code>#internalAPI</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/documentation</code></td>
+<td style="text-align:left"><code>repo_and_deps</code></td>
+<td style="text-align:left">Root <code>README.md</code>, <code>CHANGELOG.md</code>, <code>4</code> official skill guides in <code>src/skills/*.md</code>, <code>772</code>-line JSDoc-annotated <code>src/htmx.d.ts</code>, and <code>4</code> Diataxis portals.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/git_workflow</code></td>
+<td style="text-align:left"><code>repo_and_deps</code></td>
+<td style="text-align:left"><code>.gitignore</code> (<code>230</code> lines) excludes <code>node_modules/</code>, <code>coverage/</code>, <code>.drawlib/</code>, and <code>.pni/cache/</code> while tracking upstream <code>dist/</code> and lockfiles.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/library_guidelines</code></td>
+<td style="text-align:left"><code>library_hygiene</code></td>
+<td style="text-align:left"><code>package.json</code> exports <code>main</code>, <code>module</code>, <code>jsdelivr</code>, <code>unpkg</code>, <code>types</code>, and <code>web-types</code>; build scripts lower all <code>__</code> internal methods to <code>#</code> private fields; <code>0</code> runtime dependencies.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/maintainability</code></td>
+<td style="text-align:left"><code>ast_and_quality</code></td>
+<td style="text-align:left"><code>5,521</code> non-blank LOC across <code>18</code> files (<code>src/htmx.js</code> <code>1,989</code> LOC, <code>hx-multipart.js</code> <code>910</code> LOC, <code>hx-live.js</code> <code>754</code> LOC); <code>98</code> well-factored methods in <code>Htmx</code> class.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/production_readiness</code></td>
+<td style="text-align:left"><code>runtime_verification</code></td>
+<td style="text-align:left">Core requests enforce <code>defaultTimeout=60000ms</code> via <code>AbortController</code> (<code>__initTimeout</code> in <code>src/htmx.js:679</code>); <code>hx-ws.js</code> and <code>hx-sse.js</code> implement exponential backoff with jitter.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>common/security</code></td>
+<td style="text-align:left"><code>repo_and_deps</code></td>
+<td style="text-align:left"><code>0</code> committed secret files; <code>HCON.merge</code> explicitly blocks <code>__proto__</code>, <code>constructor</code>, and <code>prototype</code> (<code>src/htmx.js:75</code>); <code>#ttPolicy</code> Trusted Types hook and <code>hx-csp.js</code> extension.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>javascript/dependencies</code></td>
+<td style="text-align:left"><code>repo_and_deps</code></td>
+<td style="text-align:left"><code>0</code> runtime dependencies; all <code>6</code> build/test packages isolated in <code>devDependencies</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>javascript/testing</code></td>
+<td style="text-align:left"><code>test_health</code></td>
+<td style="text-align:left"><code>88</code> test files across <code>test/tests/{unit,attributes,end2end,ext}/*.js</code> (<code>1,849</code> <code>it()</code> blocks); deterministic HTTP mocking via <code>test/lib/fetch-mock.js</code>.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>PASS</strong></td>
+<td style="text-align:left"><code>javascript/typing</code></td>
+<td style="text-align:left"><code>ast_and_quality</code></td>
+<td style="text-align:left">Companion <code>src/htmx.d.ts</code> (<code>772</code> lines) provides full TypeScript contracts for <code>Htmx</code>, <code>HtmxConfig</code>, <code>HtmxRequestCtx</code>, <code>HtmxEventMap</code>, and <code>HxLive</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3>3. Configured Design Waivers (<code>pni.toml</code> <code>[[opt_out]]</code>)</h3>
+<ul>
+<li><strong><code>DS-0026</code></strong> (scope: <code>.pni/dockerfiles/**</code>, matched: <code>0</code>): Hermetic batch test container exits upon <code>@web/test-runner</code> completion; daemon <code>HEALTHCHECK</code> is not applicable.</li>
+</ul>
+
+</section>
+
+<section id="chapter-6-05_code_and_runtime_analysis" class="doc-chapter pdf-chapter">
+<h1>5. Deep Dive: Code Quality, Testing &amp; Runtime</h1>
+<p>This chapter examines static JavaScript AST quality metrics (<code>5,521</code> non-blank LOC across <code>18</code> source modules), SIG maintainability indicators, 12-Factor operational readiness, and the hermetic Playwright Chromium browser test execution (<code>1,854</code> test cases, <strong>93.5% line coverage</strong>, <strong>92.3% branch coverage</strong>).</p>
+<figure class="drawlib-image">
+  <img src="../images/05_code_and_runtime_analysis/05_module_quality_heatmap.png" alt="05_code_and_runtime_analysis_1" />
+  <figcaption class="drawlib-caption">Module × Quality Dimension Fitness Matrix (HeatmapChart across Core and Key Extensions)</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/05_code_and_runtime_analysis/05_runtime_coverage_breakdown.png" alt="05_code_and_runtime_analysis_2" />
+  <figcaption class="drawlib-caption">Hermetic Browser Test Execution Summary & Lowest-Covered Modules (Line vs. Branch Coverage %)</figcaption>
+</figure>
+<h2>Static AST Quality &amp; Containerized Runtime Analysis</h2>
+<h3>1. Static AST Quality &amp; SIG Maintainability Metrics</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Metric Category</th>
+<th style="text-align:center">Deterministic Value</th>
+<th style="text-align:left">Technical Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Codebase Size</strong></td>
+<td style="text-align:center"><code>18</code> files / <code>5,521</code> LOC</td>
+<td style="text-align:left"><code>src/htmx.js</code> (<code>1,989</code> non-blank LOC) + <code>17</code> extensions in <code>src/ext/*.js</code> (<code>3,532</code> non-blank LOC).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Circular Dependencies</strong></td>
+<td style="text-align:center"><code>0</code></td>
+<td style="text-align:left">Strictly acyclic hub-and-spoke topology (<code>src/htmx.js</code> has <code>0</code> outgoing imports).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Global State Usages</strong></td>
+<td style="text-align:center"><code>1</code> (<code>src/htmx.js:1</code>)</td>
+<td style="text-align:left">Top-level <code>var htmx = (() =&gt; { ... })()</code> singleton required for <code>&lt;script src=&quot;/htmx.js&quot;&gt;</code> browser globals.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Loose Inequality (<code>!=</code>)</strong></td>
+<td style="text-align:center"><code>4</code> (<code>src/htmx.js:2044..2194</code>)</td>
+<td style="text-align:left">Located in <code>__morphChildren</code>, <code>__findBestMatch</code>, and <code>__morphNode</code>; recommended to standardize on <code>!==</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Empty <code>catch {}</code> Blocks</strong></td>
+<td style="text-align:center"><code>6</code> (<code>src/htmx.js:40..2315</code>)</td>
+<td style="text-align:left">Deliberate progressive feature fallbacks (<code>HCON.parse</code> JSON probe, <code>CSSStyleSheet</code> indicator injection, <code>focus()</code>, <code>Element.moveBefore()</code>, View Transitions).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Missing <code>AbortSignal</code> Timeouts</strong></td>
+<td style="text-align:center"><code>2</code> (<code>hx-preload.js:54</code>, <code>hx-download.js:33</code>)</td>
+<td style="text-align:left">Core <code>Htmx.__initTimeout</code> (<code>src/htmx.js:679</code>) enforces a <code>60,000ms</code> <code>AbortController</code> timeout on all primary requests; <code>hx-preload</code> and <code>hx-download</code> invoke <code>fetch()</code> directly without attaching <code>AbortSignal</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Console Logging</strong></td>
+<td style="text-align:center"><code>2</code> (<code>src/htmx.js:1522</code>, <code>htmx-2-compat.js:30</code>)</td>
+<td style="text-align:left"><code>src/htmx.js:1522</code> is strictly gated behind <code>if (this.config.logAll)</code>; <code>htmx-2-compat.js:30</code> emits deliberate developer migration warnings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Assertion-Free Test Candidates</strong></td>
+<td style="text-align:center"><code>47</code> (all verified)</td>
+<td style="text-align:left">All <code>47</code> AST-flagged test blocks delegate assertions to shared helpers in <code>test/lib/helpers.js</code> (<code>assertTextContentIs</code>, <code>assertInnerHtmlIs</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Hermetic Container Runtime &amp; Browser Test Verification</h3>
+<ul>
+<li><strong>Container Harness Build</strong>: Built <code>.pni/dockerfiles/root/Dockerfile</code> (<code>node:22-bookworm</code> + Playwright Chromium + local <code>chai@4.5.0</code> cache) in <code>127.33s</code> (<code>status=passed</code>).</li>
+<li><strong>Offline Browser Test Suite (<code>--network=none</code>)</strong>: Executed <code>1,854</code> browser tests across <code>88</code> suites in <code>61.33s</code>:
+<ul>
+<li><strong>Passed</strong>: <code>1,849</code> (<code>99.73%</code> of active tests)</li>
+<li><strong>Skipped</strong>: <code>4</code></li>
+<li><strong>Failed</strong>: <code>1</code> timing-sensitive race in <code>test/tests/ext/hx-ws.js:299</code>:<pre><code class="language-text">[FAILURE] JEOsiBLigWWJDrt4YZ0H1 &gt; hx-ws WebSocket extension &gt; Message Sending.queues a message until the initial connection opens:
+AssertionError: expected +0 to equal 1
+</code></pre>
+<em>Root Cause</em>: Line <code>299</code> executes <code>await htmx.timeout(1)</code> before asserting <code>expect(connection.queue.length).to.equal(1)</code>. Under parallel multi-tab Chromium execution, the <code>1ms</code> timer can fire after <code>mockWebSocket</code>'s auto-open callback has already flushed the queue (<code>length === 0</code>).</li>
+</ul>
+</li>
+<li><strong>Startup Smoke Check (<code>library+cli</code>)</strong>: Verified both <code>dist/htmx.js</code> and <code>node src/scripts/upgrade-check.js --help</code> (<code>status=passed</code>, exit code <code>0</code>).</li>
+</ul>
+<h3>3. Lowest-Covered Modules (Measured V8 Coverage, Ascending)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Module Path</th>
+<th style="text-align:center">Line Coverage</th>
+<th style="text-align:center">Branch Coverage</th>
+<th style="text-align:center">Statements Covered</th>
+<th style="text-align:left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-csp.js</code></td>
+<td style="text-align:center"><code>73.5%</code></td>
+<td style="text-align:center"><code>58.1%</code></td>
+<td style="text-align:center"><code>161 / 219</code></td>
+<td style="text-align:left">Uncovered branches correspond to defensive AST operator/syntax error paths.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-head.js</code></td>
+<td style="text-align:center"><code>77.4%</code></td>
+<td style="text-align:center"><code>51.5%</code></td>
+<td style="text-align:center"><code>147 / 190</code></td>
+<td style="text-align:left">Uncovered branches handle edge-case <code>&lt;head&gt;</code> script/link re-evaluation fallbacks.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/htmx-2-compat.js</code></td>
+<td style="text-align:center"><code>81.7%</code></td>
+<td style="text-align:center"><code>82.4%</code></td>
+<td style="text-align:center"><code>76 / 93</code></td>
+<td style="text-align:left">Legacy htmx 2 event/attribute translation shims.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-multipart.js</code></td>
+<td style="text-align:center"><code>81.9%</code></td>
+<td style="text-align:center"><code>81.9%</code></td>
+<td style="text-align:center"><code>975 / 1,191</code></td>
+<td style="text-align:left">Streaming boundary chunk split and malformed header edge cases.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-ws.js</code></td>
+<td style="text-align:center"><code>90.0%</code></td>
+<td style="text-align:center"><code>77.0%</code></td>
+<td style="text-align:center"><code>529 / 588</code></td>
+<td style="text-align:left">WebSocket reconnect backoff and close-code branches.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-preload.js</code></td>
+<td style="text-align:center"><code>93.1%</code></td>
+<td style="text-align:center"><code>82.7%</code></td>
+<td style="text-align:center"><code>95 / 102</code></td>
+<td style="text-align:left">Speculative mouseover/mousedown prefetch triggers.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/htmx.js</code> <em>(Core Engine)</em></td>
+<td style="text-align:center"><strong>94.3%</strong></td>
+<td style="text-align:center"><strong>93.1%</strong></td>
+<td style="text-align:center"><code>2,914 / 3,090</code></td>
+<td style="text-align:left">Core <code>HCON</code>, <code>RequestQueue</code>, <code>Htmx</code>, <code>fetch()</code>, and Idiomorph engine.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-alpine-compat.js</code></td>
+<td style="text-align:center"><code>96.4%</code></td>
+<td style="text-align:center"><code>84.8%</code></td>
+<td style="text-align:center"><code>106 / 110</code></td>
+<td style="text-align:left">Alpine.js morph/swap state synchronization bridge.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-download.js</code></td>
+<td style="text-align:center"><code>96.6%</code></td>
+<td style="text-align:center"><code>65.2%</code></td>
+<td style="text-align:center"><code>85 / 88</code></td>
+<td style="text-align:left">Blob download and <code>Content-Disposition</code> filename extraction.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>src/ext/hx-live.js</code></td>
+<td style="text-align:center"><strong>97.6%</strong></td>
+<td style="text-align:center"><strong>94.0%</strong></td>
+<td style="text-align:center"><code>1,042 / 1,068</code></td>
+<td style="text-align:left">Reactive DOM state proxies and <code>q()</code>/<code>$()</code> query wrappers.</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="chapter-7-06_security_and_supply_chain" class="doc-chapter pdf-chapter">
+<h1>6. Deep Dive: Security, Supply Chain &amp; API Surface</h1>
+<p><code>htmx</code> <code>v4.0.1</code> ships <strong>zero production runtime dependencies</strong> (<code>dependencies: {}</code> in <code>package.json</code>), meaning end-user browsers loading <code>dist/htmx.js</code>, <code>dist/htmx.esm.js</code>, or <code>dist/htmax.js</code> inherit <strong>zero third-party npm supply-chain vulnerabilities</strong>. This chapter dissects the Trivy container/lockfile scan results, CWE-tagged DOM sinks, and built-in hypermedia security boundaries.</p>
+<figure class="drawlib-image">
+  <img src="../images/06_security_and_supply_chain/06_supply_chain_cve_breakdown.png" alt="06_security_and_supply_chain_1" />
+  <figcaption class="drawlib-caption">Supply-Chain & Container CVE Attribution (Shipped Browser Bundle vs. Dev Lockfile vs. Harness npm CLI)</figcaption>
+</figure>
+<figure class="drawlib-image">
+  <img src="../images/06_security_and_supply_chain/06_cwe_sinks_and_defenses.png" alt="06_security_and_supply_chain_2" />
+  <figcaption class="drawlib-caption">AST Dangerous Code Sinks (CWE-79 / CWE-338) & Built-In Hypermedia Security Architecture</figcaption>
+</figure>
+<h2>Detailed Security &amp; Supply-Chain Audit Data</h2>
+<h3>1. Supply-Chain &amp; Trivy Vulnerability Breakdown</h3>
+<ul>
+<li><strong>Production Browser Bundles (<code>dist/htmx.js</code>, <code>dist/htmx.esm.js</code>, <code>dist/htmax.js</code>)</strong>: <strong>0 dependencies, 0 CVEs</strong>.</li>
+<li><strong>Secrets &amp; Container IaC Hardening</strong>: <code>0</code> hardcoded secrets (<code>SecurityFacts.secrets = []</code>, <code>AstFacts.hardcoded_secrets = []</code>, <code>committed_secret_files = []</code>) and <code>0</code> Dockerfile misconfigurations (<code>misconfigurations = []</code>).</li>
+<li><strong>Development Lockfile (<code>package-lock.json</code> <code>dev_or_optional</code> scope — <code>22</code> total CVEs: <code>0</code> CRITICAL, <code>5</code> HIGH, <code>15</code> MEDIUM, <code>2</code> LOW)</strong>:
+<ul>
+<li><code>[HIGH]</code> <code>CVE-2024-21538</code> in <code>cross-spawn@7.0.3</code> -&gt; fix=<code>7.0.5, 6.0.6</code> (ReDoS in dev test runner subprocess spawning)</li>
+<li><code>[HIGH]</code> <code>CVE-2026-69192</code> in <code>ip-address@9.0.5</code> -&gt; fix=<code>10.3.1</code> (IP address parsing inconsistency in dev server dependency)</li>
+<li><code>[HIGH]</code> <code>CVE-2026-102990</code> in <code>basic-ftp@5.3.1</code> -&gt; fix=<code>6.2.1</code> (DoS via crafted directory listing in Playwright browser downloader dependency)</li>
+<li><code>[HIGH]</code> <code>CVE-2026-19693</code> &amp; <code>CVE-2026-56876</code> in <code>extract-zip@2.0.1</code> (Symlink validation in Playwright zip extraction helper)</li>
+<li><code>[MEDIUM]</code> <code>CVE-2026-82417</code> in <code>qs@6.15.3</code> -&gt; fix=<code>6.16.0</code></li>
+<li><code>[MEDIUM]</code> <code>CVE-2026-104844</code> in <code>postcss-selector-parser@6.0.10</code> / <code>6.1.0</code> -&gt; fix=<code>7.1.6, 6.1.5</code></li>
+</ul>
+</li>
+<li><strong>Test Harness Global <code>npm</code> CLI (<code>/usr/local/lib/node_modules/npm</code> inside non-shipped <code>node:22-bookworm</code> image — <code>29</code> findings)</strong>:
+<ul>
+<li>Trivy's container image scan flagged <code>29</code> advisories in the base image's global <code>npm</code> CLI packages (<code>tar@6.2.1</code> <code>CVE-2026-59873</code> -&gt; <code>7.5.19</code>, <code>brace-expansion@2.0.1</code> <code>CVE-2026-102276</code> -&gt; <code>5.0.10</code>, <code>glob@10.4.2</code> <code>CVE-2025-64756</code> -&gt; <code>10.5.0</code>, <code>minimatch@9.0.5</code> <code>CVE-2026-26996</code> -&gt; <code>9.0.6</code>, <code>pacote@18.0.6</code> <code>CVE-2026-9496</code> -&gt; <code>21.5.1</code>). These belong to the container's pre-installed <code>/usr/local/lib/node_modules/npm</code> binary and are never part of <code>htmx</code>.</li>
+</ul>
+</li>
+</ul>
+<h3>2. Static CWE Sink Audit (<code>AstFacts.dangerous_sinks</code>, 8 Locations)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Severity</th>
+<th style="text-align:center">CWE ID</th>
+<th style="text-align:left">Location</th>
+<th style="text-align:left">Expression</th>
+<th style="text-align:left">Engineering Verdict &amp; Remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>HIGH</code></td>
+<td style="text-align:center"><code>CWE-79</code> (<code>xss</code>)</td>
+<td style="text-align:left"><code>src/ext/hx-head.js:59</code></td>
+<td style="text-align:left"><code>htmlDoc.innerHTML = text</code></td>
+<td style="text-align:left">Parses <code>&lt;head&gt;</code> markup from server responses; should wrap <code>text</code> via core's <code>#ttPolicy</code> helper for strict Trusted Types compatibility.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>HIGH</code></td>
+<td style="text-align:center"><code>CWE-79</code> (<code>xss</code>)</td>
+<td style="text-align:left"><code>src/ext/hx-live.js:612</code></td>
+<td style="text-align:left"><code>elt.innerHTML = val</code></td>
+<td style="text-align:left">Reactive <code>q().html</code> setter; should route <code>val</code> through core's <code>#ttPolicy</code> wrapper (<code>P1-2</code>).</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>HIGH</code></td>
+<td style="text-align:center"><code>CWE-79</code> (<code>xss</code>)</td>
+<td style="text-align:left"><code>src/ext/hx-live.js:613</code></td>
+<td style="text-align:left"><code>elt.outerHTML = val</code></td>
+<td style="text-align:left">Reactive outerHTML setter; should route <code>val</code> through core's <code>#ttPolicy</code> wrapper (<code>P1-2</code>).</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>HIGH</code></td>
+<td style="text-align:center"><code>CWE-79</code> (<code>xss</code>)</td>
+<td style="text-align:left"><code>src/ext/hx-live.js:796</code></td>
+<td style="text-align:left"><code>elt.innerHTML = ...</code></td>
+<td style="text-align:left">Template initialization in <code>hx-live</code>; should route through <code>#ttPolicy</code> (<code>P1-2</code>).</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>LOW</code></td>
+<td style="text-align:center"><code>CWE-338</code></td>
+<td style="text-align:left"><code>src/ext/hx-history-cache.js:26</code></td>
+<td style="text-align:left"><code>Math.random()</code></td>
+<td style="text-align:left">Generates non-security local cache key suffix; benign in browser context.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>LOW</code></td>
+<td style="text-align:center"><code>CWE-338</code></td>
+<td style="text-align:left"><code>src/ext/hx-multipart.js:18</code></td>
+<td style="text-align:left"><code>Math.random()</code></td>
+<td style="text-align:left">Generates internal multipart stream correlation ID; benign.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>LOW</code></td>
+<td style="text-align:center"><code>CWE-338</code></td>
+<td style="text-align:left"><code>src/ext/hx-sse.js:208</code></td>
+<td style="text-align:left"><code>Math.random()</code></td>
+<td style="text-align:left">Computes exponential backoff jitter for SSE reconnection; benign.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>LOW</code></td>
+<td style="text-align:center"><code>CWE-338</code></td>
+<td style="text-align:left"><code>src/ext/hx-ws.js:246</code></td>
+<td style="text-align:left"><code>Math.random()</code></td>
+<td style="text-align:left">Computes exponential backoff jitter for WebSocket reconnection; benign.</td>
+</tr>
+</tbody>
+</table>
+<h3>3. API Endpoint Attack Surface (<code>api_endpoints</code>)</h3>
+<ul>
+<li><strong>Extracted Server HTTP Routes</strong>: <code>0</code> (<code>htmx</code> is a client-side browser hypermedia library and CLI migration scanner; dynamic server penetration testing <code>SEC-06</code> is <code>not_applicable</code>).</li>
+</ul>
+
+</section>
+    </main>
+    
+</body>
+</html>

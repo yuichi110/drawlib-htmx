@@ -1,0 +1,992 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6. Extension &amp; Security Internals</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/06_extension_and_security_internals.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 replaces htmx 2&#x27;s per-element hx-ext attribute lookup with a global event-driven extension dispatcher (registerExtension &amp; triggerExtensions at…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 Architecture">
+    <meta property="og:title" content="6. Extension &amp; Security Internals — htmx v4 Architecture">
+    <meta property="og:description" content="htmx v4.0.1 replaces htmx 2&#x27;s per-element hx-ext attribute lookup with a global event-driven extension dispatcher (registerExtension &amp; triggerExtensions at…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="6. Extension &amp; Security Internals — htmx v4 Architecture">
+    <meta name="twitter:description" content="htmx v4.0.1 replaces htmx 2&#x27;s per-element hx-ext attribute lookup with a global event-driven extension dispatcher (registerExtension &amp; triggerExtensions at…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 Architecture">
+                    
+                    htmx v4 Architecture
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Architecture Overview</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Core Engine Internals</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="01_module_and_state_architecture.html" >1. Module &amp; State Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. Attribute Inheritance &amp; HCON</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_trigger_and_selector_parsers.html" >3. Trigger &amp; Selector Parsers</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Network &amp; DOM Pipeline</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetch Context &amp; Sync Queue</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap, Settle &amp; Morph Engine</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="06_extension_and_security_internals.html" >6. Extension &amp; Security Internals</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Portals &amp; Reports</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">6. Extension &amp; Security Internals</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="06_extension_and_security_internals.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/06_extension_and_security_internals.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>6. Extension &amp; Security Internals</h1>
+<p>htmx v4.0.1 replaces htmx 2's per-element <code>hx-ext</code> attribute lookup with a global <strong>event-driven extension dispatcher</strong> (<code>registerExtension</code> &amp; <code>__triggerExtensions</code> at <code>src/htmx.js</code> <code>L230–238</code>, <code>L1529–1541</code>), a 15-method privileged <strong><code>#internalAPI</code> bridge</strong> (<code>L155–175</code>), a pluggable security and dynamic JavaScript evaluation subsystem (<code>L890–925</code>, <code>src/ext/hx-csp.js</code>), and <strong>17 official extensions</strong> (<code>src/ext/*.js</code>).</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_extension_and_security_internals/arch_c06_extension_dispatcher_and_api.png" alt="06_extension_and_security_internals_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Event-Driven Extension Dispatcher and 15-Method #internalAPI Bridge (src/htmx.js L155–238, L1512–1541)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.architecture</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArchitectureDiagram</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">NodeGroup</span><span class="p">,</span> <span class="n">PhosphorIcon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">ArchitectureDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Primary</span><span class="p">,</span>
+    <span class="n">node_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">node_card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 Extension Registration, #internalAPI Bridge &amp; Event Hook Dispatch"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Left Group: Extension Registration &amp; #internalAPI</span>
+<span class="n">reg_group</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"1. Registration (L155–238)"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">))</span>
+
+<span class="n">reg_gate</span> <span class="o">=</span> <span class="n">reg_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"registerExtension()</span><span class="se">\n</span><span class="s2">Whitelist &amp; Dedup"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">SHIELD_CHECK</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">internal_api</span> <span class="o">=</span> <span class="n">reg_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"#internalAPI Bridge</span><span class="se">\n</span><span class="s2">15 Bound Primitives"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">KEY</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Center Group: Hook Storage &amp; Event Dispatcher</span>
+<span class="n">disp_group</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"2. Hook Dispatch (L1512–1541)"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">64.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">))</span>
+
+<span class="n">ext_map</span> <span class="o">=</span> <span class="n">disp_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"__extMethods Map</span><span class="se">\n</span><span class="s2">Hook Function Arrays"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">LIST_BULLETS</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">21.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">trig_ext</span> <span class="o">=</span> <span class="n">disp_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"__triggerExtensions()</span><span class="se">\n</span><span class="s2">Colon -&gt; Underscore"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">LIGHTNING</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">21.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Right Group: Official Extensions &amp; DOM CustomEvent</span>
+<span class="n">dom_group</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"3. Extensions &amp; DOM Event"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">124.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">))</span>
+
+<span class="n">ext_suite</span> <span class="o">=</span> <span class="n">dom_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"17 Official Extensions</span><span class="se">\n</span><span class="s2">hx-csp, hx-live, sse, ws"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">PLUGS_CONNECTED</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">21.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">dom_evt</span> <span class="o">=</span> <span class="n">dom_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"DOM CustomEvent</span><span class="se">\n</span><span class="s2">!detail.cancelled Gate"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">BROADCAST</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">21.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">reg_gate</span><span class="p">,</span> <span class="n">internal_api</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"ext.init(api)"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">reg_gate</span><span class="p">,</span> <span class="n">ext_map</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Store hooks"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ext_map</span><span class="p">,</span> <span class="n">trig_ext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Lookup fn[]"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ext_map</span><span class="p">,</span> <span class="n">ext_suite</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"handle_swap"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">internal_api</span><span class="p">,</span> <span class="n">trig_ext</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"__trigger()"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">trig_ext</span><span class="p">,</span> <span class="n">dom_evt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"If !cancelled"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ext_suite</span><span class="p">,</span> <span class="n">dom_evt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Cancel / Emit"</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s2">"&lt;-&gt;"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>1. Event-Driven Extension Dispatcher (<code>registerExtension</code> &amp; <code>__triggerExtensions</code>)</h2>
+<p>In htmx v4, extensions are registered globally via <code>htmx.registerExtension(name, extension)</code> (<code>src/htmx.js</code> <code>L230–238</code>) and automatically participate in the lifecycle of every element without requiring <code>hx-ext=&quot;...&quot;</code> attributes in the DOM.</p>
+<h3>1.1 Whitelist Gating, Deduplication &amp; Hook Indexing</h3>
+<p>When <code>registerExtension(name, extension)</code> is called:</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L230–238</span>
+<span class="nx">registerExtension</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">extension</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__approvedExt</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">__approvedExt</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/,\s*/</span><span class="p">).</span><span class="nx">includes</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__registeredExt</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__registeredExt</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">extension</span><span class="p">.</span><span class="nx">init</span><span class="p">)</span><span class="w"> </span><span class="nx">extension</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">#internalAPI</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">extension</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(([</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">value</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">__extMethods</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span><span class="o">?</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">value</span><span class="p">))</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__extMethods</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nx">value</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre>
+<ol>
+<li><strong>Whitelist Enforcement (<code>this.__approvedExt</code> <code>L212</code>, <code>L231</code>)</strong>: During <code>__initHtmxConfig()</code>, <code>this.__approvedExt</code> is initialized from <code>this.config.extensions</code> (typically configured via <code>&lt;meta name=&quot;htmx-config&quot; content='extensions:&quot;hx-csp, hx-live&quot;'&gt;</code>). If <code>this.__approvedExt</code> is non-empty and does not include <code>name</code>, <code>registerExtension</code> immediately returns <code>false</code>, refusing to initialize or store the extension.</li>
+<li><strong>Idempotent Registration (<code>this.__registeredExt</code> <code>L232–233</code>)</strong>: <code>this.__registeredExt</code> (<code>Set&lt;string&gt;</code>) prevents duplicate script inclusions from registering the same extension hooks twice.</li>
+<li><strong>Privileged Initialization (<code>extension.init(this.#internalAPI)</code> <code>L234</code>)</strong>: Passes the bound <code>#internalAPI</code> object to <code>extension.init</code> once at registration time.</li>
+<li><strong>Hook Table Population (<code>this.__extMethods</code> <code>L235–237</code>)</strong>: Every property on <code>extension</code> is appended to an array in <code>this.__extMethods: Map&lt;string, Function[]&gt;</code>.</li>
+</ol>
+<h3>1.2 Colon-to-Underscore Event Mapping &amp; Cancellation Protocol</h3>
+<p>Whenever core calls <code>this.__trigger(on, eventName, detail, bubbles)</code> (<code>L1512–1527</code>), htmx executes extension hooks <strong>synchronously before</strong> dispatching the DOM <code>CustomEvent</code>:</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1524–1541, L1586–1597</span>
+<span class="nx">on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__normalizeElement</span><span class="p">(</span><span class="nx">on</span><span class="p">);</span>
+<span class="k">this</span><span class="p">.</span><span class="nx">__triggerExtensions</span><span class="p">(</span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="nx">eventName</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="nx">on</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__maybeAdjustMetaCharacter</span><span class="p">(</span><span class="nx">eventName</span><span class="p">),</span><span class="w"> </span><span class="nx">detail</span><span class="p">,</span><span class="w"> </span><span class="nx">bubbles</span><span class="p">);</span>
+
+<span class="nx">__triggerExtensions</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">eventName</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__extMethods</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">eventName</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/:/g</span><span class="p">,</span><span class="w"> </span><span class="s1">'_'</span><span class="p">));</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">methods</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">detail</span><span class="p">.</span><span class="nx">cancelled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">fn</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">methods</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">fn</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">detail</span><span class="p">.</span><span class="nx">cancelled</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">detail</span><span class="p">.</span><span class="nx">cancelled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>Colon-to-Underscore Mapping (<code>L1530</code>)</strong>: Any htmx event name <code>htmx:phase:action</code> is converted via <code>eventName.replace(/:/g, '_')</code> into a valid JavaScript identifier (<code>htmx_phase_action</code>). For example:
+<ul>
+<li><code>htmx:before:request</code> $\rightarrow$ <code>htmx_before_request(elt, detail)</code></li>
+<li><code>htmx:before:morph:node</code> $\rightarrow$ <code>htmx_before_morph_node(elt, detail)</code></li>
+<li><code>htmx:process:upsert</code> $\rightarrow$ <code>htmx_process_upsert(templateElt, detail)</code></li>
+<li><code>htmx:scope</code> $\rightarrow$ <code>htmx_scope(elt, detail)</code></li>
+</ul>
+</li>
+<li><strong>Non-Event Hooks</strong>: Two special keys in <code>__extMethods</code> are invoked directly rather than through <code>__triggerExtensions</code>:
+<ul>
+<li><code>init(internalAPI)</code> — called once during <code>registerExtension</code> (<code>L234</code>).</li>
+<li><code>handle_swap(swapStyle, target, fragment, swapSpec)</code> — called by <code>__insertContent</code> (<code>L1456–1470</code>) when <code>swapStyle</code> does not match any of the 12 built-in swap styles.</li>
+</ul>
+</li>
+<li><strong>Short-Circuit Cancellation (<code>L1532–1538</code>, <code>L1595</code>)</strong>: If any extension hook returns <code>false</code> or sets <code>detail.cancelled = true</code>, <code>__triggerExtensions</code> sets <code>detail.cancelled = true</code>, halts the remaining extension hooks for that event, and causes <code>this.trigger()</code> (<code>!detail?.cancelled &amp;&amp; target.dispatchEvent(evt)</code> at <code>L1595</code>) to skip dispatching the DOM <code>CustomEvent</code> and return <code>false</code> to the caller.</li>
+</ul>
+<hr />
+<h2>2. The <code>#internalAPI</code> Bridge (<code>src/htmx.js</code> <code>L155–175</code>)</h2>
+<p>Because <code>Htmx</code> methods prefixed with <code>__</code> are rewritten into ES2022 private <code>#</code> methods during the <code>npm run build:iife</code> and <code>build:esm</code> build step (<code>sed -e 's/__/#/g'</code>), external extensions cannot call <code>htmx.#attributeValue()</code> directly on the global <code>htmx</code> instance. Instead, <code>constructor()</code> constructs <code>this.#internalAPI</code> (<code>L155–175</code>) exposing <strong>15 bound internal primitives</strong> to <code>extension.init(api)</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><code>#internalAPI</code> Key</th>
+<th style="text-align:left">Bound Target (<code>src/htmx.js</code>)</th>
+<th style="text-align:left">Signature &amp; Extension Use Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>HCON</code></strong></td>
+<td style="text-align:left"><code>HCON</code> (<code>L8–92</code>, <code>L156</code>)</td>
+<td style="text-align:left"><code>{ parse(str), merge(str, target), split(str) }</code> parser used by <code>hx-sse</code>, <code>hx-ws</code>, and custom config attributes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>attributeValue</code></strong></td>
+<td style="text-align:left"><code>this.__attributeValue</code> (<code>L288–318</code>)</td>
+<td style="text-align:left"><code>(elt, name, defaultVal?, eltCollector?, allowInheritance?)</code> — reads <code>hx-*</code> / <code>data-hx-*</code> attributes with <code>:inherited</code> and <code>:append</code> resolution.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>parseTriggerSpecs</code></strong></td>
+<td style="text-align:left"><code>this.__parseTriggerSpecs</code> (<code>L523–601</code>)</td>
+<td style="text-align:left"><code>(specStr)</code> — parses trigger strings into structured <code>{ name, filters, delay, timeout, ... }</code> specs (used by <code>hx-preload</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>determineMethodAndAction</code></strong></td>
+<td style="text-align:left"><code>this.__determineMethodAndAction</code> (<code>L429–463</code>)</td>
+<td style="text-align:left"><code>(elt, evt)</code> — resolves <code>{ method, action }</code> from <code>hx-get</code>..<code>hx-delete</code>, <code>hx-action</code>, or boosted <code>&lt;a&gt;</code>/<code>&lt;form&gt;</code> (used by <code>hx-preload</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>createRequestContext</code></strong></td>
+<td style="text-align:left"><code>this.__createRequestContext</code> (<code>L354–427</code>)</td>
+<td style="text-align:left"><code>(sourceElement, sourceEvent)</code> — builds a full request <code>ctx</code> object including <code>HX-*</code> headers (used by <code>hx-preload</code> and <code>hx-ws</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>collectFormData</code></strong></td>
+<td style="text-align:left"><code>this.__collectFormData</code> (<code>L1807–1831</code>)</td>
+<td style="text-align:left"><code>(elt, form, submitter, validate?, isGet?)</code> — gathers <code>FormData</code> respecting <code>hx-include</code> and submitters (used by <code>hx-preload</code> and <code>hx-ws</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>getAttributeObject</code></strong></td>
+<td style="text-align:left"><code>this.__getAttributeObject</code> (<code>L1875–1893</code>)</td>
+<td style="text-align:left"><code>(elt, attrName, callback, scope?)</code> — parses HCON/JSON or evaluates <code>js:</code> expressions for <code>hx-vals</code> / <code>hx-headers</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>insertContent</code></strong></td>
+<td style="text-align:left"><code>this.__insertContent</code> (<code>L1360–1510</code>)</td>
+<td style="text-align:left"><code>async (task, cssTransition?)</code> — executes a single swap and settle task.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>morph</code></strong></td>
+<td style="text-align:left"><code>this.__morph</code> (<code>L2018–2032</code>)</td>
+<td style="text-align:left"><code>(oldNode, fragment, innerHTML)</code> — invokes the Idiomorph engine directly (used by <code>hx-alpine-compat</code> to morph <code>_x_teleport</code> targets at <code>L74</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>isSoftMatch</code></strong></td>
+<td style="text-align:left"><code>this.__isSoftMatch</code> (<code>L2153–2160</code>)</td>
+<td style="text-align:left"><code>(oldNode, newNode) =&gt; boolean</code> — <strong>mutable property</strong> on <code>#internalAPI</code> called by <code>__findBestMatch</code> (<code>L2129</code>). Overridden by <code>hx-alpine-compat</code> (<code>L24–31</code>) so Alpine <code>x-bind:id</code> / <code>:id</code> elements soft-match despite dynamic ID changes!</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>initSecurity</code></strong></td>
+<td style="text-align:left">Arrow closure (<code>L166–170</code>)</td>
+<td style="text-align:left"><code>(ttPolicy, syncFn, asyncFn)</code> — replaces <code>this.#ttPolicy</code>, <code>this.#Function</code>, and <code>this.#AsyncFunction</code> (used by <code>hx-csp</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>onTrigger</code></strong></td>
+<td style="text-align:left"><code>this.__onTrigger</code> (<code>L622–758</code>)</td>
+<td style="text-align:left"><code>(elt, specString, handler)</code> — wires full htmx trigger specs (events, <code>load</code>, <code>revealed</code>, <code>intersect</code>, <code>every</code>, queues, filters) to a custom <code>handler</code> (used by <code>hx-sse</code>, <code>hx-ws</code>, <code>hx-multipart</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>htmxProp</code></strong></td>
+<td style="text-align:left"><code>this.__htmxProp</code> (<code>L345–347</code>)</td>
+<td style="text-align:left">`(elt) =&gt; elt._htmx</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>triggerHtmxEvent</code></strong></td>
+<td style="text-align:left"><code>this.__trigger</code> (<code>L1512–1527</code>)</td>
+<td style="text-align:left"><code>(on, eventName, detail?, bubbles?)</code> — logs via <code>logAll</code>, runs <code>__triggerExtensions</code>, and dispatches a cancellable DOM <code>CustomEvent</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>executeJavaScript</code></strong></td>
+<td style="text-align:left"><code>this.__executeJavaScript</code> (<code>L911–925</code>)</td>
+<td style="text-align:left"><code>(thisArg, obj, code, expression?, isAsync?, compile?)</code> — evaluates or pre-compiles JS expressions with <code>htmx:scope</code> injection (used by <code>hx-live</code>).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. Security Architecture, Dynamic JS Evaluation &amp; <code>hx-csp.js</code></h2>
+<p>htmx v4 centralizes all dynamic JavaScript evaluation and HTML/script sink creation through three private fields on <code>Htmx</code> (<code>#Function</code>, <code>#AsyncFunction</code>, and <code>#ttPolicy</code> at <code>L138–140</code>), enabling the <code>hx-csp</code> extension (<code>src/ext/hx-csp.js</code>, 220 lines) to enforce strict Content Security Policies without modifying core logic.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_extension_and_security_internals/arch_c06_csp_three_layer_defense.png" alt="06_extension_and_security_internals_2" />
+  <figcaption class="drawlib-caption">Three-Layer CSP Enforcement in src/ext/hx-csp.js: Nonce Gating, Trusted Types & safeEval Script Compilation</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">ChevronProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">94</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">89</span><span class="p">),</span>
+    <span class="s2">"htmx v4.0.1 Three-Layer Content Security Policy Architecture (src/ext/hx-csp.js)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Top: 3-Layer Defense Overview</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">layers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Layer 1: Nonce Gate"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"hx-nonce === pageNonce"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">layers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Layer 2: Trusted Types"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"trustedTypes.createPolicy('htmx')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
+<span class="n">layers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Layer 3: safeEval Cache"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"&lt;script nonce&gt; Compilation"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">layers</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">68.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">172.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span>
+
+<span class="c1"># Bottom-Left: Layer 1 &amp; 2 — DOM &amp; Response Nonce Enforcement</span>
+<span class="n">col_left</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Fail-Closed Nonce &amp; TT (L103–120)"</span><span class="p">,</span>
+    <span class="s2">"Reads script[nonce].nonce and creates</span><span class="se">\n</span><span class="s2">'htmx' TT policy (or blocks all htmx)"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L1a"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">lock_key</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Init &amp; Request Gate (checkNonce)"</span><span class="p">,</span>
+    <span class="s2">"Strips hx-* on mismatch; blocks js: URLs</span><span class="se">\n</span><span class="s2">and unnonced formaction submitters"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L1b"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">shield_warning</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Response Nonce Scrub (L174–193)"</span><span class="p">,</span>
+    <span class="s2">"Scrubs stolen pageNonce from raw text;</span><span class="se">\n</span><span class="s2">promotes same-origin CSP response nonces"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L1c"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_clockwise</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">56.0</span><span class="p">)</span>
+
+<span class="c1"># Bottom-Right: Layer 3 — __executeJavaScript &amp; safeEval Compilation</span>
+<span class="n">col_right</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Scope Assembly (htmx.js L911–925)"</span><span class="p">,</span>
+    <span class="s2">"Merges __apiMethods(thisArg), htmx:scope</span><span class="se">\n</span><span class="s2">extension helpers, and event objects"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L3a"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">brackets_curly</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Eval-Time Nonce Re-Check (L135)"</span><span class="p">,</span>
+    <span class="s2">"Verifies getNonce(thisArg) === pageNonce</span><span class="se">\n</span><span class="s2">on every call; fires security:violation"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L3b"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">check_circle</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"Nonced &lt;script&gt; &amp; safeEvalCache"</span><span class="p">,</span>
+    <span class="s2">"Compiles window.__htmx_eval_N without</span><span class="se">\n</span><span class="s2">unsafe-eval; caches by 'keys|body'"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"L3c"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">cpu</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">94.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">56.0</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>3.1 Core Dynamic JS Evaluation (<code>__executeJavaScript</code> &amp; <code>__apiMethods</code>)</h3>
+<p>Whenever htmx evaluates an <code>hx-on:*</code> handler (<code>L1729</code>), an <code>hx-vals=&quot;js:...&quot;</code> / <code>hx-headers=&quot;js:...&quot;</code> expression (<code>L1886</code>), a bracketed trigger filter <code>click[ctrlKey]</code> (<code>L702</code>), or an <code>hx-live</code> reactive binding, it calls <code>__executeJavaScript</code> (<code>src/htmx.js</code> <code>L890–925</code>):</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L890–925</span>
+<span class="nx">__apiMethods</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">bound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">proto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyNames</span><span class="p">(</span><span class="nx">proto</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">name</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'constructor'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'function'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">([</span><span class="s2">"find"</span><span class="p">,</span><span class="w"> </span><span class="s2">"findAll"</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">name</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">bound</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">arg1</span><span class="p">,</span><span class="w"> </span><span class="nx">arg2</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">arg2</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">undefined</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">](</span><span class="nx">thisArg</span><span class="p">,</span><span class="w"> </span><span class="nx">arg1</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">](</span><span class="nx">arg1</span><span class="p">,</span><span class="w"> </span><span class="nx">arg2</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">};</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">bound</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">].</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">bound</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">__executeJavaScript</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span><span class="w"> </span><span class="nx">obj</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="p">,</span><span class="w"> </span><span class="nx">expression</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">isAsync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nx">compile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__apiMethods</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">));</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">scope</span><span class="p">,</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__triggerExtensions</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:scope"</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">detail</span><span class="p">.</span><span class="nx">code</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span><span class="w"> </span><span class="nx">scope</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">args</span><span class="p">,</span><span class="w"> </span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">FunctionConstructor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">isAsync</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#AsyncFunction</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#Function</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">FunctionConstructor</span><span class="p">(...</span><span class="nx">keys</span><span class="p">,</span><span class="w"> </span><span class="nx">expression</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="sb">`return (</span><span class="si">${</span><span class="nx">code</span><span class="si">}</span><span class="sb">)`</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">code</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">compile</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">func</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">values</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">func</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">values</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<p>Key architectural features:</p>
+<ol>
+<li><strong>Context-Bound Public API (<code>__apiMethods</code> <code>L890–909</code>)</strong>: Automatically injects all public <code>Htmx.prototype</code> methods (<code>ajax</code>, <code>trigger</code>, <code>process</code>, <code>swap</code>, <code>timeout</code>, <code>parseInterval</code>, <code>on</code>, <code>onLoad</code>) into the expression scope, while currying <code>find(sel)</code> and <code>findAll(sel)</code> so single-argument calls resolve relative to <code>thisArg</code>!</li>
+<li><strong><code>htmx:scope</code> Extension Hook (<code>L915–918</code>)</strong>: Fires <code>this.__triggerExtensions(thisArg, &quot;htmx:scope&quot;, { scope, code })</code>, allowing <code>hx-live</code> (<code>src/ext/hx-live.js</code> <code>L839–844</code>) to inject reactive helpers (<code>q</code>, <code>data</code>, <code>aria</code>, <code>attr</code>, <code>local</code>, <code>closest</code>, <code>toggle</code>, <code>take</code>, <code>debounce</code>, <code>forEvent</code>, <code>nextFrame</code>, <code>insert</code>, <code>matches</code>, <code>style</code>) into <code>detail.scope</code> and rewrite reserved <code>class.foo</code> tokens into <code>attr.class.foo</code> in <code>detail.code</code>.</li>
+<li><strong>Reusable Pre-Compilation (<code>compile = true</code> <code>L924</code>)</strong>: When <code>compile === true</code> (used by <code>hx-live</code>'s <code>registerLive</code> at <code>L764</code>), <code>__executeJavaScript</code> constructs <code>func</code> once and returns a zero-argument closure <code>() =&gt; func.call(thisArg, ...values)</code> so reactive ticks never re-run scope assembly or <code>new FunctionConstructor()</code>.</li>
+</ol>
+<h3>3.2 Three-Layer CSP Enforcement (<code>src/ext/hx-csp.js</code>)</h3>
+<p>Loading <code>src/ext/hx-csp.js</code> hardens htmx against HTML injection and XSS attacks via three interlocking layers:</p>
+<ol>
+<li><strong>Layer 1 — Nonce Gating &amp; Stolen-Nonce Scrubbing (<code>L40–108</code>, <code>L168–216</code>)</strong>:
+<ul>
+<li><strong>Fail-Closed Initialization (<code>L103–108</code>)</strong>: Reads <code>pageNonce = document.querySelector('script[nonce]')?.nonce || null</code> (using the DOM <code>.nonce</code> property, which remains readable in JS even after browsers blank the <code>nonce=&quot;&quot;</code> HTML attribute to defeat CSS attribute-selector exfiltration). If no <code>pageNonce</code> exists, <code>hx-csp</code> logs an error and leaves <code>pageNonce = null</code>, causing all hooks to return <code>false</code> and block htmx entirely.</li>
+<li><strong>Element Initialization Gate (<code>checkNonce</code> <code>L44–48</code>, <code>stripHxAttributes</code> <code>L79–94</code>)</strong>: Hooked to both <code>htmx_before_init</code> and <code>htmx_before_on_init</code>. Reads <code>hx-nonce</code> (supporting <code>:inherited</code> via <code>internalApi.attributeValue(elt, 'hx-nonce')</code>). If <code>eltNonce !== pageNonce</code>, <code>stripHxAttributes</code> removes every <code>hx-*</code> / <code>data-hx-*</code> attribute from <code>elt</code>, logs an error, fires <code>htmx:security:strip</code> (<code>{ reason: 'missing-nonce' | 'nonce-mismatch', stripped }</code>), and cancels initialization.</li>
+<li><strong>Response Nonce Scrub &amp; Same-Origin Promotion (<code>htmx_after_request</code> <code>L174–193</code>)</strong>:
+<ul>
+<li>First, <strong>always scrubs <code>pageNonce</code></strong> from raw <code>ctx.text</code> (<code>rewriteNoncesInText(ctx.text, pageNonce, '')</code> at <code>L180</code>). Because the server generates a fresh nonce per HTTP response and cannot know the client's original <code>pageNonce</code>, any occurrence of <code>pageNonce</code> in a server response indicates a reflected/stored stolen-nonce attack!</li>
+<li>Second, verifies that <code>new URL(ctx.response.raw.url).origin === location.origin</code>. Only for verified same-origin responses, <code>hx-csp</code> extracts the response's fresh nonce from the <code>Content-Security-Policy</code> header (<code>extractNonceFromCSP</code> anchored to <code>script-src</code>/<code>default-src</code> at <code>L51–53</code>) or <code>&lt;meta http-equiv=&quot;Content-Security-Policy&quot;&gt;</code> (<code>extractNonceFromMetaTag</code> <code>L57–61</code>) and rewrites <code>nonce=&quot;${responseNonce}&quot;</code> to <code>nonce=&quot;${pageNonce}&quot;</code> in <code>ctx.text</code> before <code>__makeFragment</code> parses it.</li>
+</ul>
+</li>
+<li><strong>Request Action &amp; Submitter Gate (<code>htmx_config_request</code> <code>L198–216</code>)</strong>: Blocks any request whose <code>action</code> starts with <code>js:</code> or <code>javascript:</code> (<code>reason: 'javascript-url'</code>), and blocks boosted <code>&lt;form&gt;</code> submissions where a submit button overrides <code>formaction</code> without a valid <code>hx-nonce</code> (<code>reason: 'unnonced-submitter'</code>), firing <code>htmx:security:violation</code> and setting <code>detail.cancelled = true</code>.</li>
+</ul>
+</li>
+<li><strong>Layer 2 — Trusted Types Policy (<code>L112–120</code>)</strong>:
+Calls <code>trustedTypes.createPolicy('htmx', { createHTML: s =&gt; s, createScript: s =&gt; s })</code> and passes it to <code>api.initSecurity(...)</code>. If the page's CSP <code>trusted-types</code> directive does not whitelist <code>'htmx'</code>, policy creation throws, and <code>hx-csp</code> sets <code>pageNonce = null</code> to fail closed.</li>
+<li><strong>Layer 3 — <code>safeEval</code> Nonce-Stamped Script Compilation (<code>L122–165</code>)</strong>:
+<code>makeGatedConstructor(isAsync)</code> replaces <code>#Function</code> and <code>#AsyncFunction</code>:
+<ul>
+<li>On every invocation, it re-verifies <code>getNonce(thisArg) === pageNonce</code> (<code>L135</code>), blocking execution and firing <code>htmx:security:violation</code> (<code>{ reason: 'nonce-mismatch-at-eval' }</code>) if an attacker mutated the DOM after init.</li>
+<li>When <code>htmx.config.safeEval: true</code> is enabled, it avoids <code>new Function()</code> (so CSP requires <strong>no <code>'unsafe-eval'</code></strong>) by compiling expressions via a transient <code>&lt;script nonce=&quot;${pageNonce}&quot;&gt;</code> element appended to and immediately removed from <code>document.head</code> (<code>L146–155</code>), caching the compiled function in <code>safeEvalCache: Map&lt;string, Function&gt;</code> keyed by <code>keys.join(',') + '|' + body</code>.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>4. Deep Dive into the 17 Official Extensions (<code>src/ext/*.js</code>)</h2>
+<h3>4.1 Complete Inventory of the 17 Official Extensions</h3>
+<p>The <code>src/ext/</code> directory ships 17 official extensions totaling <strong>4,529 lines of code</strong>. As defined in <code>package.json</code> (<code>build:htmax</code> at <code>L28</code>), 11 of these extensions are bundled into the all-in-one <code>dist/htmax.js</code> distribution (with <code>history-cache</code> pre-configured as <code>htmx.config.historyCache ??= { disable: true }</code>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">File (<code>src/ext/</code>)</th>
+<th style="text-align:left">Registered Name</th>
+<th style="text-align:center">LOC</th>
+<th style="text-align:center">In <code>htmax</code>?</th>
+<th style="text-align:left">Primary Extension Hooks &amp; Architectural Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>hx-multipart.js</code></strong></td>
+<td style="text-align:left"><code>'hx-multipart'</code></td>
+<td style="text-align:center">1,192</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>htmx_config_request</code>, <code>htmx_after_process</code>, <code>htmx_before_response</code>, <code>htmx_before_cleanup</code>. Streaming <code>multipart/mixed</code> &amp; <code>multipart/parallel</code> parser + <code>Response.prototype.parts()</code> prollyfill.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-live.js</code></strong></td>
+<td style="text-align:left"><code>'hx-live'</code></td>
+<td style="text-align:center">847</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_after_process</code>, <code>htmx_before_swap</code>, <code>htmx_finally_swap</code>, <code>htmx_before_cleanup</code>, <code>htmx_before_morph_attr</code>, <code>htmx_scope</code>. Reactive <code>:attr</code>/<code>hx-live</code> bindings &amp; <code>q()</code> proxy engine.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-ws.js</code></strong></td>
+<td style="text-align:left"><code>'ws'</code></td>
+<td style="text-align:center">589</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_after_process</code>, <code>htmx_before_cleanup</code>. Bidirectional WebSocket lifecycle (<code>hx-ws:connect</code>, <code>hx-ws:send</code>), serialized send/receive queues, and auto-reconnect.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-sse.js</code></strong></td>
+<td style="text-align:left"><code>'sse'</code></td>
+<td style="text-align:center">444</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_config_request</code>, <code>htmx_before_response</code>, <code>htmx_after_process</code>, <code>htmx_before_cleanup</code>. Fetch-based <code>text/event-stream</code> reader (<code>parseSSE</code>), <code>Last-Event-ID</code> reconnect, and <code>extensionPromise</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-history-cache.js</code></strong></td>
+<td style="text-align:left"><code>'history-cache'</code></td>
+<td style="text-align:center">250</td>
+<td style="text-align:center"><strong>Yes</strong> <em>(off)</em></td>
+<td style="text-align:left"><code>htmx_before_history_update</code>, <code>htmx_after_history_update</code>, <code>htmx_before_history_restore</code>. LRU <code>sessionStorage</code> page snapshot cache preserving input values and scroll offsets.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-csp.js</code></strong></td>
+<td style="text-align:left"><code>'hx-csp'</code></td>
+<td style="text-align:center">220</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>init</code> (<code>initSecurity</code>), <code>htmx_before_init</code>, <code>htmx_before_on_init</code>, <code>htmx_after_request</code>, <code>htmx_config_request</code>. Nonce gating, Trusted Types policy, and <code>safeEval</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-head.js</code></strong></td>
+<td style="text-align:left"><code>'hx-head'</code></td>
+<td style="text-align:center">191</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>htmx_before_response</code>, <code>htmx_after_swap</code>, <code>htmx_history_cache_before_restore</code>, <code>htmx_history_cache_after_restore</code>. Diffs/merges <code>&lt;head&gt;</code> tags, awaiting blocking CSS/JS before swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-alpine-compat.js</code></strong></td>
+<td style="text-align:left"><code>'alpine-compat'</code></td>
+<td style="text-align:center">111</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>init</code> (overrides <code>api.isSoftMatch</code>), <code>htmx_before_swap</code>, <code>htmx_before_morph_node</code>, <code>htmx_after_swap</code>, <code>htmx_finally_request</code>, <code>htmx_history_cache_*</code>. Bridges Alpine <code>_x_dataStack</code> &amp; <code>_x_teleport</code> across morphs.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-pending.js</code></strong></td>
+<td style="text-align:left"><code>'hx-pending'</code></td>
+<td style="text-align:center">103</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_config_request</code>, <code>htmx_before_request</code>, <code>htmx_before_swap</code>, <code>htmx_error</code>. Renders optimistic <code>&lt;template&gt;</code> placeholders stamped with request body <code>data-*</code> attributes during in-flight requests.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-preload.js</code></strong></td>
+<td style="text-align:left"><code>'preload'</code></td>
+<td style="text-align:center">103</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_after_init</code>, <code>htmx_before_request</code>, <code>htmx_before_cleanup</code>. Prefetches <code>GET</code> responses on <code>mousedown</code>/<code>touchstart</code> (or custom trigger) with 5s TTL cache (<code>ctx.fetch = () =&gt; prefetch</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>htmx-2-compat.js</code></strong></td>
+<td style="text-align:left"><code>'compat'</code></td>
+<td style="text-align:center">94</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>init</code>, 16 <code>htmx_*</code> hooks. Enables <code>implicitInheritance = true</code>, adds <code>&quot;4xx&quot;, &quot;5xx&quot;</code> to <code>noSwap</code>, and re-dispatches legacy camelCase htmx 2 events (<code>htmx:afterRequest</code>, etc.).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-upsert.js</code></strong></td>
+<td style="text-align:left"><code>'upsert'</code></td>
+<td style="text-align:center">90</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_process_upsert</code>, <code>handle_swap</code>. Implements <code>&lt;hx-upsert&gt;</code> and <code>hx-swap=&quot;upsert&quot;</code>, updating existing elements by <code>id</code> or inserting sorted by <code>key</code> (<code>localeCompare</code> with <code>numeric: true</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-browser-indicator.js</code></strong></td>
+<td style="text-align:left"><code>'browser-indicator'</code></td>
+<td style="text-align:center">89</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_before_history_update</code>, <code>htmx_before_request</code>, <code>htmx_finally_request</code>. Triggers the native browser tab loading spinner via the Navigation API (<code>navigation.navigate</code> + <code>event.intercept</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-download.js</code></strong></td>
+<td style="text-align:left"><code>'download'</code></td>
+<td style="text-align:center">89</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_before_response</code>. Intercepts <code>hx-swap=&quot;download&quot;</code>, <code>Content-Disposition: attachment</code>, or <code>HX-Download</code> headers, streaming chunks with <code>htmx:download:progress</code> into a Blob download.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-targets.js</code></strong></td>
+<td style="text-align:left"><code>'hx-targets'</code></td>
+<td style="text-align:center">46</td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:left"><code>htmx_before_swap</code>. Expands <code>hx-targets=&quot;&lt;selector&gt;&quot;</code> by splicing the <code>main</code> swap task into one cloned task per matched target element.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-ptag.js</code></strong></td>
+<td style="text-align:left"><code>'ptag'</code></td>
+<td style="text-align:center">37</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>htmx_after_init</code>, <code>htmx_config_request</code>, <code>htmx_after_request</code>. Stores per-element polling tags (<code>hx-ptag</code> / <code>HX-PTag</code> header) so servers can return <code>304 Not Modified</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-prompt.js</code></strong></td>
+<td style="text-align:left"><code>'hx-prompt'</code></td>
+<td style="text-align:center">24</td>
+<td style="text-align:center">No</td>
+<td style="text-align:left"><code>htmx_config_request</code>. Prompts via `window.htmxPrompt</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_extension_and_security_internals/arch_c06_live_multipart_sse_ws_engines.png" alt="06_extension_and_security_internals_3" />
+  <figcaption class="drawlib-caption">Internal Architecture of the Four Major Runtime Extensions: hx-live, hx-multipart, hx-sse & hx-ws</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">92</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">87</span><span class="p">),</span>
+    <span class="s2">"htmx v4.0.1 Flagship Extension Engines: Reactivity &amp; Streaming Internals"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Left Column: hx-live &amp; hx-multipart</span>
+<span class="n">col_left</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"1. hx-live.js — Reactive Proxy (847 LOC)"</span><span class="p">,</span>
+    <span class="s2">"• XPath discovers [hx-live] &amp; :attr bindings</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• MutationObserver -&gt; queueMicrotask tick</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Detaches observer on write; pauses on swap</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• qProxy + makeStateScope(data,aria,class,attr)"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"LIVE"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">lightning</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"2. hx-multipart.js — Stream Parser (1,192 LOC)"</span><span class="p">,</span>
+    <span class="s2">"• Prollyfills Response.prototype.parts()</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Boyer-Moore-Horspool + chunk carry tail</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• 7-state FSM + ReadableStream backpressure</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• mixed vs parallel swap + HX-Last-Part-ID"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"MIME"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">stack</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_left</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">74.0</span><span class="p">)</span>
+
+<span class="c1"># Right Column: hx-sse &amp; hx-ws</span>
+<span class="n">col_right</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_shape</span><span class="o">=</span><span class="s2">"rounded_rect"</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">direction</span><span class="o">=</span><span class="s2">"vertical"</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. hx-sse.js — EventStream Engine (444 LOC)"</span><span class="p">,</span>
+    <span class="s2">"• Intercepts text/event-stream before core</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Holds lifecycle via ctx.extensionPromise</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• parseSSE(): 0xFEFF BOM &amp; </span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n|</span><span class="se">\\</span><span class="s2">r|</span><span class="se">\\</span><span class="s2">n split</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Backoff + jitter reconnect w/ Last-Event-ID"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"SSE"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">broadcast</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"4. hx-ws.js — WebSocket Engine (589 LOC)"</span><span class="p">,</span>
+    <span class="s2">"• Normalizes URLs to ws(s)://; pagehide 1000</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Serialized receiving/sending Promise chains</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• waitUntil() middleware + 100-msg send queue</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"• Routes JSON {content, target, swap} or HTML"</span><span class="p">,</span>
+    <span class="n">badge_text</span><span class="o">=</span><span class="s2">"WS"</span><span class="p">,</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_left_right</span><span class="p">,</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">col_right</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">94.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">84.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">74.0</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>4.2 Reactive DOM &amp; Proxy Engine (<code>src/ext/hx-live.js</code>, 847 LOC)</h3>
+<p><code>hx-live.js</code> adds spreadsheet-like reactive attribute bindings (<code>:disabled=&quot;!data.valid&quot;</code>, <code>:text=&quot;data.count&quot;</code>, <code>:.active=&quot;data.open&quot;</code>, <code>?hidden</code>) and side-effect blocks (<code>hx-live=&quot;...&quot;</code>) directly on top of the DOM without maintaining a separate virtual DOM or shadow state store:</p>
+<ol>
+<li><strong>Microtask Batching &amp; Swap Suspension (<code>ensureActive</code> &amp; <code>schedule</code> <code>L22–70</code>, <code>L833–838</code>)</strong>:
+<ul>
+<li>Registers a global <code>MutationObserver</code> on <code>document.documentElement</code> (<code>{ childList: true, subtree: true, attributes: true, characterData: true }</code>), a capture-phase <code>change</code> listener, and a capture-phase <code>input</code> listener debounced by <code>htmx.config.live?.inputDebounce ?? 100</code> ms.</li>
+<li><code>schedule()</code> coalesces multiple mutations within the same turn via <code>queueMicrotask()</code>. Inside the microtask, it <strong>disconnects <code>observer</code> before evaluating <code>fns</code></strong> (<code>observer?.disconnect()</code> at <code>L55</code>) so DOM writes performed by reactive bindings do not recursively re-trigger the <code>MutationObserver</code>, then re-attaches <code>observer</code> afterward (<code>L66</code>). If a single evaluation pass exceeds <code>16ms</code> (one 60Hz frame), it logs a one-time performance warning (<code>L59–62</code>).</li>
+<li>During htmx swaps, <code>htmx_before_swap</code> increments <code>swaps++</code> and <code>htmx_finally_swap</code> decrements <code>--swaps</code>, deferring all reactive recomputations until multi-task swaps finish (<code>if (swaps &gt; 0) return</code> at <code>L51</code>).</li>
+</ul>
+</li>
+<li><strong>XPath Discovery &amp; Pre-Compiled Closures (<code>buildLiveQuery</code> <code>L683–703</code>, <code>registerLive</code> <code>L747–781</code>)</strong>:
+<ul>
+<li>Constructs a compiled <code>XPathEvaluator</code> expression matching <code>.//*[@*[starts-with(name(), &quot;hx-live:&quot;) or starts-with(name(), &quot;:&quot;)] or @hx-live]</code> (automatically disabling the shorthand <code>:</code> prefix if <code>window.Alpine</code> is detected at <code>L690–693</code>).</li>
+<li><code>registerLive(elt, code, attrName)</code> pre-compiles each expression once via <code>exec ||= api.executeJavaScript(elt, { debounce }, code, binding, isAsync, true)</code> (<code>L764</code>). If an <code>hx-live</code> effect contains <code>await</code>, <code>overlapping = !binding &amp;&amp; hasAwait</code> prevents concurrent overlapping runs of the same async effect (<code>L752</code>, <code>L761</code>).</li>
+</ul>
+</li>
+<li><strong>Reactive <code>Proxy</code> Hierarchy (<code>qProxy</code>, <code>makeStateScope</code>, <code>makeClosest</code> <code>L140–362</code>, <code>L631–679</code>)</strong>:
+<ul>
+<li><strong><code>makeStateScope(elts, cascades)</code> (<code>L313–322</code>)</strong>: Lazily constructs 4 specialized proxies:
+<ul>
+<li><code>data</code>: <code>makeAttrProxy(elts, cascades, null, 'data-')</code> — converts camelCase properties to <code>data-kebab-case</code> attributes and automatically parses/stringifies JSON values (<code>readData</code> / <code>writeData</code> <code>L212–215</code>, <code>L378–381</code>).</li>
+<li><code>aria</code>: <code>makeAttrProxy(elts, cascades, null, 'aria-')</code> — handles string ARIA attributes, space-separated ID-ref lists (<code>controls</code>, <code>labelledby</code>), and JSON boolean ARIA values (<code>L231–232</code>, <code>L364–376</code>).</li>
+<li><code>class</code>: <code>makeClassProxy(elts, cascades)</code> — supports <code>.class.foo = true</code>, <code>.class.toggle('foo')</code>, <code>.class.add()</code>, <code>.class.remove()</code>, <code>.class.replace()</code>, and <code>.class.assign({ active: true })</code> (<code>L246–311</code>).</li>
+<li><code>attr</code>: <code>makeAttrProxy(elts, cascades, scope, '')</code> — coerces <code>PROPERTY_BINDING_ATTRS</code> (<code>checked</code>, <code>value</code>, <code>selected</code>, <code>hidden</code>), <code>BOOLEAN_ATTRS</code> (<code>disabled</code>, <code>open</code>, <code>inert</code>, etc.), <code>NUMERIC_ATTRS</code> (<code>tabindex</code>, <code>min</code>, <code>max</code>), and <code>valueAsNumber</code> on <code>&lt;input type=&quot;number|range&quot;&gt;</code> (<code>L72–115</code>).</li>
+</ul>
+</li>
+<li><strong><code>makeClosest(elts)</code> (<code>L327–340</code>)</strong>: Wraps a callable <code>function(){}</code> in a <code>Proxy</code> with both an <code>apply</code> trap (<code>closest('.card')</code> returns a <code>qProxy</code> of nearest matching ancestors) and a <code>get</code> trap (<code>closest.data.count</code> walks up <code>parentElement</code> to read/write the nearest ancestor owning <code>data-count</code>). In <code>makeExpressionScope(elt)</code> (<code>L357</code>), bare <code>data</code> is aliased to <code>closest.data</code> so components naturally share state with ancestor containers!</li>
+<li><strong><code>makeQ(ctx)</code> &amp; <code>qProxy(elts)</code> (<code>L552–679</code>)</strong>: Supports scoped queries (<code>q('.item in #list')</code>, <code>q('.btn in this')</code>) and directional queries (<code>q('next .panel')</code>, <code>q('previous .tab')</code>, <code>q('closest tr')</code>, <code>q('first li')</code>, <code>q('last li')</code> using <code>compareDocumentPosition</code> bitmasks <code>&amp; 4</code> and <code>&amp; 2</code>), returning a multi-element <code>qProxy</code> that forwards array methods (<code>map</code>, <code>filter</code>, <code>forEach</code>), DOM methods, and reactive property assignments across all matched elements.</li>
+</ul>
+</li>
+</ol>
+<h3>4.3 Streaming Multipart Boundary Parser (<code>src/ext/hx-multipart.js</code>, 1,192 LOC)</h3>
+<p><code>hx-multipart.js</code> enables a single HTTP response (<code>Content-Type: multipart/mixed</code> or <code>multipart/parallel</code>) to stream multiple HTML fragments over time, each with its own <code>HX-Target</code>, <code>HX-Swap</code>, <code>HX-Select</code>, <code>HX-Trigger</code>, or <code>HX-Part-ID</code> headers:</p>
+<ol>
+<li><strong>Request Interception (<code>htmx_before_response</code> <code>L409–429</code>)</strong>:
+When the response <code>Content-Type</code> is <code>multipart/mixed</code> or <code>multipart/parallel</code>, <code>hx-multipart</code> clears <code>ctx.requestTimeout</code> (<code>clearTimeout(ctx.requestTimeout)</code>) and overrides <code>ctx.response.raw.text = async () =&gt; { await handleMultipartResponse(ctx, type); ctx.swap = 'none'; return ''; }</code>. Core awaits <code>response.text()</code>, holding the request lifecycle open while <code>handleMultipartResponse</code> consumes the stream and sets <code>ctx.swap = 'none'</code> afterward.</li>
+<li><strong>Vendored <code>MultipartParser</code> &amp; <code>Response.prototype.parts()</code> Prollyfill (<code>L436–1190</code>)</strong>:
+<ul>
+<li><strong>Boyer-Moore-Horspool Byte Search (<code>createSearch</code> <code>L469–486</code>)</strong>: Precomputes a 256-entry <code>Uint8Array</code> skip table over the UTF-8 encoded <code>\r\n--${boundary}</code> needle for fast sub-linear scanning across incoming <code>Uint8Array</code> network chunks.</li>
+<li><strong>Cross-Chunk Boundary Tail Detection (<code>createPartialTailSearch</code> <code>L490–512</code> &amp; <code>#analyzeCarryBoundary</code> <code>L785–809</code>)</strong>: If a chunk ends with a prefix of <code>\r\n--${boundary}</code>, the parser holds only that trailing suffix in <code>this.#buffer</code> (routing all preceding bytes immediately to the active <code>BodyPart</code>) and reconciles it when the next chunk arrives.</li>
+<li><strong>7-State Parser FSM (<code>State</code> <code>L516–531</code>)</strong>: Transitions through <code>START</code> (discarding RFC 2046 preamble bytes before <code>--boundary</code>) $\rightarrow$ <code>READING_BOUNDARY_SUFFIX</code> (<code>\r\n</code> vs closing <code>--</code>) $\rightarrow$ <code>READING_HEADERS</code> (scanning for <code>\r\n\r\n</code>) $\rightarrow$ either <code>READING_BODY_WITH_CONTENT_LENGTH</code> (fast path when the part declares <code>Content-Length</code>, followed by <code>EXPECTING_BOUNDARY</code>) or <code>READING_BODY_UNTIL_BOUNDARY</code> $\rightarrow$ <code>DONE</code>.</li>
+<li><strong>Pull-Driven Backpressure (<code>BodyPart</code> &amp; <code>iterateStreamParts</code> <code>L833–990</code>, <code>L1109–1173</code>)</strong>: <code>parser.onPull</code> only calls <code>reader.read()</code> on the underlying fetch stream when the active <code>BodyPart</code>'s <code>ReadableStreamDefaultController</code> has <code>desiredSize &gt; 0</code> (<code>part._wantsMore()</code>), propagating consumer backpressure all the way to the network socket.</li>
+</ul>
+</li>
+<li><strong>Sequential vs. Parallel Swapping &amp; Ordered Checkpoint Reconnect (<code>L231–335</code>)</strong>:
+<ul>
+<li>For each yielded <code>part</code>, <code>handleMultipartResponse</code> fires <code>htmx:multipart:before:part</code> (supporting <code>detail.waitUntil(promise)</code> async middleware at <code>L248–256</code>), extracts per-part <code>HX-*</code> headers (<code>extractPartActions</code>), and runs <code>htmx.swap(...)</code>.</li>
+<li>In <code>multipart/mixed</code>, each part swap is awaited sequentially (<code>await handling</code> at <code>L315</code>). In <code>multipart/parallel</code>, <code>handling</code> promises are added to a <code>pending</code> <code>Set</code> (<code>L308–313</code>) so parts swap concurrently as soon as their bodies finish streaming.</li>
+<li><strong>In-Order Checkpoint Tracking (<code>checkpoints</code> <code>L269–303</code>)</strong>: Because concurrent <code>multipart/parallel</code> parts can finish out of order, <code>connection.lastPartId</code> is only advanced through a contiguous prefix of completed <code>checkpoints</code> (<code>while (checkpoints[checkpointIndex]?.completed)</code>). On reconnect (with exponential backoff, jitter, and <code>visibilitychange</code> background pause), <code>HX-Last-Part-ID</code> is sent so the server can resume from the last contiguous checkpoint (<code>L180–185</code>).</li>
+</ul>
+</li>
+</ol>
+<h3>4.4 Server-Sent Events &amp; WebSockets (<code>hx-sse.js</code> 444 LOC &amp; <code>hx-ws.js</code> 589 LOC)</h3>
+<p>Both streaming transport extensions integrate directly with <code>htmx.swap()</code> and <code>#internalAPI</code>:</p>
+<ul>
+<li><strong><code>src/ext/hx-sse.js</code> (Registered as <code>'sse'</code>)</strong>:
+<ol>
+<li><strong><code>ctx.extensionPromise</code> Lifecycle Control (<code>L125–132</code>, <code>L292</code>, <code>L313</code>, <code>L406–415</code>)</strong>: In <code>htmx_before_response</code>, when <code>Content-Type</code> includes <code>text/event-stream</code>, <code>hx-sse</code> clears <code>ctx.requestTimeout</code>, assigns <code>ctx.extensionPromise = new Promise(resolve =&gt; releaseRequest = resolve)</code>, and returns <code>false</code> (preventing core from reading the body as a single HTML response while core's <code>finally</code> block awaits <code>ctx.extensionPromise</code>). Depending on <code>config.releaseOn</code>, <code>release()</code> is called <code>'immediate'</code> (default for <code>hx-sse:connect</code>), on the <code>'first'</code> swapped message, when the server sends a named <code>event: hx:release</code> message (<code>L292</code>), or at stream <code>'end'</code> (default for standard <code>hx-get</code> requests returning <code>text/event-stream</code>).</li>
+<li><strong>Spec-Compliant <code>parseSSE(connection)</code> Async Generator (<code>L37–111</code>)</strong>: Reads <code>currentResponse.body.getReader()</code> via <code>TextDecoder({ stream: true })</code>, strips a leading UTF-8 BOM (<code>0xFEFF</code> at <code>L55</code>), splits lines on <code>/\r\n|\r|\n/</code>, ignores <code>:</code> comment lines, accumulates multi-line <code>data:</code> fields joined by <code>\n</code>, tracks <code>id:</code> (ignoring values containing null bytes <code>\0</code> per WHATWG SSE spec at <code>L95</code>), updates <code>retry:</code> reconnection delay, and releases the reader lock in <code>finally</code> on the same tick as <code>connection.reader = null</code>.</li>
+<li><strong>Routing &amp; Reconnection (<code>L184–326</code>)</strong>: Named SSE events (<code>detail.message.event</code>) are dispatched as DOM events on <code>element</code> via <code>htmx.trigger(element, detail.message.event, { data, id })</code> (and close the stream if matching <code>hx-sse:close</code>). Unnamed messages are swapped directly via <code>await htmx.swap(ctx)</code> with <code>swapEmpty:false</code> appended (<code>L308–312</code>). On disconnect, <code>handleSSEResponse</code> reconnects with exponential backoff (<code>reconnectDelay: 500</code>, <code>reconnectMaxDelay: 60000</code>, <code>reconnectJitter: 0.3</code>), sending <code>Last-Event-ID</code> and pausing when the tab is hidden (<code>pauseOnBackground</code>).</li>
+</ol>
+</li>
+<li><strong><code>src/ext/hx-ws.js</code> (Registered as <code>'ws'</code>)</strong>:
+<ol>
+<li><strong>URL Normalization &amp; Pagehide Cleanup (<code>L46–77</code>, <code>L577–586</code>)</strong>: <code>normalizeWebSocketUrl(url)</code> converts <code>http://</code> $\rightarrow$ <code>ws://</code>, <code>https://</code> $\rightarrow$ <code>wss://</code>, protocol-relative <code>//host/path</code>, root-relative <code>/path</code>, and document-relative paths into full <code>ws(s)://</code> URLs. A <code>window.addEventListener('pagehide', ...)</code> listener cleanly closes all active sockets with code <code>1000</code> on navigation.</li>
+<li><strong>Serialized Promise Chains &amp; Middleware (<code>connection.receiving</code> <code>L190</code> &amp; <code>connection.sending</code> <code>L333</code>)</strong>: Incoming WebSocket <code>message</code> events are chained onto <code>connection.receiving = connection.receiving.then(() =&gt; handleMessage(...))</code> so async <code>waitUntil(promise)</code> hooks in <code>htmx:ws:before:message:incoming</code> and async <code>htmx.swap()</code> calls always execute strictly in arrival order. Similarly, <code>sendMessage</code> chains onto <code>connection.sending</code>, collects <code>HX-*</code> headers via <code>api.createRequestContext</code>, serializes <code>FormData</code> (preserving multi-value arrays for checkboxes/multi-selects) plus <code>hx-vals</code> (preserving native JS numbers/booleans in JSON at <code>L331</code>), and buffers up to <code>maxOutgoingMessagesQueueSize: 100</code> messages while the socket is connecting.</li>
+<li><strong>JSON Envelope vs. Raw HTML Routing (<code>handleMessage</code> <code>L420–462</code>)</strong>: If an incoming message parses as JSON and contains a <code>content</code> (or legacy <code>payload</code>) property, <code>hx-ws</code> swaps <code>json.content</code> using per-message overrides <code>json.target</code>, <code>json.swap</code>, and <code>json.select</code> (falling back to the element's <code>hx-target</code> / <code>hx-swap</code> / <code>hx-select</code> attributes). If the message is non-JSON text, the raw string is swapped directly as HTML; if it is JSON without <code>content</code>/<code>payload</code>, it is treated as a data-only event payload without triggering a DOM swap.</li>
+<li><strong>Selective Close-Code Reconnection (<code>L22–30</code>, <code>L209</code>)</strong>: Automatically schedules exponential-backoff reconnection only when the close event code is in <code>reconnectCodes: [1001, 1005, 1006, 1011, 1012, 1013, 1014]</code> (skipping normal <code>1000</code> closures).</li>
+</ol>
+</li>
+</ul>
+<hr />
+<p>Return to the <a href="index.html">Architecture Overview</a> or review <a href="05_swap_settle_and_morph_engine.html">Chapter 5: Swap, Settle &amp; Morph Engine</a> to trace how extension-generated tasks flow through DOM insertion and reconciliation.</p>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+describe('__collectFormData unit tests', function() {
+
+    before(function() {
+        // Define a form-associated custom element for testing
+        if (!customElements.get('test-input')) {
+            class TestInput extends HTMLElement {
+                static formAssociated = true;
+
+                constructor() {
+                    super();
+                    this._internals = this.attachInternals();
+                    this._value = '';
+                }
+
+                connectedCallback() {
+                    this._value = this.getAttribute('value') || '';
+                    this._internals.setFormValue(this._value);
+                }
+
+                get value() {
+                    return this._value;
+                }
+
+                set value(val) {
+                    this._value = val;
+                    this._internals.setFormValue(val);
+                }
+            }
+            customElements.define('test-input', TestInput);
+        }
+    });
+
+    it('collects text input from form', function () {
+        let form = createProcessedHTML('<form><input type="text" name="foo" value="bar"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('foo'), 'bar')
+    })
+
+    it('collects multiple inputs from form', function () {
+        let form = createProcessedHTML('<form><input name="a" value="1"><input name="b" value="2"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('a'), '1')
+        assert.equal(formData.get('b'), '2')
+    })
+
+    it('collects textarea from form', function () {
+        let form = createProcessedHTML('<form><textarea name="msg">hello</textarea></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('msg'), 'hello')
+    })
+
+    it('collects select from form', function () {
+        let form = createProcessedHTML('<form><select name="choice"><option value="a">A</option><option value="b" selected>B</option></select></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('choice'), 'b')
+    })
+
+    it('collects checked checkbox', function () {
+        let form = createProcessedHTML('<form><input type="checkbox" name="agree" value="yes" checked></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('agree'), 'yes')
+    })
+
+    it('excludes unchecked checkbox', function () {
+        let form = createProcessedHTML('<form><input type="checkbox" name="agree" value="yes"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('agree'), null)
+    })
+
+    it('collects checked radio button', function () {
+        let form = createProcessedHTML('<form><input type="radio" name="color" value="red" checked><input type="radio" name="color" value="blue"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('color'), 'red')
+    })
+
+    it('excludes unchecked radio buttons', function () {
+        let form = createProcessedHTML('<form><input type="radio" name="color" value="red"><input type="radio" name="color" value="blue"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('color'), null)
+    })
+
+    it('collects multiple select values', function () {
+        let form = createProcessedHTML('<form><select name="items" multiple><option value="a" selected>A</option><option value="b" selected>B</option><option value="c">C</option></select></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.deepEqual(formData.getAll('items'), ['a', 'b'])
+    })
+
+    it('excludes disabled inputs', function () {
+        let form = createProcessedHTML('<form><input name="a" value="1"><input name="b" value="2" disabled></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('a'), '1')
+        assert.equal(formData.get('b'), null)
+    })
+
+    it('excludes inputs without name attribute', function () {
+        let form = createProcessedHTML('<form><input value="1"><input name="b" value="2"></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('b'), '2')
+    })
+
+    it('collects element value when no form provided', function () {
+        let input = createProcessedHTML('<input name="foo" value="bar">')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('foo'), 'bar')
+    })
+
+    it('excludes unchecked checkbox trigger with no form', function () {
+        let input = createProcessedHTML('<input type="checkbox" name="expires">')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('expires'), null)
+    })
+
+    it('includes checked checkbox trigger with no form', function () {
+        let input = createProcessedHTML('<input type="checkbox" name="expires" checked>')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('expires'), 'on')
+    })
+
+    it('excludes unchecked radio trigger with no form', function () {
+        let input = createProcessedHTML('<input type="radio" name="size" value="large">')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('size'), null)
+    })
+
+    it('includes checked radio trigger with no form', function () {
+        let input = createProcessedHTML('<input type="radio" name="size" value="large" checked>')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('size'), 'large')
+    })
+
+    it('collects all selected options from select-multiple trigger with no form', function () {
+        let container = createProcessedHTML('<div><select name="color" multiple><option value="red">Red</option><option value="blue">Blue</option><option value="green">Green</option></select></div>')
+        let select = container.querySelector('select')
+        select.options[1].selected = true
+        select.options[2].selected = true
+        let formData = htmx.__collectFormData(select, null, null)
+        assert.deepEqual(formData.getAll('color'), ['blue', 'green'])
+    })
+
+    it('collects button trigger value with no form', function () {
+        let container = createProcessedHTML('<div><button name="intent" value="preview"></button></div>')
+        let btn = container.querySelector('button')
+        let formData = htmx.__collectFormData(btn, null, null)
+        assert.equal(formData.get('intent'), 'preview')
+    })
+
+    it('excludes disabled trigger element with no form', function () {
+        let container = createProcessedHTML('<div><input name="skip" value="nope" disabled></div>')
+        let input = container.querySelector('input')
+        let formData = htmx.__collectFormData(input, null, null)
+        assert.equal(formData.get('skip'), null)
+    })
+
+    it('excludes fieldset-disabled input via hx-include', function () {
+        let container = createProcessedHTML('<div><fieldset disabled><input id="blocked" name="blocked" value="nope"></fieldset><input id="active" name="active" value="yes"></div>')
+        let blocked = container.querySelector('#blocked')
+        let active = container.querySelector('#active')
+        let included = new Set()
+        let formData = new FormData()
+        htmx.__addInputValues(blocked, included, formData)
+        htmx.__addInputValues(active, included, formData)
+        assert.equal(formData.get('blocked'), null)
+        assert.equal(formData.get('active'), 'yes')
+    })
+
+    it('collects submitter value', function () {
+        let form = createProcessedHTML('<form><input name="a" value="1"><button name="submit" value="go">Go</button></form>')
+        let submitter = form.querySelector('button')
+        let formData = htmx.__collectFormData(form, form, submitter)
+        assert.equal(formData.get('a'), '1')
+        assert.equal(formData.get('submit'), 'go')
+    })
+
+    it('collects hx-include elements', function () {
+        createProcessedHTML('<input id="extra" name="extra" value="included"><form hx-include="#extra"><input name="a" value="1"></form>')
+        let form = document.querySelector('form')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal(formData.get('a'), '1')
+        assert.equal(formData.get('extra'), 'included')
+    })
+
+    it('does not duplicate elements in hx-include', function () {
+        let container = createProcessedHTML('<div><form><input name="a" value="1"></form></div>')
+        let form = container.querySelector('form')
+        form.setAttribute('hx-include', 'input[name="a"]')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.deepEqual(formData.getAll('a'), ['1'])
+    })
+
+    it('handles empty form', function () {
+        let form = createProcessedHTML('<form></form>')
+        let formData = htmx.__collectFormData(form, form, null)
+        assert.equal([...formData.keys()].length, 0)
+    })
+
+    it('handles element without name or form', function () {
+        let div = createProcessedHTML('<div></div>')
+        let formData = htmx.__collectFormData(div, null, null)
+        assert.equal([...formData.keys()].length, 0)
+    })
+
+    it('collects form-associated custom element value', function () {
+        let form = createProcessedHTML('<form><test-input name="custom" value="test-value"></test-input></form>');
+        let formData = htmx.__collectFormData(form, form, null);
+        assert.equal(formData.get('custom'), 'test-value');
+    });
+
+    it('collects both regular and custom element values', function () {
+        let form = createProcessedHTML('<form><input name="regular" value="reg-val"><test-input name="custom" value="cust-val"></test-input></form>');
+        let formData = htmx.__collectFormData(form, form, null);
+        assert.equal(formData.get('regular'), 'reg-val');
+        assert.equal(formData.get('custom'), 'cust-val');
+    });
+
+    it('collects custom element with form attribute outside form', function () {
+        createProcessedHTML('<form id="myform"><input name="inside" value="in"></form><test-input form="myform" name="outside" value="out"></test-input>');
+        let form = document.getElementById('myform');
+        let formData = htmx.__collectFormData(form, form, null);
+        assert.equal(formData.get('inside'), 'in');
+        assert.equal(formData.get('outside'), 'out');
+    });
+
+    it('does not duplicate custom element in hx-include', function () {
+        let container = createProcessedHTML('<div><form><test-input name="custom" value="val"></test-input></form></div>');
+        let form = container.querySelector('form');
+        form.setAttribute('hx-include', 'test-input[name="custom"]');
+        let formData = htmx.__collectFormData(form, form, null);
+        assert.deepEqual(formData.getAll('custom'), ['val']);
+    });
+
+    it('collects multiple custom elements with same name', function () {
+        let form = createProcessedHTML('<form><test-input name="items" value="a"></test-input><test-input name="items" value="b"></test-input></form>');
+        let formData = htmx.__collectFormData(form, form, null);
+        assert.deepEqual(formData.getAll('items'), ['a', 'b']);
+    });
+
+    it('collects form-associated custom element value as standalone trigger (no form)', function () {
+        let elt = createProcessedHTML('<test-input name="foo" value="hello"></test-input>');
+        let formData = htmx.__collectFormData(elt, null, null);
+        assert.equal(formData.get('foo'), 'hello');
+    });
+
+    it('collects form-associated custom element value as standalone trigger with POST', function () {
+        let elt = createProcessedHTML('<test-input name="tenantId" value="acme"></test-input>');
+        let formData = htmx.__collectFormData(elt, null, null, false, false);
+        assert.equal(formData.get('tenantId'), 'acme');
+    });
+
+    it('includes file input via hx-include', async function () {
+        mockResponse('POST', '/upload', 'OK');
+        createProcessedHTML(
+            '<input type="file" name="myfile" id="file-input">' +
+            '<button id="btn" hx-post="/upload" hx-include="#file-input" hx-encoding="multipart/form-data">Upload</button>'
+        );
+        let fileInput = find('#file-input');
+        let file = new File(['test content'], 'test.txt', { type: 'text/plain' });
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        find('#btn').click();
+        await forRequest();
+        let lastCall = fetchMock.calls[fetchMock.calls.length - 1];
+        let files = lastCall.request.body.getAll('myfile');
+        assert.equal(files.length, 1);
+        assert.equal(files[0].name, 'test.txt');
+    });
+
+    it('includes multiple files via hx-include', async function () {
+        mockResponse('POST', '/upload', 'OK');
+        createProcessedHTML(
+            '<input type="file" name="files" id="multi-file" multiple>' +
+            '<button id="btn" hx-post="/upload" hx-include="#multi-file" hx-encoding="multipart/form-data">Upload</button>'
+        );
+        let fileInput = find('#multi-file');
+        let file1 = new File(['content1'], 'file1.txt', { type: 'text/plain' });
+        let file2 = new File(['content2'], 'file2.txt', { type: 'text/plain' });
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file1);
+        dataTransfer.items.add(file2);
+        fileInput.files = dataTransfer.files;
+        find('#btn').click();
+        await forRequest();
+        let lastCall = fetchMock.calls[fetchMock.calls.length - 1];
+        let files = lastCall.request.body.getAll('files');
+        assert.equal(files.length, 2);
+        assert.equal(files[0].name, 'file1.txt');
+        assert.equal(files[1].name, 'file2.txt');
+    });
+
+    it('collects element with array value as individual FormData items', function () {
+        let elt = createProcessedHTML('<div name="fruit"></div>');
+        Object.defineProperty(elt, 'value', {
+            value: ['banana', 'apple'],
+            configurable: true
+        });
+        let formData = htmx.__collectFormData(elt, null, null, false, false);
+        assert.deepEqual(formData.getAll('fruit'), ['banana', 'apple']);
+    });
+
+    // ── submit button name/value regression ────────────────────────────────
+
+    it('button[hx-post] inside form sends its own name/value', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><button type="submit" name="btn" value="B"></button></form>')
+        let btn = form.querySelector('button')
+        let formData = htmx.__collectFormData(btn, form, null)
+        assert.equal(formData.get('txt'), 'hello')
+        assert.equal(formData.get('btn'), 'B')
+    })
+
+    it('form[hx-post] sends clicked submit button name/value via evt.submitter', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><button type="submit" name="btn" value="B"></button></form>')
+        let btn = form.querySelector('button')
+        let formData = htmx.__collectFormData(form, form, btn)
+        assert.equal(formData.get('txt'), 'hello')
+        assert.equal(formData.get('btn'), 'B')
+    })
+
+    it('standalone button[hx-post] with no form sends its own name/value', function () {
+        let btn = createProcessedHTML('<button type="submit" name="btn" value="C"></button>')
+        let formData = htmx.__collectFormData(btn, null, null)
+        assert.equal(formData.get('btn'), 'C')
+    })
+
+    it('only the clicked button value is sent when multiple submit buttons exist', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><button type="submit" name="action" value="save"></button><button type="submit" name="action" value="delete"></button></form>')
+        let save = form.querySelectorAll('button')[0]
+        let del  = form.querySelectorAll('button')[1]
+        let fd1 = htmx.__collectFormData(save, form, null)
+        assert.equal(fd1.get('action'), 'save')
+        let fd2 = htmx.__collectFormData(del, form, null)
+        assert.equal(fd2.get('action'), 'delete')
+    })
+
+    it('input[type=submit][hx-post] inside form sends its own name/value', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><input type="submit" name="btn" value="go"></form>')
+        let submit = form.querySelector('input[type=submit]')
+        let formData = htmx.__collectFormData(submit, form, null)
+        assert.equal(formData.get('txt'), 'hello')
+        assert.equal(formData.get('btn'), 'go')
+    })
+
+    it('button with no type (defaults to submit) inside form sends its own name/value', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><button name="btn" value="implicit"></button></form>')
+        let btn = form.querySelector('button')
+        let formData = htmx.__collectFormData(btn, form, null)
+        assert.equal(formData.get('txt'), 'hello')
+        assert.equal(formData.get('btn'), 'implicit')
+    })
+
+    it('submit button value is not duplicated', function () {
+        let form = createProcessedHTML('<form><input name="txt" value="hello"><button type="submit" name="btn" value="B"></button></form>')
+        let btn = form.querySelector('button')
+        let formData = htmx.__collectFormData(btn, form, null)
+        assert.deepEqual(formData.getAll('btn'), ['B'])
+    })
+});

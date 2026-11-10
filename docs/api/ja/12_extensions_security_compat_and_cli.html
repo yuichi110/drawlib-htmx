@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>セキュリティ・互換性・内部 API・CLI ツール — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/12_extensions_security_compat_and_cli.html">
+    
+    
+    
+    <meta name="description" content="本カタログページでは、セキュリティ・キャッシュ・互換性拡張機能（hx-csp、hx-history-cache、hx-prompt、hx-alpine-compat、htmx-2-compat）、htmx.registerExtension(name, { init(api) }) に渡される全 15 メンバーの…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="セキュリティ・互換性・内部 API・CLI ツール — htmx v4 API Reference">
+    <meta property="og:description" content="本カタログページでは、セキュリティ・キャッシュ・互換性拡張機能（hx-csp、hx-history-cache、hx-prompt、hx-alpine-compat、htmx-2-compat）、htmx.registerExtension(name, { init(api) }) に渡される全 15 メンバーの…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/ja/12_extensions_security_compat_and_cli.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="セキュリティ・互換性・内部 API・CLI ツール — htmx v4 API Reference">
+    <meta name="twitter:description" content="本カタログページでは、セキュリティ・キャッシュ・互換性拡張機能（hx-csp、hx-history-cache、hx-prompt、hx-alpine-compat、htmx-2-compat）、htmx.registerExtension(name, { init(api) }) に渡される全 15 メンバーの…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API リファレンス · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="項目を絞り込み..." autocomplete="off" spellcheck="false" aria-label="項目を絞り込み...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">カテゴリ &amp; 項目</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="すべて展開" data-collapse-label="すべて折りたたむ">すべて折りたたむ</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API 全体概要" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API 全体概要</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="パッケージエクスポート＆配布バンドル">
+                                <a href="00_overview.html#パッケージエクスポート-配布バンドル" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">パッケージエクスポート＆配布バンドル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性接頭辞 (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#属性接頭辞-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性接頭辞 (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ポータル間リンク（4ポータル構成）">
+                                <a href="00_overview.html#ポータル間リンク-4ポータル構成" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ポータル間リンク（4ポータル構成）</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="コアリクエスト属性 (Core Request Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">コアリクエスト属性 (Core Request Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)">
+                                <a href="01_core_request_attributes.html#読み取り-クエリ系メソッド-read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">読み取り・クエリ系メソッド (Read &amp; Safe Query Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="状態変更系メソッド (State-Mutating Verbs)">
+                                <a href="01_core_request_attributes.html#状態変更系メソッド-state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">状態変更系メソッド (State-Mutating Verbs)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)">
+                                <a href="01_core_request_attributes.html#統合アクション-メソッド属性-unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">統合アクション・メソッド属性 (Unified Action &amp; Method Attributes)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="トリガーと同期属性 (Trigger &amp; Synchronization Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">トリガーと同期属性 (Trigger &amp; Synchronization Attributes)</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="イベントトリガー指定 (Event Trigger Specification)">
+                                <a href="02_trigger_and_sync_attributes.html#イベントトリガー指定-event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">イベントトリガー指定 (Event Trigger Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)">
+                                <a href="02_trigger_and_sync_attributes.html#リクエストキューと並行同期制御-request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストキューと並行同期制御 (Request Queue &amp; Concurrency Synchronization)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)">
+                                <a href="02_trigger_and_sync_attributes.html#ユーザー確認-非同期確認ゲート-user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ユーザー確認・非同期確認ゲート (User &amp; Programmatic Confirmation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="ターゲットとスワップ属性 (Target &amp; Swap Attributes)" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">ターゲットとスワップ属性 (Target &amp; Swap Attributes)</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)">
+                                <a href="03_target_and_swap_attributes.html#メインターゲットとスワップ方式の指定-primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">メインターゲットとスワップ方式の指定 (Primary Target &amp; Swap Specification)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-マルチターゲット更新-out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band・マルチターゲット更新 (Out-of-Band &amp; Multi-Target Swaps)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンス抽出フィルタ属性 (Response Filtering Attributes)">
+                                <a href="03_target_and_swap_attributes.html#レスポンス抽出フィルタ属性-response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンス抽出フィルタ属性 (Response Filtering Attributes)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)">
+                                <a href="03_target_and_swap_attributes.html#domモーフィング保護-要素状態保持属性-dom-morphing-state-preservation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOMモーフィング保護・要素状態保持属性 (DOM Morphing &amp; State Preservation)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="データ・検証・設定属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">データ・検証・設定属性</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストペイロード・パラメータ属性">
+                                <a href="04_data_and_config_attributes.html#リクエストペイロード-パラメータ属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストペイロード・パラメータ属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="フォーム検証・Fetch設定・ステータスルーティング">
+                                <a href="04_data_and_config_attributes.html#フォーム検証-fetch設定-ステータスルーティング" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">フォーム検証・Fetch設定・ステータスルーティング</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX・履歴・イベント・継承制御属性" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX・履歴・イベント・継承制御属性</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ナビゲーション・ブラウザ履歴属性">
+                                <a href="05_ux_history_and_control_attributes.html#ナビゲーション-ブラウザ履歴属性" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ナビゲーション・ブラウザ履歴属性</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="通信中 UX・セキュリティ・インラインスクリプト">
+                                <a href="05_ux_history_and_control_attributes.html#通信中-ux-セキュリティ-インラインスクリプト" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">通信中 UX・セキュリティ・インラインスクリプト</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="属性継承モディファイア">
+                                <a href="05_ux_history_and_control_attributes.html#属性継承モディファイア" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">属性継承モディファイア</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP リクエスト・レスポンスヘッダ" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP リクエスト・レスポンスヘッダ</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストヘッダ">
+                                <a href="06_http_headers.html#リクエストヘッダ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストヘッダ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="レスポンスヘッダ">
+                                <a href="06_http_headers.html#レスポンスヘッダ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">レスポンスヘッダ</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="JavaScript API と TypeScript 型定義" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API と TypeScript 型定義</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="コア JavaScript メソッド">
+                                <a href="07_javascript_api.html#コア-javascript-メソッド" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">コア JavaScript メソッド</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript コンテキスト・オプション型定義">
+                                <a href="07_javascript_api.html#typescript-コンテキスト-オプション型定義" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript コンテキスト・オプション型定義</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="設定オプションと CSS ステートクラス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">設定オプションと CSS ステートクラス</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="設定エントリポイント">
+                                <a href="08_configuration_options.html#設定エントリポイント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">設定エントリポイント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig プロパティ">
+                                <a href="08_configuration_options.html#htmxconfig-プロパティ" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig プロパティ</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS ステートクラス">
+                                <a href="08_configuration_options.html#css-ステートクラス" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS ステートクラス</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="イベント＆拡張機能フック リファレンス" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">イベント＆拡張機能フック リファレンス</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="要素ライフサイクルイベント">
+                                <a href="09_events_reference.html#要素ライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">要素ライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="リクエストライフサイクルイベント">
+                                <a href="09_events_reference.html#リクエストライフサイクルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リクエストライフサイクルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="スワップ＆セトルイベント">
+                                <a href="09_events_reference.html#スワップ-セトルイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">スワップ＆セトルイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="履歴＆ビュートランジションイベント">
+                                <a href="09_events_reference.html#履歴-ビュートランジションイベント" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">履歴＆ビュートランジションイベント</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能専用フック">
+                                <a href="09_events_reference.html#拡張機能専用フック" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能専用フック</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="ストリーミング＆ネットワーク拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">ストリーミング＆ネットワーク拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="ストリーミング拡張機能">
+                                <a href="10_extensions_streaming_and_net.html#ストリーミング拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ストリーミング拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="ネットワーク＆転送拡張機能">
+                                <a href="10_extensions_streaming_and_net.html#ネットワーク-転送拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">ネットワーク＆転送拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="リアクティブ DOM スクリプティング＆ DOM 操作拡張機能" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">リアクティブ DOM スクリプティング＆ DOM 操作拡張機能</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#リアクティブ-dom-スクリプティング-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">リアクティブ DOM スクリプティング (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM 操作＆ UX 拡張機能">
+                                <a href="11_extensions_reactive_and_dom.html#dom-操作-ux-拡張機能" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM 操作＆ UX 拡張機能</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="セキュリティ・互換性・内部 API・CLI ツール" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">セキュリティ・互換性・内部 API・CLI ツール</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="サマリーテーブル">
+                                <a href="#サマリーテーブル" class="catalog-nav-sublink is-prose-sublink" data-target="サマリーテーブル">
+                                    
+                                    <span class="catalog-nav-sym-text">サマリーテーブル</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="セキュリティ・キャッシュ・互換性拡張機能">
+                                <a href="#セキュリティ-キャッシュ-互換性拡張機能" class="catalog-nav-sublink is-prose-sublink" data-target="セキュリティ-キャッシュ-互換性拡張機能">
+                                    
+                                    <span class="catalog-nav-sym-text">セキュリティ・キャッシュ・互換性拡張機能</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="拡張機能内部 API (internalAPI)">
+                                <a href="#拡張機能内部-api-internalapi" class="catalog-nav-sublink is-prose-sublink" data-target="拡張機能内部-api-internalapi">
+                                    
+                                    <span class="catalog-nav-sym-text">拡張機能内部 API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="マイグレーション CLI ツール (upgrade-check)">
+                                <a href="#マイグレーション-cli-ツール-upgrade-check" class="catalog-nav-sublink is-prose-sublink" data-target="マイグレーション-cli-ツール-upgrade-check">
+                                    
+                                    <span class="catalog-nav-sym-text">マイグレーション CLI ツール (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>一致する項目が見つかりません。</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API リファレンス</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">セキュリティ・互換性・内部 API・CLI ツール</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">日本語</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <a href="../en/12_extensions_security_compat_and_cli.html" class="lang-option" role="option" hreflang="">
+                                    <span>English</span>
+                                </a>
+                                
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>日本語</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">セキュリティ・互換性・内部 API・CLI ツール</h1>
+<p>本カタログページでは、セキュリティ・キャッシュ・互換性拡張機能（<code>hx-csp</code>、<code>hx-history-cache</code>、<code>hx-prompt</code>、<code>hx-alpine-compat</code>、<code>htmx-2-compat</code>）、<code>htmx.registerExtension(name, { init(api) })</code> に渡される全 15 メンバーの <strong>拡張機能内部 API（<code>internalAPI</code>）</strong>、および <strong><code>upgrade-check</code></strong> マイグレーション CLI ツール（<code>src/scripts/upgrade-check.py</code>）のリファレンスを収録します。</p>
+<h2 id="サマリーテーブル" class="catalog-section-heading"><span>サマリーテーブル</span><a class="header-anchor" href="#サマリーテーブル" aria-label="Permalink to サマリーテーブル">#</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">シンボル</th>
+<th style="text-align:left">登録名 / カテゴリ</th>
+<th style="text-align:left">シグネチャ / 属性 / 設定オプション</th>
+<th style="text-align:left">主な用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>hx-csp</code></td>
+<td style="text-align:left"><code>'hx-csp'</code>（セキュリティ拡張）</td>
+<td style="text-align:left"><code>htmx.js</code> の後に <code>hx-csp.js</code> を読み込む</td>
+<td style="text-align:left"><code>new Function</code> / <code>AsyncFunction</code> を厳格な CSP 対応の再帰下降 AST 評価器（<code>jsep</code>）と Trusted Types ポリシー（<code>'htmx-csp'</code>）に置き換えます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-history-cache</code></td>
+<td style="text-align:left"><code>'history-cache'</code>（キャッシュ拡張）</td>
+<td style="text-align:left"><code>hx-history=&quot;false&quot;</code>, <code>htmx.config.historyCacheSize</code></td>
+<td style="text-align:left">履歴遷移前の <code>&lt;body hx-history-elt&gt;</code> スナップショットを <code>sessionStorage</code>（<code>htmx-history-cache</code>）に保存し、ブラウザの戻る/進む（<code>popstate</code>）で即座に復元します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-prompt</code></td>
+<td style="text-align:left"><code>'hx-prompt'</code>（UX / 互換拡張）</td>
+<td style="text-align:left"><code>hx-prompt=&quot;&lt;message&gt;&quot;</code></td>
+<td style="text-align:left"><code>htmx:confirm</code> フェーズで <code>window.prompt()</code> ダイアログを表示し、入力値を <code>HX-Prompt</code> リクエストヘッダーおよび <code>evt.detail.prompt</code> に付与します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx-alpine-compat</code></td>
+<td style="text-align:left"><code>'alpine-compat'</code>（互換拡張）</td>
+<td style="text-align:left"><code>api.isSoftMatch</code> をオーバーライド</td>
+<td style="text-align:left">サーバー HTML 側に静的な <code>id</code> 属性がない場合でも、Alpine.js の動的な <code>:id</code> / <code>x-bind:id</code> 要素を <code>innerMorph</code> / <code>outerMorph</code> 時に維持します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx-2-compat</code></td>
+<td style="text-align:left"><code>'compat'</code>（互換拡張）</td>
+<td style="text-align:left">htmx 2.x の既定値・属性・イベントを復元</td>
+<td style="text-align:left"><code>implicitInheritance</code> の有効化、<code>HX-Trigger*</code> レスポンスヘッダー処理、<code>hx-vals</code>/<code>hx-headers</code> の注入、旧属性の変換、2.x キャメルケースイベントの再発火を提供します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HCON</code></td>
+<td style="text-align:left"><code>api.HCON</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>{ parse(str), split(str), merge(src, dst) }</code></td>
+<td style="text-align:left">htmx Config Object Notation（緩和 JSON、裸のキー、ドットパス <code>a.b:1</code>、<code>&lt;.../&gt;</code> トークン）の解析、トップレベルカンマ分割、安全なディープマージを提供します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>attributeValue</code></td>
+<td style="text-align:left"><code>api.attributeValue</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, name, defaultVal?, eltCollector?, allowInheritance?) =&gt; string | null</code></td>
+<td style="text-align:left"><code>elt</code> または祖先要素（<code>:inherited</code>, <code>:append</code>）から <code>hx-*</code> 属性値を解決し、プレフィックス正規化と <code>htmx:after:implicitInheritance</code> の発火を行います。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>parseTriggerSpecs</code></td>
+<td style="text-align:left"><code>api.parseTriggerSpecs</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(spec) =&gt; Array&lt;{ name: string, [mod: string]: any }&gt;</code></td>
+<td style="text-align:left"><code>hx-trigger</code> 仕様文字列を構造化されたトリガー定義オブジェクト配列（<code>every</code>, <code>[filter]</code>, <code>delay</code>, <code>throttle</code>, <code>from</code>, <code>target</code>）に解析します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>determineMethodAndAction</code></td>
+<td style="text-align:left"><code>api.determineMethodAndAction</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, evt?) =&gt; { action: string | undefined, method: string }</code></td>
+<td style="text-align:left"><code>hx-method</code>/<code>hx-action</code>、<code>hx-get</code>..<code>hx-query</code>、またはブーストされた <code>&lt;a&gt;</code>/<code>&lt;form&gt;</code> から HTTP <code>method</code>（大文字、既定 <code>'GET'</code>）と送信先 <code>action</code> を決定します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>createRequestContext</code></td>
+<td style="text-align:left"><code>api.createRequestContext</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(sourceElement, sourceEvent?) =&gt; Object</code></td>
+<td style="text-align:left"><code>AbortController</code>、解決済み <code>target</code>、<code>swap</code>、<code>select</code>、<code>selectOOB</code>、<code>headers</code>、および <code>hx-config</code> を統合したリクエストコンテキスト（<code>ctx</code>）を構築します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>collectFormData</code></td>
+<td style="text-align:left"><code>api.collectFormData</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, form, submitter, validate, isGet) =&gt; FormData | undefined</code></td>
+<td style="text-align:left"><code>validate</code> が真の場合に HTML5 <code>reportValidity()</code> を実行し（失敗時は <code>undefined</code>）、<code>form</code>、非 GET コンテナ、<code>submitter</code>、<code>hx-include</code> から <code>FormData</code> を収集します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>getAttributeObject</code></td>
+<td style="text-align:left"><code>api.getAttributeObject</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, attrName, callback, scope?) =&gt; Promise&lt;void&gt; | undefined</code></td>
+<td style="text-align:left">HCON/JSON または <code>js:</code>/<code>javascript:</code> オブジェクト属性（<code>hx-vals</code>, <code>hx-headers</code> 等）を評価し、解決されたオブジェクトを <code>callback(obj)</code> に渡します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>insertContent</code></td>
+<td style="text-align:left"><code>api.insertContent</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(task, cssTransition?) =&gt; Promise&lt;void&gt;</code></td>
+<td style="text-align:left">スワップタスク（<code>innerHTML</code>, <code>outerHTML</code>, <code>innerMorph</code>, <code>outerMorph</code> 等）を実行し、<code>[hx-preserve]</code>、View Transitions、settle イベント、<code>&lt;script&gt;</code> 実行、<code>htmx.process()</code> を処理します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>morph</code></td>
+<td style="text-align:left"><code>api.morph</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(oldNode, fragment, innerHTML) =&gt; void</code></td>
+<td style="text-align:left">永続 ID マップ、<code>pantry</code> 退避、<code>morphIgnore</code>/<code>morphSkip</code>、<code>htmx:before:morph:node</code>/<code>attr</code> フックを備えた Idiomorph DOM モーフィングを実行します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>isSoftMatch</code></td>
+<td style="text-align:left"><code>api.isSoftMatch</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(oldNode, newNode) =&gt; boolean</code></td>
+<td style="text-align:left">Idiomorph の候補探索時に <code>oldNode</code> と <code>newNode</code> が同一 <code>tagName</code> かつ互換性のある <code>id</code>（または同一 <code>&lt;script&gt;</code>）を持つかを判定します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>initSecurity</code></td>
+<td style="text-align:left"><code>api.initSecurity</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(ttPolicy, syncFn, asyncFn) =&gt; void</code></td>
+<td style="text-align:left">htmx コア内部の Trusted Types ポリシー（<code>createHTML</code>, <code>createScript</code>）、同期 <code>#Function</code>、および非同期 <code>#AsyncFunction</code> コンストラクタを差し替えます。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>onTrigger</code></td>
+<td style="text-align:left"><code>api.onTrigger</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt, specString, handler) =&gt; void</code></td>
+<td style="text-align:left"><code>specString</code> を解析し、<code>hx-trigger</code> の全機能（<code>load</code>, <code>revealed</code>, <code>intersect</code>, <code>every</code>, フィルタ, <code>delay</code>, <code>throttle</code>, <code>from</code>）を備えたリスナーを <code>elt</code> に登録します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmxProp</code></td>
+<td style="text-align:left"><code>api.htmxProp</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(elt) =&gt; { listeners: Array, triggerSpecs: Array }</code></td>
+<td style="text-align:left"><code>elt._htmx</code> 状態オブジェクトを遅延初期化して返し、要素に <code>data-htmx-powered=&quot;true&quot;</code> を刻印します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>triggerHtmxEvent</code></td>
+<td style="text-align:left"><code>api.triggerHtmxEvent</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(on, eventName, detail?, bubbles?) =&gt; boolean</code></td>
+<td style="text-align:left">対応する拡張機能ライフサイクルフック（<code>htmx_&lt;event&gt;</code>）を呼び出し、キャンセル可能な <code>CustomEvent</code> をディスパッチします（キャンセル時は <code>false</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>executeJavaScript</code></td>
+<td style="text-align:left"><code>api.executeJavaScript</code> (<code>internalAPI</code>)</td>
+<td style="text-align:left"><code>(thisArg, obj, code, expression?, isAsync?, compile?) =&gt; any</code></td>
+<td style="text-align:left"><code>htmx:scope</code> を発火し、<code>htmx</code> ヘルパーを <code>thisArg</code> に束縛した上で、<code>#AsyncFunction</code> / <code>#Function</code> により JS 式・文を評価またはコンパイル（<code>compile=true</code>）します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>upgrade-check</code></td>
+<td style="text-align:left"><code>src/scripts/upgrade-check.py</code> (CLI)</td>
+<td style="text-align:left"><code>python3 upgrade-check.py [paths...] [--fix] [--no-color]</code></td>
+<td style="text-align:left">HTML/テンプレートおよび JS/TS ファイルを全 7 カテゴリで静的解析し、htmx 2.x から htmx 4.0 への移行診断と自動書き換えを行う CLI ツールです。</td>
+</tr>
+</tbody>
+</table>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/12_extensions_security_compat_and_cli/cat_12_security_compat_internal_api_ja.png" alt="12_extensions_security_compat_and_cli_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 セキュリティ・互換性・内部 API（internalAPI）・移行 CLI アーキテクチャ</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer frame</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mf">88.0</span><span class="p">),</span>
+    <span class="s2">"セキュリティ・互換性・内部 API（internalAPI）・移行 CLI"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Left Column: Security, Caching &amp; Compatibility Extensions + CLI</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">68</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">shield_check</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="s2">"セキュリティ・互換性・CLI"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="c1"># Focal Point 1: hx-csp</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">68.3</span><span class="p">),</span> <span class="s2">"hx-csp ('hx-csp')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">64.3</span><span class="p">),</span> <span class="s2">"jsep AST 評価 + Trusted Types"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">55.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">56.8</span><span class="p">),</span> <span class="s2">"hx-history-cache ('history-cache')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">52.8</span><span class="p">),</span> <span class="s2">"sessionStorage LRU (既定 10 件)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">45.3</span><span class="p">),</span> <span class="s2">"hx-prompt &amp; hx-alpine-compat"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">41.3</span><span class="p">),</span> <span class="s2">"HX-Prompt ヘッダー | :id マッチ"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">9.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">33.8</span><span class="p">),</span> <span class="s2">"htmx-2-compat ('compat')"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">29.8</span><span class="p">),</span> <span class="s2">"2.x 暗黙継承・ヘッダー・旧イベント"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">17.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">62</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">13.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">21.0</span><span class="p">),</span> <span class="s2">"upgrade-check.py CLI"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">38</span><span class="p">,</span> <span class="mf">15.2</span><span class="p">),</span> <span class="s2">"全 7 カテゴリの静的検査 + --fix 自動修正</span><span class="se">\n</span><span class="s2">イベント名 | 属性継承 | 廃止属性"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Right Panel: Extension Internal API (internalAPI — 15 members)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="mf">43.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">98</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">gear_six</span><span class="p">((</span><span class="mi">86</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.8</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">129</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span> <span class="s2">"拡張機能内部 API (init(api) — 全 15 メンバー)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.8</span><span class="p">))</span>
+
+<span class="c1"># Focal Point 2: Swap &amp; Idiomorph Engine</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"スワップ &amp; Idiomorph"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">57.0</span><span class="p">),</span> <span class="s2">"insertContent(task)</span><span class="se">\n</span><span class="s2">morph(old, frag, inner)</span><span class="se">\n</span><span class="s2">isSoftMatch(old, new)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">59.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"構文解析 &amp; 属性解決"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">57.0</span><span class="p">),</span> <span class="s2">"HCON (parse/split/merge)</span><span class="se">\n</span><span class="s2">attributeValue()</span><span class="se">\n</span><span class="s2">parseTriggerSpecs()</span><span class="se">\n</span><span class="s2">getAttributeObject()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"リクエスト &amp; フォーム収集"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">103</span><span class="p">,</span> <span class="mf">33.0</span><span class="p">),</span> <span class="s2">"determineMethodAndAction()</span><span class="se">\n</span><span class="s2">createRequestContext()</span><span class="se">\n</span><span class="s2">collectFormData()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">35.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"ランタイム・セキュリティ・イベント"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mf">33.0</span><span class="p">),</span> <span class="s2">"initSecurity() | htmxProp()</span><span class="se">\n</span><span class="s2">onTrigger()</span><span class="se">\n</span><span class="s2">triggerHtmxEvent()</span><span class="se">\n</span><span class="s2">executeJavaScript()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">16.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">93</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">18.7</span><span class="p">),</span> <span class="s2">"htmx.registerExtension(name, ext) の init(api) に注入"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">126.5</span><span class="p">,</span> <span class="mf">14.3</span><span class="p">),</span> <span class="s2">"isSoftMatch や initSecurity の差し替え・カスタムタスク実行が可能"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2 id="セキュリティ-キャッシュ-互換性拡張機能" class="catalog-section-heading"><span>セキュリティ・キャッシュ・互換性拡張機能</span><a class="header-anchor" href="#セキュリティ-キャッシュ-互換性拡張機能" aria-label="Permalink to セキュリティ・キャッシュ・互換性拡張機能">#</a></h2>
+<h3 id="hx-csp-hx-csp"><code>hx-csp</code> (<code>hx-csp</code>)<a class="header-anchor" href="#hx-csp-hx-csp" aria-label="Permalink">#</a></h3>
+<p>htmx コアの動的コードコンパイル（<code>new Function</code> および <code>new AsyncFunction</code>）と直接の <code>innerHTML</code> 代入を、厳格な Content Security Policy（CSP）に準拠した AST 評価器（<code>jsep</code>）および Trusted Types パススルーポリシー（<code>'htmx-csp'</code>）に置き換え、<code>'unsafe-eval'</code> を許可することなく <code>hx-on:*</code>、<code>hx-vals=&quot;js:...&quot;</code>、<code>hx-headers=&quot;js:...&quot;</code>、および <code>hx-live</code> を安全に実行可能にします。</p>
+<h4 id="拡張機能登録とフック動作">拡張機能登録とフック動作</h4>
+<ul>
+<li><strong>登録名</strong>: <code>'hx-csp'</code>（<code>src/ext/hx-csp.js</code>）</li>
+<li><strong><code>init(api)</code></strong>:
+<ul>
+<li><code>window.trustedTypes.createPolicy('htmx-csp', { createHTML: s =&gt; s, createScript: s =&gt; s })</code> により Trusted Types ポリシーを作成します（Trusted Types 非対応環境やポリシー作成例外時は <code>{ createHTML: s =&gt; s, createScript: s =&gt; s }</code> にフォールバックします）。</li>
+<li><code>api.initSecurity(policy, cspFunction(false), cspFunction(true))</code> を呼び出し、htmx 内部の <code>#ttPolicy</code>、同期 <code>#Function</code>、および非同期 <code>#AsyncFunction</code> コンストラクタを差し替えます。</li>
+</ul>
+</li>
+</ul>
+<h4 id="サポートされる-javascript-サブセット-jsep-ast-評価器">サポートされる JavaScript サブセット（JSEP AST 評価器）</h4>
+<ul>
+<li><strong>サポートされる構文</strong>:
+<ul>
+<li>リテラル（<code>Literal</code>）、識別子（<code>Identifier</code>）、<code>this</code>（<code>ThisExpression</code>）、テンプレートリテラル（<code>TemplateLiteral</code>）、配列リテラル（<code>ArrayExpression</code>）、オブジェクトリテラル（<code>ObjectExpression</code>、スプレッド <code>...</code> 対応）。</li>
+<li>プロパティアクセス（<code>.</code> および <code>[]</code> による <code>MemberExpression</code>、オプショナルチェイニング <code>?.</code> とメソッドの <code>this</code> バインド対応）、関数・メソッド呼び出し（<code>?.()</code> と <code>...spread</code> 対応の <code>CallExpression</code>）、および安全なコンストラクタに対する <code>new</code> 生成（<code>NewExpression</code>）。</li>
+<li>単項演算子（<code>!</code>, <code>+</code>, <code>-</code>, <code>~</code>, <code>typeof</code>, <code>void</code>, <code>delete</code>, <code>await</code>）、更新演算子（前置・後置の <code>++</code>, <code>--</code>）、二項演算子（<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>**</code>, <code>==</code>, <code>!=</code>, <code>===</code>, <code>!==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code>, <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>in</code>, <code>instanceof</code>）、論理演算子（<code>&amp;&amp;</code>, <code>||</code>, <code>??</code>）、三項演算子（<code>ConditionalExpression</code>）、カンマ演算子（<code>SequenceExpression</code>）。</li>
+<li>代入演算子（<code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code>, <code>||=</code>, <code>&amp;&amp;=</code>, <code>??=</code>）、単一・複数引数アロー関数（<code>x =&gt; ...</code>, <code>(a, b) =&gt; ...</code>, <code>async () =&gt; ...</code>）、およびセミコロン区切りの複文（<code>Compound</code>）と <code>return</code>。</li>
+</ul>
+</li>
+<li><strong>ブロックされる危険な構文（セキュリティサンドボックス）</strong>:
+<ul>
+<li><code>BLOCKED_PROPS</code> により <code>'constructor'</code>、<code>'__proto__'</code>、<code>'prototype'</code> へのアクセスを遮断します（読み取りは <code>undefined</code> を返し、書き込みは無視されます）。</li>
+<li><code>BLOCKED_CALLS</code> により <code>eval</code>、<code>Function</code>、<code>AsyncFunction</code>、<code>GeneratorFunction</code>、<code>AsyncGeneratorFunction</code>、および文字列第 1 引数の <code>setTimeout('...')</code> / <code>setInterval('...')</code> 呼び出しを遮断します（<code>Error('Blocked by hx-csp')</code> をスロー）。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html"><span class="cm">&lt;!-- 'unsafe-eval' なしの厳格な CSP を適用 --&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">"Content-Security-Policy"</span>
+      <span class="na">content</span><span class="o">=</span><span class="s">"default-src 'self'; script-src 'self'; require-trusted-types-for 'script'; trusted-types htmx-csp;"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/htmx.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-csp.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"hx-csp"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/like"</span>
+          <span class="na">hx-vals</span><span class="o">=</span><span class="s">"js:{ count: Number(this.dataset.count) + 1 }"</span>
+          <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"this.dataset.count = Number(this.dataset.count) + 1"</span>
+          <span class="na">data-count</span><span class="o">=</span><span class="s">"4"</span><span class="p">&gt;</span>
+    いいね
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-history-cache-history-cache"><code>hx-history-cache</code> (<code>history-cache</code>)<a class="header-anchor" href="#hx-history-cache-history-cache" aria-label="Permalink">#</a></h3>
+<p>htmx がブラウザ履歴を push または replace する直前に、現在のページの履歴対象要素（<code>[hx-history-elt]</code> または <code>document.body</code>）を <code>sessionStorage</code>（<code>'htmx-history-cache'</code>）へスナップショット保存し、ブラウザの戻る/進む（<code>popstate</code>）操作時にネットワーク通信なしでキャッシュから HTML を即時復元します。</p>
+<h4 id="設定オプションと属性">設定オプションと属性</h4>
+<ul>
+<li><strong>登録名</strong>: <code>'history-cache'</code>（<code>src/ext/hx-history-cache.js</code>）</li>
+<li><strong><code>hx-history=&quot;false&quot;</code></strong>: ドキュメント内の任意の要素に配置すると（<code>htmx.find('[hx-history=&quot;false&quot;]')</code>）、現在の URL のキャッシュ保存を無効化し、そのパスの既存キャッシュエントリを削除します。</li>
+<li><strong><code>htmx.config.historyCacheSize</code></strong>: <code>sessionStorage</code> の <code>'htmx-history-cache'</code> キー内に保持する最大 URL エントリ数（LRU キャッシュ）。既定値は <code>10</code> です。<code>&lt;= 0</code> を設定するとキャッシュを無効化し、<code>'htmx-history-cache'</code> を削除します。</li>
+</ul>
+<h4 id="ライフサイクルイベントとフック動作">ライフサイクルイベントとフック動作</h4>
+<ul>
+<li><strong>履歴更新前（<code>htmx_before_historyUpdate</code>）</strong>:
+<ul>
+<li><code>pushState</code> / <code>replaceState</code> の直前に実行されます。<code>saveToCache(normalizePath(location.pathname + location.search), getHistoryElement())</code> を呼び出して遷移前の <code>cleanInnerHTML(historyElt)</code> を保存し、<code>history.state = { ...history.state, cached: true }</code> を記録します。</li>
+</ul>
+</li>
+<li><strong>ブラウザ戻る/進むによる復元前（<code>htmx_before_restoreHistory</code>）</strong>:
+<ul>
+<li><code>sessionStorage</code> の LRU キャッシュ内で <code>detail.path</code> を検索します。</li>
+<li><strong>キャッシュヒット時</strong>: <code>htmx:historyCacheHit</code>（<code>{ path, content }</code>）を発火します。キャンセルされなければ <code>api.insertContent({ type: 'innerHTML', target, content, transition: htmx.config.transitions })</code> で <code>[hx-history-elt]</code> / <code>document.body</code> にスワップし、<code>htmx:after:restoreHistory</code>（<code>{ path, cacheMiss: false }</code>）を発火して <code>false</code> を返し、コアのネットワーク再取得をキャンセルします。</li>
+<li><strong>キャッシュミス時</strong>: <code>htmx:historyCacheMiss</code>（<code>{ path }</code>）を発火し、htmx コアによる通常のネットワーク復元処理を続行させます。</li>
+</ul>
+</li>
+<li><strong>サニタイズ処理（<code>cleanInnerHTML</code>）</strong>: 履歴要素をクローンし、<code>[hx-Vals]</code> 要素の除去および一時的な <code>.htmx-request</code> / <code>.htmx-settling</code> クラスの削除を行ってから <code>sessionStorage</code> にシリアライズします。</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-history-cache.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">historyCacheSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">20</span><span class="p">;</span><span class="w"> </span><span class="c1">// sessionStorage に最大 20 ページまで保持</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"history-cache"</span> <span class="na">hx-history-elt</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">nav</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/products?page=2"</span> <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"true"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main"</span><span class="p">&gt;</span>ページ 2<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">main</span> <span class="na">id</span><span class="o">=</span><span class="s">"main"</span><span class="p">&gt;</span>...<span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-prompt-hx-prompt"><code>hx-prompt</code> (<code>hx-prompt</code>)<a class="header-anchor" href="#hx-prompt-hx-prompt" aria-label="Permalink">#</a></h3>
+<p><code>hx-prompt</code>（または継承された <code>hx-prompt</code>）を持つ要素の <code>htmx:confirm</code> ライフサイクルイベントをインターセプトし、ブラウザ標準の同期 <code>window.prompt()</code> ダイアログを表示して、ユーザーの入力文字列を <code>HX-Prompt</code> リクエストヘッダーおよび <code>evt.detail.prompt</code> に設定します。</p>
+<h4 id="属性とリクエストヘッダー">属性とリクエストヘッダー</h4>
+<ul>
+<li><strong>登録名</strong>: <code>'hx-prompt'</code>（<code>src/ext/hx-prompt.js</code>）</li>
+<li><strong><code>hx-prompt=&quot;&lt;message&gt;&quot;</code></strong>: <code>api.attributeValue(elt, 'hx-prompt')</code> を通じて解決されます（<code>:inherited</code> や <code>implicitInheritance</code> に対応）。</li>
+<li><strong>キャンセル時の動作</strong>: ユーザーが「キャンセル」をクリックした場合（<code>window.prompt()</code> が <code>null</code> を返した場合）、<code>htmx_confirm</code> が <code>false</code> を返し、<code>issueRequest()</code> が実行される前にリクエストを中止します。</li>
+<li><strong>ヘッダーとイベント詳細</strong>: 入力が確定されると、<code>evt.detail.prompt = response</code> および <code>evt.detail.ctx.request.headers['HX-Prompt'] = response</code> を設定します。</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-prompt.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"hx-prompt"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-delete</span><span class="o">=</span><span class="s">"/account/api-key/42"</span>
+          <span class="na">hx-prompt</span><span class="o">=</span><span class="s">"削除を確認するためキー名を入力してください:"</span>
+          <span class="na">hx-target</span><span class="o">=</span><span class="s">"#key-row-42"</span>
+          <span class="na">hx-swap</span><span class="o">=</span><span class="s">"delete"</span><span class="p">&gt;</span>
+    API キーを失効
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="hx-alpine-compat-alpine-compat"><code>hx-alpine-compat</code> (<code>alpine-compat</code>)<a class="header-anchor" href="#hx-alpine-compat-alpine-compat" aria-label="Permalink">#</a></h3>
+<p>htmx 内部の Idiomorph ノード一致判定関数（<code>api.isSoftMatch</code>）を拡張し、Alpine.js の <code>:id</code> または <code>x-bind:id</code> によって動的に <code>id</code> 属性がバインドされている要素が、静的な <code>id</code> 属性を持たないサーバー側 HTML フラグメントとモーフィングされる際にも同一要素としてインプレース更新されるようにします。</p>
+<h4 id="内部メカニズム">内部メカニズム</h4>
+<ul>
+<li><strong>登録名</strong>: <code>'alpine-compat'</code>（<code>src/ext/hx-alpine-compat.js</code>）</li>
+<li><strong>必要となる理由</strong>: 標準の Idiomorph（<code>api.isSoftMatch(oldNode, newNode)</code>）では、既存 DOM の <code>oldNode</code> に Alpine の <code>:id</code> / <code>x-bind:id</code> によって実行時 <code>oldNode.id</code> が設定されている一方、サーバーから返された未評価の <code>newNode</code> には <code>:id=&quot;item.id&quot;</code> のみがあり <code>newNode.id === &quot;&quot;</code> であるため、<code>oldNode.id === newNode.id</code> が <code>false</code> となり、DOM ノードが破棄・再生成されて Alpine コンポーネントの状態が失われてしまいます。</li>
+<li><strong>オーバーライドロジック</strong>: <code>api.isSoftMatch</code> をラップし、元の <code>origSoftMatch(oldNode, newNode)</code> が <code>false</code> を返した場合でも、<code>(oldNode.hasAttribute(':id') || oldNode.hasAttribute('x-bind:id')) &amp;&amp; !newNode.id</code> かつ <code>oldNode.tagName === newNode.tagName</code>（<code>SCRIPT</code> の場合は <code>isEqualNode</code>）であれば <code>true</code> を返します。</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-alpine-compat.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"alpine-compat"</span>
+     <span class="na">x-data</span><span class="o">=</span><span class="s">"{ items: [{ id: 'row-1', label: 'Alpha' }] }"</span>
+     <span class="na">hx-get</span><span class="o">=</span><span class="s">"/items-fragment"</span>
+     <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">template</span> <span class="na">x-for</span><span class="o">=</span><span class="s">"item in items"</span> <span class="na">:key</span><span class="o">=</span><span class="s">"item.id"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">:id</span><span class="o">=</span><span class="s">"item.id"</span> <span class="na">x-text</span><span class="o">=</span><span class="s">"item.label"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h3 id="htmx-2-compat-compat"><code>htmx-2-compat</code> (<code>compat</code>)<a class="header-anchor" href="#htmx-2-compat-compat" aria-label="Permalink">#</a></h3>
+<p>htmx 2.x の設定既定値、属性の暗黙継承、旧属性エイリアス、<code>HX-Trigger*</code> レスポンスヘッダーによるイベント発火、<code>hx-vals</code> / <code>hx-headers</code> のリクエスト注入、および htmx 2.x のキャメルケースライフサイクルイベント名を包括的に復元する互換性レイヤーを提供します。</p>
+<h4 id="互換性機能と復元される既定値">互換性機能と復元される既定値</h4>
+<ul>
+<li><strong>登録名</strong>: <code>'compat'</code>（<code>src/ext/htmx-2-compat.js</code>）</li>
+<li><strong>設定既定値の復元（<code>init</code>）</strong>:
+<ul>
+<li><code>htmx.config.implicitInheritance = true</code> を設定します（<code>hx-target</code>, <code>hx-swap</code>, <code>hx-select</code> 等の自動継承を復元）。</li>
+<li><code>htmx.config.defaultSwap = 'innerHTML'</code> を設定します。</li>
+<li><code>htmx.config.extensions = 'hx-prompt'</code> を設定します（<code>hx-prompt</code> を自動有効化）。</li>
+</ul>
+</li>
+<li><strong>属性の自動変換（<code>htmx_before_process</code> &amp; <code>htmx_after_implicitInheritance</code>）</strong>:
+<ul>
+<li>要素上の <code>hx-history-elt</code> を <code>hx-history</code> に変換します（<code>htmx_before_process</code>）。</li>
+<li><code>hx-swap</code> の <code>'morph'</code> および <code>'morph:innerHTML'</code> を <code>'innerMorph'</code> に、<code>'morph:outerHTML'</code> を <code>'outerMorph'</code> に正規化します。</li>
+<li><code>hx-disinherit=&quot;*&quot;</code> を <code>hx-inherit=&quot;false&quot;</code> に変換します。</li>
+<li><code>hx-params=&quot;*&quot;</code> を <code>hx-include:inherited=&quot;*&quot;</code> に、<code>hx-params=&quot;none&quot;</code> を <code>hx-include:inherited=&quot;none&quot;</code> に変換します（カンマ区切りフィルタリストには警告を出力）。</li>
+<li><code>hx-sync=&quot;&lt;selector&gt;:&lt;strategy&gt;&quot;</code> を <code>hx-config='{&quot;actionQueue&quot;: {&quot;scope&quot;: &quot;&lt;selector&gt;&quot;, &quot;strategy&quot;: &quot;&lt;strategy&gt;&quot;}}'</code> に変換します。</li>
+<li>廃止された <code>hx-vars</code> や <code>hx-ext=&quot;ignore:...&quot;</code> を検出した際に警告を出力します。</li>
+</ul>
+</li>
+<li><strong><code>hx-vals</code> &amp; <code>hx-headers</code> の評価と注入（<code>htmx_config_request</code>）</strong>:
+<ul>
+<li>継承およびローカルの <code>hx-vals</code> を <code>api.getAttributeObject</code> で収集し、解決されたキー/値ペアを <code>ctx.request.body</code>（<code>FormData</code>）にマージします。</li>
+<li>継承およびローカルの <code>hx-headers</code> を <code>api.getAttributeObject</code> で収集し、解決されたヘッダーを <code>ctx.request.headers</code> にマージします。</li>
+</ul>
+</li>
+<li><strong><code>HX-Trigger*</code> レスポンスヘッダー処理（<code>htmx_after_request</code>, <code>htmx_after_swap</code>, <code>htmx_after_settle</code>）</strong>:
+<ul>
+<li><code>HX-Trigger</code>、<code>HX-Trigger-After-Swap</code>、および <code>HX-Trigger-After-Settle</code>（JSON オブジェクト <code>{&quot;evt&quot;: detail}</code> とカンマ区切りイベント名の両方に対応）を解析し、<code>htmx.trigger()</code> で発火します。</li>
+</ul>
+</li>
+<li><strong>旧 2.x イベント名のマッピング</strong>:
+<ul>
+<li>htmx 4.0 のコロン区切りイベントを htmx 2.x のキャメルケース名（<code>htmx:beforeRequest</code>, <code>htmx:afterRequest</code>, <code>htmx:configRequest</code>, <code>htmx:beforeSwap</code>, <code>htmx:afterSwap</code>, <code>htmx:beforeOnLoad</code>, <code>htmx:afterOnLoad</code>, <code>htmx:beforeProcessNode</code>, <code>htmx:afterProcessNode</code>, <code>htmx:beforeSend</code>, <code>htmx:responseError</code>, <code>htmx:sendError</code>, <code>htmx:sendAbort</code>, <code>htmx:timeout</code>, <code>htmx:oobBeforeSwap</code>, <code>htmx:oobAfterSwap</code>, <code>htmx:beforeTransition</code>, <code>htmx:historyRestore</code>, <code>htmx:beforeHistoryUpdate</code>, <code>htmx:pushedIntoHistory</code>, <code>htmx:replacedInHistory</code>）でも再発火し、<code>detail.xhr</code> に擬似 <code>xhr</code> オブジェクト（<code>status</code>, <code>statusText</code>, <code>response</code>, <code>responseText</code>, <code>getResponseHeader</code>, <code>getAllResponseHeaders</code>）を合成します。</li>
+</ul>
+</li>
+<li><strong>旧 <code>htmx.*</code> グローバルヘルパーの復元</strong>:
+<ul>
+<li><code>htmx.values(elt, type)</code>、<code>htmx.remove(elt, delay?)</code>、<code>htmx.addClass(elt, cls, delay?)</code>、<code>htmx.removeClass(elt, cls, delay?)</code>、<code>htmx.toggleClass(elt, cls)</code>、<code>htmx.closest(elt, selector)</code>、および <code>htmx.defineExtension(name, ext)</code>（<code>onEvent</code> と <code>transformResponse</code> フックを htmx 4.0 に適合）を復元します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/htmx.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/hx-prompt.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/ext/htmx-2-compat.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span> <span class="na">hx-ext</span><span class="o">=</span><span class="s">"compat"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- htmx 2.x の属性・イベント・暗黙継承がそのまま動作 --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#output"</span> <span class="na">hx-vals</span><span class="o">=</span><span class="s">'{"source": "legacy-panel"}'</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/submit"</span>
+            <span class="na">hx-on:htmx:after-request</span><span class="o">=</span><span class="s">"console.log(event.detail.xhr.status)"</span><span class="p">&gt;</span>
+      送信 (2.x 互換モード)
+    <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"output"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2 id="拡張機能内部-api-internalapi" class="catalog-section-heading"><span>拡張機能内部 API (<code>internalAPI</code>)</span><a class="header-anchor" href="#拡張機能内部-api-internalapi" aria-label="Permalink to 拡張機能内部 API (internalAPI)">#</a></h2>
+<p><code>htmx.registerExtension(name, extensionDefinition)</code> によって拡張機能が登録されると、htmx は初期化時に一度だけ <code>extensionDefinition.init(internalAPI)</code> を呼び出し、15 個のプロパティ・メソッドを持つ <code>internalAPI</code> オブジェクト（<code>src/htmx.js</code> 内の <code>#internalAPI</code>）を渡します。拡張機能はこれらの内部プリミティブを直接呼び出すだけでなく、<code>api.isSoftMatch</code> や <code>api.initSecurity</code> などをラップ・差し替えることも可能です。</p>
+<hr />
+<h3 id="hcon">HCON<a class="header-anchor" href="#hcon" aria-label="Permalink">#</a></h3>
+<p>htmx 独自の軽量設定記法 <strong>HCON（htmx Config Object Notation）</strong> のパーサー、トップレベルカンマ分割関数、およびプロトタイプ汚染対策済みのディープマージ関数を提供します。</p>
+<h4 id="オブジェクトシグネチャとメソッド">オブジェクトシグネチャとメソッド</h4>
+<pre><code class="language-ts"><span class="kd">interface</span><span class="w"> </span><span class="nx">HCON</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">parse</span><span class="p">(</span><span class="kt">string</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">split</span><span class="p">(</span><span class="kt">string</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">  </span><span class="nx">merge</span><span class="p">(</span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong><code>api.HCON.parse(string)</code></strong>:
+<ul>
+<li>標準的な JSON オブジェクトとして解釈可能な場合は <code>JSON.parse(string)</code> の高速パスを使用します。</li>
+<li>それ以外の場合は外側の <code>{ ... }</code>（省略可）を取り除き、カンマまたは空白で区切られた緩和キー・バリュー対を解析します：
+<ul>
+<li>キーにはクォートなしの識別子、ドット区切りパス（<code>actionQueue.strategy: 'drop'</code> -&gt; <code>{ actionQueue: { strategy: 'drop' } }</code>）、またはシングルクォート/ダブルクォート文字列を使用できます。</li>
+<li>値には <code>true</code>、<code>false</code>、<code>null</code>、有限数値、クォート文字列（<code>\</code> エスケープ対応）、ネストされた <code>{...}</code> / <code>[...]</code> JSON 構造、<code>&lt;.../&gt;</code> トークン、または裸のトークンを使用できます。</li>
+<li>値を持たないキーは自動的に <code>true</code> となります（例: <code>&quot;once changed delay:300ms&quot;</code> -&gt; <code>{ once: true, changed: true, delay: &quot;300ms&quot; }</code>）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><code>api.HCON.split(string)</code></strong>:
+<ul>
+<li><code>(...)</code>、<code>[...]</code>、<code>&lt;.../&gt;</code>、<code>'...'</code>、および <code>&quot;...&quot;</code> の内部にあるカンマを無視し、トップレベルのカンマ <code>,</code> のみで文字列を分割します。</li>
+</ul>
+</li>
+<li><strong><code>api.HCON.merge(source, target)</code></strong>:
+<ul>
+<li><code>source</code> のプロパティを <code>target</code> に再帰的にディープマージして <code>target</code> を返します。プロトタイプ汚染を防ぐため <code>'__proto__'</code>、<code>'constructor'</code>、<code>'prototype'</code> キーはスキップされます。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-config'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">specs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'click[ctrlKey, shiftKey], keyup delay:200ms'</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// ['click[ctrlKey, shiftKey]', 'keyup delay:200ms']</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">parsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">'actionQueue.strategy: drop, timeout: 5000, once'</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// { actionQueue: { strategy: 'drop' }, timeout: 5000, once: true }</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="attributevalue">attributeValue<a class="header-anchor" href="#attributevalue" aria-label="Permalink">#</a></h3>
+<p><code>elt</code> またはその DOM 祖先要素から htmx 属性値を解決します。<code>htmx.config.prefix</code>、<code>htmx.config.metaCharacter</code>、明示的な <code>:inherited</code> / <code>:append</code> 修飾子、<code>hx-inherit</code>、および <code>htmx.config.implicitInheritance</code> を自動的に考慮します。</p>
+<h4 id="シグネチャとパラメータ">シグネチャとパラメータ</h4>
+<pre><code class="language-ts"><span class="nx">attributeValue</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">defaultVal?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">eltCollector</span><span class="o">?:</span><span class="w"> </span><span class="p">(</span><span class="nx">val</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ownerElt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">allowInheritance?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// 既定値は htmx.config.implicitInheritance</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">any</span>
+</code></pre>
+<ul>
+<li><strong>解決ルール</strong>:
+<ul>
+<li><code>adjustName()</code> により <code>name</code> を正規化します（<code>htmx.config.prefix</code> および <code>htmx.config.metaCharacter</code> を適用）。</li>
+<li>まず <code>elt</code> 自身の <code>name</code> または <code>name:inherited</code> を確認します。</li>
+<li><code>:append</code> または <code>:inherited:append</code> が指定されている場合、祖先チェーンを遡って値を収集し、<code>,</code> で連結します。</li>
+<li>親要素を遡りながら <code>:inherited</code> 属性（または <code>allowInheritance</code> や <code>hx-inherit</code> により継承が許可されている場合は通常の属性）を検索します。</li>
+<li><code>implicitInheritance</code> によって祖先要素から解決された場合、<code>htmx:after:implicitInheritance</code>（<code>{ elt, parent }</code>）をトリガーします。</li>
+<li><code>eltCollector(val, ownerElt)</code> が指定されている場合は値を持つ各要素に対してコールバックを呼び出し、属性が見つからない場合は <code>defaultVal</code> を返します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-attr-reader'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">htmx_config_request</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">team</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'hx-team'</span><span class="p">,</span><span class="w"> </span><span class="s1">'default-team'</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Team'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">team</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="parsetriggerspecs">parseTriggerSpecs<a class="header-anchor" href="#parsetriggerspecs" aria-label="Permalink">#</a></h3>
+<p><code>hx-trigger</code> 属性の文字列を解析し、正規化されたトリガー仕様オブジェクトの配列に変換します。</p>
+<h4 id="シグネチャと戻り値">シグネチャと戻り値</h4>
+<pre><code class="language-ts"><span class="nx">parseTriggerSpecs</span><span class="p">(</span><span class="nx">spec</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Array</span><span class="o">&lt;</span><span class="p">{</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">filter?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">changed?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">once?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">consume?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">stop?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">prevent?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">halt?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">capture?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">passive?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">delay?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">throttle?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">from?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">queue?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">root?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">threshold?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span>
+</code></pre>
+<ul>
+<li><strong>解析メカニズム</strong>:
+<ul>
+<li><code>HCON.split(spec)</code> でトップレベルのカンマごとに分割します。</li>
+<li><code>every &lt;interval&gt; [condition]</code> 形式を <code>every[condition] &lt;interval&gt;</code> に正規化し、ポーリング条件フィルタを統一的に抽出します。</li>
+<li><code>[...]</code> ブラケット内のフィルタ式を <code>triggerSpec.filter</code> に抽出します（閉じ括弧 <code>]</code> がない場合は <code>&quot;unterminated:&quot; + name</code> をスロー）。</li>
+<li>残りの空白区切り修飾子を <code>HCON.parse(rest)</code> で解析し、<code>triggerSpec.name</code> にイベント名（<code>'click'</code>, <code>'every'</code>, <code>'intersect'</code>, <code>'revealed'</code>, <code>'load'</code> 等）を設定します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">specs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">parseTriggerSpecs</span><span class="p">(</span><span class="s1">'keyup[key=="Enter"] changed delay:250ms from:body, load once'</span><span class="p">);</span>
+<span class="c1">// [</span>
+<span class="c1">//   { name: 'keyup', filter: 'key=="Enter"', changed: true, delay: '250ms', from: 'body' },</span>
+<span class="c1">//   { name: 'load', once: true }</span>
+<span class="c1">// ]</span>
+</code></pre>
+<hr />
+<h3 id="determinemethodandaction">determineMethodAndAction<a class="header-anchor" href="#determinemethodandaction" aria-label="Permalink">#</a></h3>
+<p>対象要素とトリガー元の DOM イベントから、HTTP メソッド（大文字）と送信先 URL（<code>action</code>）を決定します。</p>
+<h4 id="シグネチャと戻り値-2">シグネチャと戻り値</h4>
+<pre><code class="language-ts"><span class="nx">determineMethodAndAction</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">evt?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>解決の優先順位</strong>:
+<ol>
+<li><code>elt</code> 上の明示的な <code>hx-method</code> および <code>hx-action</code> 属性。</li>
+<li>動詞属性（優先順）: <code>hx-get</code>、<code>hx-post</code>、<code>hx-put</code>、<code>hx-patch</code>、<code>hx-delete</code>、<code>hx-query</code>（<code>elt.hasAttribute()</code> で直接確認）。</li>
+<li><code>elt</code> がブースト対象（<code>isBoosted(elt)</code>）の場合：
+<ul>
+<li><code>&lt;a href=&quot;...&quot;&gt;</code>: <code>action = elt.getAttribute('href')</code>, <code>method = 'GET'</code>。</li>
+<li><code>&lt;form&gt;</code>: <code>evt?.submitter</code> の <code>formAction</code> / <code>formmethod</code> を優先的に確認し、なければ <code>elt.getAttribute('action')</code> と <code>elt.getAttribute('method')</code> を使用します。</li>
+</ul>
+</li>
+<li><code>method</code> の既定値は <code>'GET'</code>（大文字化）となります。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="p">,</span><span class="w"> </span><span class="nx">action</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">determineMethodAndAction</span><span class="p">(</span><span class="nx">buttonElt</span><span class="p">,</span><span class="w"> </span><span class="nx">submitEvent</span><span class="p">);</span>
+<span class="c1">// 例: { method: 'POST', action: '/api/items' }</span>
+</code></pre>
+<hr />
+<h3 id="createrequestcontext">createRequestContext<a class="header-anchor" href="#createrequestcontext" aria-label="Permalink">#</a></h3>
+<p>リクエスト送信、DOM スワップ、および履歴更新パイプライン全体で使用される完全な htmx リクエストコンテキストオブジェクト（<code>ctx</code>）を構築します。</p>
+<h4 id="シグネチャとコンテキスト構造">シグネチャとコンテキスト構造</h4>
+<pre><code class="language-ts"><span class="nx">createRequestContext</span><span class="p">(</span><span class="nx">sourceElement</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">sourceEvent?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">sourceElement</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">sourceEvent?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">select</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">selectOOB</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">push</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">replace</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">confirm</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">anchor</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestCredentials</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="kt">AbortSignal</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestMode</span><span class="p">;</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>主な初期化ステップ</strong>:
+<ul>
+<li><code>AbortController</code> を生成します（<code>request.abort = () =&gt; abortController.abort()</code>, <code>request.signal = abortController.signal</code>）。</li>
+<li><code>determineMethodAndAction(sourceElement, sourceEvent)</code> を呼び出し、<code>method === 'GET'</code> の場合は <code>action</code> から <code>#anchor</code> ハッシュを分離して <code>request.anchor</code> に格納します。</li>
+<li><code>target</code>（<code>hx-target</code> または <code>sourceElement</code>）、<code>swap</code>（<code>hx-swap</code>）、<code>select</code>（<code>hx-select</code>）、<code>selectOOB</code>（<code>hx-select-oob</code>）、<code>push</code>（<code>hx-push-url</code>）、<code>replace</code>（<code>hx-replace-url</code>）、<code>transition</code>（<code>hx-transition</code>）、<code>confirm</code>（<code>hx-confirm</code>）を解決します。</li>
+<li>標準リクエストヘッダー（<code>HX-Request: 'true'</code>、<code>HX-Source</code>（<code>tagName#id</code>）、<code>HX-Current-URL</code>、<code>Accept: 'text/html, */*; q=0.9'</code>、ブースト時は <code>HX-Boosted: 'true'</code>、ターゲットに <code>id</code> がある場合は <code>HX-Target</code>）を設定します。</li>
+<li><code>hx-boost</code> 設定のオーバーライドを適用し、<code>HCON.merge()</code> で <code>hx-config</code> をディープマージした上で、<code>ctx.request.mode = htmx.config.mode</code> を強制適用します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">createRequestContext</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="p">);</span>
+<span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Extension-Trace'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'enabled'</span><span class="p">;</span>
+</code></pre>
+<hr />
+<h3 id="collectformdata">collectFormData<a class="header-anchor" href="#collectformdata" aria-label="Permalink">#</a></h3>
+<p>関連付けられたフォームコントロールのバリデーションを実行し（<code>validate</code> が真の場合）、囲んでいる <code>&lt;form&gt;</code>、非 GET コンテナ、submitter ボタン、および <code>hx-include</code> セレクタから入力値を収集した <code>FormData</code> インスタンスを構築します。</p>
+<h4 id="シグネチャと動作">シグネチャと動作</h4>
+<pre><code class="language-ts"><span class="nx">collectFormData</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">form</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLFormElement</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">submitter</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElement</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">isGet</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">FormData</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span>
+</code></pre>
+<ul>
+<li><strong>バリデーションと収集ルール</strong>:
+<ul>
+<li><code>form</code> が存在する場合: <code>form.reportValidity()</code> を検証し（無効な場合は <code>undefined</code> を返す）、<code>new FormData(form)</code> で初期化します。</li>
+<li><code>form</code> がなく、<code>elt</code> が <code>&lt;form&gt;</code> または非 <code>isGet</code> 要素の場合: <code>elt</code> とその子孫入力要素に対して <code>reportValidity()</code> を検証し、<code>elt</code> 内の名前付き <code>[name]</code> 入力要素を <code>FormData</code> に追加します。</li>
+<li><code>form</code> 外の名前付き <code>submitter</code> がリクエストを発火した場合、<code>submitter.name</code> / <code>submitter.value</code> を追加します。</li>
+<li><code>hx-include</code>（<code>api.attributeValue(elt, 'hx-include')</code>）を解決し、<code>validate</code> が真の場合は対象要素を検証した上で、それらの値を <code>FormData</code> にマージします。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">formData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">collectFormData</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">form</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">formData</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// バリデーション失敗</span>
+</code></pre>
+<hr />
+<h3 id="getattributeobject">getAttributeObject<a class="header-anchor" href="#getattributeobject" aria-label="Permalink">#</a></h3>
+<p>HCON/JSON または <code>js:</code> / <code>javascript:</code> 動的式を含む属性（<code>hx-vals</code> や <code>hx-headers</code> など）を読み取って評価し、解決されたオブジェクトを引数として <code>callback(resolvedObject)</code> を呼び出します。</p>
+<h4 id="シグネチャと同期-非同期実行">シグネチャと同期/非同期実行</h4>
+<pre><code class="language-ts"><span class="nx">getAttributeObject</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">attrName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">callback</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">obj</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span>
+</code></pre>
+<ul>
+<li><strong>動作</strong>:
+<ul>
+<li><code>elt</code> 上の <code>attrName</code> を参照し、空または未定義の場合は <code>callback</code> を呼ばずに <code>undefined</code> を返します。</li>
+<li><strong>静的 HCON / JSON</strong>: <code>HCON.parse(hxAttr)</code> で同期的にパースし、即座に <code>callback(obj)</code> を呼び出して <code>undefined</code> を返します。</li>
+<li><strong>動的 <code>js:</code> / <code>javascript:</code> プレフィックス</strong>: プレフィックスを除去し、必要に応じて式を <code>{ ... }</code> で囲んだ上で <code>executeJavaScript(elt, scope, code, true, true)</code> により非同期評価し、解決時に <code>callback(obj)</code> を呼び出す <code>Promise</code> を返します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">getAttributeObject</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'hx-vals'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">vals</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">]</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">vals</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="w"> </span><span class="nx">v</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="insertcontent">insertContent<a class="header-anchor" href="#insertcontent" aria-label="Permalink">#</a></h3>
+<p>単一の DOM スワップタスク（<code>task</code>）を実行します。CSS View Transitions、<code>[hx-preserve]</code> 要素の保持、Idiomorph または標準 HTML 挿入、settle ライフサイクルイベント、<code>&lt;script&gt;</code> タグの有効化、<code>htmx.process()</code> による初期化、およびスクロール/フォーカスの復元を一貫して処理します。</p>
+<h4 id="シグネチャとタスクオブジェクトのプロパティ">シグネチャとタスクオブジェクトのプロパティ</h4>
+<pre><code class="language-ts"><span class="nx">insertContent</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">task</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'innerHTML'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerHTML'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerSync'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'innerMorph'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'outerMorph'</span><span class="w"> </span><span class="o">|</span>
+<span class="w">          </span><span class="s1">'textContent'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'beforebegin'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'afterbegin'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'beforeend'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'afterend'</span><span class="w"> </span><span class="o">|</span>
+<span class="w">          </span><span class="s1">'delete'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'none'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">content?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">DocumentFragment</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Node</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">select?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">strip?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">focus?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">scroll</span><span class="o">?:</span><span class="w"> </span><span class="s1">'top'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s1">'bottom'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">anchor?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">transition?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">settleDelay?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">ctx?</span><span class="o">:</span><span class="w"> </span><span class="kt">Object</span><span class="p">;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">cssTransition?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// 既定値 true</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span>
+</code></pre>
+<ul>
+<li><strong>実行パイプライン</strong>:
+<ol>
+<li><code>task.target</code> を解決します（文字列の場合は <code>htmx.find</code>）。<code>task.transition &amp;&amp; cssTransition &amp;&amp; document.startViewTransition</code> が有効な場合は View Transition 内で実行します。</li>
+<li><code>task.content</code> を <code>DocumentFragment</code> にパースし、<code>task.strip</code>（先頭ルート要素のアンラップ）および <code>task.select</code> フィルタリングを適用します。</li>
+<li>スワップ前に <code>id</code> を持つ <code>[hx-preserve]</code> 要素を一時パントリーに退避し、スワップ後に復元します。</li>
+<li>スワップ戦略（<code>innerHTML</code>、<code>outerHTML</code>、<code>moveBefore</code> を用いた <code>outerSync</code>、<code>innerMorph</code>、<code>outerMorph</code>、<code>textContent</code>、隣接挿入、<code>delete</code>、<code>none</code>、または拡張機能の <code>handle_swap(task)</code>）を実行します。</li>
+<li><code>htmx:before:settle</code> を発火し、<code>settleDelay</code> 待機後、<code>&lt;script&gt;</code> タグを有効化（<code>htmx.config.allowScriptTags !== false</code> 時）し、新規挿入要素に対して <code>htmx.process()</code> を実行して <code>htmx:after:settle</code> を発火します。</li>
+<li><code>task.focus</code> および <code>task.scroll</code> / <code>task.anchor</code> スクロール処理を実行します。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">insertContent</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'innerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">'#live-feed'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">content</span><span class="o">:</span><span class="w"> </span><span class="s1">'&lt;div id="item-1"&gt;internalAPI 経由で更新&lt;/div&gt;'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="morph">morph<a class="header-anchor" href="#morph" aria-label="Permalink">#</a></h3>
+<p>htmx 組み込みの <strong>Idiomorph</strong> DOM モーフィングアルゴリズムを実行し、既存の DOM ノード、フォーカス状態、CSS トランジションを維持したまま <code>oldNode</code>（またはその子要素）を <code>fragment</code> に合わせて変形します。</p>
+<h4 id="シグネチャとパラメータ-2">シグネチャとパラメータ</h4>
+<pre><code class="language-ts"><span class="nx">morph</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">oldNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Document</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">fragment</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">DocumentFragment</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">innerHTML?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// innerMorph の場合は true、outerMorph の場合は false</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>アルゴリズムと拡張フック</strong>:
+<ul>
+<li><code>__createIdMaps</code> により <code>oldNode</code> と <code>fragment</code> 両方の永続 ID セット（<code>idMap</code>）を構築します。</li>
+<li>未マッチの既存ノードを非表示の <code>div</code> パントリー（<code>__createPantry</code>）に退避し、サポート環境では <code>moveBefore</code>（非対応時は <code>insertBefore</code>）を用いて状態を失わずにノードを再配置します。</li>
+<li><code>htmx.config.morphIgnore</code>（属性同期時に無視する属性）、<code>htmx.config.morphSkip</code>（モーフィング自体をスキップするセレクタ）、<code>htmx.config.morphSkipChildren</code>（子要素のモーフィングをスキップするセレクタ）、および <code>htmx.config.morphScanLimit</code> を尊重します。</li>
+<li>拡張フック <code>htmx:before:morph:node</code>（<code>{ oldNode, newNode }</code>）および <code>htmx:before:morph:attr</code>（<code>{ attr, type, node }</code>）を発火し、<code>false</code> が返された場合は該当ノードまたは属性の更新をスキップします。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'template'</span><span class="p">);</span>
+<span class="nx">template</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;ul id="list"&gt;&lt;li id="a"&gt;アイテム A (更新済み)&lt;/li&gt;&lt;/ul&gt;'</span><span class="p">;</span>
+<span class="nx">api</span><span class="p">.</span><span class="nx">morph</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'list'</span><span class="p">),</span><span class="w"> </span><span class="nx">template</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span><span class="w"> </span><span class="c1">// outerMorph</span>
+</code></pre>
+<hr />
+<h3 id="issoftmatch">isSoftMatch<a class="header-anchor" href="#issoftmatch" aria-label="Permalink">#</a></h3>
+<p>厳密な <code>id</code> 一致がない場合に、既存の DOM 要素 <code>oldNode</code> を <code>newNode</code> へモーフィング可能かどうかを判定するため <code>api.morph</code> が使用する既定のノード互換性判定関数です。</p>
+<h4 id="シグネチャと一致判定ルール">シグネチャと一致判定ルール</h4>
+<pre><code class="language-ts"><span class="nx">isSoftMatch</span><span class="p">(</span><span class="nx">oldNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="o">:</span><span class="w"> </span><span class="kt">Node</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+</code></pre>
+<ul>
+<li><strong>既定のロジック</strong>:
+<ul>
+<li>以下の 4 条件をすべて満たす場合にのみ <code>true</code> を返します：
+<ol>
+<li><code>oldNode.nodeType === Node.ELEMENT_NODE</code></li>
+<li><code>oldNode.tagName === newNode.tagName</code></li>
+<li><code>(oldNode.tagName !== 'SCRIPT' || oldNode.isEqualNode(newNode))</code></li>
+<li><code>(!oldNode.id || oldNode.id === newNode.id)</code></li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>拡張機能によるオーバーライド</strong>: <code>#internalAPI</code> オブジェクトのプロパティ（<code>this.#internalAPI.isSoftMatch(oldElt, newHead)</code>）として直接参照されるため、<code>hx-alpine-compat</code> のような拡張機能が <code>init(api)</code> 内で <code>api.isSoftMatch</code> をラップ・上書きできます。</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'custom-soft-match'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">orig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">isSoftMatch</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">isSoftMatch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">oldNode</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">dataset</span><span class="o">?</span><span class="p">.</span><span class="nx">morphKey</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">morphKey</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">newNode</span><span class="p">.</span><span class="nx">dataset</span><span class="o">?</span><span class="p">.</span><span class="nx">morphKey</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">oldNode</span><span class="p">.</span><span class="nx">tagName</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">newNode</span><span class="p">.</span><span class="nx">tagName</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">orig</span><span class="p">(</span><span class="nx">oldNode</span><span class="p">,</span><span class="w"> </span><span class="nx">newNode</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="initsecurity">initSecurity<a class="header-anchor" href="#initsecurity" aria-label="Permalink">#</a></h3>
+<p>htmx コア内部の Trusted Types ポリシー（<code>#ttPolicy</code>）、同期関数コンパイラ（<code>#Function</code>）、および非同期関数コンパイラ（<code>#AsyncFunction</code>）を差し替えます。</p>
+<h4 id="シグネチャとパラメータ-3">シグネチャとパラメータ</h4>
+<pre><code class="language-ts"><span class="nx">initSecurity</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">ttPolicy</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">createHTML</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span><span class="w"> </span><span class="nx">createScript</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">any</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">syncFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">...args</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Function</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">asyncFn</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">...args</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Function</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>用途</strong>: <code>hx-csp</code> などのセキュリティ拡張機能が、動的な <code>new Function</code> / <code>new AsyncFunction</code> 評価をカスタム AST インタプリタに置き換えたり、<code>innerHTML</code> / <code>&lt;script&gt;</code> 生成用の Trusted Types ポリシーを登録したりするために使用します。</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'my-security-policy'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">trustedTypes</span><span class="p">.</span><span class="nx">createPolicy</span><span class="p">(</span><span class="s1">'my-app-policy'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">createHTML</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">html</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">DOMPurify</span><span class="p">.</span><span class="nx">sanitize</span><span class="p">(</span><span class="nx">html</span><span class="p">),</span>
+<span class="w">      </span><span class="nx">createScript</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">script</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">script</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="nx">api</span><span class="p">.</span><span class="nx">initSecurity</span><span class="p">(</span><span class="nx">policy</span><span class="p">,</span><span class="w"> </span><span class="nb">Function</span><span class="p">,</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="p">(){}).</span><span class="kr">constructor</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="ontrigger">onTrigger<a class="header-anchor" href="#ontrigger" aria-label="Permalink">#</a></h3>
+<p><code>hx-trigger</code> 仕様文字列（<code>specString</code>）を解析し、対応するすべてのイベントリスナー、ポーリングタイマー、IntersectionObserver、および修飾子パイプラインを <code>elt</code> にアタッチします。</p>
+<h4 id="シグネチャとサポートされるトリガー機構">シグネチャとサポートされるトリガー機構</h4>
+<pre><code class="language-ts"><span class="nx">onTrigger</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">specString</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span>
+</code></pre>
+<ul>
+<li><strong>主な機能</strong>:
+<ul>
+<li><code>parseTriggerSpecs(specString)</code> で <code>specString</code> を解析し、<code>htmxProp(elt).triggerSpecs</code> に記録します。</li>
+<li>特殊トリガー（<code>load</code>、<code>revealed</code>、<code>root</code>/<code>threshold</code> 対応の <code>intersect</code>、および <code>every &lt;interval&gt;</code>）と任意の標準 DOM イベントをサポートします。</li>
+<li>修飾子パイプラインを順番に評価します：<code>from:</code> ターゲット解決、<code>target:</code> セレクタフィルタ、<code>[filter]</code> JS 式評価（<code>executeJavaScript</code> 経由）、<code>prevent</code>、<code>stop</code>/<code>consume</code>、<code>halt</code>、<code>changed</code> 値比較、<code>once</code> リスナー解除、<code>delay:</code> タイマー、<code>throttle:</code> ゲートを通過した後に <code>handler(elt, evt)</code> を呼び出します。</li>
+<li>登録されたリスナー情報（<code>{ type, target, listener, options }</code>）を <code>htmxProp(elt).listeners</code> に保存するため、<code>elt</code> が DOM から削除された際に <code>htmx:cleanup</code> によって自動的に解除されます。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'auto-save'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">init</span><span class="p">(</span><span class="nx">api</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">htmx_after_process</span><span class="p">(</span><span class="nx">elt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="s1">'hx-autosave'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">api</span><span class="p">.</span><span class="nx">onTrigger</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'input changed delay:500ms'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">targetElt</span><span class="p">,</span><span class="w"> </span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="nx">targetElt</span><span class="p">,</span><span class="w"> </span><span class="s1">'autosave:commit'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">originalEvent</span><span class="o">:</span><span class="w"> </span><span class="nx">evt</span><span class="w"> </span><span class="p">});</span>
+<span class="w">      </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxprop">htmxProp<a class="header-anchor" href="#htmxprop" aria-label="Permalink">#</a></h3>
+<p>DOM 要素上に保持される内部メタデータオブジェクト <code>_htmx</code> を遅延初期化して返し、要素に <code>data-htmx-powered=&quot;true&quot;</code> 属性を刻印します。</p>
+<h4 id="シグネチャと戻り値オブジェクト">シグネチャと戻り値オブジェクト</h4>
+<pre><code class="language-ts"><span class="nx">htmxProp</span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">listeners</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span>
+<span class="w">    </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">EventTarget</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">listener</span><span class="o">:</span><span class="w"> </span><span class="kt">EventListenerOrEventListenerObject</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">options?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">AddEventListenerOptions</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">triggerSpecs</span><span class="o">:</span><span class="w"> </span><span class="kt">Array</span><span class="o">&lt;</span><span class="nx">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">customKey</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<ul>
+<li><strong>クリーンアップ連携</strong>: htmx コアの <code>MutationObserver</code> は、ドキュメントから削除されたすべての <code>[data-htmx-powered]</code> 要素を検出し、各要素で <code>htmx:cleanup</code> を発火させた後、<code>elt._htmx.listeners</code> に登録されている全リスナーを解除して <code>elt._htmx</code> を削除します。拡張機能は要素固有の状態を保持したり、<code>api.htmxProp(elt).listeners</code> にカスタムリスナーを追加して自動クリーンアップの対象にしたりできます。</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">htmxProp</span><span class="p">(</span><span class="nx">elt</span><span class="p">);</span>
+<span class="nx">prop</span><span class="p">.</span><span class="nx">listeners</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="w"> </span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="nx">listener</span><span class="o">:</span><span class="w"> </span><span class="nx">onResize</span><span class="w"> </span><span class="p">});</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'resize'</span><span class="p">,</span><span class="w"> </span><span class="nx">onResize</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="triggerhtmxevent">triggerHtmxEvent<a class="header-anchor" href="#triggerhtmxevent" aria-label="Permalink">#</a></h3>
+<p>イベント診断ログの出力、一致する拡張機能ライフサイクルフック（<code>htmx_&lt;event&gt;</code>）の実行、および対象要素上でのキャンセル可能な <code>CustomEvent</code> のディスパッチを行います。</p>
+<h4 id="シグネチャと戻り値-3">シグネチャと戻り値</h4>
+<pre><code class="language-ts"><span class="nx">triggerHtmxEvent</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">on</span><span class="o">:</span><span class="w"> </span><span class="kt">EventTarget</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">eventName</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">detail?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">bubbles?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="c1">// 既定値 true</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+</code></pre>
+<ul>
+<li><strong>実行順序</strong>:
+<ol>
+<li><code>detail.error</code> がある場合は <code>console.error</code>、<code>detail.warn</code> がある場合は <code>console.warn</code>、<code>htmx.config.logAll === true</code> の場合は <code>console.log</code> でイベントを出力します。</li>
+<li><code>eventName</code> 内のコロンをアンダースコアに変換（<code>htmx:config:request</code> -&gt; <code>htmx_config_request</code>）し、その名前のメソッドを持つ登録済み拡張機能（<code>ext[hookName](on, detail)</code>）を順次呼び出します。いずれかの拡張機能が明示的に <code>false</code> を返した場合、DOM イベントを発火せずに即座に <code>false</code> を返します。</li>
+<li><code>htmx.config.metaCharacter</code>（設定時）に合わせて <code>eventName</code> を調整し、<code>new CustomEvent(eventName, { bubbles, cancelable: true, composed: true, detail })</code> を <code>on</code> にディスパッチして <code>!event.defaultPrevented</code> を返します。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-js"><span class="kd">const</span><span class="w"> </span><span class="nx">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">triggerHtmxEvent</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'htmx:custom:action'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">payload</span><span class="o">:</span><span class="w"> </span><span class="mf">123</span><span class="w"> </span><span class="p">});</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">allowed</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// 拡張機能または event.preventDefault() によりキャンセルされた</span>
+</code></pre>
+<hr />
+<h3 id="executejavascript">executeJavaScript<a class="header-anchor" href="#executejavascript" aria-label="Permalink">#</a></h3>
+<p><code>this</code> を <code>thisArg</code> にバインドし、組み込みの <code>htmx</code> ヘルパー関数および <code>htmx:scope</code> フックによって注入された拡張スコープ変数を用いて、JavaScript の式または文を評価・コンパイルします。</p>
+<h4 id="シグネチャとパラメータ-4">シグネチャとパラメータ</h4>
+<pre><code class="language-ts"><span class="nx">executeJavaScript</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">thisArg</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nb">Object</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">obj?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">code?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">expression?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span><span class="w"> </span><span class="c1">// 既定値 true (`return (...)` でラップ)</span>
+<span class="w">  </span><span class="nx">isAsync?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">,</span><span class="w">    </span><span class="c1">// 既定値 true (#AsyncFunction を使用)</span>
+<span class="w">  </span><span class="nx">compile?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w">     </span><span class="c1">// 既定値 false (true の場合は再利用可能なサンク `() =&gt; any` を返す)</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span>
+</code></pre>
+<ul>
+<li><strong>スコープ注入とコンパイル</strong>:
+<ul>
+<li><code>htmx</code> の列挙可能な全メソッド（<code>find</code>, <code>findAll</code>, <code>trigger</code>, <code>ajax</code>, <code>swap</code>, <code>process</code>, <code>on</code>, <code>off</code>, <code>timeout</code>, <code>sleep</code>）を <code>thisArg</code> にバインドしたベーススコープを作成します。</li>
+<li>拡張フック <code>triggerHtmxEvent(thisArg, 'htmx:scope', { scope, code })</code> を発火します（<code>hx-live</code> などが <code>q</code>, <code>data</code>, <code>aria</code>, <code>attr</code>, <code>local</code>, <code>closest</code>, <code>take</code>, <code>toggle</code>, <code>debounce</code> を注入するために使用）。</li>
+<li><code>obj</code> のプロパティを <code>scope</code> にマージします。</li>
+<li><code>#AsyncFunction</code>（<code>isAsync === true</code>）または <code>#Function</code>（<code>isAsync === false</code>）を使用して <code>code</code>（<code>expression === true</code> の場合は <code>return (${code})</code>）をコンパイルします（<code>hx-csp</code> 有効時は自動的に <code>hx-csp</code> の AST 評価器が使用されます）。</li>
+<li><code>compile === true</code> の場合は引数なしの再利用可能な関数 <code>() =&gt; func.call(thisArg, ...values)</code> を返し、<code>compile === false</code> の場合は即座に実行した結果を返します。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js"><span class="c1">// 式を一度コンパイルして繰り返し評価する</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">evalCondition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">api</span><span class="p">.</span><span class="nx">executeJavaScript</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">min</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="s1">'this.value.length &gt;= min'</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">evalCondition</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'最小文字数を満たしています'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<hr />
+<h2 id="マイグレーション-cli-ツール-upgrade-check" class="catalog-section-heading"><span>マイグレーション CLI ツール (<code>upgrade-check</code>)</span><a class="header-anchor" href="#マイグレーション-cli-ツール-upgrade-check" aria-label="Permalink to マイグレーション CLI ツール (upgrade-check)">#</a></h2>
+<h3 id="upgrade-check">upgrade-check<a class="header-anchor" href="#upgrade-check" aria-label="Permalink">#</a></h3>
+<p>htmx 2.x から htmx 4.0 へアップグレードする際の非互換変更を検査する、外部依存ゼロの Python 3 製静的解析・自動マイグレーション CLI ツール（<code>src/scripts/upgrade-check.py</code>）です。HTML/テンプレートファイル（<code>.html</code>, <code>.htm</code>, <code>.jinja</code>, <code>.jinja2</code>, <code>.j2</code>, <code>.njk</code>, <code>.hbs</code>, <code>.ejs</code>, <code>.erb</code>, <code>.php</code>, <code>.twig</code>, <code>.blade.php</code>, <code>.svelte</code>, <code>.vue</code>, <code>.astro</code>, <code>.tsx</code>, <code>.jsx</code>, <code>.py</code>, <code>.rb</code>, <code>.go</code>, <code>.rs</code>, <code>.java</code>, <code>.cs</code>）および JavaScript/TypeScript ファイル（<code>.js</code>, <code>.ts</code>, <code>.mjs</code>, <code>.cjs</code>, <code>.jsx</code>, <code>.tsx</code>）を再帰的にスキャンします。</p>
+<h4 id="cli-実行方法とオプション">CLI 実行方法とオプション</h4>
+<pre><code class="language-bash">python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span><span class="o">[</span>paths...<span class="o">]</span><span class="w"> </span><span class="o">[</span>--fix<span class="o">]</span><span class="w"> </span><span class="o">[</span>--no-color<span class="o">]</span>
+</code></pre>
+<ul>
+<li><strong><code>paths</code></strong>（省略可、既定値は <code>.</code>）: スキャン対象のファイルまたはディレクトリ（<code>.git</code>, <code>node_modules</code>, <code>__pycache__</code>, <code>.venv</code>, <code>venv</code>, <code>vendor</code>, <code>dist</code>, <code>build</code>, <code>.next</code>, <code>.nuxt</code> は自動的にスキップされます）。</li>
+<li><strong><code>--fix</code></strong>: 安全に自動変換可能な項目（<code>[FIX]</code>）をファイルへ直接書き戻し、人手での確認が必要な項目（<code>[MANUAL]</code>）をレポートします。</li>
+<li><strong><code>--no-color</code></strong>: ANSI カラー出力を無効化します（標準出力が TTY でない場合も自動的に無効化されます）。</li>
+</ul>
+<h4 id="実行される全-7-カテゴリの移行チェック">実行される全 7 カテゴリの移行チェック</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">チェック #</th>
+<th style="text-align:left">カテゴリ</th>
+<th style="text-align:left">検出対象</th>
+<th style="text-align:left"><code>--fix</code> 指定時の動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>1. Event Names</strong></td>
+<td style="text-align:left"><code>Event Names</code>（イベント名）</td>
+<td style="text-align:left"><code>addEventListener('htmx:afterRequest', ...)</code>、<code>htmx.on('htmx:configRequest', ...)</code>、および HTML の <code>hx-on:htmx:after-request</code> / <code>hx-on::after-request</code> 属性内の旧 2.x イベント名（改名された 33 イベント + 廃止された 31 イベント）。</td>
+<td style="text-align:left">改名された 33 イベント文字列および <code>hx-on:</code> 属性を htmx 4.0 のコロン区切り構文（例: <code>htmx:after:request</code>, <code>hx-on:htmx:after:request</code>）へ <strong>自動修正（<code>[FIX]</code>）</strong> します。廃止イベントは <code>[MANUAL]</code> として報告します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>2. Attribute Inheritance</strong></td>
+<td style="text-align:left"><code>Attribute Inheritance</code>（属性継承）</td>
+<td style="text-align:left">コンテナ要素（<code>&lt;div&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> 等）上に <code>hx-get</code>/<code>hx-post</code> 等のリクエスト属性なしで配置された継承対象属性（<code>hx-target</code>, <code>hx-swap</code>, <code>hx-select</code>, <code>hx-include</code>, <code>hx-confirm</code>, <code>hx-headers</code>, <code>hx-vals</code>, <code>hx-boost</code>, <code>hx-indicator</code>, <code>hx-push-url</code>, <code>hx-replace-url</code>, <code>hx-select-oob</code>, <code>hx-sync</code>, <code>hx-disinherit</code>, <code>hx-encoding</code>, <code>hx-ext</code>, <code>hx-history-elt</code>, <code>hx-params</code>, <code>hx-preserve</code>, <code>hx-prompt</code>, <code>hx-request</code>, <code>hx-validate</code>）。</td>
+<td style="text-align:left">属性名に <code>:inherited</code> を付与して <strong>自動修正（<code>[FIX]</code>）</strong> します（例: <code>hx-target=&quot;#out&quot;</code> -&gt; <code>hx-target:inherited=&quot;#out&quot;</code>）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>3. Removed / Changed Attributes</strong></td>
+<td style="text-align:left"><code>Removed / Changed Attributes</code>（廃止・変更属性）</td>
+<td style="text-align:left"><code>hx-vars</code>、<code>hx-disinherit</code>、<code>hx-history-elt</code>、<code>hx-params</code>、<code>hx-prompt</code>、<code>hx-request</code>、<code>hx-sync</code>、<code>hx-vals</code>、<code>hx-headers</code> の使用を検出します。</td>
+<td style="text-align:left"><code>hx-vars</code> -&gt; <code>hx-vals</code>、<code>hx-disinherit=&quot;*&quot;</code> -&gt; <code>hx-inherit=&quot;false&quot;</code>、<code>hx-history-elt</code> -&gt; <code>hx-history</code> を <strong>自動修正（<code>[FIX]</code>）</strong> します。残りの属性は移行ガイド付きの <code>[MANUAL]</code> として報告します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>4. JavaScript API Changes</strong></td>
+<td style="text-align:left"><code>JavaScript API Changes</code>（JS API 変更）</td>
+<td style="text-align:left">廃止された 2.x JS メソッド（<code>htmx.defineExtension</code>, <code>htmx.removeExtension</code>, <code>htmx.values</code>, <code>htmx.remove</code>, <code>htmx.addClass</code>, <code>htmx.removeClass</code>, <code>htmx.toggleClass</code>, <code>htmx.takeClass</code>, <code>htmx.closest</code>, <code>htmx.logger</code>）および <code>event.detail.xhr</code> の使用を検出します。</td>
+<td style="text-align:left"><code>htmx.defineExtension</code> -&gt; <code>htmx.registerExtension</code> および <code>htmx.closest(elt, sel)</code> -&gt; <code>elt.closest(sel)</code> を <strong>自動修正（<code>[FIX]</code>）</strong> します。その他の DOM ヘルパーや <code>detail.xhr</code> は <code>[MANUAL]</code> として報告します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>5. Configuration Changes</strong></td>
+<td style="text-align:left"><code>Configuration Changes</code>（設定オプション変更）</td>
+<td style="text-align:left">廃止・変更された 25 個の <code>htmx.config.&lt;option&gt;</code> 代入または <code>&lt;meta name=&quot;htmx-config&quot;&gt;</code> キー（<code>historyEnabled</code>, <code>historyCacheSize</code>, <code>useTemplateFragments</code>, <code>selfRequestsOnly</code>, <code>allowEval</code>, <code>globalViewTransitions</code>, <code>scrollBehavior</code>, <code>defaultSwapStyle</code>, <code>indicatorClass</code> 等）を検出します。</td>
+<td style="text-align:left"><code>htmx.config.defaultSwapStyle</code> -&gt; <code>htmx.config.defaultSwap</code> および <code>htmx.config.globalViewTransitions</code> -&gt; <code>htmx.config.transitions</code> を <strong>自動修正（<code>[FIX]</code>）</strong> します。廃止オプションは <code>[MANUAL]</code> として報告します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>6. Swap Style Changes</strong></td>
+<td style="text-align:left"><code>Swap Style Changes</code>（スワップ方式変更）</td>
+<td style="text-align:left"><code>hx-swap=&quot;morph&quot;</code>、<code>hx-swap=&quot;morph:innerHTML&quot;</code>、<code>hx-swap=&quot;morph:outerHTML&quot;</code>、および <code>idiomorph</code> 拡張機能の参照を検出します。</td>
+<td style="text-align:left">スワップ修飾子を維持したまま <code>morph</code> / <code>morph:innerHTML</code> -&gt; <code>innerMorph</code>、<code>morph:outerHTML</code> -&gt; <code>outerMorph</code> を <strong>自動修正（<code>[FIX]</code>）</strong> します。<code>idiomorph</code> 拡張の参照は <code>[MANUAL]</code> として報告します。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>7. SSE Extension Syntax</strong></td>
+<td style="text-align:left"><code>SSE Extension Syntax</code>（SSE 拡張構文）</td>
+<td style="text-align:left">htmx 2.x の旧 SSE 属性 <code>sse-connect</code>、<code>sse-swap</code>、<code>sse-close</code> を検出します。</td>
+<td style="text-align:left"><code>sse-connect=&quot;&lt;url&gt;&quot;</code> -&gt; <code>hx-sse:connect=&quot;&lt;url&gt;&quot;</code> を <strong>自動修正（<code>[FIX]</code>）</strong> します。<code>sse-swap</code>（<code>hx-trigger=&quot;sse:&lt;event&gt;&quot;</code> へ移行）と <code>sse-close</code> は <code>[MANUAL]</code> として報告します。</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash"><span class="c1"># templates/ と src/ をドライランで診断</span>
+python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span>templates/<span class="w"> </span>src/
+
+<span class="c1"># 自動修正可能な [FIX] 項目をすべてインプレースで書き換え</span>
+python3<span class="w"> </span>src/scripts/upgrade-check.py<span class="w"> </span>templates/<span class="w"> </span>src/<span class="w"> </span>--fix
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="11_extensions_reactive_and_dom.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; 前へ</span>
+                        <span class="catalog-pager-title">リアクティブ DOM スクリプティング＆ DOM 操作拡張機能</span>
+                    </a>
+                    
+                    
+                    <div></div>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

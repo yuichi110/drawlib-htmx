@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript API &amp; TypeScript Interfaces — htmx v4 API Reference</title>
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/api/en/07_javascript_api.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/api/ja/07_javascript_api.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/api/en/07_javascript_api.html">
+    
+    
+    
+    <meta name="description" content="While htmx is designed around declarative HTML attributes, htmx v4.0.1 exposes a focused JavaScript API on the global htmx object for programmatic AJAX…">
+    <link rel="canonical" href="https://htmx.drawlib.com/api/en/07_javascript_api.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 API Reference">
+    <meta property="og:title" content="JavaScript API &amp; TypeScript Interfaces — htmx v4 API Reference">
+    <meta property="og:description" content="While htmx is designed around declarative HTML attributes, htmx v4.0.1 exposes a focused JavaScript API on the global htmx object for programmatic AJAX…">
+    <meta property="og:url" content="https://htmx.drawlib.com/api/en/07_javascript_api.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JavaScript API &amp; TypeScript Interfaces — htmx v4 API Reference">
+    <meta name="twitter:description" content="While htmx is designed around declarative HTML attributes, htmx v4.0.1 exposes a focused JavaScript API on the global htmx object for programmatic AJAX…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/api/_assets/ogp.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar" id="catalog-sidebar">
+            <div class="sidebar-header has-subbar">
+                <a href="index.html" class="site-title">
+                    
+                    htmx v4 API Reference
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme" title="Toggle light/dark mode">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation menu">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-subbar">
+                
+                
+                <a href="index.html" class="sidebar-version-badge">
+                    <span class="sidebar-version-dot"></span>
+                    <span>API Reference · v4.0.1</span>
+                </a>
+                
+                
+                
+                <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer" class="sidebar-github-link" aria-label="Repository" title="View Source Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                
+            </div>
+            
+
+            <div class="sidebar-menu">
+                <div class="catalog-sidebar-toolbar">
+                    <div class="catalog-filter-box">
+                        <svg class="catalog-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input id="catalog-filter-input" type="search" class="catalog-filter-input" placeholder="Filter items..." autocomplete="off" spellcheck="false" aria-label="Filter items...">
+                        <kbd class="catalog-filter-kbd">/</kbd>
+                    </div>
+                    <div class="catalog-toolbar-meta">
+                        <span class="catalog-toolbar-label">Categories &amp; Items</span>
+                        <button type="button" id="catalog-expand-toggle" class="catalog-expand-btn" data-expand-label="Expand All" data-collapse-label="Collapse All">Collapse All</button>
+                    </div>
+                </div>
+
+                <nav class="catalog-sidebar-nav" id="catalog-sidebar-nav" aria-label="Catalog Navigation">
+                    
+                    
+                    
+                    <details class="catalog-nav-group" data-cat="htmx v4.0.1 API Surface Overview" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="00_overview.html" class="catalog-nav-cat-link">htmx v4.0.1 API Surface Overview</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Package Exports &amp; Distribution Bundles">
+                                <a href="00_overview.html#package-exports-distribution-bundles" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Package Exports &amp; Distribution Bundles</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HCON (htmx Configuration Object Notation)">
+                                <a href="00_overview.html#hcon-htmx-configuration-object-notation" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HCON (htmx Configuration Object Notation)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Prefixing (hx- &amp; data-hx-)">
+                                <a href="00_overview.html#attribute-prefixing-hx-data-hx" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Prefixing (hx- &amp; data-hx-)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Cross-Portal Documentation Suite Links">
+                                <a href="00_overview.html#cross-portal-documentation-suite-links" class="catalog-nav-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Cross-Portal Documentation Suite Links</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Core Request Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="01_core_request_attributes.html" class="catalog-nav-cat-link is-prose-cat">Core Request Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Read &amp; Safe Query Verbs">
+                                <a href="01_core_request_attributes.html#read-safe-query-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Read &amp; Safe Query Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="State-Mutating Verbs">
+                                <a href="01_core_request_attributes.html#state-mutating-verbs" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">State-Mutating Verbs</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Unified Action &amp; Method Attributes">
+                                <a href="01_core_request_attributes.html#unified-action-method-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Unified Action &amp; Method Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Trigger &amp; Synchronization Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="02_trigger_and_sync_attributes.html" class="catalog-nav-cat-link is-prose-cat">Trigger &amp; Synchronization Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Event Trigger Specification">
+                                <a href="02_trigger_and_sync_attributes.html#event-trigger-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Event Trigger Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Queue &amp; Concurrency Synchronization">
+                                <a href="02_trigger_and_sync_attributes.html#request-queue-concurrency-synchronization" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Queue &amp; Concurrency Synchronization</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="User &amp; Programmatic Confirmation">
+                                <a href="02_trigger_and_sync_attributes.html#user-programmatic-confirmation" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">User &amp; Programmatic Confirmation</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Target &amp; Swap Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="03_target_and_swap_attributes.html" class="catalog-nav-cat-link is-prose-cat">Target &amp; Swap Attributes</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Primary Target &amp; Swap Specification">
+                                <a href="03_target_and_swap_attributes.html#primary-target-swap-specification" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Primary Target &amp; Swap Specification</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Out-of-Band &amp; Multi-Target Swaps">
+                                <a href="03_target_and_swap_attributes.html#out-of-band-multi-target-swaps" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Out-of-Band &amp; Multi-Target Swaps</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Filtering Attributes">
+                                <a href="03_target_and_swap_attributes.html#response-filtering-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Filtering Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM Morphing &amp; State Preservation Attributes">
+                                <a href="03_target_and_swap_attributes.html#dom-morphing-state-preservation-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM Morphing &amp; State Preservation Attributes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Data, Validation &amp; Configuration Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="04_data_and_config_attributes.html" class="catalog-nav-cat-link is-prose-cat">Data, Validation &amp; Configuration Attributes</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Payload &amp; Parameter Attributes">
+                                <a href="04_data_and_config_attributes.html#request-payload-parameter-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Payload &amp; Parameter Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Validation, Fetch Options &amp; Status Routing">
+                                <a href="04_data_and_config_attributes.html#validation-fetch-options-status-routing" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Validation, Fetch Options &amp; Status Routing</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="UX, History, Events &amp; Inheritance Control Attributes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="05_ux_history_and_control_attributes.html" class="catalog-nav-cat-link is-prose-cat">UX, History, Events &amp; Inheritance Control Attributes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Navigation &amp; Browser History Attributes">
+                                <a href="05_ux_history_and_control_attributes.html#navigation-browser-history-attributes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Navigation &amp; Browser History Attributes</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="In-Flight UX, Security &amp; Inline Scripting">
+                                <a href="05_ux_history_and_control_attributes.html#in-flight-ux-security-inline-scripting" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">In-Flight UX, Security &amp; Inline Scripting</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Attribute Inheritance Modifiers">
+                                <a href="05_ux_history_and_control_attributes.html#attribute-inheritance-modifiers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Attribute Inheritance Modifiers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="HTTP Request &amp; Response Headers" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="06_http_headers.html" class="catalog-nav-cat-link is-prose-cat">HTTP Request &amp; Response Headers</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Headers">
+                                <a href="06_http_headers.html#request-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Headers</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Response Headers">
+                                <a href="06_http_headers.html#response-headers" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Response Headers</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group is-current-page" data-cat="JavaScript API &amp; TypeScript Interfaces" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="07_javascript_api.html" class="catalog-nav-cat-link is-prose-cat">JavaScript API &amp; TypeScript Interfaces</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Core JavaScript Methods">
+                                <a href="#core-javascript-methods" class="catalog-nav-sublink is-prose-sublink" data-target="core-javascript-methods">
+                                    
+                                    <span class="catalog-nav-sym-text">Core JavaScript Methods</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="TypeScript Context &amp; Options Interfaces">
+                                <a href="#typescript-context-options-interfaces" class="catalog-nav-sublink is-prose-sublink" data-target="typescript-context-options-interfaces">
+                                    
+                                    <span class="catalog-nav-sym-text">TypeScript Context &amp; Options Interfaces</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Configuration Options &amp; CSS State Classes" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="08_configuration_options.html" class="catalog-nav-cat-link is-prose-cat">Configuration Options &amp; CSS State Classes</a>
+                            
+                            <span class="catalog-nav-count">3</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Configuration Entry Points">
+                                <a href="08_configuration_options.html#configuration-entry-points" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Configuration Entry Points</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="HtmxConfig Properties">
+                                <a href="08_configuration_options.html#htmxconfig-properties" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">HtmxConfig Properties</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="CSS State Classes">
+                                <a href="08_configuration_options.html#css-state-classes" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">CSS State Classes</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Events &amp; Extension Hooks Reference" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="09_events_reference.html" class="catalog-nav-cat-link is-prose-cat">Events &amp; Extension Hooks Reference</a>
+                            
+                            <span class="catalog-nav-count">5</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Element Lifecycle Events">
+                                <a href="09_events_reference.html#element-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Element Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Request Lifecycle Events">
+                                <a href="09_events_reference.html#request-lifecycle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Request Lifecycle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Swap &amp; Settle Events">
+                                <a href="09_events_reference.html#swap-settle-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Swap &amp; Settle Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="History &amp; View Transition Events">
+                                <a href="09_events_reference.html#history-view-transition-events" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">History &amp; View Transition Events</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension-Only Hooks">
+                                <a href="09_events_reference.html#extension-only-hooks" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension-Only Hooks</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Streaming &amp; Network Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="10_extensions_streaming_and_net.html" class="catalog-nav-cat-link is-prose-cat">Streaming &amp; Network Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Streaming Extensions">
+                                <a href="10_extensions_streaming_and_net.html#streaming-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Streaming Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Network &amp; Transfer Extensions">
+                                <a href="10_extensions_streaming_and_net.html#network-transfer-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Network &amp; Transfer Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Reactive Scripting &amp; DOM UX Extensions" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="11_extensions_reactive_and_dom.html" class="catalog-nav-cat-link is-prose-cat">Reactive Scripting &amp; DOM UX Extensions</a>
+                            
+                            <span class="catalog-nav-count">2</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Reactive Scripting (hx-live &amp; htmx.live)">
+                                <a href="11_extensions_reactive_and_dom.html#reactive-scripting-hx-live-htmx-live" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Reactive Scripting (hx-live &amp; htmx.live)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="DOM &amp; UX Extensions">
+                                <a href="11_extensions_reactive_and_dom.html#dom-ux-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">DOM &amp; UX Extensions</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    <details class="catalog-nav-group" data-cat="Security, Compatibility, Internal API &amp; CLI" open>
+                        <summary class="catalog-nav-summary">
+                            <svg class="catalog-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <a href="12_extensions_security_compat_and_cli.html" class="catalog-nav-cat-link is-prose-cat">Security, Compatibility, Internal API &amp; CLI</a>
+                            
+                            <span class="catalog-nav-count">4</span>
+                            
+                        </summary>
+                        
+                        <ul class="catalog-nav-sublist">
+                            
+                            <li class="catalog-nav-subitem" data-sym="Summary Table">
+                                <a href="12_extensions_security_compat_and_cli.html#summary-table" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Summary Table</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Security, Caching &amp; Compatibility Extensions">
+                                <a href="12_extensions_security_compat_and_cli.html#security-caching-compatibility-extensions" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Security, Caching &amp; Compatibility Extensions</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Extension Internal API (internalAPI)">
+                                <a href="12_extensions_security_compat_and_cli.html#extension-internal-api-internalapi" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Extension Internal API (internalAPI)</span>
+                                </a>
+                            </li>
+                            
+                            <li class="catalog-nav-subitem" data-sym="Migration CLI Tool (upgrade-check)">
+                                <a href="12_extensions_security_compat_and_cli.html#migration-cli-tool-upgrade-check" class="catalog-nav-sublink is-prose-sublink">
+                                    
+                                    <span class="catalog-nav-sym-text">Migration CLI Tool (upgrade-check)</span>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        
+                    </details>
+                    
+                    
+                    <div id="catalog-nav-empty" class="catalog-nav-empty" hidden>No matching items found.</div>
+                </nav>
+            </div>
+        </aside>
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <div class="content-wrapper">
+            <div class="top-bar">
+                <div class="breadcrumbs">
+                    <a href="index.html" class="crumb">API Reference</a>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb active">JavaScript API &amp; TypeScript Interfaces</span>
+                </div>
+                
+                <div class="top-bar-right">
+                    
+                    
+                    <div class="lang-switcher" aria-label="Language switcher">
+                        <details class="lang-dropdown">
+                            <summary class="lang-dropdown-btn" aria-haspopup="listbox">
+                                <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                                <span class="lang-current-label">English</span>
+                                <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </summary>
+                            <div class="lang-dropdown-menu" role="listbox">
+                                
+                                
+                                <span class="lang-option active" role="option" aria-selected="true">
+                                    <span>English</span>
+                                    <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                
+                                
+                                
+                                <a href="../ja/07_javascript_api.html" class="lang-option" role="option" hreflang="">
+                                    <span>日本語</span>
+                                </a>
+                                
+                                
+                            </div>
+                        </details>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <main class="main-content catalog-main-content">
+                <h1 class="catalog-page-title">JavaScript API &amp; TypeScript Interfaces</h1>
+<p>While htmx is designed around declarative HTML attributes, htmx v4.0.1 exposes a focused JavaScript API on the global <code>htmx</code> object for programmatic AJAX requests, dynamic DOM initialization, extended CSS querying, typed event handling, and extension registration. All TypeScript definitions are shipped in <code>src/htmx.d.ts</code>.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/07_javascript_api/cat_07_js_api_architecture.png" alt="07_javascript_api_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 JavaScript API & TypeScript Context Architecture</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Outer container</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">41</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">176</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">74</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedDashed</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">73.5</span><span class="p">),</span>
+    <span class="s2">"htmx v4.0.1 JavaScript API &amp; Context Pipeline"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">13.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Column 1: Core JS Methods</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">code</span><span class="p">((</span><span class="mf">14.5</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">37</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="s2">"1. Core Methods (htmx.*)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">54.2</span><span class="p">),</span> <span class="s2">"htmx.ajax() / htmx.swap()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">49.5</span><span class="p">),</span> <span class="s2">"Async Fetch &amp; DOM Swap"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">41.2</span><span class="p">),</span> <span class="s2">"process() / initialize()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="s2">"Hydrate hx-* &amp; History"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">28.2</span><span class="p">),</span> <span class="s2">"on() / onLoad() / trigger()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">),</span> <span class="s2">"Typed Event Dispatch"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">15.2</span><span class="p">),</span> <span class="s2">"find() / findAll() / timeout()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">35</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span> <span class="s2">"Extended Query &amp; Timers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Column 2: Input &amp; Options Interfaces</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">48</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">sliders</span><span class="p">((</span><span class="mf">72.5</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">94</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="s2">"2. Options &amp; Contracts"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">54.2</span><span class="p">),</span> <span class="s2">"HtmxAjaxOptions"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">49.5</span><span class="p">),</span> <span class="s2">"source, target, values, headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">41.2</span><span class="p">),</span> <span class="s2">"HtmxSwapContext"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="s2">"text, swap, select, selectOOB"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">28.2</span><span class="p">),</span> <span class="s2">"HtmxEventMap"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">),</span> <span class="s2">"CustomEvent&lt;Detail&gt; Inference"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">15.2</span><span class="p">),</span> <span class="s2">"registerExtension()"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">92</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span> <span class="s2">"init(internalAPI) &amp; Hooks"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Column 3: Runtime Context (HtmxRequestCtx)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">brackets_curly</span><span class="p">((</span><span class="mf">128.5</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">151</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="s2">"3. Runtime Context (ctx)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">54.2</span><span class="p">),</span> <span class="s2">"HtmxRequestCtx"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">49.5</span><span class="p">),</span> <span class="s2">"sourceElement, target, swap, status"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">41.2</span><span class="p">),</span> <span class="s2">"ctx.request (Options)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="s2">"action, method, headers, signal"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">28.2</span><span class="p">),</span> <span class="s2">"ctx.response (HtmxResponse)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">),</span> <span class="s2">"raw, status, headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">15.2</span><span class="p">),</span> <span class="s2">"ctx.text / ctx.hx"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">149</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span> <span class="s2">"HTML Payload &amp; HX-* Headers"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+
+<span class="c1"># Connectors between columns</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3 id="summary-of-javascript-api-typescript-symbols">Summary of JavaScript API &amp; TypeScript Symbols<a class="header-anchor" href="#summary-of-javascript-api-typescript-symbols" aria-label="Permalink">#</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Symbol</th>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Return / Type</th>
+<th style="text-align:left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>htmx.ajax()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>Promise&lt;void&gt;</code></td>
+<td style="text-align:left">Issues an htmx-managed <code>fetch()</code> request and swaps the HTML response into the DOM.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.process()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>void</code></td>
+<td style="text-align:left">Initializes <code>hx-*</code> attributes on a root <code>Element</code> or <code>ShadowRoot</code> and its descendants.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.initialize()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>void</code></td>
+<td style="text-align:left">Wires browser history listeners once and runs <code>htmx.process(document.body)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.swap()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>Promise&lt;void&gt;</code></td>
+<td style="text-align:left">Parses and swaps an HTML string into the DOM with OOB, <code>&lt;hx-partial&gt;</code>, and settle support.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.on()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>(evt) =&gt; void</code></td>
+<td style="text-align:left">Registers an event listener on <code>document</code> or a specific target and returns the handler.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.onLoad()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>void</code></td>
+<td style="text-align:left">Registers a callback invoked on every element subtree processed by htmx.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.trigger()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">Dispatches a cancelable, composed <code>CustomEvent</code> on an element or <code>document</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.find()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>Element | null</code></td>
+<td style="text-align:left">Finds the first element matching an extended htmx CSS selector.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.findAll()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>Element[]</code></td>
+<td style="text-align:left">Finds all elements matching an extended htmx CSS selector.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.timeout()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>Promise&lt;void&gt; | undefined</code></td>
+<td style="text-align:left">Returns a Promise that resolves after a millisecond number or interval string.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.parseInterval()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>number | undefined</code></td>
+<td style="text-align:left">Parses an interval string (<code>&quot;500ms&quot;</code>, <code>&quot;2s&quot;</code>, <code>&quot;1m&quot;</code>) or number into milliseconds.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.registerExtension()</code></td>
+<td style="text-align:left">Core Method</td>
+<td style="text-align:left"><code>void</code></td>
+<td style="text-align:left">Registers a global htmx v4 extension and invokes its <code>init(internalAPI)</code> hook.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>htmx.version</code></td>
+<td style="text-align:left">Core Property</td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Read-only version string (<code>&quot;4.0.1&quot;</code> or <code>&quot;4.0.1-htmax&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HtmxRequestCtx</code></td>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">TypeScript Interface</td>
+<td style="text-align:left">Mutable per-request context passed as <code>evt.detail.ctx</code> across lifecycle events.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HtmxRequestOptions</code></td>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">TypeScript Interface</td>
+<td style="text-align:left">Underlying <code>fetch()</code> configuration (<code>ctx.request</code>) modifiable in <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HtmxResponse</code></td>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">TypeScript Interface</td>
+<td style="text-align:left">Wrapper around the native Fetch <code>Response</code> (<code>ctx.response</code>) with <code>raw</code>, <code>status</code>, and <code>headers</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HtmxSwapContext</code></td>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">TypeScript Interface</td>
+<td style="text-align:left">Input contract accepted by <code>htmx.swap(ctx)</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>HtmxAjaxOptions</code></td>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">TypeScript Interface</td>
+<td style="text-align:left">Configuration object accepted by <code>htmx.ajax(verb, path, options)</code>.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="core-javascript-methods" class="catalog-section-heading"><span>Core JavaScript Methods</span><a class="header-anchor" href="#core-javascript-methods" aria-label="Permalink to Core JavaScript Methods">#</a></h2>
+<h3 id="htmx-ajax">htmx.ajax()<a class="header-anchor" href="#htmx-ajax" aria-label="Permalink">#</a></h3>
+<p>Issues an htmx-managed HTTP request programmatically and swaps the returned HTML into the DOM. Unlike calling <code>window.fetch()</code> directly, <code>htmx.ajax()</code> runs the full htmx request pipeline—collecting form values, evaluating <code>hx-vals</code> and <code>hx-headers</code>, firing <code>htmx:config:request</code> / <code>htmx:before:request</code> / <code>htmx:after:request</code>, processing <code>HX-*</code> response headers, and executing OOB and <code>&lt;hx-partial&gt;</code> swaps.</p>
+<h4 id="typescript-signature">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">ajax</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">verb</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">options?</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">HtmxAjaxOptions</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>verb</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">HTTP method (<code>&quot;GET&quot;</code>, <code>&quot;POST&quot;</code>, <code>&quot;PUT&quot;</code>, <code>&quot;PATCH&quot;</code>, <code>&quot;DELETE&quot;</code>, <code>&quot;QUERY&quot;</code>). Normalized to uppercase.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>path</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Request URL or path (may include a <code>#fragment</code> anchor).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>options</code></td>
+<td style="text-align:left"><code>Element | string | HtmxAjaxOptions</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Target element, extended CSS selector string for the swap target, or an <code>HtmxAjaxOptions</code> object. If omitted, <code>sourceElement</code> and <code>target</code> default to <code>document.body</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Promise&lt;void&gt;</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Resolves when the request and DOM swap complete. Rejects with <code>Error('Source not found')</code> if <code>options.source</code> is an unmatched selector, or <code>Error('Target not found')</code> if <code>options.target</code> does not match any element.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Simple GET request swapping into a CSS selector target</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="w"> </span><span class="s1">'/users/list'</span><span class="p">,</span><span class="w"> </span><span class="s1">'#user-table'</span><span class="p">);</span>
+
+<span class="c1">// 2. POST request with full HtmxAjaxOptions, custom values, and headers</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s1">'POST'</span><span class="p">,</span><span class="w"> </span><span class="s1">'/tasks/archive'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">'#archive-btn'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">'#task-list'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="s1">'innerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">values</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="s1">'completed'</span><span class="p">,</span><span class="w"> </span><span class="nx">batchSize</span><span class="o">:</span><span class="w"> </span><span class="mf">50</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'X-Client-Action'</span><span class="o">:</span><span class="w"> </span><span class="s1">'bulk-archive'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">push</span><span class="o">:</span><span class="w"> </span><span class="s1">'/tasks?view=archived'</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmx-process">htmx.process()<a class="header-anchor" href="#htmx-process" aria-label="Permalink">#</a></h3>
+<p>Initializes htmx attributes (<code>hx-get</code>, <code>hx-post</code>, <code>hx-on*</code>, <code>hx-boost</code>, etc.) on <code>root</code> and all of its descendants. htmx automatically calls <code>htmx.process()</code> on newly swapped fragments, so you only need to call it manually when injecting HTML via third-party libraries, <code>innerHTML</code>, or <code>document.createElement()</code>, or when mutating <code>hx-*</code> attributes on an already-initialized element (with <code>force = true</code>).</p>
+<h4 id="typescript-signature-2">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">process</span><span class="p">(</span><span class="nx">root</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">ShadowRoot</span><span class="p">,</span><span class="w"> </span><span class="nx">force?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-2">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>root</code></td>
+<td style="text-align:left"><code>Element | ShadowRoot</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Connected DOM <code>Element</code> or <code>ShadowRoot</code> to scan. Returns immediately if <code>!root?.isConnected</code> or if <code>root</code> is inside an <code>[hx-ignore]</code> subtree.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>force</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">When <code>true</code>, tears down existing listeners, timers, and <code>IntersectionObserver</code> instances on <code>root</code> and all <code>[data-htmx-powered]</code> descendants before re-initializing from current attributes.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-2">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Initialize dynamically created DOM nodes</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span>
+<span class="nx">card</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'&lt;button hx-post="/like/42" hx-swap="outerHTML"&gt;Like&lt;/button&gt;'</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#feed'</span><span class="p">).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">card</span><span class="p">);</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">card</span><span class="p">);</span>
+
+<span class="c1">// 2. Force re-initialization after changing hx-* attributes in place</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">btn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#action-btn'</span><span class="p">);</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">'hx-get'</span><span class="p">,</span><span class="w"> </span><span class="s1">'/api/v2/items'</span><span class="p">);</span>
+<span class="nx">btn</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">'hx-trigger'</span><span class="p">,</span><span class="w"> </span><span class="s1">'click once'</span><span class="p">);</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span><span class="nx">btn</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="htmx-initialize">htmx.initialize()<a class="header-anchor" href="#htmx-initialize" aria-label="Permalink">#</a></h3>
+<p>Sets up global browser history navigation listeners (using the Navigation API <code>navigate</code> event on supporting browsers or <code>popstate</code> on Firefox/fallback) and processes <code>document.body</code>. Called automatically on <code>DOMContentLoaded</code> (or on the next macrotask if the document is already loaded).</p>
+<h4 id="typescript-signature-3">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">initialize</span><span class="p">()</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-3">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><em>(none)</em></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Takes no parameters. Safe to call multiple times; history listeners are guarded by an internal <code>#historyInitialized</code> flag.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-3">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// Call manually when loading htmx asynchronously after DOMContentLoaded</span>
+<span class="k">import</span><span class="p">(</span><span class="s1">'/vendor/htmx.js'</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">initialize</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmx-swap">htmx.swap()<a class="header-anchor" href="#htmx-swap" aria-label="Permalink">#</a></h3>
+<p>Parses an HTML string and swaps it into the DOM according to an <code>HtmxSwapContext</code> specification. Handles <code>&lt;title&gt;</code> extraction, <code>&lt;script&gt;</code> activation (including <code>htmx.config.inlineScriptNonce</code> and Trusted Types), <code>[hx-preserve]</code> elements, <code>hx-swap-oob</code> elements, <code>&lt;hx-partial&gt;</code> elements, View Transitions, and the settle lifecycle.</p>
+<h4 id="typescript-signature-4">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">swap</span><span class="p">(</span><span class="nx">ctx</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxSwapContext</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-4">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>ctx</code></td>
+<td style="text-align:left"><code>HtmxSwapContext</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Swap context object specifying <code>text</code>, <code>target</code>, <code>swap</code> style, optional <code>select</code>/<code>selectOOB</code> selectors, and history/transition flags.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Promise&lt;void&gt;</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Resolves after the swap and settle phases (including View Transitions or CSS settle delays) complete.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-4">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// Perform a manual morph swap from a custom WebSocket or SSE payload</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">swap</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s1">'&lt;div id="metrics"&gt;&lt;span class="val"&gt;99.98%&lt;/span&gt;&lt;/div&gt;'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'#metrics'</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="s1">'outerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmx-on">htmx.on()<a class="header-anchor" href="#htmx-on" aria-label="Permalink">#</a></h3>
+<p>Registers an event listener on <code>document</code> (2-argument form) or a specific target element/selector (3-argument form). In TypeScript, listening to any key of <code>HtmxEventMap</code> automatically infers <code>evt.detail</code>. Returns the registered handler function so it can be passed directly to <code>removeEventListener()</code> (replacing htmx 2's removed <code>htmx.off()</code>).</p>
+<h4 id="typescript-signature-5">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">on</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">HtmxEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxEvent</span><span class="o">&lt;</span><span class="nx">K</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxEvent</span><span class="o">&lt;</span><span class="nx">K</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+
+<span class="nx">on</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">HtmxEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxEvent</span><span class="o">&lt;</span><span class="nx">K</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxEvent</span><span class="o">&lt;</span><span class="nx">K</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+
+<span class="nx">on</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">HTMLElementEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElementEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElementEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+
+<span class="nx">on</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">HTMLElementEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Element</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElementEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">HTMLElementEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+
+<span class="nx">on</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">WindowEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Window</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">WindowEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">WindowEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+
+<span class="nx">on</span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="nx">on</span><span class="p">(</span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">handler</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-5">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left"><code>string | Element | Window</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Target element or extended selector string. Defaults to <code>document</code> when omitted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>event</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Event name (e.g., <code>'htmx:config:request'</code>, <code>'htmx:after:swap'</code>, <code>'click'</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>handler</code></td>
+<td style="text-align:left"><code>(evt: CustomEvent) =&gt; void</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Callback function invoked when the event fires.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Function</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">The exact <code>handler</code> reference passed in, ready for <code>removeEventListener(event, handler)</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-5">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Global listener on document with full evt.detail.ctx inference</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">onConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'htmx:config:request'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-CSRF-Token'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">window</span><span class="p">.</span><span class="nx">csrfToken</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// Later, remove listener using standard DOM API:</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s1">'htmx:config:request'</span><span class="p">,</span><span class="w"> </span><span class="nx">onConfig</span><span class="p">);</span>
+
+<span class="c1">// 2. Scoped listener on a specific element via selector</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'#upload-form'</span><span class="p">,</span><span class="w"> </span><span class="s1">'htmx:after:request'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">200</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Upload finished!'</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmx-onload">htmx.onLoad()<a class="header-anchor" href="#htmx-onload" aria-label="Permalink">#</a></h3>
+<p>Registers a callback that fires whenever htmx finishes processing a DOM element or subtree (internally delegates to <code>htmx.on('htmx:after:process', ...)</code> and respects <code>htmx.config.metaCharacter</code>). Ideal for initializing third-party widgets (charts, datepickers, tooltips) inside newly swapped content.</p>
+<h4 id="typescript-signature-6">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">onLoad</span><span class="p">(</span><span class="nx">callback</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-6">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>callback</code></td>
+<td style="text-align:left"><code>(elt: Element) =&gt; void</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Function receiving the root <code>Element</code> that was just processed (<code>document.body</code> on initial load, or each newly inserted element after a swap).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-6">Usage Examples</h4>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">onLoad</span><span class="p">((</span><span class="nx">content</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">const</span><span class="w"> </span><span class="nx">el</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">findAll</span><span class="p">(</span><span class="nx">content</span><span class="p">,</span><span class="w"> </span><span class="s1">'[data-tooltip]'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">initTooltipWidget</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmx-trigger">htmx.trigger()<a class="header-anchor" href="#htmx-trigger" aria-label="Permalink">#</a></h3>
+<p>Dispatches a cancelable, composed <code>CustomEvent</code> on <code>elt</code> (or <code>document</code> if <code>elt</code> is disconnected) and returns <code>true</code> if the event was not cancelled (<code>!detail?.cancelled &amp;&amp; target.dispatchEvent(evt)</code>). Also used to send control events such as <code>htmx:abort</code>.</p>
+<h4 id="typescript-signature-7">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">trigger</span><span class="o">&lt;</span><span class="nx">K</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">keyof</span><span class="w"> </span><span class="nx">HtmxEventMap</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">K</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">detail</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxEventMap</span><span class="p">[</span><span class="nx">K</span><span class="p">],</span>
+<span class="w">  </span><span class="nx">bubbles?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+
+<span class="nx">trigger</span><span class="p">(</span>
+<span class="w">  </span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">detail?</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">bubbles?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span>
+<span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-7">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>elt</code></td>
+<td style="text-align:left"><code>Element | string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Target <code>Element</code> or extended CSS selector string. Falls back to <code>document</code> if the element is not connected.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>event</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Name of the <code>CustomEvent</code> to dispatch.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>detail</code></td>
+<td style="text-align:left"><code>any</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Event <code>detail</code> payload object (defaults to <code>{}</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>bubbles</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Whether the event bubbles up the DOM tree (defaults to <code>true</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left"><code>true</code> if neither <code>detail.cancelled</code> nor <code>evt.preventDefault()</code> cancelled the event; <code>false</code> otherwise.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-7">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Dispatch a custom domain event that triggers an hx-trigger="refreshMetrics from:body"</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span><span class="w"> </span><span class="s1">'refreshMetrics'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">'manual'</span><span class="w"> </span><span class="p">});</span>
+
+<span class="c1">// 2. Abort an in-flight request on an element</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">'#slow-report-btn'</span><span class="p">,</span><span class="w"> </span><span class="s1">'htmx:abort'</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="htmx-find">htmx.find()<a class="header-anchor" href="#htmx-find" aria-label="Permalink">#</a></h3>
+<p>Finds the first element matching an extended htmx CSS selector across <code>document</code> (1-argument form) or relative to <code>elt</code> (2-argument form). Supports directional and contextual prefixes including <code>this</code>, <code>closest &lt;sel&gt;</code>, <code>find &lt;sel&gt;</code>, <code>next [sel]</code>, <code>previous [sel]</code>, <code>document</code>, <code>window</code>, <code>body</code>, <code>host</code>, and <code>global &lt;sel&gt;</code>.</p>
+<h4 id="typescript-signature-8">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">find</span><span class="p">(</span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="nx">find</span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-8">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>elt</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Anchor element for relative selectors (<code>closest</code>, <code>find</code>, <code>next</code>, <code>previous</code>). Defaults to <code>document</code> when omitted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selector</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Standard or extended htmx CSS selector.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Element | null</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">The first matching <code>Element</code> (or <code>undefined</code>/<code>null</code> if none matched).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-8">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Document-wide query</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">modal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#confirm-modal'</span><span class="p">);</span>
+
+<span class="c1">// 2. Relative extended query from a button element</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">buttonElt</span><span class="p">,</span><span class="w"> </span><span class="s1">'closest tr'</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">nextInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">buttonElt</span><span class="p">,</span><span class="w"> </span><span class="s1">'next input[type="text"]'</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="htmx-findall">htmx.findAll()<a class="header-anchor" href="#htmx-findall" aria-label="Permalink">#</a></h3>
+<p>Finds all elements matching an extended htmx CSS selector across <code>document</code> or relative to <code>elt</code>, returning a deduplicated <code>Element[]</code> array (<code>[...new Set(result)]</code>). Supports comma-separated HCON selector lists and Shadow DOM root boundaries (use <code>global &lt;sel&gt;</code> to cross Shadow DOM boundaries).</p>
+<h4 id="typescript-signature-9">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">findAll</span><span class="p">(</span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Element</span><span class="p">[];</span>
+<span class="nx">findAll</span><span class="p">(</span><span class="nx">elt</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">,</span><span class="w"> </span><span class="nx">selector</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nx">Element</span><span class="p">[];</span>
+</code></pre>
+<h4 id="parameters-9">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>elt</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Anchor element for relative queries (<code>findAll &lt;sel&gt;</code>, <code>closest &lt;sel&gt;</code>). Defaults to <code>document</code> when omitted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selector</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Standard or extended htmx CSS selector (supports comma-separated HCON expressions).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Element[]</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Array of unique matching <code>Element</code> nodes.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-9">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// 1. Find all active cards in the document</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">cards</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">findAll</span><span class="p">(</span><span class="s1">'.card.active'</span><span class="p">);</span>
+
+<span class="c1">// 2. Find all descendant inputs and buttons inside a form</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">controls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">findAll</span><span class="p">(</span><span class="nx">formElt</span><span class="p">,</span><span class="w"> </span><span class="s1">'findAll input, findAll button'</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="htmx-timeout">htmx.timeout()<a class="header-anchor" href="#htmx-timeout" aria-label="Permalink">#</a></h3>
+<p>Returns a <code>Promise&lt;void&gt;</code> that resolves after the specified duration. Accepts either a millisecond number or an htmx interval string (<code>&quot;500ms&quot;</code>, <code>&quot;2s&quot;</code>, <code>&quot;1m&quot;</code>). Returns <code>undefined</code> if the parsed time is <code>0</code>, negative, or invalid.</p>
+<h4 id="typescript-signature-10">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">timeout</span><span class="p">(</span><span class="nx">time</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="ow">void</span><span class="o">&gt;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-10">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>time</code></td>
+<td style="text-align:left"><code>number | string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Duration in milliseconds (e.g., <code>200</code>) or an interval string (<code>&quot;200ms&quot;</code>, <code>&quot;1.5s&quot;</code>, <code>&quot;1m&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>Promise&lt;void&gt; | undefined</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">A Promise resolving after <code>time</code> ms, or <code>undefined</code> when <code>time &lt;= 0</code> or unparseable.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-10">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// Pause inside an async event handler or custom extension</span>
+<span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">timeout</span><span class="p">(</span><span class="s1">'300ms'</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h3 id="htmx-parseinterval">htmx.parseInterval()<a class="header-anchor" href="#htmx-parseinterval" aria-label="Permalink">#</a></h3>
+<p>Parses an htmx time interval string or number into milliseconds. Supports <code>ms</code> (×1), <code>s</code> (×1000), and <code>m</code> (×60000) suffixes, as well as unitless numeric strings.</p>
+<h4 id="typescript-signature-11">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">parseInterval</span><span class="p">(</span><span class="nx">str</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">number</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-11">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>str</code></td>
+<td style="text-align:left"><code>string | number</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Interval string (<code>&quot;500ms&quot;</code>, <code>&quot;2s&quot;</code>, <code>&quot;1.5m&quot;</code>) or number (<code>1000</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Returns</strong></td>
+<td style="text-align:left"><code>number | undefined</code></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Duration in milliseconds, or <code>undefined</code> if <code>str</code> cannot be parsed as a valid number.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-11">Usage Examples</h4>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">parseInterval</span><span class="p">(</span><span class="s1">'500ms'</span><span class="p">);</span><span class="w"> </span><span class="c1">// 500</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">parseInterval</span><span class="p">(</span><span class="s1">'2.5s'</span><span class="p">);</span><span class="w">  </span><span class="c1">// 2500</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">parseInterval</span><span class="p">(</span><span class="s1">'1m'</span><span class="p">);</span><span class="w">    </span><span class="c1">// 60000</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">parseInterval</span><span class="p">(</span><span class="mf">1200</span><span class="p">);</span><span class="w">    </span><span class="c1">// 1200</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">parseInterval</span><span class="p">(</span><span class="s1">'invalid'</span><span class="p">);</span><span class="w"> </span><span class="c1">// undefined</span>
+</code></pre>
+<hr />
+<h3 id="htmx-registerextension">htmx.registerExtension()<a class="header-anchor" href="#htmx-registerextension" aria-label="Permalink">#</a></h3>
+<p>Registers a global htmx v4 extension. In htmx v4, extensions apply page-wide once registered without requiring <code>hx-ext</code> attributes in HTML. If <code>htmx.config.extensions</code> is set to a non-empty comma-separated whitelist, only extensions whose <code>name</code> is in that list are permitted to register. Duplicate registrations for the same <code>name</code> are ignored.</p>
+<h4 id="typescript-signature-12">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="nx">registerExtension</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">ext</span><span class="o">:</span><span class="w"> </span><span class="kt">any</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre>
+<h4 id="parameters-12">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>name</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Unique extension identifier (matched against <code>htmx.config.extensions</code> if whitelisting is active).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ext</code></td>
+<td style="text-align:left"><code>Record&lt;string, Function&gt;</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Extension definition object containing an optional <code>init(internalAPI)</code> callback, underscored event hooks (<code>htmx_before_request</code>, <code>htmx_after_init</code>, etc.), or <code>handle_swap</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-12">Usage Examples</h4>
+<pre><code class="language-js"><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'request-timer'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">init</span><span class="p">(</span><span class="nx">internalAPI</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">internalAPI</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">htmx_before_request</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">startedAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">htmx_after_request</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">detail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">elapsed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">startedAt</span><span class="p">);</span>
+<span class="w">      </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Request to </span><span class="si">${</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">action</span><span class="si">}</span><span class="sb"> took </span><span class="si">${</span><span class="nx">elapsed</span><span class="si">}</span><span class="sb">ms`</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">})();</span>
+</code></pre>
+<hr />
+<h3 id="htmx-version">htmx.version<a class="header-anchor" href="#htmx-version" aria-label="Permalink">#</a></h3>
+<p>Read-only string property identifying the loaded htmx v4 release.</p>
+<h4 id="typescript-signature-13">TypeScript Signature</h4>
+<pre><code class="language-ts"><span class="k">readonly</span><span class="w"> </span><span class="nx">version</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+</code></pre>
+<h4 id="property-details">Property Details</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Value in v4.0.1</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>htmx.version</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left"><code>&quot;4.0.1&quot;</code> / <code>&quot;4.0.1-htmax&quot;</code></td>
+<td style="text-align:left">Returns <code>&quot;4.0.1&quot;</code> in standard <code>htmx.js</code> builds and <code>&quot;4.0.1-htmax&quot;</code> in the bundled <code>htmax.js</code> distribution.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-13">Usage Examples</h4>
+<pre><code class="language-js"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Running htmx </span><span class="si">${</span><span class="nx">htmx</span><span class="p">.</span><span class="nx">version</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</code></pre>
+<hr />
+<h2 id="typescript-context-options-interfaces" class="catalog-section-heading"><span>TypeScript Context &amp; Options Interfaces</span><a class="header-anchor" href="#typescript-context-options-interfaces" aria-label="Permalink to TypeScript Context &amp; Options Interfaces">#</a></h2>
+<h3 id="htmxrequestctx">HtmxRequestCtx<a class="header-anchor" href="#htmxrequestctx" aria-label="Permalink">#</a></h3>
+<p>The central per-request state object created by <code>__createRequestContext()</code> and passed as <code>evt.detail.ctx</code> across all request and swap lifecycle events (<code>htmx:config:request</code>, <code>htmx:before:request</code>, <code>htmx:before:response</code>, <code>htmx:after:request</code>, <code>htmx:before:swap</code>, <code>htmx:after:swap</code>, <code>htmx:finally:request</code>, etc.). Both TypeScript-declared properties (<code>src/htmx.d.ts</code>) and runtime properties added by <code>src/htmx.js</code> are listed below.</p>
+<h4 id="typescript-definition">TypeScript Definition</h4>
+<pre><code class="language-ts"><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">HtmxRequestCtx</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">sourceElement</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">sourceEvent</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">select</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">selectOOB</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">push</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">replace</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">request</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxRequestOptions</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">response?</span><span class="o">:</span><span class="w"> </span><span class="kt">HtmxResponse</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">text?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id="properties-typescript-contract-runtime-fields">Properties (TypeScript Contract + Runtime Fields)</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Phase Available</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>sourceElement</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Element that triggered the request (may be updated to <code>mainSwap.target</code> after swap if original element was disconnected).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sourceEvent</code></td>
+<td style="text-align:left"><code>Event | null</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">DOM event that triggered the request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Resolved target element where the response will be swapped (can be overridden by <code>HX-Retarget</code> or in <code>htmx:before:swap</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">CSS selector from <code>hx-select</code> (or overridden by <code>HX-Reselect</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Selector specification from <code>hx-select-oob</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Swap specification from <code>hx-swap</code> or <code>htmx.config.defaultSwap</code> (or overridden by <code>HX-Reswap</code> / <code>hx-status:XXX</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left"><code>hx-push-url</code> value (<code>&quot;true&quot;</code>, URL string, or <code>false</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>replace</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left"><code>hx-replace-url</code> value (<code>&quot;true&quot;</code>, URL string, or <code>false</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>transition</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Whether the View Transitions API is enabled for this request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>request</code></td>
+<td style="text-align:left"><code>HtmxRequestOptions</code></td>
+<td style="text-align:left">Always</td>
+<td style="text-align:left">Mutable Fetch configuration object. Modify in <code>htmx:config:request</code> or <code>htmx:before:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>response</code></td>
+<td style="text-align:left"><code>HtmxResponse | undefined</code></td>
+<td style="text-align:left"><code>htmx:before:response</code>+</td>
+<td style="text-align:left">Populated once <code>fetch()</code> resolves with <code>{ raw, status, headers }</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>text</code></td>
+<td style="text-align:left"><code>string | undefined</code></td>
+<td style="text-align:left"><code>htmx:after:request</code>+</td>
+<td style="text-align:left">Response body text read from <code>response.raw.text()</code>. Can be mutated in <code>htmx:after:request</code> before swapping.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>status</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Runtime (<code>htmx.js</code>)</td>
+<td style="text-align:left">Lifecycle status string: <code>&quot;created&quot;</code>, <code>&quot;issuing&quot;</code>, <code>&quot;response received&quot;</code>, <code>&quot;swapped&quot;</code>, or <code>&quot;error: ...&quot;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>confirm</code></td>
+<td style="text-align:left"><code>string | undefined</code></td>
+<td style="text-align:left">Runtime (<code>htmx.js</code>)</td>
+<td style="text-align:left">Value of <code>hx-confirm</code> on <code>sourceElement</code>, if present.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>hx</code></td>
+<td style="text-align:left"><code>Record&lt;string, string&gt;</code></td>
+<td style="text-align:left"><code>htmx:before:response</code>+</td>
+<td style="text-align:left">Normalized map of <code>HX-*</code> response headers (e.g., <code>ctx.hx.trigger</code>, <code>ctx.hx.retarget</code>, <code>ctx.hx.reswap</code>, <code>ctx.hx.pushurl</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>fetch</code></td>
+<td style="text-align:left"><code>typeof window.fetch</code></td>
+<td style="text-align:left"><code>htmx:before:request</code></td>
+<td style="text-align:left">Function used to execute the HTTP request. Extensions (like <code>hx-preload</code>) can override <code>ctx.fetch</code> to return a cached <code>Response</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>extensionPromise</code></td>
+<td style="text-align:left"><code>Promise&lt;any&gt; | undefined</code></td>
+<td style="text-align:left">Runtime (<code>htmx.js</code>)</td>
+<td style="text-align:left">Optional Promise set by streaming extensions (e.g., <code>hx-multipart</code>) so <code>finally</code> waits until streaming finishes before hiding indicators.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>indicators</code></td>
+<td style="text-align:left"><code>Element[]</code></td>
+<td style="text-align:left"><code>htmx:before:request</code>+</td>
+<td style="text-align:left">Array of indicator elements currently carrying <code>htmx-request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>disabledElements</code></td>
+<td style="text-align:left"><code>Element[]</code></td>
+<td style="text-align:left"><code>htmx:before:request</code>+</td>
+<td style="text-align:left">Array of elements disabled via <code>hx-disable</code> for the duration of the request.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-14">Usage Examples</h4>
+<pre><code class="language-js"><span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'htmx:after:request'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">200</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Sanitize or transform response HTML before htmx.swap() runs</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">text</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">'{{BUILD_VERSION}}'</span><span class="p">,</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">version</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxrequestoptions">HtmxRequestOptions<a class="header-anchor" href="#htmxrequestoptions" aria-label="Permalink">#</a></h3>
+<p>Represents <code>ctx.request</code>, the object passed directly as the second argument to <code>fetch(ctx.request.action, ctx.request)</code>. You can customize headers, URL, body, credentials, cache mode, or timeout inside <code>htmx:config:request</code>, or per-element via the <code>hx-config</code> attribute.</p>
+<h4 id="typescript-definition-2">TypeScript Definition</h4>
+<pre><code class="language-ts"><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">HtmxRequestOptions</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">validate</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">action</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">anchor?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">body?</span><span class="o">:</span><span class="w"> </span><span class="kt">BodyInit</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">abort</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">signal</span><span class="o">:</span><span class="w"> </span><span class="kt">AbortSignal</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">credentials</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestCredentials</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">mode</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestMode</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">cache?</span><span class="o">:</span><span class="w"> </span><span class="kt">RequestCache</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">timeout?</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="p">[</span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id="properties">Properties</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>validate</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left"><code>true</code> on <code>&lt;form&gt;</code></td>
+<td style="text-align:left">Whether <code>reportValidity()</code> is called before sending the request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>action</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Element URL</td>
+<td style="text-align:left">Request URL stripped of its <code>#fragment</code> anchor. For <code>GET</code>/<code>DELETE</code>, query parameters are appended right after <code>htmx:config:request</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>anchor</code></td>
+<td style="text-align:left"><code>string | undefined</code></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left">URL <code>#fragment</code> extracted from the action URL, used for history and post-swap scrolling.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>method</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left"><code>&quot;GET&quot;</code></td>
+<td style="text-align:left">Uppercase HTTP verb (<code>&quot;GET&quot;</code>, <code>&quot;POST&quot;</code>, <code>&quot;PUT&quot;</code>, <code>&quot;PATCH&quot;</code>, <code>&quot;DELETE&quot;</code>, <code>&quot;QUERY&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>headers</code></td>
+<td style="text-align:left"><code>Record&lt;string, string&gt;</code></td>
+<td style="text-align:left">Core <code>HX-*</code> headers</td>
+<td style="text-align:left">Request headers map (<code>HX-Request</code>, <code>HX-Source</code>, <code>HX-Target</code>, <code>HX-Current-URL</code>, <code>HX-Request-Type</code>, <code>Accept: text/html</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>body</code></td>
+<td style="text-align:left"><code>BodyInit | null</code></td>
+<td style="text-align:left"><code>FormData</code></td>
+<td style="text-align:left">During <code>htmx:config:request</code>, <code>body</code> is a <code>FormData</code> instance. After <code>htmx:config:request</code>, converted to query params (<code>null</code> body) for <code>GET</code>/<code>DELETE</code> or <code>URLSearchParams</code> (unless <code>multipart/form-data</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>abort</code></td>
+<td style="text-align:left"><code>() =&gt; void</code></td>
+<td style="text-align:left">Bound <code>ac.abort()</code></td>
+<td style="text-align:left">Aborts the underlying <code>AbortController</code> for this request.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>signal</code></td>
+<td style="text-align:left"><code>AbortSignal</code></td>
+<td style="text-align:left"><code>ac.signal</code></td>
+<td style="text-align:left"><code>AbortSignal</code> passed to <code>fetch()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>credentials</code></td>
+<td style="text-align:left"><code>RequestCredentials</code></td>
+<td style="text-align:left"><code>&quot;same-origin&quot;</code></td>
+<td style="text-align:left">Fetch credentials mode (<code>&quot;same-origin&quot;</code>, <code>&quot;include&quot;</code>, <code>&quot;omit&quot;</code>). Overridable via <code>hx-config</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>mode</code></td>
+<td style="text-align:left"><code>RequestMode</code></td>
+<td style="text-align:left"><code>htmx.config.mode</code></td>
+<td style="text-align:left">Fetch CORS mode (<code>&quot;same-origin&quot;</code>, <code>&quot;cors&quot;</code>, <code>&quot;no-cors&quot;</code>). Locked to <code>htmx.config.mode</code> over <code>hx-config</code> for security.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>cache</code></td>
+<td style="text-align:left"><code>RequestCache | undefined</code></td>
+<td style="text-align:left"><code>undefined</code></td>
+<td style="text-align:left">Fetch cache mode (<code>&quot;default&quot;</code>, <code>&quot;no-store&quot;</code>, <code>&quot;reload&quot;</code>, <code>&quot;no-cache&quot;</code>, <code>&quot;force-cache&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>timeout</code></td>
+<td style="text-align:left"><code>number | string | null</code></td>
+<td style="text-align:left"><code>htmx.config.defaultTimeout</code></td>
+<td style="text-align:left">Per-request timeout override in ms or interval string (e.g., <code>&quot;10s&quot;</code>).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-15">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// Append a dynamic parameter to the FormData body during htmx:config:request</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'htmx:config:request'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Trace-Id'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">FormData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'client_tz'</span><span class="p">,</span><span class="w"> </span><span class="nb">Intl</span><span class="p">.</span><span class="nx">DateTimeFormat</span><span class="p">().</span><span class="nx">resolvedOptions</span><span class="p">().</span><span class="nx">timeZone</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxresponse">HtmxResponse<a class="header-anchor" href="#htmxresponse" aria-label="Permalink">#</a></h3>
+<p>Wraps the native Fetch API <code>Response</code> on <code>ctx.response</code> once <code>fetch()</code> resolves.</p>
+<h4 id="typescript-definition-3">TypeScript Definition</h4>
+<pre><code class="language-ts"><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">HtmxResponse</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">raw</span><span class="o">:</span><span class="w"> </span><span class="kt">Response</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">status</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="kt">Headers</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id="properties-2">Properties</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>raw</code></td>
+<td style="text-align:left"><code>Response</code></td>
+<td style="text-align:left">The underlying Fetch API <code>Response</code> object. In <code>htmx:before:response</code>, the body stream (<code>raw.body</code>) has not yet been consumed by <code>raw.text()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>status</code></td>
+<td style="text-align:left"><code>number</code></td>
+<td style="text-align:left">HTTP status code (e.g., <code>200</code>, <code>204</code>, <code>422</code>, <code>500</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>headers</code></td>
+<td style="text-align:left"><code>Headers</code></td>
+<td style="text-align:left">Native Fetch <code>Headers</code> instance from the server response.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-16">Usage Examples</h4>
+<pre><code class="language-js"><span class="c1">// Inspect raw response headers in htmx:before:response</span>
+<span class="nx">htmx</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'htmx:before:response'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">contentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="o">?</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'Content-Type'</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">contentType</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'application/octet-stream'</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Cancel htmx text consumption and handle binary stream manually</span>
+<span class="w">    </span><span class="nx">evt</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxswapcontext">HtmxSwapContext<a class="header-anchor" href="#htmxswapcontext" aria-label="Permalink">#</a></h3>
+<p>Defines the options object accepted by <code>htmx.swap(ctx)</code>.</p>
+<h4 id="typescript-definition-4">TypeScript Definition</h4>
+<pre><code class="language-ts"><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">HtmxSwapContext</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">sourceElement?</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">swap?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">select?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">selectOOB?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target?</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">transition?</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">push?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">replace?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">anchor?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id="properties-3">Properties</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>text</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Yes</td>
+<td style="text-align:left">Raw HTML string to parse and swap into the DOM.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>sourceElement</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Element used as the event target for <code>htmx:before:swap</code> / <code>htmx:after:swap</code> and relative selector resolution.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Swap strategy and modifiers (e.g., <code>&quot;innerHTML&quot;</code>, <code>&quot;outerMorph&quot;</code>, <code>&quot;beforeend scroll:bottom&quot;</code>). Defaults to <code>htmx.config.defaultSwap</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">CSS selector to extract a subset of nodes from <code>text</code> for the main swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Comma-separated selector spec for out-of-band extractions from <code>text</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left"><code>Element</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">DOM element to swap into. Defaults to <code>document.body</code> if omitted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>transition</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Whether to wrap the swap in <code>document.startViewTransition()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Push URL to browser history (<code>true</code> or URL path string).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>replace</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Replace current browser history entry (<code>true</code> or URL path string).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>anchor</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Element ID to scroll into view after swapping.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-17">Usage Examples</h4>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">swap</span><span class="p">({</span>
+<span class="w">  </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s1">'&lt;ul id="notifications"&gt;&lt;li&gt;Deployment succeeded&lt;/li&gt;&lt;/ul&gt;'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#notifications'</span><span class="p">),</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="s1">'outerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">transition</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h3 id="htmxajaxoptions">HtmxAjaxOptions<a class="header-anchor" href="#htmxajaxoptions" aria-label="Permalink">#</a></h3>
+<p>Defines the third argument accepted by <code>htmx.ajax(verb, path, options)</code> when passing a configuration object instead of a target element or selector.</p>
+<h4 id="typescript-definition-5">TypeScript Definition</h4>
+<pre><code class="language-ts"><span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">HtmxAjaxOptions</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">source?</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">event?</span><span class="o">:</span><span class="w"> </span><span class="kt">Event</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">target?</span><span class="o">:</span><span class="w"> </span><span class="kt">Element</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">swap?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">values?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">headers?</span><span class="o">:</span><span class="w"> </span><span class="kt">Record</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">select?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">selectOOB?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">push?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">replace?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id="properties-4">Properties</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Property</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Required</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>source</code></td>
+<td style="text-align:left"><code>Element | string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Source element or CSS selector (used for attribute inheritance, <code>HX-Source</code> header, and event dispatch). Defaults to <code>document.body</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>event</code></td>
+<td style="text-align:left"><code>Event</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Triggering DOM <code>Event</code> to attach as <code>ctx.sourceEvent</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>target</code></td>
+<td style="text-align:left"><code>Element | string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Target element or extended CSS selector where the response will be swapped.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>swap</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Swap strategy and modifiers (e.g., <code>&quot;innerHTML&quot;</code>, <code>&quot;outerHTML transition:true&quot;</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>values</code></td>
+<td style="text-align:left"><code>Record&lt;string, any&gt;</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Key-value pairs merged into the request <code>FormData</code> (overrides existing keys of the same name).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>headers</code></td>
+<td style="text-align:left"><code>Record&lt;string, string&gt;</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Additional HTTP request headers merged into <code>ctx.request.headers</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>select</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">CSS selector to filter the main response fragment.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>selectOOB</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Selector specification for out-of-band swaps.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>push</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Push URL to browser history after swap (<code>true</code> uses the request URL).</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>replace</code></td>
+<td style="text-align:left"><code>string | boolean</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Replace current URL in browser history after swap (<code>true</code> uses the request URL).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="usage-examples-18">Usage Examples</h4>
+<pre><code class="language-js"><span class="k">await</span><span class="w"> </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s1">'PUT'</span><span class="p">,</span><span class="w"> </span><span class="s1">'/settings/profile'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">'#profile-form'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="s1">'#profile-panel'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">swap</span><span class="o">:</span><span class="w"> </span><span class="s1">'outerMorph'</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">values</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">theme</span><span class="o">:</span><span class="w"> </span><span class="s1">'dark'</span><span class="p">,</span><span class="w"> </span><span class="nx">notifications</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'X-Requested-With'</span><span class="o">:</span><span class="w"> </span><span class="s1">'htmx-ajax'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">replace</span><span class="o">:</span><span class="w"> </span><span class="s1">'/settings?tab=profile'</span>
+<span class="p">});</span>
+</code></pre>
+
+
+                
+                <nav class="catalog-pager" aria-label="Catalog Page Navigation">
+                    
+                    <a href="06_http_headers.html" class="catalog-pager-card is-prev">
+                        <span class="catalog-pager-dir">&larr; Previous</span>
+                        <span class="catalog-pager-title">HTTP Request &amp; Response Headers</span>
+                    </a>
+                    
+                    
+                    <a href="08_configuration_options.html" class="catalog-pager-card is-next">
+                        <span class="catalog-pager-dir">Next &rarr;</span>
+                        <span class="catalog-pager-title">Configuration Options &amp; CSS State Classes</span>
+                    </a>
+                    
+                </nav>
+                
+            </main>
+
+            <footer class="footer">
+                Generated by <a href="https://github.com/yuichi110/drawlib" target="_blank" rel="noopener noreferrer">Drawlib</a>.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    if (!current) {
+                        current = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+                    }
+                    var next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    try { localStorage.setItem('drawlib-theme', next); } catch (e) {}
+                });
+            }
+
+            var menuBtn = document.getElementById('menu-toggle');
+            var sidebar = document.getElementById('catalog-sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            function closeMenu() {
+                if (sidebar) sidebar.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-open');
+            }
+            if (menuBtn && sidebar && backdrop) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('is-open');
+                    backdrop.classList.toggle('is-open');
+                });
+                backdrop.addEventListener('click', closeMenu);
+            }
+
+            document.querySelectorAll('.catalog-nav-cat-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            if (sidebar) {
+                try {
+                    var savedScroll = sessionStorage.getItem('drawlib-catalog-sidebar-scroll');
+                    if (savedScroll !== null) {
+                        sidebar.scrollTop = parseInt(savedScroll, 10) || 0;
+                    }
+                    sidebar.addEventListener('scroll', function() {
+                        try { sessionStorage.setItem('drawlib-catalog-sidebar-scroll', String(sidebar.scrollTop)); } catch (e) {}
+                    }, { passive: true });
+                } catch (e) {}
+            }
+
+            var groups = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-group'));
+            var expandBtn = document.getElementById('catalog-expand-toggle');
+            function updateExpandBtnLabel() {
+                if (!expandBtn || groups.length === 0) return;
+                var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                var expandText = expandBtn.getAttribute('data-expand-label') || 'Expand All';
+                var collapseText = expandBtn.getAttribute('data-collapse-label') || 'Collapse All';
+                expandBtn.textContent = allOpen ? collapseText : expandText;
+            }
+            if (expandBtn) {
+                updateExpandBtnLabel();
+                expandBtn.addEventListener('click', function() {
+                    var visibleGroups = groups.filter(function(g) { return !g.hidden; });
+                    var allOpen = visibleGroups.length > 0 && visibleGroups.every(function(g) { return g.open; });
+                    visibleGroups.forEach(function(g) { g.open = !allOpen; });
+                    updateExpandBtnLabel();
+                });
+                groups.forEach(function(g) {
+                    g.addEventListener('toggle', updateExpandBtnLabel);
+                });
+            }
+
+            var filterInput = document.getElementById('catalog-filter-input');
+            var emptyNotice = document.getElementById('catalog-nav-empty');
+            var savedOpenState = null;
+
+            if (filterInput) {
+                filterInput.addEventListener('input', function() {
+                    var q = filterInput.value.trim().toLowerCase();
+                    if (q && !savedOpenState) {
+                        savedOpenState = groups.map(function(g) { return g.open; });
+                    }
+                    var anyMatch = false;
+                    groups.forEach(function(g, idx) {
+                        var catText = (g.getAttribute('data-cat') || '').toLowerCase();
+                        var catMatches = q !== '' && catText.indexOf(q) !== -1;
+                        var items = Array.prototype.slice.call(g.querySelectorAll('.catalog-nav-subitem'));
+                        var visibleCount = 0;
+
+                        items.forEach(function(li) {
+                            var symText = (li.getAttribute('data-sym') || '').toLowerCase();
+                            var show = (q === '') || catMatches || symText.indexOf(q) !== -1;
+                            li.hidden = !show;
+                            if (show) visibleCount += 1;
+                        });
+
+                        if (q === '') {
+                            g.hidden = false;
+                            if (savedOpenState && typeof savedOpenState[idx] === 'boolean') {
+                                g.open = savedOpenState[idx];
+                            }
+                            anyMatch = true;
+                        } else if (catMatches || visibleCount > 0) {
+                            g.hidden = false;
+                            g.open = true;
+                            anyMatch = true;
+                        } else {
+                            g.hidden = true;
+                        }
+                    });
+
+                    if (q === '') {
+                        savedOpenState = null;
+                    }
+                    if (emptyNotice) {
+                        emptyNotice.hidden = anyMatch;
+                    }
+                    updateExpandBtnLabel();
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === '/' && document.activeElement !== filterInput) {
+                        var tag = document.activeElement ? document.activeElement.tagName : '';
+                        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                            e.preventDefault();
+                            filterInput.focus();
+                        }
+                    } else if (e.key === 'Escape' && document.activeElement === filterInput) {
+                        filterInput.value = '';
+                        filterInput.dispatchEvent(new Event('input'));
+                        filterInput.blur();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.lang-dropdown[open]').forEach(function(dd) {
+                    if (!dd.contains(e.target)) {
+                        dd.removeAttribute('open');
+                    }
+                });
+            });
+
+            var activeLinks = Array.prototype.slice.call(document.querySelectorAll('.catalog-nav-sublink[data-target]'));
+            if (activeLinks.length > 0 && 'IntersectionObserver' in window) {
+                var linkBySlug = {};
+                var headings = [];
+                activeLinks.forEach(function(a) {
+                    var slug = a.getAttribute('data-target');
+                    var el = slug ? document.getElementById(slug) : null;
+                    if (slug && el) {
+                        linkBySlug[slug] = a;
+                        headings.push(el);
+                    }
+                    a.addEventListener('click', closeMenu);
+                });
+
+                function setActiveSlug(slug) {
+                    activeLinks.forEach(function(a) {
+                        if (a.getAttribute('data-target') === slug) {
+                            a.classList.add('is-active');
+                        } else {
+                            a.classList.remove('is-active');
+                        }
+                    });
+                }
+
+                if (window.location.hash) {
+                    var initSlug = decodeURIComponent(window.location.hash.slice(1));
+                    if (linkBySlug[initSlug]) setActiveSlug(initSlug);
+                } else if (headings.length > 0) {
+                    setActiveSlug(headings[0].id);
+                }
+
+                var visibleIds = {};
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        visibleIds[entry.target.id] = entry.isIntersecting;
+                    });
+                    for (var i = 0; i < headings.length; i++) {
+                        if (visibleIds[headings[i].id]) {
+                            setActiveSlug(headings[i].id);
+                            break;
+                        }
+                    }
+                }, { rootMargin: '-70px 0px -68% 0px', threshold: [0, 1] });
+
+                headings.forEach(function(h) { observer.observe(h); });
+            }
+        })();
+    </script>
+</body>
+</html>

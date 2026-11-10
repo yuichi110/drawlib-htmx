@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/02_attribute_inheritance_and_hcon.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/03_trigger_and_selector_parsers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/04_fetch_context_and_sync_queue.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/06_extension_and_security_internals.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/01_module_and_state_architecture.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/01_module_and_state_architecture.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/02_attribute_inheritance_and_hcon.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/02_attribute_inheritance_and_hcon.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/03_trigger_and_selector_parsers.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/03_trigger_and_selector_parsers.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/03_trigger_and_selector_parsers.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/04_fetch_context_and_sync_queue.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/04_fetch_context_and_sync_queue.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/04_fetch_context_and_sync_queue.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/05_swap_settle_and_morph_engine.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/05_swap_settle_and_morph_engine.html" />
+  </url>
+  <url>
+    <loc>https://htmx.drawlib.com/architecture/ja/06_extension_and_security_internals.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/06_extension_and_security_internals.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/06_extension_and_security_internals.html" />
+  </url>
+</urlset>

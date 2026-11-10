@@ -1,0 +1,325 @@
+describe('__initializeTriggers unit tests', function() {
+
+    function mockTriggerButton(triggerSpec, callback) {
+        const btn = createHTMLNoProcessing(`<button hx-trigger="${triggerSpec}">Demo</button>`);
+        htmx.__htmxProp(btn)
+        htmx.__initializeTriggers(btn, callback)
+        return btn;
+    }
+
+    function mockTriggerElement(html, callback) {
+        const elt = createDisconnectedHTML(html);
+        htmx.__htmxProp(elt)
+        htmx.__initializeTriggers(elt, callback)
+        return elt;
+    }
+
+    it('basic trigger should work', function() {
+        let called = false
+        const btn = mockTriggerButton("", () => called = true);
+        btn.click()
+        assert.equal(true, called)
+    });
+
+    it('once should only trigger once', function() {
+        let called = 0
+        const btn = mockTriggerButton("click once", () => called++);
+        btn.click()
+        assert.equal(1, called)
+        btn.click()
+        assert.equal(1, called)
+    });
+
+    it('default trigger for button is click', function() {
+        let called = 0
+        const btn = mockTriggerElement('<button>Test</button>', () => called++);
+        btn.click()
+        assert.equal(1, called)
+    });
+
+    it('default trigger for form is submit', function() {
+        let called = 0
+        const form = mockTriggerElement('<form></form>', () => called++);
+        form.dispatchEvent(new Event('submit'))
+        assert.equal(1, called)
+    });
+
+    it('default trigger for input is change', function() {
+        let called = 0
+        const input = mockTriggerElement('<input type="text">', () => called++);
+        input.dispatchEvent(new Event('change'))
+        assert.equal(1, called)
+    });
+
+    it('default trigger for select is change', function() {
+        let called = 0
+        const select = mockTriggerElement('<select></select>', () => called++);
+        select.dispatchEvent(new Event('change'))
+        assert.equal(1, called)
+    });
+
+    it('default trigger for textarea is change', function() {
+        let called = 0
+        const textarea = mockTriggerElement('<textarea></textarea>', () => called++);
+        textarea.dispatchEvent(new Event('change'))
+        assert.equal(1, called)
+    });
+
+    it('delay modifier delays execution', function(done) {
+        let called = false
+        const btn = mockTriggerButton("click delay:50ms", () => called = true);
+        btn.click()
+        assert.equal(false, called)
+        setTimeout(() => {
+            assert.equal(true, called)
+            done()
+        }, 100)
+    });
+
+    it('delay modifier resets on subsequent triggers', function(done) {
+        let called = 0
+        const btn = mockTriggerButton("click delay:50ms", () => called++);
+        btn.click()
+        setTimeout(() => btn.click(), 30)
+        setTimeout(() => {
+            assert.equal(1, called)
+            done()
+        }, 120)
+    });
+
+    it('throttle modifier limits execution frequency', function(done) {
+        let called = 0
+        const btn = mockTriggerButton("click throttle:100ms", () => called++);
+        btn.click()
+        btn.click()
+        btn.click()
+        assert.equal(1, called)
+        setTimeout(() => {
+            assert.equal(2, called)
+            done()
+        }, 150)
+    });
+
+    it('target modifier filters events by target selector', function() {
+        let called = 0
+        const div = createProcessedHTML('<div hx-trigger="click target:.target" hx-action="js:null"><button class="target">Target</button><button>Other</button></div>');
+        htmx.__initializeTriggers(div, () => called++);
+        div.querySelector('.target').click()
+        assert.equal(1, called)
+        div.querySelector('button:not(.target)').click()
+        assert.equal(1, called)
+    });
+
+    it('consume modifier stops event propagation', function() {
+        let innerCalled = 0;
+        let outerCalled = 0;
+
+        const outer = createProcessedHTML('<div id="outer"><button hx-action="js:null" hx-trigger="click consume" id="inner">Test</button></div>');
+        outer.addEventListener('click', () => outerCalled++)
+
+        const inner = outer.querySelector('#inner')
+        inner.addEventListener('click', () => innerCalled++)
+
+        inner.click()
+        assert.equal(1, innerCalled)
+        assert.equal(0, outerCalled)
+    });
+
+    it('changed modifier only triggers when value changes', function() {
+        let called = 0
+        const input = mockTriggerElement('<input type="text" hx-trigger="input changed">', () => called++);
+
+        input.value = 'test'
+        input.dispatchEvent(new Event('input'))
+        assert.equal(1, called)
+
+        input.dispatchEvent(new Event('input'))
+        assert.equal(1, called)
+
+        input.value = 'changed'
+        input.dispatchEvent(new Event('input'))
+        assert.equal(2, called)
+    });
+
+    it('event filter evaluates condition', function() {
+        let called = 0
+        const btn = mockTriggerButton("click[shiftKey]", () => called++);
+
+        let mouseEvent1 = new CustomEvent('click');
+        mouseEvent1.shiftKey = false
+        btn.dispatchEvent(mouseEvent1)
+        assert.equal(0, called)
+
+        let mouseEvent = new CustomEvent('click');
+        mouseEvent.shiftKey = true
+        btn.dispatchEvent(mouseEvent)
+        assert.equal(1, called)
+    });
+
+    it('from modifier listens on different element', function() {
+        let called = 0
+        const container = createHTMLNoProcessing('<div><button id="source">Source</button><div id="target"></div></div>');
+
+        const target = container.querySelector('#target')
+        const source = container.querySelector('#source')
+
+        htmx.__htmxProp(target)
+        target.setAttribute('hx-trigger', 'click from:#source')
+        htmx.__initializeTriggers(target, () => called++);
+
+        target.click()
+        assert.equal(0, called)
+
+        source.click()
+        assert.equal(1, called)
+    });
+
+    it('multiple triggers separated by comma', function() {
+        let called = 0
+        const btn = mockTriggerButton("click, mouseenter", () => called++);
+
+        btn.click()
+        assert.equal(1, called)
+
+        btn.dispatchEvent(new Event('mouseenter'))
+        assert.equal(2, called)
+    });
+
+    it('a trigger cancels a pending delayed trigger', async function() {
+        let called = [];
+        const form = mockTriggerElement('<form hx-trigger="input delay:25ms, submit"></form>', evt => called.push(evt.type));
+        form.dispatchEvent(new Event('input'));
+        form.dispatchEvent(new Event('submit'));
+        await htmx.timeout(50);
+        assert.deepEqual(called, ['submit']);
+        form.dispatchEvent(new Event('input'));
+        await htmx.timeout(50);
+        assert.deepEqual(called, ['submit', 'input']);
+    });
+
+    it('a trigger cancels a pending throttled trigger', async function() {
+        let called = [];
+        const form = mockTriggerElement('<form hx-trigger="input throttle:25ms, submit"></form>', evt => called.push(evt.type));
+        form.dispatchEvent(new Event('input'));
+        form.dispatchEvent(new Event('input'));
+        form.dispatchEvent(new Event('submit'));
+        await htmx.timeout(50);
+        assert.deepEqual(called, ['input', 'submit']);
+    });
+
+    it('a filtered trigger does not cancel a pending delayed trigger', async function() {
+        let called = [];
+        const form = mockTriggerElement('<form hx-trigger="input delay:25ms, submit[false]"></form>', evt => called.push(evt.type));
+        form.dispatchEvent(new Event('input'));
+        form.dispatchEvent(new Event('submit'));
+        await htmx.timeout(50);
+        assert.deepEqual(called, ['input']);
+    });
+
+    it('polling does not cancel a pending delayed trigger', async function() {
+        let called = [];
+        const div = createProcessedHTML('<div hx-trigger="custom delay:30ms, every 5ms"></div>');
+        htmx.__htmxProp(div);
+        htmx.__initializeTriggers(div, evt => called.push(evt.type));
+        div.dispatchEvent(new Event('custom'));
+        await htmx.timeout(60);
+        assert.include(called, 'every');
+        assert.include(called, 'custom');
+    });
+
+    it('every trigger polls at interval', async function () {
+        let called = 0
+        mockTriggerButton("every 10ms", () => called++);
+        await htmx.timeout(50);
+        assert.isAtLeast(called, 2)
+    });
+
+    it('revealed trigger fires once on revealed', function() {
+        let called = 0;
+        const div = createProcessedHTML('<div hx-action="js:null" hx-trigger="revealed">Test</div>');
+        htmx.__initializeTriggers(div, () => called++);
+        htmx.trigger(div, "intersect");
+        assert.equal(1, called)
+    });
+
+    it('revealed trigger fires multiple times on on intersection', function() {
+        let called = 0;
+        const div = createProcessedHTML('<div hx-action="js:null" hx-trigger="intersect">Test</div>');
+        htmx.__initializeTriggers(div, () => called++);
+        htmx.trigger(div, "intersect");
+        assert.equal(1, called)
+        htmx.trigger(div, "intersect");
+        assert.equal(2, called)
+    });
+
+    describe('intersect modifiers', function() {
+        let originalIO;
+        let captured;
+
+        beforeEach(() => {
+            captured = [];
+            originalIO = window.IntersectionObserver;
+            window.IntersectionObserver = function(cb, opts) {
+                captured.push(opts);
+                return new originalIO(cb, opts);
+            };
+        });
+
+        afterEach(() => {
+            window.IntersectionObserver = originalIO;
+        });
+
+        it('passes threshold modifier to IntersectionObserver', function() {
+            createProcessedHTML('<div hx-action="js:null" hx-trigger="intersect threshold:0.5">Test</div>');
+            assert.equal(captured.length, 1);
+            assert.equal(captured[0].threshold, 0.5);
+        });
+
+        it('passes root modifier to IntersectionObserver', function() {
+            playground().innerHTML = '<div id="scroller"><div id="target" hx-action="js:null" hx-trigger="intersect root:#scroller">Test</div></div>';
+            htmx.process(playground());
+            assert.equal(captured.length, 1);
+            assert.equal(captured[0].root, document.getElementById('scroller'));
+        });
+
+        it('passes both root and threshold modifiers', function() {
+            playground().innerHTML = '<div id="scroller2"><div id="target2" hx-action="js:null" hx-trigger="intersect root:#scroller2 threshold:0.25">Test</div></div>';
+            htmx.process(playground());
+            assert.equal(captured.length, 1);
+            assert.equal(captured[0].root, document.getElementById('scroller2'));
+            assert.equal(captured[0].threshold, 0.25);
+        });
+
+        it('passes empty options when no modifiers given', function() {
+            createProcessedHTML('<div hx-action="js:null" hx-trigger="intersect">Test</div>');
+            assert.equal(captured.length, 1);
+            assert.isUndefined(captured[0].root);
+            assert.isUndefined(captured[0].threshold);
+        });
+
+        it('from: modifier observes the from element, not the trigger element', function() {
+            let observed = [];
+            const origIO = window.IntersectionObserver;
+            window.IntersectionObserver = function(cb, opts) {
+                const io = new origIO(cb, opts);
+                const origObserve = io.observe.bind(io);
+                io.observe = (el) => { observed.push(el); origObserve(el); };
+                return io;
+            };
+            playground().innerHTML = '<div id="scroller3"><div id="sentinel" hx-action="js:null" hx-trigger="intersect from:#scroller3">Test</div></div>';
+            htmx.process(playground());
+            window.IntersectionObserver = originalIO;
+            assert.equal(observed.length, 1);
+            assert.equal(observed[0], document.getElementById('scroller3'));
+            assert.notEqual(observed[0], document.getElementById('sentinel'));
+        });
+
+        it('from: modifier with threshold passes both to IntersectionObserver', function() {
+            playground().innerHTML = '<div id="scroller4"><div id="target4" hx-action="js:null" hx-trigger="intersect from:#scroller4 threshold:0.75">Test</div></div>';
+            htmx.process(playground());
+            assert.equal(captured.length, 1);
+            assert.equal(captured[0].threshold, 0.75);
+        });
+    });
+
+});

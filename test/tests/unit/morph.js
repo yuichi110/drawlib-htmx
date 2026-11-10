@@ -1,0 +1,1089 @@
+describe('Morph Swap Styles Tests', function() {
+    
+    beforeEach(function() {
+        setupTest();
+    });
+
+    afterEach(function() {
+        cleanupTest();
+    });
+
+    describe('innerMorph', function() {
+        it('morphs children while preserving element with matching id', async function() {
+            mockResponse('GET', '/test', '<div id="child1">updated</div><div id="child2">new</div>');
+            const div = createProcessedHTML('<div id="target"><div id="child1">original</div></div>');
+            const child1 = div.querySelector('#child1');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#child1'), child1, 'Element with id should be preserved');
+            assert.equal(child1.textContent, 'updated');
+            assert.isNotNull(div.querySelector('#child2'));
+        });
+
+        it('morphs text content', async function() {
+            mockResponse('GET', '/test', '<p>new text</p>');
+            const div = createProcessedHTML('<div id="target"><p>old text</p></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.include(div.innerHTML, 'new text');
+            assert.notInclude(div.innerHTML, 'old text');
+        });
+
+        it('morphs attributes', async function() {
+            mockResponse('GET', '/test', '<div id="child" class="new-class" data-value="123">content</div>');
+            const div = createProcessedHTML('<div id="target"><div id="child" class="old-class">content</div></div>');
+            const child = div.querySelector('#child');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(child.className, 'new-class');
+            assert.equal(child.getAttribute('data-value'), '123');
+        });
+
+        it('removes old elements not in new content', async function() {
+            mockResponse('GET', '/test', '<div id="keep">kept</div>');
+            const div = createProcessedHTML('<div id="target"><div id="keep">kept</div><div id="remove">removed</div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.isNotNull(div.querySelector('#keep'));
+            assert.isNull(div.querySelector('#remove'));
+        });
+
+        it('adds new elements', async function() {
+            mockResponse('GET', '/test', '<div id="old">old</div><div id="new">new</div>');
+            const div = createProcessedHTML('<div id="target"><div id="old">old</div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.isNotNull(div.querySelector('#old'));
+            assert.isNotNull(div.querySelector('#new'));
+        });
+
+        it('preserves element references with matching ids', async function() {
+            mockResponse('GET', '/test', '<input id="input1" value="new"><input id="input2" value="added">');
+            const div = createProcessedHTML('<div id="target"><input id="input1" value="old"></div>');
+            const input1 = div.querySelector('#input1');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#input1'), input1, 'Input element should be same reference');
+            assert.equal(input1.value, 'new');
+            assert.isNotNull(div.querySelector('#input2'));
+        });
+
+        it('handles nested elements with ids', async function() {
+            mockResponse('GET', '/test', '<div id="outer"><div id="inner">updated</div></div>');
+            const div = createProcessedHTML('<div id="target"><div id="outer"><div id="inner">original</div></div></div>');
+            const outer = div.querySelector('#outer');
+            const inner = div.querySelector('#inner');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#outer'), outer);
+            assert.equal(div.querySelector('#inner'), inner);
+            assert.equal(inner.textContent, 'updated');
+        });
+
+        it('morphs without ids using tag matching', async function() {
+            mockResponse('GET', '/test', '<p>new paragraph</p><span>new span</span>');
+            const div = createProcessedHTML('<div id="target"><p>old paragraph</p><span>old span</span></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.include(div.innerHTML, 'new paragraph');
+            assert.include(div.innerHTML, 'new span');
+        });
+    });
+
+    describe('outerMorph', function() {
+        it('morphs the target element itself', async function() {
+            mockResponse('GET', '/test', '<div id="target" class="new-class">updated</div>');
+            const container = createProcessedHTML('<div><div id="target" class="old-class">original</div></div>');
+            const target = container.querySelector('#target');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+            
+            const newTarget = container.querySelector('#target');
+            assert.equal(newTarget, target, 'Target element should be morphed, not replaced');
+            assert.equal(newTarget.className, 'new-class');
+            assert.equal(newTarget.textContent, 'updated');
+        });
+
+        it('morphs target attributes', async function() {
+            mockResponse('GET', '/test', '<div id="target" data-value="123" class="morphed">content</div>');
+            const container = createProcessedHTML('<div><div id="target" class="original">content</div></div>');
+            const target = container.querySelector('#target');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+            
+            assert.equal(container.querySelector('#target'), target);
+            assert.equal(target.className, 'morphed');
+            assert.equal(target.getAttribute('data-value'), '123');
+        });
+
+        it('morphs target children', async function() {
+            mockResponse('GET', '/test', '<div id="target"><span id="child">new child</span></div>');
+            const container = createProcessedHTML('<div><div id="target"><span id="child">old child</span></div></div>');
+            const target = container.querySelector('#target');
+            const child = target.querySelector('#child');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+            
+            assert.equal(container.querySelector('#target'), target);
+            assert.equal(target.querySelector('#child'), child);
+            assert.equal(child.textContent, 'new child');
+        });
+
+        it('preserves element identity during morph', async function() {
+            mockResponse('GET', '/test', '<button id="btn" class="updated">Click Me</button>');
+            const container = createProcessedHTML('<div><button id="btn" class="original">Click</button></div>');
+            const btn = container.querySelector('#btn');
+            let clicked = false;
+            btn.addEventListener('click', () => clicked = true);
+            
+            await htmx.ajax('GET', '/test', {target: '#btn', swap: 'outerMorph'});
+            
+            const newBtn = container.querySelector('#btn');
+            assert.equal(newBtn, btn, 'Button should be same element');
+            newBtn.click();
+            assert.isTrue(clicked, 'Event listener should still work');
+        });
+    });
+
+    describe('innerMorph vs innerHTML comparison', function() {
+        it('innerMorph preserves elements, innerHTML replaces', async function() {
+            mockResponse('GET', '/test', '<input id="field" value="new">');
+            
+            // Test innerHTML
+            const div1 = createProcessedHTML('<div id="target1"><input id="field" value="old"></div>');
+            const input1 = div1.querySelector('#field');
+            await htmx.ajax('GET', '/test', {target: '#target1', swap: 'innerHTML'});
+            const newInput1 = div1.querySelector('#field');
+            assert.notEqual(newInput1, input1, 'innerHTML should create new element');
+            
+            // Test innerMorph
+            mockResponse('GET', '/test', '<input id="field" value="new">');
+            const div2 = createProcessedHTML('<div id="target2"><input id="field" value="old"></div>');
+            const input2 = div2.querySelector('#field');
+            await htmx.ajax('GET', '/test', {target: '#target2', swap: 'innerMorph'});
+            const newInput2 = div2.querySelector('#field');
+            assert.equal(newInput2, input2, 'innerMorph should preserve element');
+        });
+    });
+
+    describe('outerMorph vs outerHTML comparison', function() {
+        it('outerMorph preserves target, outerHTML replaces', async function() {
+            mockResponse('GET', '/test', '<div id="target" class="new">updated</div>');
+            
+            // Test outerHTML
+            const container1 = createProcessedHTML('<div><div id="target" class="old">original</div></div>');
+            const target1 = container1.querySelector('#target');
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerHTML'});
+            const newTarget1 = container1.querySelector('#target');
+            assert.notEqual(newTarget1, target1, 'outerHTML should create new element');
+            
+            // Test outerMorph
+            mockResponse('GET', '/test', '<div id="target" class="new">updated</div>');
+            const container2 = createProcessedHTML('<div><div id="target" class="old">original</div></div>');
+            const target2 = container2.querySelector('#target');
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+            const newTarget2 = container2.querySelector('#target');
+            assert.equal(newTarget2, target2, 'outerMorph should preserve element');
+        });
+    });
+
+    describe('edge cases', function() {
+        it('handles empty content', async function() {
+            mockResponse('GET', '/test', '');
+            const div = createProcessedHTML('<div id="target"><p>content</p></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.innerHTML, '');
+        });
+
+        it('handles complex nested structures', async function() {
+            mockResponse('GET', '/test', 
+                '<div id="a"><div id="b"><div id="c">updated</div></div></div>');
+            const div = createProcessedHTML(
+                '<div id="target"><div id="a"><div id="b"><div id="c">original</div></div></div></div>');
+            const a = div.querySelector('#a');
+            const b = div.querySelector('#b');
+            const c = div.querySelector('#c');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#a'), a);
+            assert.equal(div.querySelector('#b'), b);
+            assert.equal(div.querySelector('#c'), c);
+            assert.equal(c.textContent, 'updated');
+        });
+
+        it('handles mixed content with and without ids', async function() {
+            mockResponse('GET', '/test', 
+                '<div id="with-id">has id</div><div>no id</div><span id="another">another</span>');
+            const div = createProcessedHTML(
+                '<div id="target"><div id="with-id">old</div><p>paragraph</p></div>');
+            const withId = div.querySelector('#with-id');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#with-id'), withId);
+            assert.equal(withId.textContent, 'has id');
+            assert.isNotNull(div.querySelector('#another'));
+        });
+
+        it('handles numeric ids', async function() {
+            mockResponse('GET', '/test', '<div><hr id="1"></div>');
+            const div = createProcessedHTML('<div id="target"><hr id="1"></div>');
+            const hr = div.querySelector('#\\31');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('#\\31'), hr);
+        });
+
+        it('does not re-execute identical script tags during morph', async function() {
+            window._scriptMorphCount = 0;
+            createProcessedHTML('<div id="target"></div>');
+            await htmx.swap({target: '#target', text: '<script>window._scriptMorphCount++<\/script><div id="content">original</div>', swap: 'innerHTML'});
+            assert.equal(window._scriptMorphCount, 1, 'Script should run once after initial swap');
+
+            await htmx.swap({target: '#target', text: '<script>window._scriptMorphCount++<\/script><div id="content">updated</div>', swap: 'innerMorph'});
+
+            assert.equal(window._scriptMorphCount, 1, 'Identical script should not re-execute after morph');
+            delete window._scriptMorphCount;
+        });
+
+        it('executes changed script tags once when replaced during morph', async function() {
+            window._scriptMorphCount = 0;
+            createProcessedHTML('<div id="target"></div>');
+            await htmx.swap({target: '#target', text: '<script>window._scriptMorphCount++<\/script>', swap: 'innerHTML'});
+            assert.equal(window._scriptMorphCount, 1, 'Original script should run once after initial swap');
+
+            await htmx.swap({target: '#target', text: '<script>window._scriptMorphCount += 10<\/script>', swap: 'innerMorph'});
+
+            assert.equal(window._scriptMorphCount, 11, 'Changed script should execute exactly once after morph');
+            delete window._scriptMorphCount;
+        });
+
+        it('does not treat empty id="" as a persistent id', async function() {
+            // When both old and new content have <h1 id="">, the empty string should NOT
+            // be treated as a persistent ID that needs to be preserved/matched.
+            // Previously this caused HierarchyRequestError when sibling elements differed,
+            // because the algorithm tried to reuse the h1 based on the "" id match.
+            mockResponse('GET', '/test', '<h1 id="">B</h1><div>Y</div>');
+            const div = createProcessedHTML('<div id="target"><h1 id="">A</h1><section>X</section></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('h1').textContent, 'B');
+            assert.isNotNull(div.querySelector('div'));
+            assert.isNull(div.querySelector('section'));
+        });
+    });
+
+    describe('input value preservation', function() {
+        it('preserves input value when attribute unchanged', async function() {
+            mockResponse('GET', '/test', '<input id="field" value="old" class="updated">');
+            const div = createProcessedHTML('<div id="target"><input id="field" value="old"></div>');
+            const input = div.querySelector('#field');
+            input.value = 'user-typed';
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(input.value, 'user-typed', 'Preserves user input when value attribute unchanged');
+            assert.equal(input.className, 'updated');
+        });
+
+        it('updates input value when attribute changes', async function() {
+            mockResponse('GET', '/test', '<input id="field" value="new">');
+            const div = createProcessedHTML('<div id="target"><input id="field" value="old"></div>');
+            const input = div.querySelector('#field');
+            input.value = 'user-typed';
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(input.value, 'new', 'Updates value when attribute changes');
+        });
+
+        it('preserves textarea value when content unchanged', async function() {
+            mockResponse('GET', '/test', '<textarea id="field" class="updated">old</textarea>');
+            const div = createProcessedHTML('<div id="target"><textarea id="field">old</textarea></div>');
+            const textarea = div.querySelector('#field');
+            textarea.value = 'user-typed';
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(textarea.value, 'user-typed', 'Preserves user input when content unchanged');
+            assert.equal(textarea.className, 'updated');
+        });
+
+        it('updates textarea value when content changes', async function() {
+            mockResponse('GET', '/test', '<textarea id="field">new</textarea>');
+            const div = createProcessedHTML('<div id="target"><textarea id="field">old</textarea></div>');
+            const textarea = div.querySelector('#field');
+            textarea.value = 'user-typed';
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(textarea.value, 'new', 'Updates value when content changes');
+        });
+
+        it('preserves checkbox state when attribute unchanged', async function() {
+            mockResponse('GET', '/test', '<input id="cb" type="checkbox" checked class="updated">');
+            const div = createProcessedHTML('<div id="target"><input id="cb" type="checkbox" checked></div>');
+            const checkbox = div.querySelector('#cb');
+            checkbox.checked = false;
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(checkbox.checked, false, 'Preserves user state when checked attribute unchanged');
+            assert.equal(checkbox.className, 'updated');
+        });
+
+        it('preserves focused input node when validation error div is inserted before it', async function() {
+            // Without the guard, scan advances past the focused input to soft-match
+            // div.info for div.error, and the skip-over loop removes the focused input.
+            const div = createProcessedHTML(
+                '<div id="target"><input name="q" placeholder="Search"><div class="info">hint</div></div>'
+            );
+            const input = div.querySelector('input[name=q]');
+            input.value = 'hello';
+            input.focus();
+
+            await htmx.swap({
+                target: '#target',
+                text: '<div class="error">Required</div><input name="q" placeholder="Search"><div class="info">hint</div>',
+                swap: 'innerMorph',
+                sourceElement: div
+            });
+
+            assert.isNotNull(div.querySelector('.error'), 'error div should be inserted');
+            assert.equal(div.querySelector('input[name=q]'), input, 'focused input node should be preserved');
+            assert.equal(input.value, 'hello', 'typed value should be preserved');
+        });
+
+        it('does not block morph when a clicked button holds focus but is removed in new content', async function() {
+            // Without the fix, scan stopped at the focused button causing sibling
+            // inputs to be inserted fresh and losing their live values.
+            const div = createProcessedHTML('<div id="target"><button class="action">Go</button><input name="name"><input name="email"></div>');
+            const btn = div.querySelector('button');
+            const nameInput = div.querySelector('input[name=name]');
+            const emailInput = div.querySelector('input[name=email]');
+            nameInput.value = 'Alice';
+            emailInput.value = 'alice@example.com';
+            btn.focus();
+
+            await htmx.swap({
+                target: '#target',
+                text: '<input name="name"><input name="email">',
+                swap: 'innerMorph',
+                sourceElement: div
+            });
+
+            assert.equal(div.querySelector('input[name=name]'), nameInput, 'name input node should be reused');
+            assert.equal(div.querySelector('input[name=email]'), emailInput, 'email input node should be reused');
+            assert.equal(nameInput.value, 'Alice', 'name value should be preserved');
+            assert.equal(emailInput.value, 'alice@example.com', 'email value should be preserved');
+            assert.isNull(div.querySelector('button'), 'button should be removed');
+        });
+
+        it('preserves focused input value when server sends stale value during live typing', async function() {
+            // Simulates live search: user types "hello" but server response echoes "hel"
+            // back in the value attribute - should not overwrite the focused input
+            const div = createProcessedHTML('<div id="target"><input id="search" value=""></div>');
+            const input = div.querySelector('#search');
+            input.value = 'hello';  // user typed this
+            input.focus();
+
+            await htmx.swap({
+                target: '#target',
+                text: '<input id="search" value="hel">',  // stale server response with different value attr
+                swap: 'innerMorph',
+                sourceElement: div
+            });
+
+            assert.equal(div.querySelector('#search'), input, 'input node should be preserved');
+            assert.equal(input.value, 'hello', 'focused input value should not be overwritten by stale server value');
+        });
+
+        it('preserves focused textarea value when server sends stale content during live typing', async function() {
+            const div = createProcessedHTML('<div id="target"><textarea id="notes">old</textarea></div>');
+            const textarea = div.querySelector('#notes');
+            textarea.value = 'user typed this';
+            textarea.focus();
+
+            await htmx.swap({
+                target: '#target',
+                text: '<textarea id="notes">stale</textarea>',
+                swap: 'innerMorph',
+                sourceElement: div
+            });
+
+            assert.equal(div.querySelector('#notes'), textarea, 'textarea node should be preserved');
+            assert.equal(textarea.value, 'user typed this', 'focused textarea value should not be overwritten');
+        });
+
+    });
+
+    describe('element reordering with ids', function() {
+        it('reorders elements with ids correctly', async function() {
+            mockResponse('GET', '/test', '<div id="c">C</div><div id="b">B</div><div id="a">A</div>');
+            const div = createProcessedHTML('<div id="target"><div id="a">A</div><div id="b">B</div><div id="c">C</div></div>');
+            const a = div.querySelector('#a');
+            const b = div.querySelector('#b');
+            const c = div.querySelector('#c');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#a'), a, 'Element A should be preserved');
+            assert.equal(div.querySelector('#b'), b, 'Element B should be preserved');
+            assert.equal(div.querySelector('#c'), c, 'Element C should be preserved');
+            assert.equal(div.children[0].id, 'c');
+            assert.equal(div.children[1].id, 'b');
+            assert.equal(div.children[2].id, 'a');
+        });
+
+        it('moves id node into nested div correctly', async function() {
+            mockResponse('GET', '/test', '<div><input id="first"></div>');
+            const div = createProcessedHTML('<div id="target"><input id="first"></div>');
+            const input = div.querySelector('#first');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#first'), input);
+            assert.equal(input.parentElement.tagName, 'DIV');
+        });
+
+        it('handles complex id reordering with nesting', async function() {
+            mockResponse('GET', '/test', '<br><a id="a"><b id="b"></b></a>');
+            const div = createProcessedHTML('<div id="target"><a id="a"></a><br><b id="b"></b></div>');
+            const a = div.querySelector('#a');
+            const b = div.querySelector('#b');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('#a'), a);
+            assert.equal(div.querySelector('#b'), b);
+            assert.equal(b.parentElement, a, 'b should be inside a');
+        });
+    });
+
+    describe('attribute morphing edge cases', function() {
+        it('morphs multiple attributes correctly', async function() {
+            mockResponse('GET', '/test', 
+                '<section id="s" class="thing" data-one="1" data-two="2" data-three="3" data-four="4" fizz="buzz" foo="bar">B</section>');
+            const container = createProcessedHTML('<div><section id="s" class="child">A</section></div>');
+            const section = container.querySelector('#s');
+            
+            await htmx.ajax('GET', '/test', {target: '#s', swap: 'outerMorph'});
+            
+            assert.equal(section.className, 'thing');
+            assert.equal(section.getAttribute('data-one'), '1');
+            assert.equal(section.getAttribute('data-four'), '4');
+            assert.equal(section.getAttribute('fizz'), 'buzz');
+            assert.equal(section.textContent, 'B');
+        });
+
+        it('removes attributes correctly', async function() {
+            mockResponse('GET', '/test', '<section id="s" class="child">A</section>');
+            const container = createProcessedHTML(
+                '<div><section id="s" class="thing" data-one="1" data-two="2" fizz="buzz">B</section></div>');
+            const section = container.querySelector('#s');
+            
+            await htmx.ajax('GET', '/test', {target: '#s', swap: 'outerMorph'});
+            
+            assert.equal(section.className, 'child');
+            assert.isNull(section.getAttribute('data-one'));
+            assert.isNull(section.getAttribute('fizz'));
+            assert.equal(section.textContent, 'A');
+        });
+
+        it('handles fieldset disabled property correctly', async function() {
+            mockResponse('GET', '/test', '<fieldset id="fs">hello</fieldset>');
+            const container = createProcessedHTML('<div><fieldset id="fs" class="foo" disabled></fieldset></div>');
+            const fieldset = container.querySelector('#fs');
+            
+            await htmx.ajax('GET', '/test', {target: '#fs', swap: 'outerMorph'});
+            
+            assert.equal(fieldset.innerHTML, 'hello');
+            assert.equal(fieldset.classList.length, 0);
+            assert.equal(fieldset.disabled, false);
+        });
+    });
+
+    describe('htmx processing during morph', function() {
+        it('processes new htmx attributes added during innerMorph', async function() {
+            mockResponse('GET', '/test', '<button id="btn" hx-get="/click" hx-target="#result">Updated</button><div id="result"></div>');
+            const div = createProcessedHTML('<div id="target"><button id="btn">Original</button><div id="result"></div></div>');
+            const btn = div.querySelector('#btn');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(btn.getAttribute('data-htmx-powered'), 'true', 'New htmx attributes should be processed');
+            
+            mockResponse('GET', '/click', 'Clicked!');
+            btn.click();
+            await waitForEvent('htmx:after:swap', 100);
+            
+            assert.equal(div.querySelector('#result').textContent, 'Clicked!', 'New htmx functionality should work');
+        });
+
+        it('processes new htmx attributes added during outerMorph', async function() {
+            mockResponse('GET', '/test', '<button id="btn" hx-get="/click" hx-target="#result">Updated</button>');
+            const container = createProcessedHTML('<div><button id="btn">Original</button><div id="result"></div></div>');
+            const btn = container.querySelector('#btn');
+            
+            await htmx.ajax('GET', '/test', {target: '#btn', swap: 'outerMorph'});
+            
+            assert.equal(btn.getAttribute('data-htmx-powered'), 'true', 'New htmx attributes should be processed');
+            
+            mockResponse('GET', '/click', 'Clicked!');
+            btn.click();
+            await waitForEvent('htmx:after:swap', 100);
+            
+            assert.equal(container.querySelector('#result').textContent, 'Clicked!', 'New htmx functionality should work');
+        });
+
+        it('processes new htmx attributes on inserted elements during innerMorph', async function() {
+            mockResponse('GET', '/test', '<button id="existing">Existing</button><button id="new" hx-get="/new">New Button</button>');
+            const div = createProcessedHTML('<div id="target"><button id="existing">Existing</button></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            const newBtn = div.querySelector('#new');
+            assert.isNotNull(newBtn);
+            assert.equal(newBtn.getAttribute('data-htmx-powered'), 'true', 'New inserted element should be processed');
+        });
+
+        it('reinitializes element when hx-get is added during innerMorph', async function() {
+            mockResponse('GET', '/dynamic', 'fetched');
+            const div = createProcessedHTML('<div id="target"><div id="child"><p>static</p></div></div>');
+
+            await htmx.swap({target: '#target', text: '<div id="child" hx-get="/dynamic" hx-trigger="click" hx-swap="innerHTML"><p>now interactive</p></div>', swap: 'innerMorph', sourceElement: div});
+
+            const child = div.querySelector('#child');
+            assert.isNotNull(child._htmx?.initialized, 'child should be initialized');
+            child.click();
+            await forRequest();
+            assert.equal(child.textContent, 'fetched');
+        });
+
+        it('reinitializes element when hx-get is removed during innerMorph', async function() {
+            mockResponse('GET', '/should-not-fire', 'bad');
+            const div = createProcessedHTML('<div id="target"><div id="child" hx-get="/should-not-fire" hx-trigger="click" hx-swap="innerHTML">interactive</div></div>');
+            const child = div.querySelector('#child');
+            assert.isNotNull(child._htmx?.initialized, 'child should start initialized');
+
+            await htmx.swap({target: '#target', text: '<div id="child">no longer interactive</div>', swap: 'innerMorph', sourceElement: div});
+
+            assert.isNull(child.getAttribute('hx-get'), 'hx-get should be removed');
+            let requestFired = false;
+            let handler = () => { requestFired = true; };
+            document.addEventListener('htmx:before:request', handler);
+            child.click();
+            await htmx.timeout(50);
+            document.removeEventListener('htmx:before:request', handler);
+            assert.isFalse(requestFired, 'no request should fire after hx-get removed');
+        });
+
+        it('reinitializes element when hx-trigger changes during innerMorph', async function() {
+            mockResponse('GET', '/endpoint', 'response');
+            const div = createProcessedHTML('<div id="target"><div id="child" hx-get="/endpoint" hx-trigger="click" hx-swap="innerHTML">original</div></div>');
+
+            await htmx.swap({target: '#target', text: '<div id="child" hx-get="/endpoint" hx-trigger="mousedown" hx-swap="innerHTML">updated</div>', swap: 'innerMorph', sourceElement: div});
+
+            const child = div.querySelector('#child');
+            assert.equal(child.getAttribute('hx-trigger'), 'mousedown');
+
+            let requestFired = false;
+            let handler = () => { requestFired = true; };
+            document.addEventListener('htmx:before:request', handler);
+            child.click();
+            await htmx.timeout(50);
+            document.removeEventListener('htmx:before:request', handler);
+            assert.isFalse(requestFired, 'click should not trigger after hx-trigger changed to mousedown');
+
+            child.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+            await forRequest();
+            assert.equal(child.textContent, 'response');
+        });
+
+        it('processes new htmx attributes on inserted elements during outerMorph', async function() {
+            mockResponse('GET', '/test', '<div id="target"><button id="existing">Existing</button><button id="new" hx-get="/new">New Button</button></div>');
+            const container = createProcessedHTML('<div><div id="target"><button id="existing">Existing</button></div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+            
+            const newBtn = container.querySelector('#new');
+            assert.isNotNull(newBtn);
+            assert.equal(newBtn.getAttribute('data-htmx-powered'), 'true', 'New inserted element should be processed');
+        });
+
+        it('does not process detached fragment children during outerMorph', async function() {
+            mockResponse('GET', '/test', '<div id="target"><span class="child" hx-get="/x">new</span></div>');
+            const container = createProcessedHTML('<div><div id="target"><span class="child">old</span></div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+
+            assert.equal(container.querySelector('#target .child').getAttribute('data-htmx-powered'), 'true',
+                'live nested child should still be initialized');
+        });
+
+        it('does not attach htmx state to detached fragment children during outerMorph', async function() {
+            mockResponse('GET', '/test', '<div id="target"><span class="child" hx-get="/x">new</span></div>');
+            const container = createProcessedHTML('<div><div id="target"><span class="child">old</span></div></div>');
+
+            let fragmentChild;
+            document.addEventListener('htmx:before:swap', (e) => {
+                const mainTask = (e.detail.tasks || []).find(t => t.type === 'main');
+                fragmentChild = mainTask && mainTask.fragment && mainTask.fragment.querySelector('.child');
+            }, { once: true });
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+
+            assert.isOk(fragmentChild, 'captured the fragment child before morph');
+            assert.isFalse(fragmentChild.isConnected,
+                'same-tag outerMorph leaves fragment children detached as templates');
+            assert.equal(typeof fragmentChild._htmx, 'undefined',
+                'process() should not have attached _htmx state to the detached fragment child');
+            assert.isNull(fragmentChild.getAttribute('data-htmx-powered'),
+                'detached fragment child should not be marked data-htmx-powered');
+        });
+
+        it('processes new htmx attributes on tag-changing outerMorph (span to div)', async function() {
+            mockResponse('GET', '/test', '<div id="target" hx-get="/click" hx-target="#result">Updated</div>');
+            const container = createProcessedHTML('<div><span id="target">Original</span><div id="result"></div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+
+            const newDiv = container.querySelector('#target');
+            assert.isNotNull(newDiv, 'New div should exist in DOM');
+            assert.equal(newDiv.tagName, 'DIV', 'Element should now be a div');
+            assert.equal(newDiv.getAttribute('data-htmx-powered'), 'true', 'New div should be processed');
+
+            mockResponse('GET', '/click', 'Clicked!');
+            newDiv.click();
+            await waitForEvent('htmx:after:swap', 100);
+
+            assert.equal(container.querySelector('#result').textContent, 'Clicked!', 'htmx actions on new div should work');
+        });
+
+        it('processes hx-* on tag-changing outerMorph when new root has a persistent child id (issue #3882)', async function() {
+            // The bug: when outerMorph changes the root tag (div→form) AND the new root
+            // contains a child with a persistent id, __morphChildren creates a placeholder
+            // element instead of reusing the fragment node. newContent then holds the
+            // detached fragment node, so process() bails on !isConnected and hx-* attrs
+            // on the new root are never initialized.
+            mockResponse('GET', '/test',
+                '<form id="target" hx-post="/submit"><input id="same-child-id" name="q"></form>');
+            const container = createProcessedHTML(
+                '<div><div id="target"><input id="same-child-id" name="q"></div><div id="result"></div></div>');
+            const childInput = container.querySelector('#same-child-id');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'outerMorph'});
+
+            const newForm = container.querySelector('#target');
+            assert.isNotNull(newForm, 'new form should be in the DOM');
+            assert.equal(newForm.tagName, 'FORM', 'root tag should have changed to FORM');
+            assert.equal(container.querySelector('#same-child-id'), childInput,
+                'persistent child should be the same node');
+            assert.equal(newForm.getAttribute('data-htmx-powered'), 'true',
+                'new form root must be processed so hx-post works');
+
+            mockResponse('POST', '/submit', 'Submitted!');
+            newForm.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+            await waitForEvent('htmx:after:swap', 100);
+
+            assert.equal(container.querySelector('#result') ??
+                container.querySelector('#target'), container.querySelector('#result') ??
+                newForm, 'swap target should be reachable');
+        });
+
+        it('does not stack hx-on:click handlers across innerMorph', async function() {
+            window._calls = 0;
+            mockResponse('GET', '/test', '<button id="btn" hx-on:click="window._calls++">v</button>');
+            createProcessedHTML('<div id="target"><button id="btn" hx-on:click="window._calls++">v</button></div>');
+            for (let i = 0; i < 3; i++) {
+                await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            }
+            document.getElementById('btn').click();
+            assert.equal(window._calls, 1, 'click should fire handler exactly once');
+            delete window._calls;
+        });
+
+        it('does not stack hx-on:click handlers across outerMorph', async function() {
+            window._calls = 0;
+            mockResponse('GET', '/test', '<button id="btn" hx-on:click="window._calls++">v</button>');
+            createProcessedHTML('<button id="btn" hx-on:click="window._calls++">v</button>');
+            for (let i = 0; i < 3; i++) {
+                await htmx.ajax('GET', '/test', {target: '#btn', swap: 'outerMorph'});
+            }
+            document.getElementById('btn').click();
+            assert.equal(window._calls, 1, 'click should fire handler exactly once');
+            delete window._calls;
+        });
+
+        it('handles multiple hx-on attributes after morph', async function() {
+            window._log = [];
+            mockResponse('GET', '/test', '<button id="b" hx-on:click="window._log.push(\'c\')" hx-on:focus="window._log.push(\'f\')">b</button>');
+            createProcessedHTML('<div id="wrap"><button id="b" hx-on:click="window._log.push(\'c\')" hx-on:focus="window._log.push(\'f\')">b</button></div>');
+            await htmx.ajax('GET', '/test', {target: '#wrap', swap: 'innerMorph'});
+            const b = document.getElementById('b');
+            b.dispatchEvent(new Event('focus'));
+            b.click();
+            assert.deepEqual(window._log, ['f', 'c'], 'both handlers should fire exactly once');
+            delete window._log;
+        });
+
+        it('picks up hx-trigger value change across innerMorph', async function() {
+            mockResponse('GET', '/x', '<span/>');
+            mockResponse('GET', '/test', '<button id="b" hx-get="/x" hx-trigger="keyup">b</button>');
+            createProcessedHTML('<div id="wrap"><button id="b" hx-get="/x" hx-trigger="click">b</button></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#wrap', swap: 'innerMorph'});
+
+            const b = document.getElementById('b');
+            let fired = 0;
+            b.addEventListener('htmx:before:request', () => fired++);
+
+            b.click();
+            await new Promise(r => setTimeout(r, 20));
+            assert.equal(fired, 0, 'click should no longer fire after morph');
+            b.dispatchEvent(new KeyboardEvent('keyup'));
+            await waitForEvent('htmx:after:request', 100);
+            assert.equal(fired, 1, 'keyup should fire after morph');
+        });
+
+    });
+
+    describe('htmx integration', function() {
+        it('preserves data-htmx-powered attribute during innerMorph', async function() {
+            mockResponse('GET', '/test', '<button id="btn" hx-get="/click">Updated</button>');
+            const div = createProcessedHTML('<div id="target"><button id="btn" hx-get="/click">Original</button></div>');
+            const btn = div.querySelector('#btn');
+            htmx.process(btn);
+            
+            assert.equal(btn.getAttribute('data-htmx-powered'), 'true');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(btn.getAttribute('data-htmx-powered'), 'true', 'data-htmx-powered should be preserved');
+            assert.equal(btn.textContent, 'Updated');
+        });
+
+        it('preserves data-htmx-powered attribute during outerMorph', async function() {
+            mockResponse('GET', '/test', '<button id="btn" hx-get="/click" class="new">Updated</button>');
+            const container = createProcessedHTML('<div><button id="btn" hx-get="/click">Original</button></div>');
+            const btn = container.querySelector('#btn');
+            htmx.process(btn);
+            
+            assert.equal(btn.getAttribute('data-htmx-powered'), 'true');
+            
+            await htmx.ajax('GET', '/test', {target: '#btn', swap: 'outerMorph'});
+            
+            const newBtn = container.querySelector('#btn');
+            assert.equal(newBtn, btn, 'Button should be same element');
+            assert.equal(newBtn.getAttribute('data-htmx-powered'), 'true', 'data-htmx-powered should be preserved');
+            assert.equal(newBtn.className, 'new');
+        });
+
+        it('preserves htmx event listeners during morph', async function() {
+            mockResponse('GET', '/click', 'Clicked!');
+            mockResponse('GET', '/test', '<button id="btn" hx-get="/click" hx-target="#result">Updated</button><div id="result"></div>');
+            const div = createProcessedHTML('<div id="target"><button id="btn" hx-get="/click" hx-target="#result">Original</button><div id="result"></div></div>');
+            const btn = div.querySelector('#btn');
+            const result = div.querySelector('#result');
+            htmx.process(btn);
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            btn.click();
+            await waitForEvent('htmx:after:swap', 100);
+            
+            assert.equal(result.textContent, 'Clicked!', 'htmx functionality should still work');
+        });
+    });
+
+    describe('hx-morph-skip attribute (default morphSkip selector)', function() {
+        it('skips element with hx-morph-skip attribute', async function() {
+            mockResponse('GET', '/test', '<div hx-morph-skip data-v="new">new</div>');
+            const div = createProcessedHTML('<div id="target"><div hx-morph-skip data-v="old">old</div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('[hx-morph-skip]').getAttribute('data-v'), 'old');
+            assert.equal(div.querySelector('[hx-morph-skip]').textContent, 'old');
+        });
+
+        it('morphs other elements when only some have hx-morph-skip', async function() {
+            mockResponse('GET', '/test', '<div hx-morph-skip data-v="new">skip</div><div class="morph" data-v="new">morph</div>');
+            const div = createProcessedHTML('<div id="target"><div hx-morph-skip data-v="old">skip</div><div class="morph" data-v="old">morph</div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('[hx-morph-skip]').getAttribute('data-v'), 'old');
+            assert.equal(div.querySelector('.morph').getAttribute('data-v'), 'new');
+        });
+    });
+
+    describe('hx-morph-skip-children attribute (default morphSkipChildren selector)', function() {
+        it('updates attrs but preserves children with hx-morph-skip-children', async function() {
+            mockResponse('GET', '/test', '<div hx-morph-skip-children data-v="new"><span>new</span></div>');
+            const div = createProcessedHTML('<div id="target"><div hx-morph-skip-children data-v="old"><span>old</span></div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('[hx-morph-skip-children]').getAttribute('data-v'), 'new', 'attrs update');
+            assert.equal(div.querySelector('[hx-morph-skip-children] span').textContent, 'old', 'children preserved');
+        });
+
+        it('morphs children of elements without hx-morph-skip-children', async function() {
+            mockResponse('GET', '/test', '<div hx-morph-skip-children data-v="new"><span>new</span></div><div class="normal"><span>new</span></div>');
+            const div = createProcessedHTML('<div id="target"><div hx-morph-skip-children data-v="old"><span>old</span></div><div class="normal"><span>old</span></div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('[hx-morph-skip-children] span').textContent, 'old');
+            assert.equal(div.querySelector('.normal span').textContent, 'new');
+        });
+    });
+
+    describe('morphSkip config', function() {
+        afterEach(function() {
+            htmx.config.morphSkip = '[hx-morph-skip]';
+        });
+
+        it('skips morphing elements matching selector', async function() {
+            htmx.config.morphSkip = '.no-morph';
+            mockResponse('GET', '/test', '<div class="no-morph" data-value="new">new content</div>');
+            const div = createProcessedHTML('<div id="target"><div class="no-morph" data-value="old">old content</div></div>');
+            const noMorph = div.querySelector('.no-morph');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(noMorph.getAttribute('data-value'), 'old', 'Attributes should not be updated');
+            assert.equal(noMorph.textContent, 'old content', 'Content should not be updated');
+        });
+
+        it('skips morphing custom elements', async function() {
+            htmx.config.morphSkip = 'custom-element';
+            mockResponse('GET', '/test', '<custom-element id="ce" data-value="new"><span>new</span></custom-element>');
+            const div = createProcessedHTML('<div id="target"><custom-element id="ce" data-value="old"><span>old</span></custom-element></div>');
+            const ce = div.querySelector('custom-element');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(ce.getAttribute('data-value'), 'old');
+            assert.equal(ce.querySelector('span').textContent, 'old');
+        });
+
+        it('morphs other elements when some are skipped', async function() {
+            htmx.config.morphSkip = '.skip';
+            mockResponse('GET', '/test', '<div class="skip" data-value="new">skip</div><div class="morph" data-value="new">morph</div>');
+            const div = createProcessedHTML('<div id="target"><div class="skip" data-value="old">skip</div><div class="morph" data-value="old">morph</div></div>');
+            const skip = div.querySelector('.skip');
+            const morph = div.querySelector('.morph');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(skip.getAttribute('data-value'), 'old');
+            assert.equal(morph.getAttribute('data-value'), 'new');
+        });
+    });
+
+    describe('text node handling', function() {
+        it('removes text nodes during morph without error', async function() {
+            mockResponse('GET', '/test', '<div id="child">content</div>');
+            const div = createProcessedHTML('<div id="target">text node<div id="child">old</div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.isNotNull(div.querySelector('#child'));
+            assert.equal(div.querySelector('#child').textContent, 'content');
+        });
+
+        it('handles mixed text nodes and elements', async function() {
+            mockResponse('GET', '/test', '<span>new</span>');
+            const div = createProcessedHTML('<div id="target">text1<span>old</span>text2</div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.isNotNull(div.querySelector('span'));
+            assert.equal(div.querySelector('span').textContent, 'new');
+        });
+
+        it('replaces text nodes with elements', async function() {
+            mockResponse('GET', '/test', '<div id="new">element</div>');
+            const div = createProcessedHTML('<div id="target">just text</div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.isNotNull(div.querySelector('#new'));
+            assert.equal(div.querySelector('#new').textContent, 'element');
+        });
+    });
+
+    describe('morphSkipChildren config', function() {
+        afterEach(function() {
+            htmx.config.morphSkipChildren = '[hx-morph-skip-children]';
+        });
+
+        it('updates attributes but skips children morphing', async function() {
+            htmx.config.morphSkipChildren = '.skip-children';
+            mockResponse('GET', '/test', '<div class="skip-children" data-value="new"><span>new child</span></div>');
+            const div = createProcessedHTML('<div id="target"><div class="skip-children" data-value="old"><span>old child</span></div></div>');
+            const skipChildren = div.querySelector('.skip-children');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(skipChildren.getAttribute('data-value'), 'new', 'Attributes should be updated');
+            assert.equal(skipChildren.querySelector('span').textContent, 'old child', 'Children should not be morphed');
+        });
+
+        it('preserves Light DOM children in custom elements', async function() {
+            htmx.config.morphSkipChildren = 'lit-component';
+            mockResponse('GET', '/test', '<lit-component id="lc" value="new"><div class="internal">new</div></lit-component>');
+            const div = createProcessedHTML('<div id="target"><lit-component id="lc" value="old"><div class="internal">old</div></lit-component></div>');
+            const lc = div.querySelector('lit-component');
+            const internal = lc.querySelector('.internal');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(lc.getAttribute('value'), 'new', 'Attributes should update');
+            assert.equal(internal.textContent, 'old', 'Light DOM children should be preserved');
+        });
+
+        it('works with multiple selectors', async function() {
+            htmx.config.morphSkipChildren = '.skip1, .skip2';
+            mockResponse('GET', '/test', '<div class="skip1" data-value="new"><span>new1</span></div><div class="skip2" data-value="new"><span>new2</span></div>');
+            const div = createProcessedHTML('<div id="target"><div class="skip1" data-value="old"><span>old1</span></div><div class="skip2" data-value="old"><span>old2</span></div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('.skip1').getAttribute('data-value'), 'new');
+            assert.equal(div.querySelector('.skip1 span').textContent, 'old1');
+            assert.equal(div.querySelector('.skip2').getAttribute('data-value'), 'new');
+            assert.equal(div.querySelector('.skip2 span').textContent, 'old2');
+        });
+
+        it('allows normal morphing for non-matching elements', async function() {
+            htmx.config.morphSkipChildren = '.skip-children';
+            mockResponse('GET', '/test', '<div class="normal" data-value="new"><span>new</span></div><div class="skip-children" data-value="new"><span>new</span></div>');
+            const div = createProcessedHTML('<div id="target"><div class="normal" data-value="old"><span>old</span></div><div class="skip-children" data-value="old"><span>old</span></div></div>');
+            
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+            
+            assert.equal(div.querySelector('.normal span').textContent, 'new', 'Normal elements should morph children');
+            assert.equal(div.querySelector('.skip-children span').textContent, 'old', 'Skip elements should preserve children');
+        });
+    });
+
+    describe('morphIgnore config', function() {
+        afterEach(function() {
+            htmx.config.morphIgnore = ['data-htmx-powered'];
+        });
+
+        it('preserves attributes whose name starts with an ignored prefix', async function() {
+            htmx.config.morphIgnore = ['data-keep'];
+            mockResponse('GET', '/test', '<div id="child" data-keep="new" data-keep-extra="new" data-other="new">content</div>');
+            const div = createProcessedHTML('<div id="target"><div id="child" data-keep="old" data-keep-extra="old" data-other="old">content</div></div>');
+            const child = div.querySelector('#child');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(child.getAttribute('data-keep'), 'old', 'exact prefix match should be preserved');
+            assert.equal(child.getAttribute('data-keep-extra'), 'old', 'longer name sharing the prefix should be preserved');
+            assert.equal(child.getAttribute('data-other'), 'new', 'non-matching attribute should be morphed');
+        });
+
+        it('does not remove an ignored attribute that is absent from the new content', async function() {
+            htmx.config.morphIgnore = ['data-keep'];
+            mockResponse('GET', '/test', '<div id="child">content</div>');
+            const div = createProcessedHTML('<div id="target"><div id="child" data-keep="old">content</div></div>');
+            const child = div.querySelector('#child');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(child.getAttribute('data-keep'), 'old', 'ignored attribute should not be removed');
+        });
+
+        it('matches an exact attribute name without affecting others', async function() {
+            htmx.config.morphIgnore = ['data-keep'];
+            mockResponse('GET', '/test', '<div id="child" data-keep="new" data-kee="new">content</div>');
+            const div = createProcessedHTML('<div id="target"><div id="child" data-keep="old" data-kee="old">content</div></div>');
+            const child = div.querySelector('#child');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(child.getAttribute('data-keep'), 'old', 'exact name should be preserved');
+            assert.equal(child.getAttribute('data-kee'), 'new', 'shorter non-prefixed name should be morphed');
+        });
+    });
+
+    describe('future matches', function() {
+        // Gap #21: __matchesUpcomingSibling returns true when old element matches future sibling
+        it('preserves element that matches upcoming identical sibling during morph reorder', async function() {
+            mockResponse('GET', '/test', '<div class="b">Y</div><div class="a">X</div><div class="a">X</div>');
+            const div = createProcessedHTML('<div id="target"><div class="a">X</div><div class="b">Y</div><div class="a">X</div></div>');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.children.length, 3);
+            assert.equal(div.children[0].className, 'b');
+            assert.equal(div.children[1].className, 'a');
+            assert.equal(div.children[2].className, 'a');
+        });
+    });
+
+    describe('pantry move', function() {
+        // Gap #22: ID element moves between DOM branches via pantry
+        it('handles deeply nested ID that moves to different branch', async function() {
+            mockResponse('GET', '/test', '<div id="branch1"></div><div id="branch2"><div id="deep">Deep moved</div></div>');
+            const div = createProcessedHTML('<div id="target"><div id="branch1"><div id="deep">Deep original</div></div><div id="branch2"></div></div>');
+            const deep = div.querySelector('#deep');
+            const branch1 = div.querySelector('#branch1');
+            const branch2 = div.querySelector('#branch2');
+
+            await htmx.ajax('GET', '/test', {target: '#target', swap: 'innerMorph'});
+
+            assert.equal(div.querySelector('#deep'), deep);
+            assert.equal(deep.textContent, 'Deep moved');
+            assert.equal(deep.parentElement, branch2);
+            assert.equal(branch1.children.length, 0);
+        });
+    });
+
+    describe('moveBefore fallback', function() {
+        // Gap #23: moveBefore throws, falls back to insertBefore
+        it('falls back to insertBefore when moveBefore throws', async function() {
+            let originalMoveBefore = Element.prototype.moveBefore;
+            Element.prototype.moveBefore = function() {
+                throw new Error('moveBefore not supported');
+            };
+
+            try {
+                mockResponse('GET', '/morph-test', '<div id="container"><div id="item2">Item 2</div><div id="item1">Item 1</div></div>');
+                createProcessedHTML('<div id="container" hx-get="/morph-test" hx-swap="outerMorph" hx-trigger="click"><div id="item1">Item 1</div><div id="item2">Item 2</div></div>');
+
+                find('#container').click();
+                await forRequest();
+
+                let container = find('#container');
+                assert.isNotNull(container);
+                assert.equal(container.children.length, 2);
+            } finally {
+                if (originalMoveBefore) {
+                    Element.prototype.moveBefore = originalMoveBefore;
+                } else {
+                    delete Element.prototype.moveBefore;
+                }
+            }
+        });
+    });
+
+});

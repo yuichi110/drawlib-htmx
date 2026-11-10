@@ -1,0 +1,843 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. Attribute Inheritance &amp; HCON</title>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/architecture/ja/02_attribute_inheritance_and_hcon.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 unifies attribute configuration parsing and DOM inheritance around two foundational mechanisms in src/htmx.js: HCON (htmx Configuration Object…">
+    <link rel="canonical" href="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 Architecture">
+    <meta property="og:title" content="2. Attribute Inheritance &amp; HCON — htmx v4 Architecture">
+    <meta property="og:description" content="htmx v4.0.1 unifies attribute configuration parsing and DOM inheritance around two foundational mechanisms in src/htmx.js: HCON (htmx Configuration Object…">
+    <meta property="og:url" content="https://htmx.drawlib.com/architecture/en/02_attribute_inheritance_and_hcon.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="2. Attribute Inheritance &amp; HCON — htmx v4 Architecture">
+    <meta name="twitter:description" content="htmx v4.0.1 unifies attribute configuration parsing and DOM inheritance around two foundational mechanisms in src/htmx.js: HCON (htmx Configuration Object…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/architecture/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 Architecture">
+                    
+                    htmx v4 Architecture
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Architecture Overview</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Core Engine Internals</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="01_module_and_state_architecture.html" >1. Module &amp; State Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="02_attribute_inheritance_and_hcon.html" >2. Attribute Inheritance &amp; HCON</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_trigger_and_selector_parsers.html" >3. Trigger &amp; Selector Parsers</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Network &amp; DOM Pipeline</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="04_fetch_context_and_sync_queue.html" >4. Fetch Context &amp; Sync Queue</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_swap_settle_and_morph_engine.html" >5. Swap, Settle &amp; Morph Engine</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extension_and_security_internals.html" >6. Extension &amp; Security Internals</a>
+                            </li>
+                            
+                        </ul>
+                    
+                        
+                        <div class="sidebar-heading">Portals &amp; Reports</div>
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/" target="_blank" rel="noopener noreferrer">User Guide ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Catalog ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Audit Report ↗<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">2. Attribute Inheritance &amp; HCON</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="02_attribute_inheritance_and_hcon.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/02_attribute_inheritance_and_hcon.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>2. Attribute Inheritance &amp; HCON</h1>
+<p><strong>htmx v4.0.1</strong> unifies attribute configuration parsing and DOM inheritance around two foundational mechanisms in <code>src/htmx.js</code>: <strong><code>HCON</code> (htmx Configuration Object Notation, <code>L10–88</code>)</strong>—a brace-free, JSON-compatible configuration language with built-in prototype-pollution protection—and <strong><code>__attributeValue()</code> (<code>L288–320</code>)</strong>, an opt-in attribute resolution engine driven by explicit <code>:inherited</code> and <code>:append</code> modifiers, <code>data-hx-</code> prefix normalization, and custom <code>metaCharacter</code> rewriting.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/02_attribute_inheritance_and_hcon/arch_c02_hcon_and_inheritance_hero.png" alt="02_attribute_inheritance_and_hcon_1" />
+  <figcaption class="drawlib-caption">HCON Configuration Parser (L10–88) & Explicit :inherited / :append Attribute Resolution Engine (L245–320)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">84</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Top Panel: HCON Engine (L10–88)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mf">62.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">146</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">brackets_curly</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mf">75.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">75.5</span><span class="p">),</span>
+    <span class="s2">"Pillar 1: const HCON — Unified Configuration Lexer, Comma Splitter &amp; Safe Merger (L10–88)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.2</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">30</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"1. HCON.split(str) (L60–62)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+    <span class="s2">"Top-level comma splitter</span><span class="se">\n</span><span class="s2">Preserves commas inside:</span><span class="se">\n</span><span class="s2">[...], (...), &lt;.../&gt;, </span><span class="se">\"</span><span class="s2">...</span><span class="se">\"</span><span class="s2">, '...'"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">51.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">56.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"2. HCON.parse(str) (L19–50)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+    <span class="s2">"• startsWith('{') -&gt; JSON.parse</span><span class="se">\n</span><span class="s2">• 7-group regex + default 'true'</span><span class="se">\n</span><span class="s2">• reduceRight dotted keys (a.b:1)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">99.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">104.5</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="mf">58.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="mf">65.5</span><span class="p">),</span> <span class="s2">"3. HCON.merge(src, dst) (L71)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">126</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+    <span class="s2">"• Deep plain-Object merge</span><span class="se">\n</span><span class="s2">• Blocks __proto__, constructor,</span><span class="se">\n</span><span class="s2">  and prototype keys (L75)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Bottom Panel: __attributeValue &amp; Object Evaluation (L245–320, L1875–1893)</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">146</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.5</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">tree_structure</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">36.5</span><span class="p">),</span>
+    <span class="s2">"Pillar 2: __attributeValue() — Explicit :inherited / :append Resolution &amp; Dynamic js: Evaluation"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.2</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">24.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">24.5</span><span class="p">,</span> <span class="mf">26.5</span><span class="p">),</span> <span class="s2">"1. Self Lookup (L293)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">24.5</span><span class="p">,</span> <span class="mf">17.0</span><span class="p">),</span>
+    <span class="s2">"__attr(elt, name) ??</span><span class="se">\n</span><span class="s2">__attr(elt, name+':inherited')</span><span class="se">\n</span><span class="s2">Checks hx-* &amp; data-hx-*"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">40.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">44.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">60.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">60.5</span><span class="p">,</span> <span class="mf">26.5</span><span class="p">),</span> <span class="s2">"2. :append Chain (L299)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">60.5</span><span class="p">,</span> <span class="mf">17.0</span><span class="p">),</span>
+    <span class="s2">"Resolves ancestor parentVal</span><span class="se">\n</span><span class="s2">Concatenates (parentVal+','+</span><span class="se">\n</span><span class="s2">appendVal).replace(/[</span><span class="si">{}</span><span class="s2">]/g,'')"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">76.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">80.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">96.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">96.5</span><span class="p">,</span> <span class="mf">26.5</span><span class="p">),</span> <span class="s2">"3. :inherited Walk (L311)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">96.5</span><span class="p">,</span> <span class="mf">17.0</span><span class="p">),</span>
+    <span class="s2">"elt.parentNode.closest(</span><span class="se">\n</span><span class="s2">  [hx-*:inherited] )</span><span class="se">\n</span><span class="s2">Fires implicitInheritance hook"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mf">112.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="p">(</span><span class="mf">116.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="n">rectangle</span><span class="p">((</span><span class="mf">131.5</span><span class="p">,</span> <span class="mf">19.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.8</span><span class="p">))</span>
+<span class="n">text</span><span class="p">((</span><span class="mf">131.5</span><span class="p">,</span> <span class="mf">26.5</span><span class="p">),</span> <span class="s2">"4. Object Eval (L1875)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mf">131.5</span><span class="p">,</span> <span class="mf">17.0</span><span class="p">),</span>
+    <span class="s2">"__getAttributeObject()</span><span class="se">\n</span><span class="s2">Static -&gt; sync HCON.parse</span><span class="se">\n</span><span class="s2">js: -&gt; async #AsyncFunction"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>1. The <code>HCON</code> (htmx Configuration Object Notation) Parser (<code>L10–88</code>)</h2>
+<p>In htmx 2.x, different attributes used incompatible configuration syntaxes: <code>hx-vals</code> and <code>hx-headers</code> required strict double-quoted JSON (<code>hx-vals='{&quot;count&quot;: 5}'</code>), whereas <code>hx-swap</code> and <code>hx-trigger</code> relied on bespoke whitespace/colon tokenizers. <strong>htmx v4.0.1</strong> replaces all of those ad-hoc parsers with <strong><code>HCON</code></strong> (<code>L10–88</code>), a unified mini-language that parses brace-free key-value pairs while remaining 100% backward-compatible with standard JSON (<code>if (string.startsWith('{')) return JSON.parse(string)</code> at <code>L21</code>).</p>
+<p><code>HCON</code> powers <code>&lt;meta name=&quot;htmx-config&quot;&gt;</code> (<code>L210</code>), <code>hx-trigger</code> modifier parsing (<code>__parseTriggerSpecs</code> at <code>L329</code>), <code>HX-Trigger</code> response headers (<code>__handleTriggerHeader</code> at <code>L876</code>), <code>hx-swap</code> modifier parsing (<code>__insertContent</code> at <code>L1361</code>), <code>hx-vals</code> and <code>hx-headers</code> (<code>__getAttributeObject</code> at <code>L1891</code>), and <code>hx-status:*</code> response overrides (<code>__handleStatusCodes</code> at <code>L2282</code>).</p>
+<h3>1.1 The 7-Group Master Tokenizing Regex in <code>HCON.parse()</code> (<code>L19–50</code>)</h3>
+<p>When <code>HCON.parse(string)</code> receives a non-empty string that does not start with <code>{</code>, it iterates over <code>string.matchAll(pattern)</code> (<code>L22–24</code>) using a single 7-capture-group regular expression:</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L10–88 — Complete HCON Parser, Context-Aware Splitter &amp; Prototype-Safe Deep Merger</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">HCON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">string</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'{'</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sr">/(?:"([^"]+)"|'([^']+)'|([^\s,:]+))(?:\s*:\s*(?:"([^"]*)"|'([^']*)'|&lt;((?:[^/]|\/(?!&gt;))+)\/&gt;|([^\s,]+)))?(?=\s|,|$)/g</span><span class="p">;</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">match</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nx">string</span><span class="p">.</span><span class="nx">matchAll</span><span class="p">(</span><span class="nx">pattern</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="p">[,</span>
+<span class="w">                </span><span class="nx">doubleQuotedKey</span><span class="p">,</span><span class="w">    </span><span class="c1">// Group 1: "key"</span>
+<span class="w">                </span><span class="nx">singleQuotedKey</span><span class="p">,</span><span class="w">    </span><span class="c1">// Group 2: 'key'</span>
+<span class="w">                </span><span class="nx">bareKey</span><span class="p">,</span><span class="w">            </span><span class="c1">// Group 3:  key</span>
+<span class="w">                </span><span class="nx">doubleQuotedValue</span><span class="p">,</span><span class="w">  </span><span class="c1">// Group 4: "value"</span>
+<span class="w">                </span><span class="nx">singleQuotedValue</span><span class="p">,</span><span class="w">  </span><span class="c1">// Group 5: 'value'</span>
+<span class="w">                </span><span class="nx">hyperscriptValue</span><span class="p">,</span><span class="w">   </span><span class="c1">// Group 6: &lt;value/&gt;</span>
+<span class="w">                </span><span class="nx">bareValue</span><span class="p">,</span><span class="w">          </span><span class="c1">// Group 7:  value</span>
+<span class="w">            </span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">match</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c1">// pick this match's key and value forms</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">doubleQuotedKey</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">singleQuotedKey</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">bareKey</span><span class="p">;</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nx">doubleQuotedValue</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">singleQuotedValue</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">hyperscriptValue</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="nx">bareValue</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="s1">'true'</span><span class="p">).</span><span class="nx">trim</span><span class="p">();</span>
+
+<span class="w">            </span><span class="c1">// JSON-parse if possible (e.g. "5" -&gt; 5; "abc" stays string)</span>
+<span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">            </span><span class="c1">// bare a.b -&gt; {a:{b:...}}; quoted "a.b" -&gt; {"a.b":...}</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">isDottedPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">bareKey</span><span class="o">?</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'.'</span><span class="p">);</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">pair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">isDottedPath</span>
+<span class="w">                </span><span class="o">?</span><span class="w"> </span><span class="nx">key</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nx">reduceRight</span><span class="p">((</span><span class="nx">acc</span><span class="p">,</span><span class="w"> </span><span class="nx">segment</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">({[</span><span class="nx">segment</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">acc</span><span class="p">}),</span><span class="w"> </span><span class="nx">value</span><span class="p">)</span>
+<span class="w">                </span><span class="o">:</span><span class="w"> </span><span class="p">{[</span><span class="nx">key</span><span class="p">]</span><span class="o">:</span><span class="w"> </span><span class="nx">value</span><span class="p">};</span>
+<span class="w">            </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">pair</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">    </span><span class="nx">split</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">string</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/,(?![^\[]*\])(?![^(]*\))(?![^&lt;]*\/&gt;)(?=(?:[^"']|"[^"]*"|'[^']*')*$)/</span><span class="p">);</span>
+<span class="w">    </span><span class="p">},</span>
+
+<span class="w">    </span><span class="nx">merge</span><span class="p">(</span><span class="nx">source</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'string'</span><span class="p">)</span><span class="w"> </span><span class="nx">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">source</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="p">[</span><span class="nx">key</span><span class="p">,</span><span class="w"> </span><span class="nx">val</span><span class="p">]</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">source</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">([</span><span class="s1">'__proto__'</span><span class="p">,</span><span class="w"> </span><span class="s1">'constructor'</span><span class="p">,</span><span class="w"> </span><span class="s1">'prototype'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">sourceIsObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">val</span><span class="o">?</span><span class="p">.</span><span class="kr">constructor</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nb">Object</span><span class="p">;</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">targetIsObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">target</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span><span class="o">?</span><span class="p">.</span><span class="kr">constructor</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nb">Object</span><span class="p">;</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">sourceIsObject</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">targetIsObject</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">HCON</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">target</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">val</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">target</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="p">};</span>
+</code></pre>
+<p>Each regex match undergoes four transformation steps (<code>L36–47</code>):</p>
+<ol>
+<li><strong>Key &amp; Value Extraction with Implicit <code>'true'</code> Default (<code>L36–37</code>)</strong>: The key is chosen via nullish coalescing (<code>doubleQuotedKey ?? singleQuotedKey ?? bareKey</code>). Because the entire <code>(?:\s*:\s*...)</code> value group is optional (<code>?</code>), standalone tokens without a colon—such as <code>outerHTML</code> or <code>transition</code> in <code>hx-swap=&quot;outerHTML transition swap:100ms&quot;</code>—default to <code>'true'</code>.</li>
+<li><strong>Opportunistic <code>JSON.parse()</code> Coercion (<code>L40</code>)</strong>: <code>try { value = JSON.parse(value); } catch {}</code> converts numeric strings (<code>&quot;5&quot;</code> $\rightarrow$ <code>5</code>), booleans (<code>&quot;true&quot;</code> $\rightarrow$ <code>true</code>, <code>&quot;false&quot;</code> $\rightarrow$ <code>false</code>), <code>null</code>, and inline arrays/objects into native JavaScript types, while leaving unquoted words (<code>&quot;innerHTML&quot;</code>, <code>&quot;100ms&quot;</code>) intact as strings when <code>JSON.parse</code> throws.</li>
+<li><strong>Bare Dotted-Path Expansion vs. Quoted Literal Keys (<code>L43–46</code>)</strong>: Only when <code>bareKey?.includes('.')</code> is truthy does <code>HCON.parse</code> split the key on <code>.</code> and fold right-to-left via <code>key.split('.').reduceRight((acc, segment) =&gt; ({[segment]: acc}), value)</code>—turning <code>sse.mode:once</code> into <code>{sse: {mode: &quot;once&quot;}}</code>. If the key was quoted (<code>&quot;sse.mode&quot;:once</code> or <code>'a.b':1</code>), <code>bareKey</code> is <code>undefined</code>, so <code>isDottedPath</code> is falsy and the literal flat key <code>{&quot;sse.mode&quot;: &quot;once&quot;}</code> is preserved.</li>
+<li><strong>Incremental Deep Merge (<code>L47</code>)</strong>: Each key-value <code>pair</code> is merged into <code>result</code> via <code>HCON.merge(pair, result)</code>, allowing sibling dotted keys like <code>user.name:alice user.role:admin</code> to coalesce into <code>{user: {name: &quot;alice&quot;, role: &quot;admin&quot;}}</code>.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Capture Group</th>
+<th style="text-align:left">Regex Sub-Pattern</th>
+<th style="text-align:left">Syntax Example</th>
+<th style="text-align:left">Extracted Token &amp; Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Group 1 (<code>doubleQuotedKey</code>)</strong></td>
+<td style="text-align:left"><code>&quot;([^&quot;]+)&quot;</code></td>
+<td style="text-align:left"><code>&quot;user.name&quot;:alice</code></td>
+<td style="text-align:left">Key <code>&quot;user.name&quot;</code> (flat property; dotted-path expansion disabled).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 2 (<code>singleQuotedKey</code>)</strong></td>
+<td style="text-align:left"><code>'([^']+)'</code></td>
+<td style="text-align:left"><code>'X-CSRF-Token':abc</code></td>
+<td style="text-align:left">Key <code>&quot;X-CSRF-Token&quot;</code> (preserves special characters and dots).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 3 (<code>bareKey</code>)</strong></td>
+<td style="text-align:left"><code>([^\s,:]+)</code></td>
+<td style="text-align:left"><code>swap:100ms</code> or <code>a.b:1</code></td>
+<td style="text-align:left">Key <code>&quot;swap&quot;</code> or dotted path <code>&quot;a.b&quot;</code> (expanded via <code>reduceRight</code> to <code>{a: {b: 1}}</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 4 (<code>doubleQuotedValue</code>)</strong></td>
+<td style="text-align:left"><code>&quot;([^&quot;]*)&quot;</code></td>
+<td style="text-align:left"><code>from:&quot;.a, .b&quot;</code></td>
+<td style="text-align:left">Value <code>&quot;.a, .b&quot;</code> (supports spaces, colons, and commas).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 5 (<code>singleQuotedValue</code>)</strong></td>
+<td style="text-align:left"><code>'([^']*)'</code></td>
+<td style="text-align:left"><code>target:'#main &gt; div'</code></td>
+<td style="text-align:left">Value <code>&quot;#main &gt; div&quot;</code> (convenient inside double-quoted HTML attributes).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 6 (<code>hyperscriptValue</code>)</strong></td>
+<td style="text-align:left"><code>&lt;((?:[^/]|\/(?!&gt;))+)\/&gt;</code></td>
+<td style="text-align:left"><code>from:&lt;button:not(.x)/&gt;</code></td>
+<td style="text-align:left">Value <code>&quot;button:not(.x)&quot;</code> (strips outer <code>&lt;.../&gt;</code> delimiters).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Group 7 (<code>bareValue</code>)</strong></td>
+<td style="text-align:left"><code>([^\s,]+)</code></td>
+<td style="text-align:left"><code>delay:300ms</code> or <code>count:5</code></td>
+<td style="text-align:left">Value <code>&quot;300ms&quot;</code> (string) or <code>5</code> (coerced to <code>number</code> via <code>JSON.parse</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Omitted Value (<code>undefined</code>)</strong></td>
+<td style="text-align:left"><em>(Optional value group)</em></td>
+<td style="text-align:left"><code>outerHTML transition</code></td>
+<td style="text-align:left">Defaults to <code>'true'</code> (<code>L37</code>) and coerces to boolean <code>true</code> (<code>{outerHTML: true, transition: true}</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 Context-Aware Comma Splitting (<code>HCON.split</code>) &amp; Prototype-Safe Merging (<code>HCON.merge</code>)</h3>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/02_attribute_inheritance_and_hcon/arch_c02_hcon_parser_pipeline.png" alt="02_attribute_inheritance_and_hcon_2" />
+  <figcaption class="drawlib-caption">HCON.split() Lookahead Guards, HCON.parse() Dotted-Key Folding, and HCON.merge() Prototype-Pollution Defense</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChevronProcess</span><span class="p">,</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">73.5</span><span class="p">),</span>
+    <span class="s2">"HCON Parsing &amp; Deep-Merge Pipeline (src/htmx.js L10–88)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"1. JSON Fast-Path"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"string.startsWith('{')</span><span class="se">\n</span><span class="s2">-&gt; JSON.parse(string) (L21)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"2. 7-Group Lexer"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"matchAll(pattern) (L24)</span><span class="se">\n</span><span class="s2">Keys, Values &amp; &lt;.../&gt;"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"3. Type Coercion"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Default 'true' (L37)</span><span class="se">\n</span><span class="s2">try JSON.parse(val) (L40)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"4. Dotted Folding"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"bareKey?.includes('.')</span><span class="se">\n</span><span class="s2">reduceRight nesting (L45)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="s2">"5. Safe Deep Merge"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"HCON.merge(pair, res)</span><span class="se">\n</span><span class="s2">Blocks __proto__ (L75)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">steps</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">144</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="n">cell_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.8</span><span class="p">),</span>
+    <span class="n">header_cell_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">header_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.2</span><span class="p">),</span>
+    <span class="n">border_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">MutedThin</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">table</span><span class="o">.</span><span class="n">draw_flexible</span><span class="p">(</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span>
+    <span class="n">column_widths</span><span class="o">=</span><span class="p">[</span><span class="mf">36.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">],</span>
+    <span class="n">row_heights</span><span class="o">=</span><span class="p">[</span><span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">],</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">[</span><span class="s2">"HCON Operation"</span><span class="p">,</span> <span class="s2">"Input Attribute / Expression"</span><span class="p">,</span> <span class="s2">"Resulting JavaScript Value / Security Behavior"</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">"Valueless Flags &amp; Coercion"</span><span class="p">,</span> <span class="s2">"HCON.parse('outerHTML swap:100ms count:5')"</span><span class="p">,</span> <span class="s2">"{ outerHTML: true, swap: '100ms', count: 5 }"</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">"Bare Dotted vs. Quoted Key"</span><span class="p">,</span> <span class="s2">"HCON.parse('a.b:1 </span><span class="se">\"</span><span class="s2">c.d</span><span class="se">\"</span><span class="s2">:2')"</span><span class="p">,</span> <span class="s2">"{ a: { b: 1 }, 'c.d': 2 } (only bareKey folds)"</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">"Hyperscript &lt;.../&gt; Value"</span><span class="p">,</span> <span class="s2">"HCON.parse('from:&lt;button.active, a.nav/&gt;')"</span><span class="p">,</span> <span class="s2">"{ from: 'button.active, a.nav' }"</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">"Context-Aware HCON.split()"</span><span class="p">,</span> <span class="s2">"HCON.split('click[a,b], from:</span><span class="se">\"</span><span class="s2">.x, .y</span><span class="se">\"</span><span class="s2">, load')"</span><span class="p">,</span> <span class="s2">"['click[a,b]', ' from:</span><span class="se">\"</span><span class="s2">.x, .y</span><span class="se">\"</span><span class="s2">', ' load']"</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">"Prototype Pollution Guard"</span><span class="p">,</span> <span class="s2">"HCON.parse('__proto__.polluted:true')"</span><span class="p">,</span> <span class="s2">"</span><span class="si">{}</span><span class="s2"> — Key '__proto__' skipped at L75!"</span><span class="p">],</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<ul>
+<li><strong>Context-Aware Comma Splitting (<code>HCON.split</code>, <code>L60–62</code>)</strong>:
+Attributes like <code>hx-trigger='click[ctrlKey, shiftKey], keyup from:&quot;.a, .b&quot;, intersect root:&lt;#vp, .box/&gt;'</code> use commas both as top-level item delimiters and inside filter brackets, CSS selector strings, or hyperscript <code>&lt;.../&gt;</code> literals. <code>HCON.split</code> uses four regex lookaheads after <code>,</code>:
+<ul>
+<li><code>(?![^\[]*\])</code>: Do not split if followed by a closing <code>]</code> without an intervening <code>[</code> (inside <code>[filter]</code> brackets).</li>
+<li><code>(?![^(]*\))</code>: Do not split inside <code>(...)</code> parentheses (e.g., <code>:not(.a, .b)</code> or function calls).</li>
+<li><code>(?![^&lt;]*\/&gt;)</code>: Do not split inside <code>&lt;.../&gt;</code> hyperscript selector literals.</li>
+<li><code>(?=(?:[^&quot;']|&quot;[^&quot;]*&quot;|'[^']*')*$)</code>: Only split when an even number of matched <code>&quot;...&quot;</code> and <code>'...'</code> quotes remain until the end of the string.</li>
+</ul>
+</li>
+<li><strong>Prototype-Pollution Defense in <code>HCON.merge(source, target)</code> (<code>L71–87</code>)</strong>:
+Because <code>HCON.parse</code> expands dotted keys (<code>__proto__.isAdmin:true</code> $\rightarrow$ <code>{ [&quot;__proto__&quot;]: { isAdmin: true } }</code>) and merges untrusted server headers (<code>HX-Trigger</code>) or DOM attribute strings, <code>HCON.merge</code> enforces two strict guards:
+<ol>
+<li><strong>Explicit Key Blacklist (<code>L75</code>)</strong>: <code>if (['__proto__', 'constructor', 'prototype'].includes(key)) continue;</code> prevents any modification of <code>Object.prototype</code>.</li>
+<li><strong>Exact Plain-Object Constructor Check (<code>L77–80</code>)</strong>: <code>val?.constructor === Object &amp;&amp; target[key]?.constructor === Object</code> ensures recursive merging only descends into plain objects (never arrays, DOM nodes, or custom class instances).</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>2. Prefix Fallback &amp; Custom <code>metaCharacter</code> Normalization (<code>L245–263</code>, <code>L2360–2366</code>)</h2>
+<p>htmx v4 supports strict HTML5 validator compliance (<code>data-hx-*</code>) and template engines that reserve the colon character <code>:</code> (such as Vue's <code>:attr</code> shorthand or XML namespace parsers) through five lightweight normalization helpers in <code>src/htmx.js</code>:</p>
+<ol>
+<li><strong>Dual-Attribute Value Lookup (<code>__attr(elt, name)</code>, <code>L245–248</code>)</strong>: Checks <code>elt.getAttribute(name)</code> first (e.g., <code>hx-get</code>), then falls back to <code>this.config.prefix</code> (<code>&quot;data-hx-&quot;</code> by default) via <code>elt.getAttribute(name.replace('hx-', p))</code>.</li>
+<li><strong>Matched Attribute Name Resolution (<code>__attrName(elt, name)</code>, <code>L250–253</code>)</strong>: Returns the exact attribute name present on <code>elt</code> (<code>hx-vals:append</code> or <code>data-hx-vals:append</code>), used by <code>__attributeValue()</code> (<code>L299–301</code>) to read <code>:append</code> attributes regardless of prefix.</li>
+<li><strong>CSS Selector Prefix Expansion (<code>__prefixes(s)</code> &amp; <code>__prefixSelector(s)</code>, <code>L255–263</code>)</strong>: Duplicates any selector string <code>s</code> by replacing all occurrences of <code>'hx-'</code> with <code>this.config.prefix</code> and joining with <code>,</code> (turning <code>[hx-target:inherited]</code> into <code>[hx-target:inherited],[data-hx-target:inherited]</code>).</li>
+<li><strong>Custom <code>metaCharacter</code> Rewriting (<code>__maybeAdjustMetaCharacter(string)</code>, <code>L2360–2366</code>)</strong>: When <code>this.config.metaCharacter</code> is configured (for example, <code>htmx.config.metaCharacter = '@'</code> or <code>'_'</code>), every internal <code>:inherited</code> modifier, <code>:append</code> modifier (<code>L289–291</code>), <code>hx-on</code> separator (<code>L1726</code>), and dispatched <code>htmx:phase:action</code> event name (<code>__trigger</code> at <code>L1513</code>) dynamically replaces <code>:</code> with <code>this.config.metaCharacter</code>.</li>
+</ol>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L245–263, L2360–2366 — Prefix Fallback &amp; metaCharacter Normalization</span>
+<span class="nx">__attr</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">prefix</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">'hx-'</span><span class="p">,</span><span class="w"> </span><span class="nx">p</span><span class="p">))</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__attrName</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">prefix</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s1">'hx-'</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">prefix</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">p</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">hasAttribute</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__prefixSelector</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__prefixes</span><span class="p">(</span><span class="nx">s</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">','</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">__prefixes</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nx">s</span><span class="p">];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">prefix</span><span class="p">)</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">replaceAll</span><span class="p">(</span><span class="s1">'hx-'</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">prefix</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">__maybeAdjustMetaCharacter</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">metaCharacter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">string</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/:/g</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">metaCharacter</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">string</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<hr />
+<h2>3. Explicit <code>:inherited</code> &amp; <code>:append</code> Resolution Engine (<code>__attributeValue</code> L288–320)</h2>
+<p>In htmx 2.x, almost all <code>hx-*</code> attributes (<code>hx-target</code>, <code>hx-swap</code>, <code>hx-select</code>, <code>hx-confirm</code>, <code>hx-vals</code>, <code>hx-headers</code>, <code>hx-boost</code>, etc.) inherited implicitly down the DOM tree, frequently causing unintended side effects on nested components unless authors manually added <code>hx-disinherit</code>.</p>
+<p>In <strong>htmx v4.0.1</strong>, <code>this.config.implicitInheritance</code> defaults to <strong><code>false</code></strong> (<code>L204</code>). Inheritance is opt-in on ancestor elements via two explicit attribute suffixes resolved by <code>__attributeValue()</code> (<code>L288–320</code>):</p>
+<ul>
+<li><strong><code>hx-&lt;attr&gt;:inherited=&quot;...&quot;</code></strong>: Declares a value on an ancestor element that applies both to the ancestor itself and to all descendants that do not override <code>hx-&lt;attr&gt;</code>.</li>
+<li><strong><code>hx-&lt;attr&gt;:append=&quot;...&quot;</code> and <code>hx-&lt;attr&gt;:inherited:append=&quot;...&quot;</code></strong>: Appends additional comma-separated values (such as extra <code>hx-vals</code> keys, <code>hx-headers</code> entries, <code>hx-include</code> selectors, or <code>hx-indicator</code> targets) onto the inherited ancestor value rather than replacing it.</li>
+</ul>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/02_attribute_inheritance_and_hcon/arch_c02_attribute_inheritance_flow.png" alt="02_attribute_inheritance_and_hcon_3" />
+  <figcaption class="drawlib-caption">Step-by-Step Attribute & Ancestor Resolution in __attributeValue(elt, name, defaultVal, eltCollector, allowInheritance)</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">line</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">text</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">156</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">77.5</span><span class="p">),</span>
+    <span class="s2">"__attributeValue(elt, name, defaultVal, eltCollector, allowInheritance) (L288–320)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">12.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Step 1: Meta-character &amp; Self Lookup</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">magnifying_glass</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="s2">"Step 1: Direct Self Lookup (L289–294)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">58.0</span><span class="p">),</span>
+    <span class="s2">"val = __attr(elt, name) ?? __attr(elt, name + ':inherited')</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"If val != null -&gt; return eltCollector ? eltCollector(val, elt) : val"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">72</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Build Escaped Selector</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">funnel</span><span class="p">((</span><span class="mi">88</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">66.5</span><span class="p">),</span> <span class="s2">"Step 2: CSS.escape Ancestor Selector (L296–298)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mf">58.0</span><span class="p">),</span>
+    <span class="s2">"n1 = CSS.escape(allowInheritance ? name : name + ':inherited')</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"n2 = CSS.escape(name + ':inherited:append')</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"inheritSelector = __prefixSelector('[' + n1 + '],[' + n2 + ']')"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Local :append / :inherited:append Branch</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">116</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">git_merge</span><span class="p">((</span><span class="mi">88</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">118</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Step 3: :append / :inherited:append (L299–309)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">),</span>
+    <span class="s2">"If elt has 'name:append' or 'name:inherited:append':</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"1. parent = elt.parentNode?.closest(inheritSelector)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"2. parentVal = __attributeValue(parent, name, ...)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"3. Return (parentVal + ',' + appendValue).replace(/[</span><span class="si">{}</span><span class="s2">]/g, '')</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"   (Strips JSON braces so HCON.parse merges seamlessly!)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">line</span><span class="p">((</span><span class="mi">84</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">arrow_head</span><span class="o">=</span><span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+
+<span class="c1"># Step 4: Ancestor :inherited Walk</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">arrow_fat_lines_up</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">((</span><span class="mi">42</span><span class="p">,</span> <span class="mf">41.5</span><span class="p">),</span> <span class="s2">"Step 4: Ancestor closest() Lookup (L311–319)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">))</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">),</span>
+    <span class="s2">"parent = elt.parentNode?.closest(inheritSelector)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"If parent found -&gt; val = __attributeValue(parent, name, ...)</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"If allowInheritance -&gt; fires 'htmx:after:implicitInheritance'</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"Else -&gt; return defaultVal"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Bottom Callout: Non-Inheritable Attributes</span>
+<span class="n">rectangle</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mf">11.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">140</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+<span class="n">phosphor</span><span class="o">.</span><span class="n">shield_check</span><span class="p">((</span><span class="mi">14</span><span class="p">,</span> <span class="mf">11.5</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">),</span>
+    <span class="s2">"Hard-Coded Non-Inheritable Attributes (allowInheritance = false even if config.implicitInheritance === true)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.3</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">text</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">),</span>
+    <span class="s2">"hx-action (L335) • hx-get / hx-post / hx-put / hx-patch / hx-delete / hx-query (L338) • hx-validate (L403) • hx-trigger (L735)"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.6</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>3.1 Step-by-Step Trace of <code>__attributeValue()</code> (<code>L288–320</code>)</h3>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L280–320 — __findThisElements() and __attributeValue()</span>
+<span class="nx">__findThisElements</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">attrName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">attrName</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">val</span><span class="p">,</span><span class="w"> </span><span class="nx">elt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">val</span><span class="o">?</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\s*[,:]\s*/</span><span class="p">).</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'this'</span><span class="p">))</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">elt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">defaultVal</span><span class="p">,</span><span class="w"> </span><span class="nx">eltCollector</span><span class="p">,</span><span class="w"> </span><span class="nx">allowInheritance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">implicitInheritance</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__maybeAdjustMetaCharacter</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">inherited</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__maybeAdjustMetaCharacter</span><span class="p">(</span><span class="s2">":inherited"</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">append</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__maybeAdjustMetaCharacter</span><span class="p">(</span><span class="s2">":append"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attr</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attr</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">inherited</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">val</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">eltCollector</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">eltCollector</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span><span class="w"> </span><span class="nx">elt</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">val</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">n1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">CSS</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="nx">allowInheritance</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">inherited</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">n2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">CSS</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">inherited</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">append</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">inheritSelector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__prefixSelector</span><span class="p">(</span><span class="sb">`[</span><span class="si">${</span><span class="nx">n1</span><span class="si">}</span><span class="sb">],[</span><span class="si">${</span><span class="nx">n2</span><span class="si">}</span><span class="sb">]`</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">appendName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attrName</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">append</span><span class="p">)</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attrName</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">inherited</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">append</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">appendName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">appendValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="nx">appendName</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="nx">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">parentNode</span><span class="o">?</span><span class="p">.</span><span class="nx">closest</span><span class="o">?</span><span class="p">.(</span><span class="nx">inheritSelector</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">eltCollector</span><span class="p">)</span><span class="w"> </span><span class="nx">eltCollector</span><span class="p">(</span><span class="nx">appendValue</span><span class="p">,</span><span class="w"> </span><span class="nx">elt</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="nx">parentVal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="nx">eltCollector</span><span class="p">,</span><span class="w"> </span><span class="nx">allowInheritance</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">parentVal</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="nx">parentVal</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">","</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">appendValue</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[{}]/g</span><span class="p">,</span><span class="w"> </span><span class="s1">''</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">appendValue</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">appendValue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">elt</span><span class="p">.</span><span class="nx">parentNode</span><span class="o">?</span><span class="p">.</span><span class="nx">closest</span><span class="o">?</span><span class="p">.(</span><span class="nx">inheritSelector</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span><span class="w"> </span><span class="nx">eltCollector</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">eltCollector</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">val</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">allowInheritance</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">__triggerExtensions</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s2">"htmx:after:implicitInheritance"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">parent</span><span class="p">});</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">val</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">defaultVal</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+<p>Four implementation details in <code>__attributeValue()</code> deserve special attention:</p>
+<ol>
+<li><strong>Native C++ Ancestor Jumps via <code>CSS.escape</code> &amp; <code>closest()</code> (<code>L296–298</code>, <code>L302</code>, <code>L311</code>)</strong>: Rather than walking <code>elt = elt.parentElement</code> in a JavaScript <code>while</code> loop, htmx escapes the colons in <code>hx-attr:inherited</code> and <code>hx-attr:inherited:append</code> via <code>CSS.escape()</code> and delegates the ancestor search to <code>elt.parentNode?.closest?.(inheritSelector)</code>, jumping directly to the nearest matching ancestor in native browser code.</li>
+<li><strong>Brace-Stripping <code>:append</code> Composition (<code>L306</code>)</strong>: When a child element specifies <code>hx-vals:append='{&quot;b&quot;: 2}'</code> (or <code>b:2</code>) and an ancestor specifies <code>hx-vals:inherited='{&quot;a&quot;: 1}'</code>, concatenating them with a comma and stripping curly braces via <code>(parentVal + &quot;,&quot; + appendValue).replace(/[{}]/g, '')</code> produces <code>&quot;a&quot;: 1, &quot;b&quot;: 2</code>. Because <code>HCON.parse()</code> natively parses double-quoted keys and values alongside bare HCON pairs, <strong>JSON and HCON attributes can be mixed and appended across arbitrary DOM depths</strong>.</li>
+<li><strong>Resolving Multiple <code>this</code> Targets Across <code>:append</code> Chains (<code>__findThisElements</code>, <code>L280–286</code>)</strong>: When <code>hx-indicator:inherited=&quot;this&quot;</code> is placed on a <code>&lt;form&gt;</code> and <code>hx-indicator:append=&quot;this&quot;</code> is placed on a child <code>&lt;button&gt;</code>, <code>__findAllExt()</code> (<code>L1936</code>) calls <code>__findThisElements(elt, &quot;hx-indicator&quot;)</code>. By passing an <code>eltCollector</code> callback into <code>__attributeValue()</code>, htmx visits every element in the <code>:append</code> chain that contributed <code>&quot;this&quot;</code> and returns both <code>[button, form]</code>.</li>
+<li><strong>Hard-Coded Non-Inheritable Attributes (<code>allowInheritance = false</code>)</strong>: Action attributes (<code>hx-action</code> at <code>L335</code> and <code>hx-get</code>, <code>hx-post</code>, <code>hx-put</code>, <code>hx-patch</code>, <code>hx-delete</code>, <code>hx-query</code> at <code>L338</code>), <code>hx-validate</code> (<code>L403</code>), and <code>hx-trigger</code> (<code>L735</code>) explicitly pass <code>false</code> for <code>allowInheritance</code>. Even if an application enables <code>htmx.config.implicitInheritance = true</code> (or loads <code>src/ext/htmx-2-compat.js</code>, which listens to the <code>htmx:after:implicitInheritance</code> hook at <code>L315</code>), HTTP verbs and triggers never bleed onto descendant elements unless <code>:inherited</code> is explicitly written.</li>
+</ol>
+<hr />
+<h2>4. Synchronous vs. Dynamic Attribute Object Evaluation (<code>__getAttributeObject</code> L1875–1893)</h2>
+<p>Attributes that evaluate to key-value maps—specifically <strong><code>hx-headers</code></strong> (<code>L480</code>) and <strong><code>hx-vals</code></strong> (<code>L489</code>)—are resolved through <code>__getAttributeObject(elt, attrName, callback, scope)</code> (<code>L1875–1893</code>).</p>
+<pre><code class="language-javascript"><span class="c1">// src/htmx.js L1875–1893, L1996–2004 — Synchronous HCON Fast-Path vs. Async js: Evaluation</span>
+<span class="nx">__getAttributeObject</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">attrName</span><span class="p">,</span><span class="w"> </span><span class="nx">callback</span><span class="p">,</span><span class="w"> </span><span class="nx">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">hxAttr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">attrName</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">hxAttr</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">javascriptContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__extractJavascriptContent</span><span class="p">(</span><span class="nx">hxAttr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">javascriptContent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Wrap in braces if not already wrapped (for htmx 2.x compatibility)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">javascriptContent</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">'{'</span><span class="p">)</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">javascriptContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'{'</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">javascriptContent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'}'</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// Return promise for async evaluation</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">__executeJavaScript</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="nx">scope</span><span class="p">,</span><span class="w"> </span><span class="nx">javascriptContent</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">obj</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">callback</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Synchronous path - return the parsed object directly</span>
+<span class="w">        </span><span class="nx">callback</span><span class="p">(</span><span class="nx">HCON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">hxAttr</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">__extractJavascriptContent</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">string</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">"js:"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">string</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mf">3</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">"javascript:"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nx">string</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mf">11</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>This bifurcated design optimizes both performance and flexibility:</p>
+<ul>
+<li><strong>Zero-Microtask Synchronous Fast-Path (<code>L1889–1892</code>)</strong>: When <code>hx-vals</code> or <code>hx-headers</code> contains static HCON or JSON (<code>hx-vals=&quot;page:2 sort:'asc'&quot;</code>), <code>__extractJavascriptContent(hxAttr)</code> returns <code>undefined</code>. <code>__getAttributeObject</code> immediately invokes <code>callback(HCON.parse(hxAttr))</code> synchronously and returns <code>undefined</code>, avoiding <code>Promise</code> allocation or microtask queue delay prior to <code>htmx:config:request</code>.</li>
+<li><strong>Asynchronous <code>js:</code> / <code>javascript:</code> Evaluation (<code>L1880–1888</code>)</strong>: When prefixed with <code>js:</code> or <code>javascript:</code> (e.g., <code>hx-vals=&quot;js:{ token: await getAuthToken(), ts: Date.now() }&quot;</code> or bare <code>hx-vals=&quot;js:ts: Date.now()&quot;</code>), htmx wraps bare key-value expressions in <code>{...}</code> (<code>L1882–1884</code>) and executes the code via <code>this.__executeJavaScript(elt, scope, javascriptContent, true)</code>. Because <code>__executeJavaScript</code> defaults to <code>this.#AsyncFunction</code> (<code>L911, L922</code>), dynamic <code>hx-vals</code> and <code>hx-headers</code> natively support <code>await</code> expressions and return a <code>Promise</code> that <code>__handleTriggerEvent</code> (<code>L480–495</code>) awaits via <code>await Promise.all(promises)</code>.</li>
+</ul>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
