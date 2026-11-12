@@ -11,8 +11,3 @@
 - [4. Fetch Context & Sync Queue](04_fetch_context_and_sync_queue.md)
 - [5. Swap, Settle & Morph Engine](05_swap_settle_and_morph_engine.md)
 - [6. Extension & Security Internals](06_extension_and_security_internals.md)
-
-## Portals & Reports
-- [User Guide ↗](https://htmx.drawlib.com/)
-- [API Catalog ↗](https://htmx.drawlib.com/api/)
-- [PNI501 Audit Report ↗](https://htmx.drawlib.com/reports/pni501/)

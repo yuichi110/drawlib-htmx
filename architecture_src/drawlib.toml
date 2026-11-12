@@ -4,6 +4,7 @@ type = "site"
 title = "htmx v4 Internal Architecture Guide (Unofficial)"
 description = "Source-level internal architecture guide to htmx v4.0.1: single-class Htmx & private field lowering, HCON & explicit :inherited resolution, trigger lexer & RequestQueue state machine, fetch() streaming & <hx-partial> extraction, Idiomorph DOM reconciliation, and #internalAPI extension hooks."
 style = "default"
+output_dir = "../docs/architecture"
 
 [i18n]
 default_lang = "en"

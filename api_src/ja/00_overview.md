@@ -271,7 +271,7 @@ HTML5 バリデータに準拠するセカンダリ接頭辞であり、`htmx.co
 
 | ポータル | URL | 内容・対象読者 |
 | :--- | :--- | :--- |
-| **Portal 1: htmx v4 ユーザーガイド** | [`https://htmx.drawlib.com/`](https://htmx.drawlib.com/) | ハイパーメディア駆動アプリケーション（HDA）の実践ガイド、UI パターン、モーフィング活用、htmx 2 $\rightarrow$ 4 移行手順。 |
+| **Portal 1: htmx v4 ユーザーガイド** | [`https://htmx.drawlib.com/user_guide/`](https://htmx.drawlib.com/user_guide/) | ハイパーメディア駆動アプリケーション（HDA）の実践ガイド、UI パターン、モーフィング活用、htmx 2 $\rightarrow$ 4 移行手順。 |
 | **Portal 2: htmx v4 API リファレンスカタログ** | [`https://htmx.drawlib.com/api/`](https://htmx.drawlib.com/api/) | 全属性・修飾子・HTTP ヘッダ・JS メソッド・イベント・拡張機能・CLI の日英完全辞書（本ポータル）。 |
 | **Portal 3: htmx v4 内部アーキテクチャガイド** | [`https://htmx.drawlib.com/architecture/`](https://htmx.drawlib.com/architecture/) | `src/htmx.js` の内部実装解説：`HCON`、`RequestQueue`、`fetch()` パイプライン、Idiomorph エンジン、`#internalAPI`。 |
-| **Portal 4: PNI501 診断・アーキテクチャ監査レポート** | [`https://htmx.drawlib.com/reports/pni501/`](https://htmx.drawlib.com/reports/pni501/) | 15 ステージ JavaScript AST 解析、依存関係 DAG、`@web/test-runner` V8 カバレッジ、サプライチェーン監査レポート（HTML & PDF）。 |
+| **Portal 4: PNI501 診断・アーキテクチャ監査レポート** | [`https://htmx.drawlib.com/pni501/`](https://htmx.drawlib.com/pni501/) | 15 ステージ JavaScript AST 解析、依存関係 DAG、`@web/test-runner` V8 カバレッジ、サプライチェーン監査レポート（HTML & PDF）。 |

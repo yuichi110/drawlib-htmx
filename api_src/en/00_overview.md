@@ -271,7 +271,7 @@ This API Reference Catalog is **Portal 2** of the four-portal htmx `v4.0.1` docu
 
 | Portal | URL | Focus & Audience |
 | :--- | :--- | :--- |
-| **Portal 1: htmx v4 User Guide** | [`https://htmx.drawlib.com/`](https://htmx.drawlib.com/) | Practical Hypermedia-Driven Application (HDA) tutorials, UI patterns, morphing workflows, and htmx 2 $\rightarrow$ 4 migration guide. |
+| **Portal 1: htmx v4 User Guide** | [`https://htmx.drawlib.com/user_guide/`](https://htmx.drawlib.com/user_guide/) | Practical Hypermedia-Driven Application (HDA) tutorials, UI patterns, morphing workflows, and htmx 2 $\rightarrow$ 4 migration guide. |
 | **Portal 2: htmx v4 API Reference Catalog** | [`https://htmx.drawlib.com/api/`](https://htmx.drawlib.com/api/) | Complete bilingual symbol, attribute, modifier, HTTP header, JS method, event, extension, and CLI dictionary (this portal). |
 | **Portal 3: htmx v4 Internal Architecture Guide** | [`https://htmx.drawlib.com/architecture/`](https://htmx.drawlib.com/architecture/) | Source-level walkthrough of `src/htmx.js` internals: `HCON`, `RequestQueue`, `fetch()` pipeline, Idiomorph engine, and `#internalAPI`. |
-| **Portal 4: PNI501 Diagnostic Audit Report** | [`https://htmx.drawlib.com/reports/pni501/`](https://htmx.drawlib.com/reports/pni501/) | Deterministic 15-stage JavaScript AST, dependency DAG, `@web/test-runner` V8 coverage, and supply-chain audit report (HTML & PDF). |
+| **Portal 4: PNI501 Diagnostic Audit Report** | [`https://htmx.drawlib.com/pni501/`](https://htmx.drawlib.com/pni501/) | Deterministic 15-stage JavaScript AST, dependency DAG, `@web/test-runner` V8 coverage, and supply-chain audit report (HTML & PDF). |

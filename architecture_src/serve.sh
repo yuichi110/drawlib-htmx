@@ -27,5 +27,5 @@ if [ -z "${DRAWLIB_CMD:-}" ]; then
     fi
 fi
 
-echo "Starting local preview server on init_site_html/ ..."
-$DRAWLIB_CMD serve init_site_html/ "$@"
+echo "Starting local preview server on docs/architecture/ ..."
+$DRAWLIB_CMD serve docs/architecture/ "$@"

@@ -63,7 +63,7 @@ UV_DEFAULT_INDEX=https://pypi.org/simple uvx drawlib@0.3.9 serve .drawlib/scratc
 
 ## Related Portals
 
-- **Portal 1 — htmx v4 User Guide (`docs_src/`)**: [https://htmx.drawlib.com/](https://htmx.drawlib.com/)
+- **Portal 1 — htmx v4 User Guide (`user_guide_src/`)**: [https://htmx.drawlib.com/user_guide/](https://htmx.drawlib.com/user_guide/)
 - **Portal 2 — htmx v4 API Reference Catalog (`api_src/`)**: [https://htmx.drawlib.com/api/](https://htmx.drawlib.com/api/)
 - **Portal 3 — htmx v4 Internal Architecture Guide (`architecture_src/`)**: [https://htmx.drawlib.com/architecture/](https://htmx.drawlib.com/architecture/)
-- **Portal 4 — PNI501 Engineering & Architecture Diagnostic Report (`reports_src/pni501_src/`)**: [https://htmx.drawlib.com/reports/pni501/](https://htmx.drawlib.com/reports/pni501/)
+- **Portal 4 — PNI501 Engineering & Architecture Diagnostic Report (`pni501_src/`)**: [https://htmx.drawlib.com/pni501/](https://htmx.drawlib.com/pni501/)

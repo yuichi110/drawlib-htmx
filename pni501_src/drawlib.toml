@@ -1,0 +1,19 @@
+[project]
+name = "pni501"
+type = "doc"
+title = "htmx v4.0.1 — PNI501 Software Health Diagnostic Report"
+description = "Comprehensive PNI501 software health, architecture, runtime browser test coverage, and security diagnostic report for htmx v4.0.1."
+style = "google"
+output_dir = "../docs/pni501"
+
+[i18n]
+default_lang = "en"
+langs = ["en"]
+
+[seo]
+site_url = "https://htmx.drawlib.com/pni501"
+og_image = "_assets/ogp.png"
+twitter_card = "summary_large_image"
+sitemap = true
+robots = true
+llms_txt = true

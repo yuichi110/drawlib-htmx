@@ -1,0 +1,672 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6. 公式拡張とストリーミング (Extensions &amp; Streaming)</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9N5BZ1VRC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-S9N5BZ1VRC');
+    </script>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/user_guide/en/06_extensions_and_streaming.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/user_guide/ja/06_extensions_and_streaming.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/user_guide/en/06_extensions_and_streaming.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 は、洗練されたイベントフック型拡張アーキテクチャ（htmx.registerExtension）を採用し、リアルタイム HTML ストリーミング（hx-sse, hx-ws, hx-multipart）、DOM リアクティブスクリプティング（hx-live）、UX…">
+    <link rel="canonical" href="https://htmx.drawlib.com/user_guide/ja/06_extensions_and_streaming.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 ユーザーガイド">
+    <meta property="og:title" content="6. 公式拡張とストリーミング (Extensions &amp; Streaming) — htmx v4 ユーザーガイド">
+    <meta property="og:description" content="htmx v4.0.1 は、洗練されたイベントフック型拡張アーキテクチャ（htmx.registerExtension）を採用し、リアルタイム HTML ストリーミング（hx-sse, hx-ws, hx-multipart）、DOM リアクティブスクリプティング（hx-live）、UX…">
+    <meta property="og:url" content="https://htmx.drawlib.com/user_guide/ja/06_extensions_and_streaming.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="6. 公式拡張とストリーミング (Extensions &amp; Streaming) — htmx v4 ユーザーガイド">
+    <meta name="twitter:description" content="htmx v4.0.1 は、洗練されたイベントフック型拡張アーキテクチャ（htmx.registerExtension）を採用し、リアルタイム HTML ストリーミング（hx-sse, hx-ws, hx-multipart）、DOM リアクティブスクリプティング（hx-live）、UX…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    
+    
+    <div class="demo-banner" role="region" aria-label="ポータルナビゲーション">
+        <div class="demo-banner-inner">
+            <span class="demo-banner-badge">DRAWLIB SHOWCASE</span>
+            
+            <span class="demo-banner-text">
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> で構築された <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a>（v4.0.1）非公式ドキュメント
+            </span>
+            <span class="demo-banner-links">
+                <a href="../../index.html">All Portals</a>
+                <span class="demo-banner-sep">·</span>
+                <strong style="color:#ffffff;">User Guide</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../api/ja/index.html">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../architecture/ja/index.html">Architecture</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 ユーザーガイド">
+                    
+                    htmx v4 ユーザーガイド
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >概要 (Overview)</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="01_getting_started.html" >1. はじめに・導入と移行</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_hypermedia_architecture.html" >2. ハイパーメディア設計</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_requests_and_triggers.html" >3. リクエストとトリガー</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="04_targeting_and_swapping.html" >4. ターゲット指定とスワップ</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_headers_events_and_status.html" >5. ヘッダー・イベント・ステータス</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="06_extensions_and_streaming.html" >6. 公式拡張とストリーミング</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="07_history_caching_and_ux.html" >7. 履歴管理・キャッシュ・UX</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="08_security_testing_and_debugging.html" >8. セキュリティ・テスト・デバッグ</a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">6. 公式拡張とストリーミング (Extensions &amp; Streaming)</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">日本語</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="../en/06_extensions_and_streaming.html" class="lang-option" lang="en" hreflang="en" >
+                                <span>English</span>
+                                
+                            </a>
+                            
+                            <a href="06_extensions_and_streaming.html" class="lang-option active" lang="ja" hreflang="ja" aria-current="page">
+                                <span>日本語</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>6. 公式拡張とストリーミング (Extensions &amp; Streaming)</h1>
+<p>htmx v4.0.1 は、洗練された**イベントフック型拡張アーキテクチャ（<code>htmx.registerExtension</code>）**を採用し、リアルタイム HTML ストリーミング（<code>hx-sse</code>, <code>hx-ws</code>, <code>hx-multipart</code>）、DOM リアクティブスクリプティング（<code>hx-live</code>）、UX 強化（<code>hx-preload</code>, <code>hx-pending</code>, <code>hx-browser-indicator</code>, <code>hx-targets</code>, <code>hx-upsert</code>, <code>hx-head</code>, <code>hx-download</code>）、厳格な CSP セキュリティ（<code>hx-csp</code>）を網羅する <strong>全 17 種の公式拡張</strong> を提供しています。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_extensions_and_streaming/ch06_streaming_and_extensions.png" alt="06_extensions_and_streaming_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 の拡張フックアーキテクチャ・HTML ストリーミング通信・公式拡張スイート</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.architecture</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArchitectureDiagram</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">NodeGroup</span><span class="p">,</span> <span class="n">PhosphorIcon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">176</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">ArchitectureDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Primary</span><span class="p">,</span>
+    <span class="n">node_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">node_card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 Extension Runtime &amp; Real-Time HTML Streaming Transports"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">core_grp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4 Core &amp; Extension Bus"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">core_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"htmx.registerExtension</span><span class="se">\n</span><span class="s2">(init(api) + Hooks)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">PLUGS_CONNECTED</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">18.0</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">api_bus</span> <span class="o">=</span> <span class="n">core_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"Internal API &amp; Hooks</span><span class="se">\n</span><span class="s2">(htmx_*_request / swap)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">GEAR_SIX</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">18.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">whitelist</span> <span class="o">=</span> <span class="n">core_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"config.extensions</span><span class="se">\n</span><span class="s2">(Optional Whitelist)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">SHIELD_CHECK</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">18.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">stream_grp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Streaming HTML Transports"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+<span class="n">sse</span> <span class="o">=</span> <span class="n">stream_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"hx-sse (sse)</span><span class="se">\n</span><span class="s2">text/event-stream"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">BROADCAST</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">17.0</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ws</span> <span class="o">=</span> <span class="n">stream_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"hx-ws (ws)</span><span class="se">\n</span><span class="s2">Bi-Directional WS"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">ARROWS_LEFT_RIGHT</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">17.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">multipart</span> <span class="o">=</span> <span class="n">stream_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"hx-multipart</span><span class="se">\n</span><span class="s2">multipart/mixed"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">STACK</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">17.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">ux_grp</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Reactive &amp; UX Extensions (htmax.js)"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">5.5</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">114.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+<span class="n">live</span> <span class="o">=</span> <span class="n">ux_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"hx-live Reactive</span><span class="se">\n</span><span class="s2">q() / .data / .aria"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">LIGHTNING</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">19.0</span><span class="p">,</span> <span class="mf">56.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">ux_exts</span> <span class="o">=</span> <span class="n">ux_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"preload / pending /</span><span class="se">\n</span><span class="s2">upsert / targets"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">SPARKLE</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">19.0</span><span class="p">,</span> <span class="mf">35.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">head_dl</span> <span class="o">=</span> <span class="n">ux_grp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Node</span><span class="p">(</span><span class="s2">"hx-head / download /</span><span class="se">\n</span><span class="s2">history-cache / csp"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">DOWNLOAD_SIMPLE</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
+    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">19.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">sse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Init"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">api_bus</span><span class="p">,</span> <span class="n">ws</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Hooks"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">whitelist</span><span class="p">,</span> <span class="n">multipart</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Gate"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">sse</span><span class="p">,</span> <span class="n">live</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"DOM Events"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">ux_exts</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Swap Tasks"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">multipart</span><span class="p">,</span> <span class="n">head_dl</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Partials"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>6.1 v4 拡張アーキテクチャ (<code>htmx.registerExtension</code>)</h2>
+<p>htmx 2 では HTML 要素に <code>hx-ext=&quot;name&quot;</code> 属性を記述し、単一の <code>onEvent(name, evt)</code> コールバックで分岐していましたが、<strong>htmx v4.0.1</strong> では以下のように刷新されました。</p>
+<ol>
+<li><strong><code>hx-ext</code> 属性が不要に</strong>: <code>htmx.js</code> の後に <code>&lt;script src=&quot;hx-preload.js&quot;&gt;&lt;/script&gt;</code> を読み込むだけで、ページ全体で自動的に拡張が有効化されます。</li>
+<li><strong>オプションのホワイトリスト制御 (<code>htmx.config.extensions</code>)</strong>: デフォルト（<code>&quot;&quot;</code>）では読み込まれたすべての拡張が登録されます。<code>&lt;meta name=&quot;htmx-config&quot; content='extensions:&quot;preload, sse, hx-live&quot;'&gt;</code> のように指定すると、<strong>登録名</strong>がリストに含まれる拡張のみが有効化されます。</li>
+<li><strong>アンダースコア区切りのイベントフック</strong>: イベント名 <code>htmx:phase:action</code> のコロンをアンダースコアに置き換えたメソッド名（<code>htmx_before_request</code>, <code>htmx_after_swap</code>, <code>htmx_before_morph_node</code>, <code>htmx_process_&lt;type&gt;</code>）に加え、<code>init(internalAPI)</code> や <code>handle_swap(swapStyle, target, fragment, swapSpec)</code> を直接定義できます。</li>
+</ol>
+<pre><code class="language-javascript"><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">api</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">htmx</span><span class="p">.</span><span class="nx">registerExtension</span><span class="p">(</span><span class="s1">'my-timing-header'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">init</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">internalAPI</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">internalAPI</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">htmx_config_request</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">api</span><span class="p">.</span><span class="nx">attributeValue</span><span class="p">(</span><span class="nx">elt</span><span class="p">,</span><span class="w"> </span><span class="s1">'hx-timing'</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">      </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Request-Sent-At'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">(</span><span class="w"> </span><span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">})();</span>
+</code></pre>
+<h3>公式同梱17拡張の完全カタログ</h3>
+<blockquote>
+<p>[!IMPORTANT]
+下表の <strong>登録名 (<code>registerExtension</code>)</strong> に注目してください。<code>htmx.config.extensions</code> ホワイトリストにはファイル名ではなく登録名を指定します（例: <code>hx-sse.js</code> は <code>sse</code>、<code>hx-preload.js</code> は <code>preload</code> として登録されます）。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">スクリプトファイル</th>
+<th style="text-align:left">登録名 (<code>registerExtension</code>)</th>
+<th style="text-align:left"><code>htmax.js</code> 同梱</th>
+<th style="text-align:left">主な機能と用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>hx-sse.js</code></strong></td>
+<td style="text-align:left"><code>sse</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">Server-Sent Events (<code>text/event-stream</code>) による HTML ストリーム受信・イベント発火</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-ws.js</code></strong></td>
+<td style="text-align:left"><code>ws</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">WebSocket による双方向 HTML ストリーミングとフォームデータ送信</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-multipart.js</code></strong></td>
+<td style="text-align:left"><code>hx-multipart</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">単一の <code>multipart/mixed</code> HTTP レスポンスで複数の HTML チャンクを順次ストリーム反映</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-live.js</code></strong></td>
+<td style="text-align:left"><code>hx-live</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">DOM 状態ベースのリアクティブスクリプト（<code>:text</code>, <code>:class</code>, <code>q()</code>, <code>.data</code>, <code>.aria</code>, <code>take()</code>）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-preload.js</code></strong></td>
+<td style="text-align:left"><code>preload</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left"><code>mousedown</code> や <code>mouseover</code> 等のトリガーで <code>hx-get</code> を事前フェッチ・キャッシュ</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-pending.js</code></strong></td>
+<td style="text-align:left"><code>hx-pending</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">リクエスト進行中にターゲット要素内へプレースホルダー HTML を一時表示</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-browser-indicator.js</code></strong></td>
+<td style="text-align:left"><code>browser-indicator</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">Navigation API を活用し、通信中にブラウザタブ自体のネイティブスピナーを表示</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-targets.js</code></strong></td>
+<td style="text-align:left"><code>hx-targets</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left"><code>hx-targets=&quot;&lt;selector&gt;&quot;</code> に一致する複数すべての要素へ同一レスポンスをスワップ</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-upsert.js</code></strong></td>
+<td style="text-align:left"><code>upsert</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">既存 ID があれば置換更新し、なければ挿入・ソートする <code>hx-swap=&quot;upsert&quot;</code> を追加</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-download.js</code></strong></td>
+<td style="text-align:left"><code>download</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">進捗イベント（<code>htmx:download:progress</code>）付きでファイルをストリームダウンロード</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-history-cache.js</code></strong></td>
+<td style="text-align:left"><code>history-cache</code></td>
+<td style="text-align:left"><strong>同梱</strong> <em>(初期無効)</em></td>
+<td style="text-align:left">戻る/進む操作時に <code>sessionStorage</code> から DOM・入力値・スクロール位置を即座に復元</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-alpine-compat.js</code></strong></td>
+<td style="text-align:left"><code>alpine-compat</code></td>
+<td style="text-align:left"><strong>同梱</strong></td>
+<td style="text-align:left">Alpine.js のリアクティブ状態と htmx のモーフィング・ライフサイクルを安全に連携</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-head.js</code></strong></td>
+<td style="text-align:left"><code>hx-head</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">レスポンス内の <code>&lt;head&gt;</code> タグ（スタイルシートや <code>&lt;script defer&gt;</code>）を差分マージ</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-ptag.js</code></strong></td>
+<td style="text-align:left"><code>ptag</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">要素単位の <code>HX-PTag</code> ヘッダーによる <code>304 Not Modified</code> 条件付きポーリング</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-csp.js</code></strong></td>
+<td style="text-align:left"><code>hx-csp</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">厳格な CSP 強制（<code>hx-nonce</code> 検証、Trusted Types ポリシー、<code>safeEval</code>）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>hx-prompt.js</code></strong></td>
+<td style="text-align:left"><code>hx-prompt</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">htmx 2 の <code>hx-prompt</code> 入力ダイアログと <code>HX-Prompt</code> ヘッダーを復元</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>htmx-2-compat.js</code></strong></td>
+<td style="text-align:left"><code>compat</code></td>
+<td style="text-align:left">個別読込</td>
+<td style="text-align:left">htmx 2 の旧キャメルケースイベント発火と旧属性名の互換マッピングを提供</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>6.2 HTML ストリーミング (<code>hx-sse</code>・<code>hx-ws</code>・<code>hx-multipart</code>)</h2>
+<p>htmx v4.0.1 は <code>fetch()</code> と <code>ReadableStream</code> を基盤としているため、持続的接続を通じたリアルタイム HTML ストリーミングを宣言的に扱えます。</p>
+<h3>1. Server-Sent Events (<code>hx-sse.js</code>)</h3>
+<p>SSE エンドポイント（<code>Content-Type: text/event-stream</code>）に接続し、ストリームされる HTML イベントをそのまま DOM にスワップします。</p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/ext/hx-sse.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- Connect to /events/stream and swap 'message' events into #live-feed --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-sse</span><span class="o">=</span><span class="s">"connect:/events/stream"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"live-feed"</span> <span class="na">hx-sse</span><span class="o">=</span><span class="s">"swap:message"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"afterbegin"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="cm">&lt;!-- Or trigger a standard hx-get whenever a specific SSE event arrives --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/metrics/summary"</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"sse:metricsUpdated"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<h3>2. 双方向 WebSocket (<code>hx-ws.js</code>)</h3>
+<p><code>hx-ws=&quot;connect:/chat&quot;</code> で WebSocket 接続を確立し、<code>hx-ws=&quot;send&quot;</code> を付けたフォームからメッセージを双方向送受信します。</p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/ext/hx-ws.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-ws</span><span class="o">=</span><span class="s">"connect:/ws/chatroom"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"chat-messages"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-ws</span><span class="o">=</span><span class="s">"send"</span> <span class="na">hx-on:htmx:ws:after:send</span><span class="o">=</span><span class="s">"this.reset()"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"chat_message"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"Type a message..."</span> <span class="na">required</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Send<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
+</code></pre>
+<h3>3. チャンク分割 HTTP ストリーミング (<code>hx-multipart.js</code>)</h3>
+<p>AI の段階的応答や複数クエリを含む重いダッシュボードなど、1 回の HTTP リクエストの中で準備できた HTML フラグメントから順次画面に反映したい場合は、<code>hx-multipart.js</code> を使ってサーバーから <code>Content-Type: multipart/mixed; boundary=...</code> を返却します。</p>
+<hr />
+<h2>6.3 <code>hx-live</code> によるリアクティブ DOM スクリプティング</h2>
+<p>ドメイン状態はサーバーで管理しつつ、ドロワーの開閉・文字数カウント・タブのアクティブクラス切り替え・ARIA 属性の同期といったクライアント完結のマイクロインタラクションを軽快に記述できるのが公式拡張 <strong><code>hx-live</code> (<code>htmx.live</code>)</strong> です。<code>hx-live</code> では <strong>DOM 自身の属性（<code>data-*</code>, <code>aria-*</code>, <code>attr</code>, <code>class</code>）がそのままリアクティブな状態ストア</strong>として機能します。</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/06_extensions_and_streaming/ch06_hxlive_reactive_scopes.png" alt="06_extensions_and_streaming_2" />
+  <figcaption class="drawlib-caption">hx-live のリアクティブ状態プロキシ (.data, .aria, .attr, .class) とクエリ操作 API</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">74</span><span class="p">)</span>
+
+<span class="c1"># Left Panel: Reactive State Bags</span>
+<span class="n">left_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"hx-live Reactive State Bags"</span><span class="p">,</span>
+    <span class="s2">"DOM Attributes as Reactive Store"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">database</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">left_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">l_xy</span><span class="p">,</span> <span class="n">l_w</span><span class="p">,</span> <span class="n">l_h</span> <span class="o">=</span> <span class="n">left_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">bags</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">bags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"data.*"</span><span class="p">,</span> <span class="s2">"Typed data-* state resolved from nearest owner"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"DATA"</span><span class="p">)</span>
+<span class="n">bags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"aria.*"</span><span class="p">,</span> <span class="s2">"Typed WAI-ARIA 1.2 state (aria.expanded, aria.hidden)"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"ARIA"</span><span class="p">,</span> <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span> <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+<span class="n">bags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"attr.* &amp; class.*"</span><span class="p">,</span> <span class="s2">"Reactive HTML attributes &amp; boolean class toggles"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"ATTR"</span><span class="p">,</span> <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">,</span> <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+<span class="n">bags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">":text / :class / :hidden"</span><span class="p">,</span> <span class="s2">"Short reactive attribute bindings (bindPrefix: ':')"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"BIND"</span><span class="p">)</span>
+<span class="n">bags</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">l_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">l_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">l_h</span><span class="p">)</span>
+
+<span class="c1"># Right Panel: Query &amp; Action Utilities</span>
+<span class="n">right_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"htmx.live Query &amp; Action API"</span><span class="p">,</span>
+    <span class="s2">"Declarative UI Micro-Interactions"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">lightning</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">right_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">90.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">r_xy</span><span class="p">,</span> <span class="n">r_w</span><span class="p">,</span> <span class="n">r_h</span> <span class="o">=</span> <span class="n">right_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">90.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">78.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">62.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">helpers</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">helpers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"q(sel) / $(sel)"</span><span class="p">,</span> <span class="s2">"Query proxy supporting next, previous, closest, in"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"QUERY"</span><span class="p">)</span>
+<span class="n">helpers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"take('active')"</span><span class="p">,</span> <span class="s2">"Move class or attribute from siblings to target"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"TAKE"</span><span class="p">,</span> <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">))</span>
+<span class="n">helpers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"toggle('data-theme', 'light|dark')"</span><span class="p">,</span> <span class="s2">"Flip boolean class/attr or cycle through values"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"TOG"</span><span class="p">)</span>
+<span class="n">helpers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"forEvent() &amp; debounce()"</span><span class="p">,</span> <span class="s2">"Await events/timeouts or debounce async animations"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"ASYNC"</span><span class="p">)</span>
+<span class="n">helpers</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">r_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">r_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">r_h</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3><code>hx-live</code> の実践コード例 (<code>data.*</code>, <code>aria.*</code>, <code>take()</code>, <code>toggle()</code>)</h3>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"/dist/ext/hx-live.min.js"</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 1. Reactive Counter &amp; Panel Toggle using data-* and :text / :hidden bindings --&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-count</span><span class="o">=</span><span class="s">"0"</span> <span class="na">data-open</span><span class="o">=</span><span class="s">"false"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"data.count++"</span><span class="p">&gt;</span>Increment<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">:text</span><span class="o">=</span><span class="s">"`Count: ${data.count}`"</span><span class="p">&gt;</span>Count: 0<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"data.open = !data.open"</span>
+          <span class="na">:aria-expanded</span><span class="o">=</span><span class="s">"data.open"</span><span class="p">&gt;</span>
+    Toggle Details
+  <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">:hidden</span><span class="o">=</span><span class="s">"!data.open"</span><span class="p">&gt;</span>Reactive Drawer Content<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Tab Active Class Coordination with take() --&gt;</span>
+<span class="p">&lt;</span><span class="nt">nav</span> <span class="na">role</span><span class="o">=</span><span class="s">"tablist"</span> <span class="na">hx-target:inherited</span><span class="o">=</span><span class="s">"#tab-panel"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">role</span><span class="o">=</span><span class="s">"tab"</span> <span class="na">class</span><span class="o">=</span><span class="s">"active"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/tabs/1"</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"take('active')"</span><span class="p">&gt;</span>Tab 1<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">role</span><span class="o">=</span><span class="s">"tab"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/tabs/2"</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"take('active')"</span><span class="p">&gt;</span>Tab 2<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">role</span><span class="o">=</span><span class="s">"tab"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/tabs/3"</span> <span class="na">hx-on:click</span><span class="o">=</span><span class="s">"take('active')"</span><span class="p">&gt;</span>Tab 3<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"tab-panel"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2>6.4 UX を高める公式拡張群 (<code>preload</code>, <code>pending</code>, <code>upsert</code>, <code>download</code>, <code>head</code>)</h2>
+<pre><code class="language-html"><span class="cm">&lt;!-- 1. hx-preload: Prefetch GET response on mousedown or mouseover --&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">"/reports/annual"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/reports/annual"</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#main"</span> <span class="na">hx-preload</span><span class="o">=</span><span class="s">"mousedown"</span><span class="p">&gt;</span>
+  Annual Report (Instant Load)
+<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 2. hx-pending: Display skeleton placeholder inside #results during the request --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/analytics/heavy"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#results"</span>
+        <span class="na">hx-pending</span><span class="o">=</span><span class="s">"&lt;div class='skeleton'&gt;Computing analytics...&lt;/div&gt;"</span><span class="p">&gt;</span>
+  Run Query
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 3. hx-upsert: Update matching IDs or insert sorted by data-score descending --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/leaderboard/latest"</span>
+        <span class="na">hx-target</span><span class="o">=</span><span class="s">"#leaderboard-list"</span>
+        <span class="na">hx-swap</span><span class="o">=</span><span class="s">"upsert key:data-score sort:desc"</span><span class="p">&gt;</span>
+  Refresh Leaderboard
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+
+<span class="cm">&lt;!-- 4. hx-download: Stream binary file download with progress bar events --&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/exports/archive.zip"</span>
+        <span class="na">hx-swap</span><span class="o">=</span><span class="s">"download"</span>
+        <span class="na">hx-on:htmx:download:progress</span><span class="o">=</span><span class="s">"q('#dl-bar').attr.value = event.detail.percent"</span><span class="p">&gt;</span>
+  Download Archive
+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">progress</span> <span class="na">id</span><span class="o">=</span><span class="s">"dl-bar"</span> <span class="na">max</span><span class="o">=</span><span class="s">"100"</span> <span class="na">value</span><span class="o">=</span><span class="s">"0"</span><span class="p">&gt;&lt;/</span><span class="nt">progress</span><span class="p">&gt;</span>
+</code></pre>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

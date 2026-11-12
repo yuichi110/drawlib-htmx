@@ -1,0 +1,659 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. Headers, Events &amp; Status Routing</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9N5BZ1VRC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-S9N5BZ1VRC');
+    </script>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/user_guide/en/05_headers_events_and_status.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/user_guide/ja/05_headers_events_and_status.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/user_guide/en/05_headers_events_and_status.html">
+    
+    
+    
+    <meta name="description" content="htmx v4.0.1 coordinates client-server hypermedia state through standardized HX-* HTTP headers, declarative status-code routing (hx-status:XXX), and a…">
+    <link rel="canonical" href="https://htmx.drawlib.com/user_guide/en/05_headers_events_and_status.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 User Guide">
+    <meta property="og:title" content="5. Headers, Events &amp; Status Routing — htmx v4 User Guide">
+    <meta property="og:description" content="htmx v4.0.1 coordinates client-server hypermedia state through standardized HX-* HTTP headers, declarative status-code routing (hx-status:XXX), and a…">
+    <meta property="og:url" content="https://htmx.drawlib.com/user_guide/en/05_headers_events_and_status.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="5. Headers, Events &amp; Status Routing — htmx v4 User Guide">
+    <meta name="twitter:description" content="htmx v4.0.1 coordinates client-server hypermedia state through standardized HX-* HTTP headers, declarative status-code routing (hx-status:XXX), and a…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    
+    
+    <div class="demo-banner" role="region" aria-label="Portal Navigation">
+        <div class="demo-banner-inner">
+            <span class="demo-banner-badge">DRAWLIB SHOWCASE</span>
+            
+            <span class="demo-banner-text">
+                Unofficial <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a> (v4.0.1) Documentation built with <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a>
+            </span>
+            <span class="demo-banner-links">
+                <a href="../../index.html">All Portals</a>
+                <span class="demo-banner-sep">·</span>
+                <strong style="color:#ffffff;">User Guide</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../api/index.html">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../architecture/index.html">Architecture</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 User Guide">
+                    
+                    htmx v4 User Guide
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Overview</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="01_getting_started.html" >1. Getting Started</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_hypermedia_architecture.html" >2. Hypermedia Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_requests_and_triggers.html" >3. Requests &amp; Triggers</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="04_targeting_and_swapping.html" >4. Targeting &amp; Swapping</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="05_headers_events_and_status.html" >5. Headers, Events &amp; Status</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extensions_and_streaming.html" >6. Extensions &amp; Streaming</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="07_history_caching_and_ux.html" >7. History, Caching &amp; UX</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="08_security_testing_and_debugging.html" >8. Security, Testing &amp; Debugging</a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">5. Headers, Events &amp; Status Routing</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="05_headers_events_and_status.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/05_headers_events_and_status.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>5. Headers, Events &amp; Status Routing</h1>
+<p>htmx v4.0.1 coordinates client-server hypermedia state through <strong>standardized <code>HX-*</code> HTTP headers</strong>, <strong>declarative status-code routing (<code>hx-status:XXX</code>)</strong>, and a <strong>colon-separated <code>htmx:phase:action</code> lifecycle event bus</strong> exposing the unified <code>detail.ctx</code> request context.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_headers_events_and_status/ch05_event_and_header_sequence.png" alt="05_headers_events_and_status_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Request Lifecycle Events, HX-* Headers, and Swap Timeline</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.sequence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Participant</span><span class="p">,</span> <span class="n">PhosphorIcon</span><span class="p">,</span> <span class="n">SequenceDiagram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">164</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">106</span><span class="p">)</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">SequenceDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Primary</span><span class="p">,</span>
+    <span class="n">node_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">node_card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 Colon-Separated Event Lifecycle &amp; Header Exchange"</span><span class="p">,</span>
+    <span class="n">autonumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">col_width</span><span class="o">=</span><span class="mf">44.0</span><span class="p">,</span>
+    <span class="n">step_y</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">dom</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Participant</span><span class="p">(</span><span class="s2">"DOM Element</span><span class="se">\n</span><span class="s2">&amp; Listeners"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">CODE</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">6.5</span><span class="p">))</span>
+<span class="n">core</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">Participant</span><span class="p">(</span><span class="s2">"htmx v4 Core</span><span class="se">\n</span><span class="s2">(detail.ctx)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">GEAR</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Participant</span><span class="p">(</span><span class="s2">"Hypermedia</span><span class="se">\n</span><span class="s2">Server"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">HARD_DRIVES</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">6.5</span><span class="p">))</span>
+
+<span class="n">dom</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="s2">"Trigger + htmx:confirm (issueRequest)"</span><span class="p">)</span>
+<span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span> <span class="s2">"htmx:config:request &amp; htmx:before:request"</span><span class="p">)</span>
+<span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="s2">"fetch() + HX-Request, HX-Source (tag#id), HX-Request-Type"</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">d</span><span class="o">.</span><span class="n">alt</span><span class="p">(</span><span class="s2">"HTTP 200 / 422 / 5xx Response"</span><span class="p">)</span> <span class="k">as</span> <span class="n">blk</span><span class="p">:</span>
+    <span class="n">blk</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">line_style</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="s2">"HTML Body + HX-Trigger / HX-Retarget / Status"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">)</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span> <span class="s2">"htmx:before:response -&gt; htmx:after:request"</span><span class="p">)</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="s2">"Apply HX-Retarget &amp; Match hx-status:XXX"</span><span class="p">)</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span> <span class="s2">"htmx:before:swap -&gt; DOM Swap -&gt; htmx:after:swap"</span><span class="p">)</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span> <span class="s2">"htmx:after:settle &amp; htmx:finally:request"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Success</span><span class="p">)</span>
+
+<span class="n">d</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>5.1 HTTP Request &amp; Response Headers</h2>
+<p>Every htmx request carries structured metadata headers so your backend can inspect what triggered the action and tailor its response accordingly.</p>
+<h3>Request Headers Sent by htmx v4.0.1</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Request Header</th>
+<th style="text-align:left">Format / Value in htmx v4.0.1</th>
+<th style="text-align:left">Change from htmx 2 &amp; Usage Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>HX-Request</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Always sent on every htmx-initiated <code>fetch()</code> call.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Source</code></strong></td>
+<td style="text-align:left"><code>tag#id</code> (e.g. <code>button#save-btn</code> or <code>form</code>)</td>
+<td style="text-align:left"><strong>Replaces <code>HX-Trigger</code> &amp; <code>HX-Trigger-Name</code></strong> from htmx 2. Identifies the triggering element by lowercase tag name and <code>#id</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Target</code></strong></td>
+<td style="text-align:left"><code>tag#id</code> (e.g. <code>div#results</code>)</td>
+<td style="text-align:left">Upgraded from bare ID in htmx 2 to <code>tag#id</code> format.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Request-Type</code></strong></td>
+<td style="text-align:left"><code>&quot;partial&quot;</code> or <code>&quot;full&quot;</code></td>
+<td style="text-align:left"><strong>New in v4</strong>: <code>&quot;partial&quot;</code> for targeted swaps; <code>&quot;full&quot;</code> when targeting <code>body</code>, restoring history, or using <code>hx-select</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Current-URL</code></strong></td>
+<td style="text-align:left">Full browser <code>location.href</code></td>
+<td style="text-align:left">Lets the server inspect the current page URL before rendering partials.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Boosted</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Present when the request originated from an <code>hx-boost</code> link or form.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-History-Restore-Request</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Present when htmx fetches a page during browser Back/Forward restoration.</td>
+</tr>
+</tbody>
+</table>
+<h3>Response Headers Sent by the Server</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Response Header</th>
+<th style="text-align:left">Accepted Values</th>
+<th style="text-align:left">Effect in htmx v4.0.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>HX-Trigger</code></strong></td>
+<td style="text-align:left">Event name (<code>refreshTable</code>) or JSON (<code>{&quot;showToast&quot;: {&quot;msg&quot;: &quot;Saved&quot;}}</code>)</td>
+<td style="text-align:left">Dispatches custom DOM events after the response completes. <em>(Replaces <code>HX-Trigger-After-Swap</code> / <code>After-Settle</code>.)</em></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Retarget</code></strong></td>
+<td style="text-align:left">Extended CSS selector (e.g. <code>#error-banner</code>, <code>closest .card</code>)</td>
+<td style="text-align:left">Overrides the client element's <code>hx-target</code> for this response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Reswap</code></strong></td>
+<td style="text-align:left">Swap specification (e.g. <code>innerMorph transition:true</code>)</td>
+<td style="text-align:left">Overrides <code>hx-swap</code> for this response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Reselect</code></strong></td>
+<td style="text-align:left">CSS selector (e.g. <code>#summary-fragment</code>)</td>
+<td style="text-align:left">Overrides <code>hx-select</code> to extract a specific subset of the response.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Push-Url</code></strong></td>
+<td style="text-align:left">URL path or <code>&quot;false&quot;</code></td>
+<td style="text-align:left">Pushes a new entry into browser <code>history.pushState()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Replace-Url</code></strong></td>
+<td style="text-align:left">URL path or <code>&quot;false&quot;</code></td>
+<td style="text-align:left">Replaces the current entry in browser <code>history.replaceState()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Location</code></strong></td>
+<td style="text-align:left">URL string or HCON/JSON (<code>{&quot;path&quot;: &quot;/dashboard&quot;, &quot;target&quot;: &quot;#main&quot;}</code>)</td>
+<td style="text-align:left">Performs an in-page AJAX navigation without a full browser reload.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Redirect</code></strong></td>
+<td style="text-align:left">URL string (e.g. <code>/login</code>)</td>
+<td style="text-align:left">Triggers a full-page browser navigation (<code>location.href</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HX-Refresh</code></strong></td>
+<td style="text-align:left"><code>&quot;true&quot;</code></td>
+<td style="text-align:left">Forces a full browser reload of the current page (<code>location.reload()</code>).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>5.2 Declarative HTTP Status Routing (<code>hx-status:XXX</code>)</h2>
+<p>In htmx 2, <code>4xx</code> and <code>5xx</code> responses did not swap content by default. <strong>In htmx v4.0.1, all HTTP status codes swap by default except <code>204 No Content</code> and <code>304 Not Modified</code></strong> (configured via <code>htmx.config.noSwap = [204, 304]</code>).</p>
+<p>To customize swap targets, strategies, or history behavior per HTTP status code, use <strong><code>hx-status:XXX</code></strong> attributes directly in your HTML:</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/05_headers_events_and_status/ch05_status_routing_precedence.png" alt="05_headers_events_and_status_2" />
+  <figcaption class="drawlib-caption">HTTP Status Routing Precedence: exact code -> NNx -> Nxx -> default swap</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decision</span><span class="p">,</span> <span class="n">End</span><span class="p">,</span> <span class="n">FlowDiagram</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Start</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">192</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">FlowDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 Response Header &amp; hx-status:XXX Resolution Order"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">resp</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Start</span><span class="p">(</span><span class="s2">"HTTP Response</span><span class="se">\n</span><span class="s2">Received"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">42</span><span class="p">))</span>
+<span class="n">hdrs</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Process</span><span class="p">(</span><span class="s2">"1. Apply Server Headers</span><span class="se">\n</span><span class="s2">HX-Retarget / HX-Reswap</span><span class="se">\n</span><span class="s2">HX-Reselect"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">42</span><span class="p">))</span>
+<span class="n">match</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Decision</span><span class="p">(</span><span class="s2">"2. Match</span><span class="se">\n</span><span class="s2">hx-status:XXX?</span><span class="se">\n</span><span class="s2">(Exact -&gt; NNx -&gt; Nxx)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">42</span><span class="p">))</span>
+
+<span class="n">override</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">End</span><span class="p">(</span><span class="s2">"Apply Status Overrides</span><span class="se">\n</span><span class="s2">target: / swap: / select:</span><span class="se">\n</span><span class="s2">push: / replace: / transition:"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">62</span><span class="p">))</span>
+<span class="n">noswap</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">End</span><span class="p">(</span><span class="s2">"Check config.noSwap</span><span class="se">\n</span><span class="s2">(Default: 204, 304 skip;</span><span class="se">\n</span><span class="s2">200/4xx/5xx run swap)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">46</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+
+<span class="n">resp</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">hdrs</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">hdrs</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="k">match</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">override</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Matched"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="k">match</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">noswap</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"No Match"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">flow</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>Wildcard Matching &amp; Supported Modifiers</h3>
+<p>htmx evaluates <code>hx-status</code> attributes from most specific to least specific and stops at the <strong>first match</strong>:</p>
+<ol>
+<li><strong>Exact status code</strong>: <code>hx-status:422</code> or <code>hx-status:404</code></li>
+<li><strong>Decade wildcard (<code>NNx</code>)</strong>: <code>hx-status:50x</code> (matches <code>500</code>–<code>509</code>)</li>
+<li><strong>Class wildcard (<code>Nxx</code>)</strong>: <code>hx-status:4xx</code> or <code>hx-status:5xx</code></li>
+</ol>
+<p>Each <code>hx-status:XXX</code> attribute accepts space-separated key-value modifiers (<code>swap:</code>, <code>target:</code>, <code>select:</code>, <code>push:</code>, <code>replace:</code>, <code>transition:</code>):</p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/checkout/pay"</span>
+      <span class="na">hx-target</span><span class="o">=</span><span class="s">"#order-confirmation"</span>
+      <span class="na">hx-push-url</span><span class="o">=</span><span class="s">"/checkout/complete"</span>
+      <span class="na">hx-status:422</span><span class="o">=</span><span class="s">"target:#payment-errors swap:innerMorph push:false"</span>
+      <span class="na">hx-status:409</span><span class="o">=</span><span class="s">"target:#cart-conflict swap:outerHTML push:false"</span>
+      <span class="na">hx-status:5xx</span><span class="o">=</span><span class="s">"target:#global-toast swap:afterbegin push:false"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">name</span><span class="o">=</span><span class="s">"card_token"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"payment-errors"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Complete Purchase<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<blockquote>
+<p>[!NOTE]
+If the server sends <code>HX-Retarget</code>, <code>HX-Reswap</code>, or <code>HX-Reselect</code> response headers, htmx applies those headers first and then applies any matching <code>hx-status:XXX</code> overrides on top.</p>
+</blockquote>
+<hr />
+<h2>5.3 Colon-Separated Lifecycle Events &amp; <code>detail.ctx</code></h2>
+<p>htmx 4 replaces htmx 2's camelCase event names (<code>htmx:configRequest</code>, <code>htmx:afterSwap</code>) with a uniform <strong>colon-separated <code>htmx:phase:action</code> hierarchy</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Category</th>
+<th style="text-align:left">Event Name</th>
+<th style="text-align:left">Cancellable?</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>DOM Init</strong></td>
+<td style="text-align:left"><code>htmx:before:process</code> / <code>htmx:after:process</code></td>
+<td style="text-align:left"><code>before</code> is cancellable</td>
+<td style="text-align:left">Fires when htmx scans and initializes a DOM node or subtree.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>DOM Init</strong></td>
+<td style="text-align:left"><code>htmx:before:init</code> / <code>htmx:after:init</code></td>
+<td style="text-align:left"><code>before</code> is cancellable</td>
+<td style="text-align:left">Fires around individual element initialization (<code>elt._htmx</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>DOM Cleanup</strong></td>
+<td style="text-align:left"><code>htmx:before:cleanup</code> / <code>htmx:after:cleanup</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Fires before/after htmx tears down listeners on a removed element.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Confirmation</strong></td>
+<td style="text-align:left"><code>htmx:confirm</code></td>
+<td style="text-align:left">Yes (<code>preventDefault()</code>)</td>
+<td style="text-align:left">Fires before a request; exposes <code>detail.issueRequest()</code> and <code>detail.dropRequest()</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Request</strong></td>
+<td style="text-align:left"><code>htmx:config:request</code></td>
+<td style="text-align:left">Yes (<code>preventDefault()</code>)</td>
+<td style="text-align:left">Mutate <code>detail.ctx.request.headers</code>, <code>.body</code> (<code>FormData</code>), or <code>.action</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Request</strong></td>
+<td style="text-align:left"><code>htmx:before:request</code></td>
+<td style="text-align:left">Yes (<code>preventDefault()</code>)</td>
+<td style="text-align:left">Fires immediately before <code>fetch()</code> is invoked.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Response</strong></td>
+<td style="text-align:left"><code>htmx:before:response</code></td>
+<td style="text-align:left">Yes (<code>preventDefault()</code>)</td>
+<td style="text-align:left">Fires when <code>fetch()</code> headers arrive, before reading <code>ctx.response.raw</code> body stream.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Response</strong></td>
+<td style="text-align:left"><code>htmx:after:request</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Fires after response text is read (<code>detail.ctx.text</code> is populated).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Response</strong></td>
+<td style="text-align:left"><code>htmx:finally:request</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Always fires when an issued request completes, errors, or is aborted.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Swap</strong></td>
+<td style="text-align:left"><code>htmx:before:swap</code> / <code>htmx:after:swap</code></td>
+<td style="text-align:left"><code>before</code> is cancellable</td>
+<td style="text-align:left">Fires before and after DOM insertion (<code>detail.tasks</code> holds swap tasks).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Swap</strong></td>
+<td style="text-align:left"><code>htmx:finally:swap</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Fires at the conclusion of the swap phase regardless of outcome.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Settle</strong></td>
+<td style="text-align:left"><code>htmx:before:settle</code> / <code>htmx:after:settle</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Fires around CSS transition settling (<code>detail.newContent</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Errors</strong></td>
+<td style="text-align:left"><code>htmx:response:error</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Fires when the server returns an HTTP status <code>&gt;= 400</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Errors</strong></td>
+<td style="text-align:left"><code>htmx:error</code></td>
+<td style="text-align:left">No</td>
+<td style="text-align:left">Consolidates network failures, timeouts, and swap exceptions (<code>detail.error</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Control</strong></td>
+<td style="text-align:left"><code>htmx:abort</code></td>
+<td style="text-align:left">Dispatched by user</td>
+<td style="text-align:left">Dispatch <code>htmx.trigger(&quot;#elt&quot;, &quot;htmx:abort&quot;)</code> to cancel in-flight requests.</td>
+</tr>
+</tbody>
+</table>
+<h3>Inspecting and Mutating <code>evt.detail.ctx</code></h3>
+<p>All request and swap events provide <code>evt.detail.ctx</code> (<code>HtmxRequestCtx</code>):</p>
+<pre><code class="language-javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'htmx:config:request'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ctx</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// Attach a dynamic bearer token and correlation ID to every request</span>
+<span class="w">  </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'Authorization'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nb">window</span><span class="p">.</span><span class="nx">authToken</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'X-Correlation-ID'</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">crypto</span><span class="p">.</span><span class="nx">randomUUID</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Append a field to the FormData body before encoding</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="ow">instanceof</span><span class="w"> </span><span class="nx">FormData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ctx</span><span class="p">.</span><span class="nx">request</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'client_tz'</span><span class="p">,</span><span class="w"> </span><span class="nb">Intl</span><span class="p">.</span><span class="nx">DateTimeFormat</span><span class="p">().</span><span class="nx">resolvedOptions</span><span class="p">().</span><span class="nx">timeZone</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+<hr />
+<h2>5.4 Inline Handlers (<code>hx-on:*</code>) &amp; Async <code>htmx:confirm</code></h2>
+<h3>Inline Event Handling with <code>hx-on:*</code></h3>
+<p>Bind standard DOM events or colon-separated <code>htmx:*</code> lifecycle events directly in markup using <code>hx-on:&lt;event-name&gt;</code>:</p>
+<pre><code class="language-html"><span class="cm">&lt;!-- Reset a form automatically after a successful 200 swap --&gt;</span>
+<span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/comments"</span>
+      <span class="na">hx-target</span><span class="o">=</span><span class="s">"#comment-feed"</span>
+      <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span>
+      <span class="na">hx-on:htmx:after:swap</span><span class="o">=</span><span class="s">"if (event.detail.ctx.response.status === 200) this.reset()"</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">textarea</span> <span class="na">name</span><span class="o">=</span><span class="s">"body"</span> <span class="na">required</span><span class="p">&gt;&lt;/</span><span class="nt">textarea</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Post Comment<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</code></pre>
+<h3>Custom Asynchronous Confirmation Modals (<code>htmx:confirm</code>)</h3>
+<p>You can use <code>hx-confirm=&quot;Are you sure?&quot;</code> for native <code>window.confirm()</code>, <code>hx-confirm=&quot;js:showCustomModal()&quot;</code> (which awaits a returned Promise), or intercept the <code>htmx:confirm</code> event globally to integrate a custom <code>&lt;dialog&gt;</code> modal:</p>
+<pre><code class="language-javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'htmx:confirm'</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ctx</span><span class="p">.</span><span class="nx">sourceElement</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">'hx-confirm'</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">message</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Prevent the default window.confirm() dialog</span>
+<span class="w">  </span><span class="nx">evt</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Open a custom HTML &lt;dialog&gt; and call issueRequest() or dropRequest()</span>
+<span class="w">  </span><span class="nx">openConfirmationDialog</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">onConfirm</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">issueRequest</span><span class="p">(),</span>
+<span class="w">    </span><span class="nx">onCancel</span><span class="o">:</span><span class="w">  </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">evt</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">dropRequest</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+</code></pre>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -9,550 +9,935 @@
  merchantability, fitness for a particular purpose and noninfringement.
 -->
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" data-lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>htmx v4.0.1 User Guide</title>
+    <title>htmx v4.0.1 Documentation Portals — Unofficial Drawlib Showcase</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9N5BZ1VRC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-S9N5BZ1VRC');
+    </script>
     <script>
         (function() {
-            const saved = localStorage.getItem('drawlib-theme');
-            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+            try {
+                var savedTheme = localStorage.getItem('drawlib-theme');
+                if (savedTheme === 'dark' || savedTheme === 'light') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+                var params = new URLSearchParams(window.location.search);
+                var queryLang = params.get('lang');
+                var savedLang = localStorage.getItem('drawlib-portal-lang');
+                var lang = 'en';
+                if (queryLang === 'ja' || queryLang === 'en') {
+                    lang = queryLang;
+                } else if (savedLang === 'ja' || savedLang === 'en') {
+                    lang = savedLang;
+                } else if (navigator.language && navigator.language.toLowerCase().indexOf('ja') === 0) {
+                    lang = 'ja';
+                }
+                document.documentElement.setAttribute('data-lang', lang);
+                document.documentElement.setAttribute('lang', lang);
+            } catch (e) {}
         })();
     </script>
-    
-    
-    
-    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/en/">
-    
-    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/ja/">
-    
-    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/">
-    
-    
-    
-    <meta name="description" content="Practical user guide, Hypermedia-Driven Application (HDA) architecture patterns, and feature reference for htmx v4.0.1.">
+    <link rel="icon" type="image/png" href="_assets/favicon.png">
     <link rel="canonical" href="https://htmx.drawlib.com/">
+    <meta name="description" content="Unofficial multi-portal documentation showcase for htmx v4.0.1 built with Drawlib: User Guide, API Reference Catalog, Internal Architecture Guide, and Diagnostic Report.">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Guide">
-    <meta property="og:title" content="htmx v4.0.1 User Guide">
-    <meta property="og:description" content="Practical user guide, Hypermedia-Driven Application (HDA) architecture patterns, and feature reference for htmx v4.0.1.">
+    <meta property="og:site_name" content="htmx Documentation Portals (Unofficial Drawlib Showcase)">
+    <meta property="og:title" content="htmx v4.0.1 Documentation Portals — Drawlib Showcase">
+    <meta property="og:description" content="Explore four self-contained documentation portals for htmx v4.0.1 built with Drawlib: Practical User Guide, Searchable API Catalog, Internal Architecture Guide, and Engineering Audit Report.">
     <meta property="og:url" content="https://htmx.drawlib.com/">
     <meta property="og:image" content="https://htmx.drawlib.com/_assets/ogp.png">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:locale:alternate" content="ja_JP">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="htmx v4.0.1 User Guide">
-    <meta name="twitter:description" content="Practical user guide, Hypermedia-Driven Application (HDA) architecture patterns, and feature reference for htmx v4.0.1.">
+    <meta name="twitter:title" content="htmx v4.0.1 Documentation Portals — Drawlib Showcase">
+    <meta name="twitter:description" content="Unofficial multi-portal documentation suite for htmx v4.0.1 built with Drawlib.">
     <meta name="twitter:image" content="https://htmx.drawlib.com/_assets/ogp.png">
-    
-    
-    
-    <link rel="stylesheet" href="en/style.css">
-    
-    
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --surface-bg: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-hover: #6366f1;
+            --heading-color: #0f172a;
+            --text-color: #334155;
+            --muted-color: #64748b;
+            --brand-color: #4f46e5;
+            --brand-hover: #4338ca;
+            --brand-soft: #eef2ff;
+            --brand-soft-text: #4338ca;
+            --emerald-soft: #ecfdf5;
+            --emerald-text: #047857;
+            --amber-soft: #fffbeb;
+            --amber-text: #b45309;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+            --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+            --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        html[data-theme="dark"] {
+            --bg-color: #090d16;
+            --surface-bg: #0f172a;
+            --surface-subtle: #1e293b;
+            --border-color: #334155;
+            --border-hover: #818cf8;
+            --heading-color: #f1f5f9;
+            --text-color: #cbd5e1;
+            --muted-color: #94a3b8;
+            --brand-color: #818cf8;
+            --brand-hover: #a5b4fc;
+            --brand-soft: #1e1b4b;
+            --brand-soft-text: #a5b4fc;
+            --emerald-soft: rgba(16, 185, 129, 0.14);
+            --emerald-text: #6ee7b7;
+            --amber-soft: rgba(245, 158, 11, 0.14);
+            --amber-text: #fcd34d;
+            --code-bg: #050811;
+            --code-text: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 12px 28px -6px rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-lang="en"] [data-i18n="ja"] {
+            display: none !important;
+        }
+
+        html[data-lang="ja"] [data-i18n="en"] {
+            display: none !important;
+        }
+
+        /* Top Portal Banner */
+        .demo-banner {
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            min-height: 38px;
+            background: #0f172a;
+            color: #f8fafc;
+            border-bottom: 1px solid #334155;
+            font-size: 0.84rem;
+            line-height: 1.4;
+            padding: 0.42rem 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .demo-banner-inner {
+            width: 100%;
+            max-width: 1380px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.45rem 1rem;
+        }
+
+        .demo-banner-badge {
+            display: inline-block;
+            background: #4f46e5;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 0.12rem 0.48rem;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .demo-banner-text {
+            flex: 1 1 auto;
+            color: #e2e8f0;
+        }
+
+        .demo-banner a {
+            color: #a5b4fc;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .demo-banner a:hover {
+            color: #e0e7ff;
+            text-decoration: underline;
+        }
+
+        .demo-banner-links {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.25rem 0.45rem;
+        }
+
+        .demo-banner-links a,
+        .demo-banner-links strong {
+            white-space: nowrap;
+        }
+
+        .demo-banner-sep {
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .demo-banner {
+                position: static;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Main Container */
+        .hub-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.25rem 1.5rem 4rem;
+        }
+
+        /* Header Bar */
+        .hub-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hub-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--heading-color);
+            text-decoration: none;
+        }
+
+        .hub-brand-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            display: inline-block;
+        }
+
+        .hub-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--surface-bg);
+            color: var(--heading-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.38rem 0.72rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .control-btn:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-subtle);
+        }
+
+        .control-btn.active {
+            background: var(--brand-soft);
+            color: var(--brand-soft-text);
+            border-color: var(--brand-color);
+        }
+
+        /* Hero Section */
+        .hub-hero {
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 2.25rem 2.25rem 2rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .hub-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--brand-soft-text);
+            background: var(--brand-soft);
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            margin-bottom: 0.9rem;
+        }
+
+        .hub-hero h1 {
+            margin: 0 0 0.75rem;
+            font-size: clamp(1.65rem, 3vw, 2.35rem);
+            line-height: 1.22;
+            color: var(--heading-color);
+            letter-spacing: -0.02em;
+        }
+
+        .hub-hero p {
+            margin: 0 0 1.25rem;
+            font-size: 1.02rem;
+            color: var(--text-color);
+            max-width: 920px;
+        }
+
+        .hub-meta-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .meta-pill {
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            padding: 0.24rem 0.62rem;
+            border-radius: 6px;
+            background: var(--surface-subtle);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 4-Portal Grid */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.35rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 860px) {
+            .portal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .portal-card {
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.65rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-hover);
+        }
+
+        .portal-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.85rem;
+        }
+
+        .portal-badge {
+            font-size: 0.73rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            padding: 0.2rem 0.55rem;
+            border-radius: 5px;
+            background: var(--brand-soft);
+            color: var(--brand-soft-text);
+        }
+
+        .portal-badge.emerald {
+            background: var(--emerald-soft);
+            color: var(--emerald-text);
+        }
+
+        .portal-badge.amber {
+            background: var(--amber-soft);
+            color: var(--amber-text);
+        }
+
+        .portal-path {
+            font-size: 0.76rem;
+            font-family: var(--font-mono);
+            color: var(--muted-color);
+        }
+
+        .portal-card h2 {
+            margin: 0 0 0.55rem;
+            font-size: 1.28rem;
+            color: var(--heading-color);
+            line-height: 1.3;
+        }
+
+        .portal-card h2 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .portal-card h2 a:hover {
+            color: var(--brand-color);
+        }
+
+        .portal-desc {
+            margin: 0 0 0.9rem;
+            font-size: 0.93rem;
+            color: var(--text-color);
+        }
+
+        .portal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.95rem;
+        }
+
+        .portal-tag {
+            font-size: 0.74rem;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            padding: 0.16rem 0.5rem;
+            border-radius: 5px;
+            background: var(--surface-subtle);
+            color: var(--muted-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .portal-highlights {
+            margin: 0 0 1.35rem;
+            padding-left: 1.15rem;
+            font-size: 0.86rem;
+            color: var(--muted-color);
+        }
+
+        .portal-highlights li {
+            margin-bottom: 0.3rem;
+        }
+
+        .portal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.44rem 0.82rem;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: #ffffff;
+            border: 1px solid #4f46e5;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            border-color: #4338ca;
+        }
+
+        .btn-secondary {
+            background: var(--surface-subtle);
+            color: var(--heading-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            color: var(--brand-color);
+        }
+
+        /* Summary Table & Repro Section */
+        .hub-section {
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.65rem;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .hub-section h3 {
+            margin: 0 0 0.85rem;
+            font-size: 1.12rem;
+            color: var(--heading-color);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.65rem 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 700;
+            color: var(--heading-color);
+            background: var(--surface-subtle);
+        }
+
+        td code, p code {
+            font-family: var(--font-mono);
+            font-size: 0.84em;
+            background: var(--brand-soft);
+            color: var(--brand-soft-text);
+            padding: 0.15rem 0.38rem;
+            border-radius: 4px;
+        }
+
+        td a {
+            color: var(--brand-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        pre {
+            margin: 0.75rem 0 0;
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            padding: 1rem 1.15rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            line-height: 1.55;
+        }
+
+        .hub-footer {
+            font-size: 0.84rem;
+            color: var(--muted-color);
+            text-align: center;
+            padding-top: 1rem;
+        }
+
+        .hub-footer a {
+            color: var(--brand-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hub-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    
-    <div class="doc-layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <a href="index.html" class="sidebar-brand" aria-label="Guide">
-                    
-                    Guide
-                    
-                </a>
-                <div class="sidebar-header-actions">
-                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    </button>
-                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
-                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-            </div>
-            <div class="sidebar-menu">
-                
-                    
-                        
-                        <ul class="nav-list">
-                            
-                            <li class="nav-item active">
-                                <a href="en/index.html" >Overview</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/01_getting_started.html" >1. Getting Started</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/02_hypermedia_architecture.html" >2. Hypermedia Architecture</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/03_requests_and_triggers.html" >3. Requests &amp; Triggers</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/04_targeting_and_swapping.html" >4. Targeting &amp; Swapping</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/05_headers_events_and_status.html" >5. Headers, Events &amp; Status</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/06_extensions_and_streaming.html" >6. Extensions &amp; Streaming</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/07_history_caching_and_ux.html" >7. History, Caching &amp; UX</a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="en/08_security_testing_and_debugging.html" >8. Security, Testing &amp; Debugging</a>
-                            </li>
-                            
-                        </ul>
-                    
-                        
-                        <div class="sidebar-heading">Companion Portals</div>
-                        
-                        <ul class="nav-list">
-                            
-                            <li class="nav-item ">
-                                <a href="https://htmx.drawlib.com/api/" target="_blank" rel="noopener noreferrer">API Reference Catalog<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="https://htmx.drawlib.com/architecture/" target="_blank" rel="noopener noreferrer">Internal Architecture Guide<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
-                            </li>
-                            
-                            <li class="nav-item ">
-                                <a href="https://htmx.drawlib.com/reports/pni501/" target="_blank" rel="noopener noreferrer">PNI501 Diagnostic Report<svg class="nav-external-icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
-                            </li>
-                            
-                        </ul>
-                    
-                
-            </div>
-        </aside>
-        <div class="content-wrapper">
-            <header class="top-bar">
-                <div class="breadcrumbs">
-                    <span class="crumb">Docs</span>
-                    <span class="crumb-separator">&raquo;</span>
-                    <span class="crumb active">htmx v4.0.1 User Guide</span>
-                </div>
-                
-                <div class="lang-switcher">
-                    <details class="lang-dropdown">
-                        <summary class="lang-dropdown-btn" aria-label="Select language">
-                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            <span class="lang-current-label">English</span>
-                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </summary>
-                        <div class="lang-dropdown-menu" role="menu">
-                            
-                            <a href="en/index.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
-                                <span>English</span>
-                                
-                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                
-                            </a>
-                            
-                            <a href="ja/index.html" class="lang-option" lang="ja" hreflang="ja" >
-                                <span>日本語</span>
-                                
-                            </a>
-                            
-                        </div>
-                    </details>
-                </div>
-                
-            </header>
-            <main class="main-content">
-                <h1>htmx v4.0.1 User Guide</h1>
-<p>Welcome to the comprehensive engineering guide for <strong>htmx v4.0.1</strong>—a ground-up modernization of the hypermedia-oriented JavaScript library that empowers any HTML element to issue HTTP requests, stream server updates, and morph DOM state directly from declarative markup.</p>
-<figure class="drawlib-image" style="text-align: center;">
-  <img src="images/index/htmx4_hero_overview.png" alt="index_1" />
-  <figcaption class="drawlib-caption">htmx v4.0.1 Hypermedia Runtime & Server Interaction Architecture</figcaption>
-</figure>
-<details class="drawlib-code-details">
-<summary>Source Code</summary>
-<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.architecture</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArchitectureDiagram</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">NodeGroup</span><span class="p">,</span> <span class="n">PhosphorIcon</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
-
-<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">184</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">96</span><span class="p">)</span>
-
-<span class="n">d</span> <span class="o">=</span> <span class="n">ArchitectureDiagram</span><span class="p">(</span>
-    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Primary</span><span class="p">,</span>
-    <span class="n">node_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
-    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
-    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
-    <span class="n">node_card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"htmx v4.0.1 Hypermedia Runtime &amp; End-to-End Request Pipeline"</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">browser</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Browser Runtime (htmx v4.0.1 Core + Extensions)"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">6.0</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">))</span>
-
-<span class="n">dom</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"Declarative HTML</span><span class="se">\n</span><span class="s2">(:inherited / hx-*)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">CODE</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
-<span class="p">)</span>
-<span class="n">fetch_core</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"fetch() Request Core</span><span class="se">\n</span><span class="s2">(HCON &amp; hx-sync)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">PAPER_PLANE_TILT</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">)),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">70.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
-<span class="p">)</span>
-<span class="n">morph_swap</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"Swap &amp; Morph Engine</span><span class="se">\n</span><span class="s2">(innerMorph / &lt;hx-partial&gt;)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">STACK</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">70.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
-<span class="p">)</span>
-<span class="n">ext_bus</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"Extension Hook Bus</span><span class="se">\n</span><span class="s2">(17 Official Exts)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">PLUGS_CONNECTED</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="n">server</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">NodeGroup</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Hypermedia Server"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">6.0</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">128.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">))</span>
-<span class="n">endpoint</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"HTML Fragment</span><span class="se">\n</span><span class="s2">Controller"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">HARD_DRIVES</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">card_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">18.0</span><span class="p">,</span> <span class="mf">52.0</span><span class="p">),</span>
-<span class="p">)</span>
-<span class="n">streams</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">Node</span><span class="p">(</span><span class="s2">"Status &amp; Partials</span><span class="se">\n</span><span class="s2">(hx-status / SSE / WS)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">PhosphorIcon</span><span class="o">.</span><span class="n">BROADCAST</span><span class="p">,</span> <span class="n">icon_size</span><span class="o">=</span><span class="mf">7.5</span><span class="p">),</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">18.0</span><span class="p">,</span> <span class="mf">18.0</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span> <span class="n">fetch_core</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"1. Trigger"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">fetch_core</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"2. HTTP + HX-*"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">streams</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"3. Render"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">streams</span><span class="p">,</span> <span class="n">morph_swap</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"4. Fragments"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">morph_swap</span><span class="p">,</span> <span class="n">ext_bus</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"5. Swap Hooks"</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="s2">"&lt;-&gt;"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ext_bus</span><span class="p">,</span> <span class="n">dom</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"6. Hydrate"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-
-<span class="n">d</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
-<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre>
-</details>
-<hr />
-<h2>Why htmx v4.0.1?</h2>
-<p>htmx 4 reimagines hypermedia-driven development around modern web platform primitives while eliminating legacy complexity from htmx 2. Instead of serializing JSON payloads and maintaining duplicate client-side state stores, your server renders <strong>HTML fragments</strong> that htmx seamlessly integrates into the live document.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Architectural Pillar</th>
-<th style="text-align:left">htmx v4.0.1 Capability</th>
-<th style="text-align:left">Key Engineering Benefit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong><code>fetch()</code> Native Core</strong></td>
-<td style="text-align:left">Replaces <code>XMLHttpRequest</code> with <code>fetch()</code>, <code>AbortSignal</code>, and <code>ReadableStream</code></td>
-<td style="text-align:left">Enables streaming responses (<code>hx-multipart</code>, <code>hx-sse</code>, <code>hx-download</code>) and clean request interception</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Explicit Inheritance (<code>:inherited</code>)</strong></td>
-<td style="text-align:left">Parent attributes only cascade when explicitly marked (e.g., <code>hx-target:inherited=&quot;#main&quot;</code>)</td>
-<td style="text-align:left">Eliminates accidental attribute leakage across deeply nested component trees</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>First-Class Multi-Region Partials</strong></td>
-<td style="text-align:left"><code>&lt;hx-partial hx-target=&quot;...&quot; hx-swap=&quot;...&quot;&gt;</code> elements in server responses</td>
-<td style="text-align:left">Cleanly updates multiple independent page regions in a single HTTP round-trip</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Built-In DOM Morphing</strong></td>
-<td style="text-align:left"><code>innerMorph</code>, <code>outerMorph</code>, and <code>outerSync</code> swap strategies in core</td>
-<td style="text-align:left">Preserves focus, scroll position, video playback, and CSS animations without external libraries</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Declarative Status Routing</strong></td>
-<td style="text-align:left"><code>hx-status:422=&quot;target:#errors&quot;</code> and wildcard <code>hx-status:5xx</code></td>
-<td style="text-align:left">Routes validation errors and server failures to dedicated UI targets without custom JS</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>HCON Configuration Notation</strong></td>
-<td style="text-align:left">Concise key-value syntax (<code>defaultSwap:outerHTML, logAll:true</code>) alongside JSON</td>
-<td style="text-align:left">Simplifies <code>&lt;meta name=&quot;htmx-config&quot;&gt;</code>, <code>hx-vals</code>, <code>hx-headers</code>, and <code>hx-config</code></td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>17 Official Extensions &amp; <code>htmax.js</code></strong></td>
-<td style="text-align:left">Event-hook extension API (<code>htmx.registerExtension</code>) + all-in-one <code>htmax.js</code> bundle</td>
-<td style="text-align:left">Zero <code>hx-ext</code> boilerplate; load script files directly or enforce a strict CSP/extension whitelist</td>
-</tr>
-</tbody>
-</table>
-<figure class="drawlib-image" style="text-align: center;">
-  <img src="images/index/htmx4_pillars_and_lifecycle.png" alt="index_2" />
-  <figcaption class="drawlib-caption">htmx v4.0.1 Core Pillars and 5-Stage Hypermedia Request Lifecycle</figcaption>
-</figure>
-<details class="drawlib-code-details">
-<summary>Source Code</summary>
-<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChevronProcess</span><span class="p">,</span> <span class="n">KpiCards</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
-
-<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">176</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">82</span><span class="p">)</span>
-
-<span class="c1"># Top: 5-Stage Request &amp; Swap Pipeline (Bottom-Left at y=60)</span>
-<span class="n">pipeline</span> <span class="o">=</span> <span class="n">ChevronProcess</span><span class="p">(</span>
-    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
-    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
-    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
-    <span class="n">corner_angle</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
-    <span class="n">spacing</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>
-    <span class="n">flat_left_end</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"1. Trigger"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Event / Filter / Poll"</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"2. Configure"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"HCON / FormData / Sync"</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="s2">"3. Fetch Core"</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">"HTTP + HX-* Headers"</span><span class="p">,</span>
-    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
-    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
-    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
-<span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"4. Status &amp; Partials"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"hx-status / &lt;hx-partial&gt;"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"5. Swap &amp; Settle"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Morph / ViewTransition"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">164.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span>
-
-<span class="c1"># Bottom: 2x3 KPI Grid of v4 Highlights (Bottom-Left at y=6)</span>
-<span class="n">kpi</span> <span class="o">=</span> <span class="n">KpiCards</span><span class="p">(</span>
-    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
-    <span class="n">metric_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">15.0</span><span class="p">),</span>
-    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
-    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
-    <span class="n">accent_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="p">,</span>
-    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
-    <span class="n">accent_position</span><span class="o">=</span><span class="s2">"left_pill"</span><span class="p">,</span>
-    <span class="n">metric_layout</span><span class="o">=</span><span class="s2">"left_column"</span><span class="p">,</span>
-    <span class="n">metric_width_ratio</span><span class="o">=</span><span class="mf">0.30</span><span class="p">,</span>
-    <span class="n">spacing</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"fetch()"</span><span class="p">,</span> <span class="s2">"Modern Network Core"</span><span class="p">,</span> <span class="s2">"Native Promises &amp; ReadableStream"</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">globe</span><span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">":inherited"</span><span class="p">,</span> <span class="s2">"Explicit Inheritance"</span><span class="p">,</span> <span class="s2">"Zero accidental attribute bleed"</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">tree_structure</span><span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"Morph"</span><span class="p">,</span> <span class="s2">"Built-in DOM Diffing"</span><span class="p">,</span> <span class="s2">"innerMorph &amp; outerMorph in core"</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">arrows_merge</span><span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="s2">"&lt;hx-partial&gt;"</span><span class="p">,</span>
-    <span class="s2">"Multi-Region Updates"</span><span class="p">,</span>
-    <span class="s2">"Declarative out-of-band fragments"</span><span class="p">,</span>
-    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
-    <span class="n">metric_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">14.0</span><span class="p">),</span>
-    <span class="n">accent_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentFlat</span><span class="p">,</span>
-    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">AccentBold</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"hx-status"</span><span class="p">,</span> <span class="s2">"Status Code Routing"</span><span class="p">,</span> <span class="s2">"Wildcard 4xx/5xx &amp; 422 targets"</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">git_Fork</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">phosphor</span><span class="p">,</span> <span class="s2">"git_Fork"</span><span class="p">)</span> <span class="k">else</span> <span class="n">phosphor</span><span class="o">.</span><span class="n">git_branch</span><span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"17 Exts"</span><span class="p">,</span> <span class="s2">"Official Extension Suite"</span><span class="p">,</span> <span class="s2">"SSE, WS, Live, CSP, History Cache"</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">plugs</span><span class="p">)</span>
-<span class="n">kpi</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">164.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">48.0</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
-
-<span class="n">save</span><span class="p">()</span>
-</code></pre>
-</details>
-<hr />
-<h2>Quick Taste: Declarative Hypermedia in Action</h2>
-<p>With htmx v4.0.1, common UI workflows—such as form submission, server-side validation on <code>HTTP 422</code>, and multi-region badge updates—require zero custom JavaScript:</p>
-<pre><code class="language-html"><span class="cm">&lt;!-- Client HTML: Explicit inheritance, declarative 422 routing, and loading indicator --&gt;</span>
-<span class="p">&lt;</span><span class="nt">section</span> <span class="na">hx-target:inherited</span><span class="o">=</span><span class="s">"#contact-list"</span> <span class="na">hx-indicator:inherited</span><span class="o">=</span><span class="s">"#save-spinner"</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/contacts"</span>
-        <span class="na">hx-swap</span><span class="o">=</span><span class="s">"beforeend"</span>
-        <span class="na">hx-status:422</span><span class="o">=</span><span class="s">"target:#form-errors swap:innerHTML"</span>
-        <span class="na">hx-disable</span><span class="o">=</span><span class="s">"find button"</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"email"</span> <span class="na">name</span><span class="o">=</span><span class="s">"email"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"engineer@example.com"</span> <span class="na">required</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"form-errors"</span> <span class="na">class</span><span class="o">=</span><span class="s">"error-banner"</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>Add Contact<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"save-spinner"</span> <span class="na">class</span><span class="o">=</span><span class="s">"htmx-indicator"</span><span class="p">&gt;</span>Saving...<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
-
-  <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">id</span><span class="o">=</span><span class="s">"contact-list"</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">li</span> <span class="na">id</span><span class="o">=</span><span class="s">"contact-1"</span><span class="p">&gt;</span>alice@example.com<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span>
-</code></pre>
-<p>When the server accepts the new contact (<code>HTTP 200 OK</code>), it returns both the primary list item and an <code>&lt;hx-partial&gt;</code> fragment that updates the navigation counter badge simultaneously:</p>
-<pre><code class="language-html"><span class="cm">&lt;!-- Server HTTP 200 Response: Main fragment + explicit &lt;hx-partial&gt; update --&gt;</span>
-<span class="p">&lt;</span><span class="nt">li</span> <span class="na">id</span><span class="o">=</span><span class="s">"contact-2"</span><span class="p">&gt;</span>engineer@example.com<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">hx-partial</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">"#contacts-count"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"textContent"</span><span class="p">&gt;</span>
-  2
-<span class="p">&lt;/</span><span class="nt">hx-partial</span><span class="p">&gt;</span>
-</code></pre>
-<hr />
-<h2>User Guide Chapters</h2>
-<p>Explore the 8 structured chapters of this guide to master htmx v4.0.1 from foundational concepts to production security:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Chapter</th>
-<th style="text-align:left">Topic &amp; Core Features Covered</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong><a href="en/01_getting_started.html">1. Getting Started</a></strong></td>
-<td style="text-align:left">Installation (<code>npm install htmx.org@4.0.1</code>), bundle variants (<code>htmx.js</code>, <code>htmx.esm.js</code>, <code>htmax.js</code>), hypermedia mental model, request verbs (<code>hx-get</code>..<code>hx-query</code>), default triggers, and migrating from htmx 2 with <code>upgrade-check</code>.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/02_hypermedia_architecture.html">2. Hypermedia Architecture</a></strong></td>
-<td style="text-align:left">Hypermedia-Driven Application (HDA) design, explicit <code>:inherited</code> and <code>:append</code> modifiers vs <code>implicitInheritance</code>, <code>HX-Request-Type: partial | full</code>, and 4 multi-region update patterns (<code>&lt;hx-partial&gt;</code>, <code>hx-swap-oob</code>, <code>HX-Trigger</code>, target expansion).</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/03_requests_and_triggers.html">3. Requests &amp; Triggers</a></strong></td>
-<td style="text-align:left"><code>hx-trigger</code> modifiers (<code>once</code>, <code>changed</code>, <code>delay</code>, <code>throttle</code>, <code>from</code>, <code>target</code>, <code>halt</code>), bracketed JS filters, <code>intersect</code> &amp; polling, why <code>GET</code>/<code>DELETE</code> exclude enclosing forms, <code>hx-vals</code> &amp; HCON (<code>js:</code>), <code>hx-headers</code>, <code>hx-config</code>, and <code>hx-sync</code>.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/04_targeting_and_swapping.html">4. Targeting &amp; Swapping</a></strong></td>
-<td style="text-align:left">Extended relative CSS selectors (<code>this</code>, <code>closest</code>, <code>find</code>, <code>next</code>, <code>previous</code>), all 12 swap strategies (<code>innerHTML</code>, <code>outerSync</code>, <code>textContent</code>, etc.), built-in DOM morphing (<code>innerMorph</code>, <code>outerMorph</code>, <code>hx-morph-skip</code>), swap modifiers, <code>hx-preserve</code>, and View Transitions.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/05_headers_events_and_status.html">5. Headers, Events &amp; Status</a></strong></td>
-<td style="text-align:left">Request headers (<code>HX-Source</code>, <code>HX-Target</code> as <code>tag#id</code>) and response headers (<code>HX-Trigger</code>, <code>HX-Retarget</code>, <code>HX-Location</code>), declarative <code>hx-status:XXX</code> routing, colon-separated <code>htmx:phase:action</code> events, <code>detail.ctx</code>, <code>hx-on:*</code>, and async <code>htmx:confirm</code>.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/06_extensions_and_streaming.html">6. Extensions &amp; Streaming</a></strong></td>
-<td style="text-align:left"><code>htmx.registerExtension()</code> lifecycle &amp; <code>extensions</code> whitelist, streaming HTML (<code>hx-sse</code>, <code>hx-ws</code>, <code>hx-multipart</code>), reactive DOM scripting with <code>hx-live</code> (<code>q()</code>, <code>.data</code>, <code>.aria</code>, <code>take()</code>, <code>toggle()</code>), UX extensions, and <code>htmax.js</code>.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/07_history_caching_and_ux.html">7. History, Caching &amp; UX</a></strong></td>
-<td style="text-align:left">Progressive enhancement with <code>hx-boost:inherited=&quot;true&quot;</code>, history navigation (<code>hx-push-url</code>, <code>hx-replace-url</code>, <code>hx-history-elt</code>, <code>htmx.config.history</code>), <code>sessionStorage</code> snapshots via <code>hx-history-cache</code>, flicker-free <code>hx-indicator</code>, and <code>hx-ptag</code> conditional polling.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong><a href="en/08_security_testing_and_debugging.html">8. Security, Testing &amp; Debugging</a></strong></td>
-<td style="text-align:left">Hypermedia security boundaries (<code>hx-ignore</code> for untrusted content vs <code>hx-disable</code>), strict CSP (<code>hx-csp</code>, <code>hx-nonce</code>, <code>safeEval</code>, Trusted Types), debugging with <code>logAll</code> and <code>elt._htmx</code>, and automated testing with <code>@web/test-runner</code>, <code>fetch-mock</code>, and Playwright.</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2>Companion Documentation Portals</h2>
-<p>This User Guide is part of a four-portal engineering documentation suite for <code>htmx v4.0.1</code>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Portal</th>
-<th style="text-align:left">URL</th>
-<th style="text-align:left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"><strong>Portal 1: User Guide</strong> <em>(Current)</em></td>
-<td style="text-align:left"><code>https://htmx.drawlib.com/</code></td>
-<td style="text-align:left">Practical tutorials, HDA design patterns, migration workflows, and feature guides.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Portal 2: API Reference Catalog</strong></td>
-<td style="text-align:left"><a href="https://htmx.drawlib.com/api/">https://htmx.drawlib.com/api/</a></td>
-<td style="text-align:left">Exhaustive specification of every <code>hx-*</code> attribute, JS API method, event, header, config option, and extension.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Portal 3: Internal Architecture Guide</strong></td>
-<td style="text-align:left"><a href="https://htmx.drawlib.com/architecture/">https://htmx.drawlib.com/architecture/</a></td>
-<td style="text-align:left">Deep dive into <code>src/htmx.js</code> internals: HCON parser, morph algorithm, task queue, and extension runtime.</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Portal 4: PNI501 Diagnostic Report</strong></td>
-<td style="text-align:left"><a href="https://htmx.drawlib.com/reports/pni501/">https://htmx.drawlib.com/reports/pni501/</a></td>
-<td style="text-align:left">Codebase quality metrics, test suite coverage analysis, bundle size breakdown, and security audit findings.</td>
-</tr>
-</tbody>
-</table>
-
-            </main>
+    <div class="demo-banner" role="region" aria-label="Portal Navigation">
+        <div class="demo-banner-inner">
+            <span class="demo-banner-badge">DRAWLIB SHOWCASE</span>
+            <span class="demo-banner-text" data-i18n="en">
+                Unofficial <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a> (v4.0.1) Documentation built with <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a>
+            </span>
+            <span class="demo-banner-text" data-i18n="ja">
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> で構築された <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a>（v4.0.1）非公式ドキュメント
+            </span>
+            <span class="demo-banner-links">
+                <strong style="color:#ffffff;">All Portals</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="user_guide/index.html" data-i18n="en">User Guide</a>
+                <a href="user_guide/ja/index.html" data-i18n="ja">User Guide</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="api/index.html" data-i18n="en">API Reference</a>
+                <a href="api/ja/index.html" data-i18n="ja">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="architecture/index.html" data-i18n="en">Architecture</a>
+                <a href="architecture/ja/index.html" data-i18n="ja">Architecture</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
         </div>
     </div>
-    
+
+    <main class="hub-container">
+        <header class="hub-topbar">
+            <a href="index.html" class="hub-brand">
+                <span class="hub-brand-dot"></span>
+                <span>htmx.drawlib.com</span>
+            </a>
+            <div class="hub-controls">
+                <button type="button" id="lang-en-btn" class="control-btn" aria-label="Switch to English">EN · English</button>
+                <button type="button" id="lang-ja-btn" class="control-btn" aria-label="日本語に切り替え">JA · 日本語</button>
+                <button type="button" id="theme-toggle-btn" class="control-btn" aria-label="Toggle Light/Dark Theme">
+                    <span data-i18n="en">Theme</span>
+                    <span data-i18n="ja">テーマ切替</span>
+                </button>
+            </div>
+        </header>
+
+        <section class="hub-hero">
+            <div class="hub-eyebrow">
+                <span data-i18n="en">Illustrated Documentation as Code · Drawlib Showcase</span>
+                <span data-i18n="ja">Illustrated Documentation as Code · Drawlib ショーケース</span>
+            </div>
+            <h1 data-i18n="en">htmx v4 Documentation Portals</h1>
+            <h1 data-i18n="ja">htmx v4 ドキュメントポータル一覧</h1>
+            <p data-i18n="en">
+                This showcase demonstrates how a single repository can compile four complementary technical documentation portals for <strong>htmx v4.0.1</strong>—a practical <strong>User Guide</strong>, a searchable <strong>API Reference Catalog</strong>, an <strong>Internal Architecture Guide</strong>, and a <strong>Diagnostic Report</strong>—entirely as code using <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a>. For official htmx documentation, always visit <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx.org</a> and <a href="https://four.htmx.org/" target="_blank" rel="noopener noreferrer">four.htmx.org</a>.
+            </p>
+            <p data-i18n="ja">
+                本サイトは、<a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> を用いて単一リポジトリから <strong>htmx v4.0.1</strong> の<strong>実践ユーザーガイド</strong>・<strong>API リファレンスカタログ</strong>・<strong>内部アーキテクチャ解説</strong>・<strong>診断レポート</strong>の4つの技術ドキュメントポータルをすべてコードとして生成するショーケースです。htmx の公式ドキュメントは <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx.org</a> および <a href="https://four.htmx.org/" target="_blank" rel="noopener noreferrer">four.htmx.org</a> を参照してください。
+            </p>
+            <div class="hub-meta-pills">
+                <span class="meta-pill">htmx v4.0.1 (8d112c71)</span>
+                <span class="meta-pill">Drawlib v0.3.9 (site · catalog · doc)</span>
+                <span class="meta-pill">Bilingual (English &amp; 日本語)</span>
+                <span class="meta-pill">HTML &amp; A4 PDF Output</span>
+            </div>
+        </section>
+
+        <section class="portal-grid" aria-label="Documentation Portals">
+            <!-- Portal 1: User Guide -->
+            <article class="portal-card">
+                <div>
+                    <div class="portal-card-top">
+                        <span class="portal-badge">Drawlib Site · type = "site"</span>
+                        <span class="portal-path">user_guide_src/ → docs/user_guide/</span>
+                    </div>
+                    <h2>
+                        <a href="user_guide/index.html" data-i18n="en">1. htmx v4 Practical User Guide</a>
+                        <a href="user_guide/ja/index.html" data-i18n="ja">1. htmx v4 実践ユーザーガイド</a>
+                    </h2>
+                    <p class="portal-desc" data-i18n="en">
+                        9-page hands-on curriculum covering Hypermedia-Driven Application (HDA) design, explicit attribute inheritance, built-in DOM morphing, declarative status routing, multi-region updates, extensions, and strict CSP security.
+                    </p>
+                    <p class="portal-desc" data-i18n="ja">
+                        全9ページの実践ガイド。ハイパーメディア駆動（HDA）設計、明示的な属性継承、組込み DOM モーフィング、ステータスコード分岐、部分更新、公式拡張、厳格な CSP セキュリティ境界までを体系的に解説します。
+                    </p>
+                    <div class="portal-tags">
+                        <span class="portal-tag">:inherited</span>
+                        <span class="portal-tag">innerMorph / outerMorph</span>
+                        <span class="portal-tag">&lt;hx-partial&gt;</span>
+                        <span class="portal-tag">hx-status:Nxx</span>
+                        <span class="portal-tag">hx-sse / hx-ws / hx-live</span>
+                    </div>
+                    <ul class="portal-highlights" data-i18n="en">
+                        <li>Explicit <code>:inherited</code> &amp; <code>:append</code> modifiers and brace-free HCON syntax</li>
+                        <li>Built-in Idiomorph <code>innerMorph</code> / <code>outerMorph</code> &amp; <code>&lt;hx-partial&gt;</code> updates</li>
+                        <li>Colon-separated events, <code>hx-status:*</code> routing, <code>hx-ignore</code> &amp; <code>hx-csp</code></li>
+                    </ul>
+                    <ul class="portal-highlights" data-i18n="ja">
+                        <li>明示的 <code>:inherited</code> / <code>:append</code> 修飾子と波括弧不要の HCON 構文</li>
+                        <li>組込み Idiomorph <code>innerMorph</code> / <code>outerMorph</code> と <code>&lt;hx-partial&gt;</code> 部分更新</li>
+                        <li>コロン区切りイベント・<code>hx-status:*</code> 分岐・<code>hx-ignore</code> / <code>hx-csp</code> 防御</li>
+                    </ul>
+                </div>
+                <div class="portal-actions">
+                    <a href="user_guide/index.html" class="btn-primary" data-i18n="en">Open Portal →</a>
+                    <a href="user_guide/ja/index.html" class="btn-primary" data-i18n="ja">Open Portal →</a>
+                    <a href="user_guide/en/index.html" class="btn-secondary">EN</a>
+                    <a href="user_guide/ja/index.html" class="btn-secondary">JA</a>
+                    <a href="user_guide/llms.txt" class="btn-secondary">llms.txt</a>
+                </div>
+            </article>
+
+            <!-- Portal 2: API Reference Catalog -->
+            <article class="portal-card">
+                <div>
+                    <div class="portal-card-top">
+                        <span class="portal-badge emerald">Drawlib Catalog · type = "catalog"</span>
+                        <span class="portal-path">api_src/ → docs/api/</span>
+                    </div>
+                    <h2>
+                        <a href="api/index.html" data-i18n="en">2. htmx v4 API Reference Catalog</a>
+                        <a href="api/ja/index.html" data-i18n="ja">2. htmx v4 API リファレンスカタログ</a>
+                    </h2>
+                    <p class="portal-desc" data-i18n="en">
+                        Searchable 13-section symbol and attribute catalog covering every HTML attribute, modifier, HTTP header, JavaScript API method, configuration option, DOM event payload, all 17 official extensions, and the CLI tool.
+                    </p>
+                    <p class="portal-desc" data-i18n="ja">
+                        全 HTML 属性・修飾子・HTTP ヘッダ・JavaScript API メソッド・設定項目・DOM イベント・公式拡張17種・CLI ツールを網羅した全13セクションの検索対応リファレンスカタログです。
+                    </p>
+                    <div class="portal-tags">
+                        <span class="portal-tag">hx-get..hx-query</span>
+                        <span class="portal-tag">HX-* Headers</span>
+                        <span class="portal-tag">htmx.ajax / swap</span>
+                        <span class="portal-tag">HtmxEventMap</span>
+                        <span class="portal-tag">17 Official Extensions</span>
+                    </div>
+                    <ul class="portal-highlights" data-i18n="en">
+                        <li>Interactive sidebar symbol filter &amp; attribute/event specification cards</li>
+                        <li>Full signatures for <code>htmx.ajax()</code>, <code>htmx.swap()</code>, <code>htmx.process()</code> &amp; <code>htmx.config</code></li>
+                        <li>Complete reference for all 17 extensions (<code>src/ext/*.js</code>) &amp; <code>upgrade-check</code> CLI</li>
+                    </ul>
+                    <ul class="portal-highlights" data-i18n="ja">
+                        <li>インタラクティブなシンボル絞り込み検索と属性・イベント仕様カード</li>
+                        <li><code>htmx.ajax()</code>・<code>htmx.swap()</code>・<code>htmx.process()</code>・<code>htmx.config</code> 全定義</li>
+                        <li>全17種の公式拡張（<code>src/ext/*.js</code>）と <code>upgrade-check</code> CLI まで完全網羅</li>
+                    </ul>
+                </div>
+                <div class="portal-actions">
+                    <a href="api/index.html" class="btn-primary" data-i18n="en">Open Portal →</a>
+                    <a href="api/ja/index.html" class="btn-primary" data-i18n="ja">Open Portal →</a>
+                    <a href="api/en/index.html" class="btn-secondary">EN</a>
+                    <a href="api/ja/index.html" class="btn-secondary">JA</a>
+                    <a href="api/llms.txt" class="btn-secondary">llms.txt</a>
+                </div>
+            </article>
+
+            <!-- Portal 3: Internal Architecture Guide -->
+            <article class="portal-card">
+                <div>
+                    <div class="portal-card-top">
+                        <span class="portal-badge">Drawlib Site · type = "site"</span>
+                        <span class="portal-path">architecture_src/ → docs/architecture/</span>
+                    </div>
+                    <h2>
+                        <a href="architecture/index.html" data-i18n="en">3. htmx v4 Internal Architecture Guide</a>
+                        <a href="architecture/ja/index.html" data-i18n="ja">3. htmx v4 内部アーキテクチャ解説</a>
+                    </h2>
+                    <p class="portal-desc" data-i18n="en">
+                        Source-level deep dive into how htmx v4.0.1 (<code>src/htmx.js</code> and <code>src/ext/*.js</code>) works under the hood: single-class <code>Htmx</code> engine, HCON parser, <code>RequestQueue</code> FSM, <code>fetch()</code> pipeline, and Idiomorph reconciliation.
+                    </p>
+                    <p class="portal-desc" data-i18n="ja">
+                        htmx 本体の内部実装（<code>src/htmx.js</code> および <code>src/ext/*.js</code>）をソースコードレベルで解剖する全7ページの内部アーキテクチャガイドです。
+                    </p>
+                    <div class="portal-tags">
+                        <span class="portal-tag">class Htmx</span>
+                        <span class="portal-tag">HCON Parser</span>
+                        <span class="portal-tag">RequestQueue FSM</span>
+                        <span class="portal-tag">Idiomorph Engine</span>
+                        <span class="portal-tag">#internalAPI</span>
+                    </div>
+                    <ul class="portal-highlights" data-i18n="en">
+                        <li>Single-class <code>Htmx</code> state binding (<code>elt._htmx</code>) &amp; <code>#hxOnQuery</code> XPath discovery</li>
+                        <li><code>HCON.parse</code> lexer, <code>__parseTriggerSpecs</code> &amp; <code>RequestQueue.admit()</code> state machine</li>
+                        <li><code>swap(ctx)</code> task ordering, persistent-ID <code>__morph()</code> &amp; <code>#internalAPI</code> extension bridge</li>
+                    </ul>
+                    <ul class="portal-highlights" data-i18n="ja">
+                        <li>単一クラス <code>Htmx</code> の状態ストア（<code>elt._htmx</code>）と <code>#hxOnQuery</code> XPath 高速探索</li>
+                        <li><code>HCON.parse</code> レキサー・<code>__parseTriggerSpecs</code>・<code>RequestQueue.admit()</code> 状態機械</li>
+                        <li><code>swap(ctx)</code> タスク順序・永続 ID マップによる <code>__morph()</code>・<code>#internalAPI</code> 拡張ブリッジ</li>
+                    </ul>
+                </div>
+                <div class="portal-actions">
+                    <a href="architecture/index.html" class="btn-primary" data-i18n="en">Open Portal →</a>
+                    <a href="architecture/ja/index.html" class="btn-primary" data-i18n="ja">Open Portal →</a>
+                    <a href="architecture/en/index.html" class="btn-secondary">EN</a>
+                    <a href="architecture/ja/index.html" class="btn-secondary">JA</a>
+                    <a href="architecture/llms.txt" class="btn-secondary">llms.txt</a>
+                </div>
+            </article>
+
+            <!-- Portal 4: PNI501 Diagnostic Report -->
+            <article class="portal-card">
+                <div>
+                    <div class="portal-card-top">
+                        <span class="portal-badge amber">Drawlib Doc · type = "doc"</span>
+                        <span class="portal-path">pni501_src/ → docs/pni501/</span>
+                    </div>
+                    <h2>
+                        <a href="pni501/index.html" data-i18n="en">4. PNI501 Engineering &amp; Architecture Report</a>
+                        <a href="pni501/index.html" data-i18n="ja">4. PNI501 ソフトウェア品質・構造診断レポート</a>
+                    </h2>
+                    <p class="portal-desc" data-i18n="en">
+                        Deterministic 15-stage static JavaScript AST, module dependency DAG, hermetic Chromium browser test runtime, V8 coverage, and supply-chain diagnostic report of htmx v4.0.1.
+                    </p>
+                    <p class="portal-desc" data-i18n="ja">
+                        15 ステージの決定的ソフトウェア診断レポート。JavaScript AST 解析・モジュール依存グラフ・密閉 Chromium ブラウザテスト実行・V8 カバレッジ・セキュリティ診断を収録し、HTML と A4 PDF の双方で提供します。
+                    </p>
+                    <div class="portal-tags">
+                        <span class="portal-tag">JavaScript AST</span>
+                        <span class="portal-tag">0 Circular Deps</span>
+                        <span class="portal-tag">Playwright Chromium</span>
+                        <span class="portal-tag">93.5% V8 Coverage</span>
+                        <span class="portal-tag">HTML &amp; A4 PDF</span>
+                    </div>
+                    <ul class="portal-highlights" data-i18n="en">
+                        <li><code>0</code> circular dependencies &amp; <code>0</code> production runtime dependencies across <code>18</code> modules</li>
+                        <li><code>1,854</code> browser tests executed in headless Chromium with <code>93.5%</code> V8 line coverage</li>
+                        <li>Available as both single-page linear HTML and print-ready A4 PDF</li>
+                    </ul>
+                    <ul class="portal-highlights" data-i18n="ja">
+                        <li>全18モジュールで循環参照 <code>0</code> 件・本番ランタイム外部依存 <code>0</code> 件</li>
+                        <li>密閉 Chromium 環境で <code>1,854</code> 件のブラウザテスト実行・V8 行カバレッジ <code>93.5%</code></li>
+                        <li>単一ページ HTML と印刷用 A4 PDF（<code>pni501.pdf</code>）の両形式で出力</li>
+                    </ul>
+                </div>
+                <div class="portal-actions">
+                    <a href="pni501/index.html" class="btn-primary">Open Portal →</a>
+                    <a href="pni501/en/index.html" class="btn-secondary">EN</a>
+                    <a href="pni501/pni501.pdf" class="btn-secondary">PDF</a>
+                    <a href="pni501/llms.txt" class="btn-secondary">llms.txt</a>
+                </div>
+            </article>
+        </section>
+
+        <section class="hub-section">
+            <h3 data-i18n="en">Built with Drawlib — Illustrated Documentation as Code</h3>
+            <h3 data-i18n="ja">Built with Drawlib — Illustrated Documentation as Code（ソースと出力ポータルの対応）</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Portal</th>
+                            <th>Builder / Archetype</th>
+                            <th>Source Directory</th>
+                            <th>Compiled Output</th>
+                            <th>Locales / Formats</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="user_guide/index.html">htmx v4 User Guide</a></td>
+                            <td><code>drawlib site</code> (<code>type = "site"</code>)</td>
+                            <td><code>user_guide_src/</code></td>
+                            <td><code>docs/user_guide/</code></td>
+                            <td>HTML (<code>en</code>, <code>ja</code>), <a href="user_guide/llms.txt">llms.txt</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="api/index.html">htmx v4 API Reference</a></td>
+                            <td><code>drawlib catalog</code> (<code>type = "catalog"</code>)</td>
+                            <td><code>api_src/</code></td>
+                            <td><code>docs/api/</code></td>
+                            <td>HTML Catalog (<code>en</code>, <code>ja</code>), <a href="api/llms.txt">llms.txt</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="architecture/index.html">htmx v4 Internal Architecture</a></td>
+                            <td><code>drawlib site</code> (<code>type = "site"</code>)</td>
+                            <td><code>architecture_src/</code></td>
+                            <td><code>docs/architecture/</code></td>
+                            <td>HTML (<code>en</code>, <code>ja</code>), <a href="architecture/llms.txt">llms.txt</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="pni501/index.html">PNI501 Diagnostic Report</a></td>
+                            <td><code>drawlib doc</code> (<code>type = "doc"</code>)</td>
+                            <td><code>pni501_src/</code></td>
+                            <td><code>docs/pni501/</code></td>
+                            <td>HTML (<code>en</code>), <a href="pni501/pni501.pdf">A4 PDF</a>, <a href="pni501/llms.txt">llms.txt</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <pre><code># Build all 4 portals and regenerate docs/sitemap.xml:
+./build.sh
+
+# Preview the unified showcase locally (or pass --check to verify links):
+./serve.sh</code></pre>
+        </section>
+
+        <footer class="hub-footer">
+            <p data-i18n="en">
+                <strong>Disclaimer &amp; Attribution:</strong> htmx is created and maintained by <strong>Carson Gross</strong> and <strong>Big Sky Software</strong> (<a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx.org</a> · <a href="https://four.htmx.org/" target="_blank" rel="noopener noreferrer">four.htmx.org</a> · <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer">github.com/bigskysoftware/htmx</a>, Zero-Clause BSD License). This unofficial community documentation and diagnostic showcase is built with <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> and <a href="https://pypi.org/project/pni501/" target="_blank" rel="noopener noreferrer">PNI501</a> (Apache-2.0 License).
+            </p>
+            <p data-i18n="ja">
+                <strong>免責事項と帰属表示:</strong> htmx は <strong>Carson Gross</strong> 氏および <strong>Big Sky Software</strong> によって開発・保守されています（公式ドキュメント: <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx.org</a> · <a href="https://four.htmx.org/" target="_blank" rel="noopener noreferrer">four.htmx.org</a> · <a href="https://github.com/bigskysoftware/htmx" target="_blank" rel="noopener noreferrer">github.com/bigskysoftware/htmx</a>, 0BSD License）。本サイトは <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> および <a href="https://pypi.org/project/pni501/" target="_blank" rel="noopener noreferrer">PNI501</a> で構築された非公式の技術ドキュメント・品質診断ショーケースです（Apache-2.0 License）。
+            </p>
+        </footer>
+    </main>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Theme toggle
-            const themeBtn = document.getElementById('theme-toggle');
-            if (themeBtn) {
-                themeBtn.addEventListener('click', function() {
-                    const current = document.documentElement.getAttribute('data-theme');
-                    const next = current === 'dark' ? 'light' : 'dark';
-                    document.documentElement.setAttribute('data-theme', next);
-                    localStorage.setItem('drawlib-theme', next);
-                });
-            }
+            var enBtn = document.getElementById('lang-en-btn');
+            var jaBtn = document.getElementById('lang-ja-btn');
+            var themeBtn = document.getElementById('theme-toggle-btn');
 
-            // Language dropdown outside-click & Escape close
-            const langDropdowns = document.querySelectorAll('.lang-dropdown');
-            if (langDropdowns.length > 0) {
-                document.addEventListener('click', function(e) {
-                    langDropdowns.forEach(function(dd) {
-                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
-                            dd.removeAttribute('open');
-                        }
-                    });
-                });
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        langDropdowns.forEach(function(dd) {
-                            dd.removeAttribute('open');
-                        });
-                    }
-                });
-            }
-
-            // Mobile menu toggle
-            const menuBtn = document.getElementById('menu-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            if (menuBtn && sidebar) {
-                function setMenuOpen(open) {
-                    sidebar.classList.toggle('is-open', open);
-                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-                    document.body.classList.toggle('menu-open', open);
-                    if (open) {
-                        const menu = sidebar.querySelector('.sidebar-menu');
-                        if (menu) {
-                            menu.scrollTop = 0;
-                        }
+            function updateLangButtons() {
+                var current = document.documentElement.getAttribute('data-lang') || 'en';
+                if (enBtn && jaBtn) {
+                    if (current === 'ja') {
+                        jaBtn.classList.add('active');
+                        enBtn.classList.remove('active');
+                    } else {
+                        enBtn.classList.add('active');
+                        jaBtn.classList.remove('active');
                     }
                 }
+            }
 
-                menuBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const willOpen = !sidebar.classList.contains('is-open');
-                    setMenuOpen(willOpen);
-                });
+            function setLang(lang) {
+                document.documentElement.setAttribute('data-lang', lang);
+                document.documentElement.setAttribute('lang', lang);
+                try {
+                    localStorage.setItem('drawlib-portal-lang', lang);
+                } catch (e) {}
+                updateLangButtons();
+            }
 
-                // Close menu when clicking outside sidebar
-                document.addEventListener('click', function(e) {
-                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
-                        setMenuOpen(false);
-                    }
-                });
-
-                // Close menu when a navigation link is clicked
-                const navLinks = sidebar.querySelectorAll('.nav-item a');
-                navLinks.forEach(function(link) {
-                    link.addEventListener('click', function() {
-                        setMenuOpen(false);
-                    });
-                });
-
-                // Close on Escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
-                        setMenuOpen(false);
-                    }
-                });
-
-                // Reset menu state when resized above mobile breakpoint
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
-                        setMenuOpen(false);
-                    }
+            if (enBtn) {
+                enBtn.addEventListener('click', function() { setLang('en'); });
+            }
+            if (jaBtn) {
+                jaBtn.addEventListener('click', function() { setLang('ja'); });
+            }
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    var currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                    var nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', nextTheme);
+                    try {
+                        localStorage.setItem('drawlib-theme', nextTheme);
+                    } catch (e) {}
                 });
             }
+
+            updateLangButtons();
         });
     </script>
 </body>

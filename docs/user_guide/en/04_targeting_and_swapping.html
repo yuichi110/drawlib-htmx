@@ -1,0 +1,644 @@
+<!--
+ Copyright (c) 2026 Yuichi Ito (yuichi@yuichi.com)
+
+ This software is licensed under the Apache License, Version 2.0.
+ For more information, please visit: https://github.com/yuichi110/drawlib
+
+ This software is provided "as is", without warranty of any kind,
+ express or implied, including but not limited to the warranties of
+ merchantability, fitness for a particular purpose and noninfringement.
+-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Targeting &amp; Swapping</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9N5BZ1VRC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-S9N5BZ1VRC');
+    </script>
+    <script>
+        (function() {
+            const saved = localStorage.getItem('drawlib-theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+    
+    
+    
+    <link rel="alternate" hreflang="en" href="https://htmx.drawlib.com/user_guide/en/04_targeting_and_swapping.html">
+    
+    <link rel="alternate" hreflang="ja" href="https://htmx.drawlib.com/user_guide/ja/04_targeting_and_swapping.html">
+    
+    <link rel="alternate" hreflang="x-default" href="https://htmx.drawlib.com/user_guide/en/04_targeting_and_swapping.html">
+    
+    
+    
+    <meta name="description" content="Once the server responds with an HTML fragment, htmx v4.0.1 determines where to place the content (hx-target using extended relative CSS selectors) and how…">
+    <link rel="canonical" href="https://htmx.drawlib.com/user_guide/en/04_targeting_and_swapping.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="htmx v4 User Guide">
+    <meta property="og:title" content="4. Targeting &amp; Swapping — htmx v4 User Guide">
+    <meta property="og:description" content="Once the server responds with an HTML fragment, htmx v4.0.1 determines where to place the content (hx-target using extended relative CSS selectors) and how…">
+    <meta property="og:url" content="https://htmx.drawlib.com/user_guide/en/04_targeting_and_swapping.html">
+    <meta property="og:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="4. Targeting &amp; Swapping — htmx v4 User Guide">
+    <meta name="twitter:description" content="Once the server responds with an HTML fragment, htmx v4.0.1 determines where to place the content (hx-target using extended relative CSS selectors) and how…">
+    <meta name="twitter:image" content="https://htmx.drawlib.com/user_guide/_assets/ogp.png">
+    
+    
+    
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body>
+    
+    
+    
+    <div class="demo-banner" role="region" aria-label="Portal Navigation">
+        <div class="demo-banner-inner">
+            <span class="demo-banner-badge">DRAWLIB SHOWCASE</span>
+            
+            <span class="demo-banner-text">
+                Unofficial <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a> (v4.0.1) Documentation built with <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a>
+            </span>
+            <span class="demo-banner-links">
+                <a href="../../index.html">All Portals</a>
+                <span class="demo-banner-sep">·</span>
+                <strong style="color:#ffffff;">User Guide</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../api/index.html">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../architecture/index.html">Architecture</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="../../pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    <div class="doc-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand" aria-label="htmx v4 User Guide">
+                    
+                    htmx v4 User Guide
+                    
+                </a>
+                <div class="sidebar-header-actions">
+                    <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button type="button" id="menu-toggle" class="menu-toggle-btn" aria-label="Toggle navigation" aria-expanded="false">
+                        <svg class="icon-hamburger" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg class="icon-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                
+                    
+                        
+                        <ul class="nav-list">
+                            
+                            <li class="nav-item ">
+                                <a href="index.html" >Overview</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="01_getting_started.html" >1. Getting Started</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="02_hypermedia_architecture.html" >2. Hypermedia Architecture</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="03_requests_and_triggers.html" >3. Requests &amp; Triggers</a>
+                            </li>
+                            
+                            <li class="nav-item active">
+                                <a href="04_targeting_and_swapping.html" >4. Targeting &amp; Swapping</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="05_headers_events_and_status.html" >5. Headers, Events &amp; Status</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="06_extensions_and_streaming.html" >6. Extensions &amp; Streaming</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="07_history_caching_and_ux.html" >7. History, Caching &amp; UX</a>
+                            </li>
+                            
+                            <li class="nav-item ">
+                                <a href="08_security_testing_and_debugging.html" >8. Security, Testing &amp; Debugging</a>
+                            </li>
+                            
+                        </ul>
+                    
+                
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb">Docs</span>
+                    <span class="crumb-separator">&raquo;</span>
+                    <span class="crumb active">4. Targeting &amp; Swapping</span>
+                </div>
+                
+                <div class="lang-switcher">
+                    <details class="lang-dropdown">
+                        <summary class="lang-dropdown-btn" aria-label="Select language">
+                            <svg class="lang-globe-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            <span class="lang-current-label">English</span>
+                            <svg class="lang-caret-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="lang-dropdown-menu" role="menu">
+                            
+                            <a href="04_targeting_and_swapping.html" class="lang-option active" lang="en" hreflang="en" aria-current="page">
+                                <span>English</span>
+                                
+                                <svg class="lang-check-icon" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                
+                            </a>
+                            
+                            <a href="../ja/04_targeting_and_swapping.html" class="lang-option" lang="ja" hreflang="ja" >
+                                <span>日本語</span>
+                                
+                            </a>
+                            
+                        </div>
+                    </details>
+                </div>
+                
+            </header>
+            <main class="main-content">
+                <h1>4. Targeting &amp; Swapping</h1>
+<p>Once the server responds with an HTML fragment, htmx v4.0.1 determines <strong>where</strong> to place the content (<code>hx-target</code> using extended relative CSS selectors) and <strong>how</strong> to integrate it into the live DOM (<code>hx-swap</code>, built-in DOM morphing, <code>hx-preserve</code>, and the View Transitions API).</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_targeting_and_swapping/ch04_swap_positions_and_strategies.png" alt="04_targeting_and_swapping_1" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Swap Insertion Positions, Morphing Modes, and Extended CSS Selectors</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.canvas</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">setup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.icons</span><span class="w"> </span><span class="kn">import</span> <span class="n">phosphor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.smartarts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CardList</span><span class="p">,</span> <span class="n">GridLayout</span><span class="p">,</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">174</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">)</span>
+
+<span class="c1"># Left Panel: DOM Swap Insertion Geometry</span>
+<span class="n">left_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"hx-swap Insertion Positions"</span><span class="p">,</span>
+    <span class="s2">"Relative to Target Element"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">brackets_angle</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">left_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">82.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">66.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">l_xy</span><span class="p">,</span> <span class="n">l_w</span><span class="p">,</span> <span class="n">l_h</span> <span class="o">=</span> <span class="n">left_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">82.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">66.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridLayout</span><span class="p">(</span>
+    <span class="n">num_column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"before (beforebegin) -&gt; Prior Sibling"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"prepend (afterbegin) -&gt; First Child Inside Target"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="mi">1</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">"innerHTML / innerMorph / outerMorph / outerSync"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"append (beforeend) -&gt; Last Child Inside Target"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">"after (afterend) -&gt; Next Sibling"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_r</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">l_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">l_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">l_h</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+
+<span class="c1"># Right Panel: Extended Relative CSS Selectors</span>
+<span class="n">right_panel</span> <span class="o">=</span> <span class="n">Panel</span><span class="p">(</span>
+    <span class="s2">"Extended Relative Selectors"</span><span class="p">,</span>
+    <span class="s2">"ID-Free Component Targeting"</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="p">,</span>
+    <span class="n">header_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">shape_line_width</span><span class="o">=</span><span class="mf">1.2</span><span class="p">),</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">11.0</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">icon</span><span class="o">=</span><span class="n">phosphor</span><span class="o">.</span><span class="n">crosshair</span><span class="p">,</span>
+    <span class="n">icon_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">header_variant</span><span class="o">=</span><span class="s2">"filled"</span><span class="p">,</span>
+    <span class="n">header_height</span><span class="o">=</span><span class="mf">9.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">right_panel</span><span class="o">.</span><span class="n">draw</span><span class="p">((</span><span class="mf">94.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">74.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">66.0</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">"bottom_left"</span><span class="p">)</span>
+<span class="n">r_xy</span><span class="p">,</span> <span class="n">r_w</span><span class="p">,</span> <span class="n">r_h</span> <span class="o">=</span> <span class="n">right_panel</span><span class="o">.</span><span class="n">get_content_box</span><span class="p">((</span><span class="mf">94.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mf">74.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">66.0</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+
+<span class="n">sel_cards</span> <span class="o">=</span> <span class="n">CardList</span><span class="p">(</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">White</span><span class="p">,</span>
+    <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">10.5</span><span class="p">),</span>
+    <span class="n">description_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Muted</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">badge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="p">,</span>
+    <span class="n">badge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">sel_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"closest &lt;selector&gt;"</span><span class="p">,</span> <span class="s2">"Nearest ancestor (e.g. closest tr, closest .card)"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"UP"</span><span class="p">)</span>
+<span class="n">sel_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"find &lt;selector&gt;"</span><span class="p">,</span> <span class="s2">"First matching descendant inside element"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"DOWN"</span><span class="p">)</span>
+<span class="n">sel_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"next [selector]"</span><span class="p">,</span> <span class="s2">"Following sibling in DOM order"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"NEXT"</span><span class="p">)</span>
+<span class="n">sel_cards</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"previous [selector]"</span><span class="p">,</span> <span class="s2">"Preceding sibling in DOM order"</span><span class="p">,</span> <span class="n">badge_text</span><span class="o">=</span><span class="s2">"PREV"</span><span class="p">)</span>
+<span class="n">sel_cards</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">r_xy</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">r_w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">r_h</span><span class="p">)</span>
+
+<span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<hr />
+<h2>4.1 Extended Relative CSS Selectors (<code>hx-target</code>)</h2>
+<p>While standard CSS selectors (<code>#results</code>, <code>.panel</code>) work everywhere in htmx, relying on global IDs inside loops or reusable components leads to brittle templates. htmx v4.0.1 supports <strong>extended relative selectors</strong> in <code>hx-target</code>, <code>hx-include</code>, <code>hx-indicator</code>, <code>hx-disable</code>, and <code>htmx.find()</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Selector Syntax</th>
+<th style="text-align:left">Resolution Scope</th>
+<th style="text-align:left">Practical Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>this</code></strong></td>
+<td style="text-align:left">The element carrying the attribute (or the inheritance owner when <code>:inherited</code>).</td>
+<td style="text-align:left"><code>hx-target=&quot;this&quot;</code> on an edit-in-place card.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>closest &lt;selector&gt;</code></strong></td>
+<td style="text-align:left">Walks up the ancestor chain (<code>element.closest(sel)</code>).</td>
+<td style="text-align:left"><code>hx-target=&quot;closest tr&quot;</code> on a table row delete button.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>find &lt;selector&gt;</code></strong></td>
+<td style="text-align:left">Queries the first descendant inside the element (<code>element.querySelector(sel)</code>).</td>
+<td style="text-align:left"><code>hx-disable=&quot;find button, find input&quot;</code> on a <code>&lt;form&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>next [selector]</code></strong></td>
+<td style="text-align:left">Finds the next element in document order matching <code>[selector]</code> (or immediate sibling).</td>
+<td style="text-align:left"><code>hx-target=&quot;next .validation-msg&quot;</code> on an <code>&lt;input&gt;</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>previous [selector]</code></strong></td>
+<td style="text-align:left">Finds the preceding element in document order matching <code>[selector]</code>.</td>
+<td style="text-align:left"><code>hx-target=&quot;previous output&quot;</code> on a increment button.</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-html"><span class="cm">&lt;!-- Zero global IDs needed across repeating table rows --&gt;</span>
+<span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>Invoice #1042<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">td</span> <span class="na">class</span><span class="o">=</span><span class="s">"row-status"</span><span class="p">&gt;</span>Pending<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">hx-post</span><span class="o">=</span><span class="s">"/invoices/1042/approve"</span>
+                <span class="na">hx-target</span><span class="o">=</span><span class="s">"closest tr"</span>
+                <span class="na">hx-swap</span><span class="o">=</span><span class="s">"outerMorph"</span><span class="p">&gt;</span>
+          Approve
+        <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2>4.2 Complete <code>hx-swap</code> Strategy Reference</h2>
+<p>htmx v4.0.1 expands <code>hx-swap</code> with built-in morphing (<code>innerMorph</code>, <code>outerMorph</code>, <code>outerSync</code>), safe text replacement (<code>textContent</code>), and intuitive position shorthands (<code>before</code>, <code>prepend</code>, <code>append</code>, <code>after</code>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><code>hx-swap</code> Value</th>
+<th style="text-align:left">Legacy Alias</th>
+<th style="text-align:left">DOM Operation &amp; State Preservation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>innerHTML</code></strong> <em>(default)</em></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Replaces all child nodes of the target with parsed HTML.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerHTML</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Replaces the entire target element itself with the response HTML.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerSync</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left"><strong>New in v4</strong>: Morphs the target element's own attributes in place, then replaces its children (<code>innerHTML</code>). Keeps the target node reference alive.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>innerMorph</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left"><strong>New in v4</strong>: Morphs the children of the target in place, preserving focus, input values, scroll positions, and animations.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>outerMorph</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left"><strong>New in v4</strong>: Morphs the target element itself and its children in place.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>textContent</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left"><strong>New in v4</strong>: Assigns <code>target.textContent</code> directly without parsing HTML (ideal for counters or untrusted plain strings).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>before</code></strong></td>
+<td style="text-align:left"><code>beforebegin</code></td>
+<td style="text-align:left">Inserts the response immediately before the target element as a preceding sibling.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>prepend</code></strong></td>
+<td style="text-align:left"><code>afterbegin</code></td>
+<td style="text-align:left">Inserts the response inside the target before its first child.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>append</code></strong></td>
+<td style="text-align:left"><code>beforeend</code></td>
+<td style="text-align:left">Inserts the response inside the target after its last child.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>after</code></strong></td>
+<td style="text-align:left"><code>afterend</code></td>
+<td style="text-align:left">Inserts the response immediately after the target element as a following sibling.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>delete</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Removes the target element from the DOM after the request completes (regardless of response body).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>none</code></strong></td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Does not modify the primary target (<code>&lt;hx-partial&gt;</code>, <code>hx-swap-oob</code>, and response headers still execute).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>4.3 Built-In DOM Morphing (<code>innerMorph</code> &amp; <code>outerMorph</code>)</h2>
+<p>In htmx 2, DOM morphing required external libraries like <code>idiomorph</code>. In <strong>htmx v4.0.1, DOM morphing is built directly into the core engine</strong>. When you use <code>hx-swap=&quot;innerMorph&quot;</code> or <code>hx-swap=&quot;outerMorph&quot;</code>, htmx diffs the incoming HTML fragment against the live DOM tree and updates only changed attributes and nodes.</p>
+<figure class="drawlib-image" style="text-align: center;">
+  <img src="../images/04_targeting_and_swapping/ch04_morph_decision_flow.png" alt="04_targeting_and_swapping_2" />
+  <figcaption class="drawlib-caption">htmx v4.0.1 Built-in DOM Morphing Reconciliation & Freeze Boundaries</figcaption>
+</figure>
+<details class="drawlib-code-details">
+<summary>Source Code</summary>
+<pre><code class="language-python"><span class="kn">from</span><span class="w"> </span><span class="nn">drawlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.diagrams.flow</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decision</span><span class="p">,</span> <span class="n">End</span><span class="p">,</span> <span class="n">FlowDiagram</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Start</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">drawlib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">Styles</span>
+
+<span class="n">canvas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">176</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">78</span><span class="p">)</span>
+
+<span class="n">flow</span> <span class="o">=</span> <span class="n">FlowDiagram</span><span class="p">(</span>
+    <span class="n">node_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">edge_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">DarkBold</span><span class="p">,</span>
+    <span class="n">edge_text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Dark</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Built-In DOM Morphing Algorithm (innerMorph / outerMorph)"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Start</span><span class="p">(</span><span class="s2">"Incoming Fragment"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">52</span><span class="p">))</span>
+<span class="n">skip_chk</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Decision</span><span class="p">(</span><span class="s2">"Matches</span><span class="se">\n</span><span class="s2">hx-morph-skip?"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WarningNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">52</span><span class="p">))</span>
+<span class="n">keep_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">End</span><span class="p">(</span><span class="s2">"Keep Existing</span><span class="se">\n</span><span class="s2">Subtree Intact"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">SecondaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">18</span><span class="p">))</span>
+
+<span class="n">id_match</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Process</span><span class="p">(</span><span class="s2">"Match by ID or</span><span class="se">\n</span><span class="s2">Soft-Match Sibling</span><span class="se">\n</span><span class="s2">(morphScanLimit=10)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="mi">52</span><span class="p">))</span>
+<span class="n">sync_attr</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Process</span><span class="p">(</span><span class="s2">"Sync Attributes</span><span class="se">\n</span><span class="s2">(Skip morphIgnore</span><span class="se">\n</span><span class="s2">data-htmx-powered)"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">Neutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="mi">18</span><span class="p">))</span>
+
+<span class="n">skip_child</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Decision</span><span class="p">(</span><span class="s2">"hx-morph-skip</span><span class="se">\n</span><span class="s2">-children?"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">34</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WarningNeutral</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">18</span><span class="p">))</span>
+<span class="n">done</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">End</span><span class="p">(</span><span class="s2">"Recurse Children &amp;</span><span class="se">\n</span><span class="s2">Preserve Focus/State"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">PrimaryFlat</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">),</span> <span class="n">text_style</span><span class="o">=</span><span class="n">Styles</span><span class="o">.</span><span class="n">WhiteBold</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">text_size</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">52</span><span class="p">))</span>
+
+<span class="n">start</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">skip_chk</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">skip_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">keep_node</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Yes"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">skip_chk</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">id_match</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"No"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">id_match</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">sync_attr</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">sync_attr</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">skip_child</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">skip_child</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">keep_node</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Yes (Freeze Children)"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">via</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">skip_child</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">done</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"No"</span><span class="p">,</span> <span class="n">start_side</span><span class="o">=</span><span class="s2">"top"</span><span class="p">,</span> <span class="n">end_side</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">flow</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">))</span>
+<span class="n">canvas</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</code></pre>
+</details>
+<h3>What Morphing Preserves—and Crucial Caveats</h3>
+<ul>
+<li><strong>Preserved State</strong>: Active keyboard focus, text selection, <code>&lt;input&gt;</code> user values, scroll offsets, playing <code>&lt;video&gt;</code>/<code>&lt;audio&gt;</code> elements, CSS transitions, and attached event listeners on matched nodes.</li>
+<li><strong>Priority ID Matching</strong>: Elements with matching <code>id</code> attributes are matched first across sibling scans (controlled by <code>htmx.config.morphScanLimit = 10</code>).</li>
+</ul>
+<blockquote>
+<p>[!WARNING]
+<strong>Morphing intentionally preserves user-typed <code>&lt;input&gt;</code> values!</strong> Do not use <code>innerMorph</code> or <code>outerMorph</code> when your goal is to reset a form back to blank defaults after submission—use <code>innerHTML</code>, <code>outerHTML</code>, or <code>outerSync</code> to reset form inputs cleanly.</p>
+</blockquote>
+<h3>Freezing Elements During Morph (<code>hx-morph-skip</code> &amp; <code>hx-morph-skip-children</code>)</h3>
+<p>When embedding third-party Web Components, rich text editors, or sortable containers inside a morphed region, instruct htmx to skip morphing them via attributes or global config selectors:</p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"dashboard"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/dashboard/poll"</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">"every 5s"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerMorph"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- 1. Freeze the entire element (neither attributes nor children are touched) --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">canvas</span> <span class="na">id</span><span class="o">=</span><span class="s">"webgl-viewport"</span> <span class="na">hx-morph-skip</span><span class="p">&gt;&lt;/</span><span class="nt">canvas</span><span class="p">&gt;</span>
+
+  <span class="cm">&lt;!-- 2. Update outer attributes from server, but leave internal DOM children untouched --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">sortable-kanban</span> <span class="na">data-column-count</span><span class="o">=</span><span class="s">"4"</span> <span class="na">hx-morph-skip-children</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"card"</span><span class="p">&gt;</span>Client-dragged card order stays intact<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">sortable-kanban</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+<hr />
+<h2>4.4 Swap Modifiers, <code>hx-preserve</code>, and View Transitions</h2>
+<p>Append space-separated modifiers to any <code>hx-swap</code> value to customize timing, scrolling, wrapper stripping, and animations:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Swap Modifier</th>
+<th style="text-align:left">Syntax Example</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>swap:&lt;time&gt;</code></strong></td>
+<td style="text-align:left"><code>innerHTML swap:150ms</code></td>
+<td style="text-align:left">Waits <code>&lt;time&gt;</code> after applying <code>htmx-swapping</code> before inserting new content.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>settle:&lt;time&gt;</code></strong></td>
+<td style="text-align:left"><code>innerHTML settle:200ms</code></td>
+<td style="text-align:left">Delay between DOM insertion and removing <code>htmx-settling</code> (default <code>1ms</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>transition:true</code></strong></td>
+<td style="text-align:left"><code>outerMorph transition:true</code></td>
+<td style="text-align:left">Wraps the DOM update in <code>document.startViewTransition()</code> (View Transitions API).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>scroll:top|bottom</code></strong></td>
+<td style="text-align:left"><code>innerHTML scroll:top</code></td>
+<td style="text-align:left">Scrolls the target container (or <code>scrollTarget:&lt;sel&gt;</code>) to top or bottom.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>show:top|bottom</code></strong></td>
+<td style="text-align:left"><code>afterend show:bottom</code></td>
+<td style="text-align:left">Scrolls the viewport so the target (or <code>showTarget:&lt;sel&gt;</code>) is visible.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>focusScroll:true</code></strong></td>
+<td style="text-align:left"><code>innerHTML focusScroll:true</code></td>
+<td style="text-align:left">Automatically scrolls the focused element into view after the swap.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ignoreTitle:true</code></strong></td>
+<td style="text-align:left"><code>innerHTML ignoreTitle:true</code></td>
+<td style="text-align:left">Prevents <code>&lt;title&gt;</code> tags in the response from updating <code>document.title</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>strip:true</code></strong></td>
+<td style="text-align:left"><code>innerHTML strip:true</code></td>
+<td style="text-align:left">Strips the outermost wrapper tag from the response before swapping.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>swapEmpty:true</code></strong></td>
+<td style="text-align:left"><code>innerHTML swapEmpty:true</code></td>
+<td style="text-align:left">Forces the main swap to run even if only <code>&lt;hx-partial&gt;</code> or OOB content was returned.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>target:&lt;selector&gt;</code></strong></td>
+<td style="text-align:left"><code>outerHTML target:#modal</code></td>
+<td style="text-align:left">Overrides the swap target inline within the <code>hx-swap</code> specification.</td>
+</tr>
+</tbody>
+</table>
+<h3>Preserving Elements Across <code>innerHTML</code> Swaps (<code>hx-preserve</code>)</h3>
+<p>When using <code>innerHTML</code> or <code>outerHTML</code> (rather than morphing), any element with a stable <code>id</code> and <strong><code>hx-preserve=&quot;true&quot;</code></strong> (or bare <code>hx-preserve</code>) is transplanted intact into the newly swapped DOM so video playback or iframe state never restarts:</p>
+<pre><code class="language-html"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">"lesson-container"</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">"/lessons/next"</span> <span class="na">hx-swap</span><span class="o">=</span><span class="s">"innerHTML transition:true"</span><span class="p">&gt;</span>
+  <span class="cm">&lt;!-- Video continues playing uninterrupted when #lesson-container swaps --&gt;</span>
+  <span class="p">&lt;</span><span class="nt">video</span> <span class="na">id</span><span class="o">=</span><span class="s">"lecture-stream"</span> <span class="na">hx-preserve</span><span class="o">=</span><span class="s">"true"</span> <span class="na">src</span><span class="o">=</span><span class="s">"/streams/intro.mp4"</span> <span class="na">controls</span><span class="p">&gt;&lt;/</span><span class="nt">video</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">article</span> <span class="na">id</span><span class="o">=</span><span class="s">"lesson-notes"</span><span class="p">&gt;</span>Chapter 1 Notes...<span class="p">&lt;/</span><span class="nt">article</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre>
+
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem('drawlib-theme', next);
+                });
+            }
+
+            // Language dropdown outside-click & Escape close
+            const langDropdowns = document.querySelectorAll('.lang-dropdown');
+            if (langDropdowns.length > 0) {
+                document.addEventListener('click', function(e) {
+                    langDropdowns.forEach(function(dd) {
+                        if (dd.hasAttribute('open') && !dd.contains(e.target)) {
+                            dd.removeAttribute('open');
+                        }
+                    });
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        langDropdowns.forEach(function(dd) {
+                            dd.removeAttribute('open');
+                        });
+                    }
+                });
+            }
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (menuBtn && sidebar) {
+                function setMenuOpen(open) {
+                    sidebar.classList.toggle('is-open', open);
+                    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    document.body.classList.toggle('menu-open', open);
+                    if (open) {
+                        const menu = sidebar.querySelector('.sidebar-menu');
+                        if (menu) {
+                            menu.scrollTop = 0;
+                        }
+                    }
+                }
+
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !sidebar.classList.contains('is-open');
+                    setMenuOpen(willOpen);
+                });
+
+                // Close menu when clicking outside sidebar
+                document.addEventListener('click', function(e) {
+                    if (sidebar.classList.contains('is-open') && !sidebar.contains(e.target)) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Close menu when a navigation link is clicked
+                const navLinks = sidebar.querySelectorAll('.nav-item a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        setMenuOpen(false);
+                    });
+                });
+
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+
+                // Reset menu state when resized above mobile breakpoint
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && sidebar.classList.contains('is-open')) {
+                        setMenuOpen(false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

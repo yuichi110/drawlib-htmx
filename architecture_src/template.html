@@ -14,6 +14,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title | default("Drawlib Document") }}</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9N5BZ1VRC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-S9N5BZ1VRC');
+    </script>
     <script>
         (function() {
             const saved = localStorage.getItem('drawlib-theme');
@@ -46,6 +55,61 @@
     {% endif %}
 </head>
 <body>
+    {% if css_href and css_href.startswith('../') %}
+    {% set docs_root = '../../../' %}
+    {% elif css_href and (css_href.startswith('en/') or css_href.startswith('ja/')) %}
+    {% set docs_root = '../' %}
+    {% else %}
+    {% set docs_root = '../../' %}
+    {% endif %}
+    <div class="demo-banner" role="region" aria-label="{% if html_lang == 'ja' %}ポータルナビゲーション{% else %}Portal Navigation{% endif %}">
+        <div class="demo-banner-inner">
+            <span class="demo-banner-badge">DRAWLIB SHOWCASE</span>
+            {% if html_lang == 'ja' %}
+            <span class="demo-banner-text">
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a> で構築された <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a>（v4.0.1）非公式ドキュメント
+            </span>
+            <span class="demo-banner-links">
+                <a href="{{ docs_root }}index.html">All Portals</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}user_guide/ja/index.html">User Guide</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}api/ja/index.html">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <strong style="color:#ffffff;">Architecture</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
+            {% else %}
+            <span class="demo-banner-text">
+                Unofficial <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">htmx</a> (v4.0.1) Documentation built with <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib</a>
+            </span>
+            <span class="demo-banner-links">
+                <a href="{{ docs_root }}index.html">All Portals</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}user_guide/index.html">User Guide</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}api/index.html">API Reference</a>
+                <span class="demo-banner-sep">·</span>
+                <strong style="color:#ffffff;">Architecture</strong>
+                <span class="demo-banner-sep">·</span>
+                <a href="{{ docs_root }}pni501/index.html">PNI501 Audit</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer">Official Docs ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://github.com/yuichi110/drawlib-htmx" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <span class="demo-banner-sep">·</span>
+                <a href="https://www.drawlib.com/" target="_blank" rel="noopener noreferrer">Drawlib ↗</a>
+            </span>
+            {% endif %}
+        </div>
+    </div>
     {% if (nav_sections and nav_sections | length > 0) or (nav_items and nav_items | length > 0) %}
     <div class="doc-layout">
         <aside class="sidebar">

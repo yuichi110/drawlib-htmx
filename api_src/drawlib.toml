@@ -4,6 +4,7 @@ type = "catalog"
 title = "htmx v4 API Reference"
 description = "Complete bilingual API, attribute, HTTP header, event, extension, and CLI reference for htmx v4.0.1."
 style = "default"
+output_dir = "../docs/api"
 
 [i18n]
 default_lang = "en"

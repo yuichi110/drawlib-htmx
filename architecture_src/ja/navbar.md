@@ -11,8 +11,3 @@
 - [4. Fetchコンテキストと同期キュー](04_fetch_context_and_sync_queue.md)
 - [5. Swap・SettleとMorphエンジン](05_swap_settle_and_morph_engine.md)
 - [6. 拡張機構とセキュリティ内部構造](06_extension_and_security_internals.md)
-
-## ポータル & レポート
-- [User Guide ↗](https://htmx.drawlib.com/)
-- [API Catalog ↗](https://htmx.drawlib.com/api/)
-- [PNI501 Audit Report ↗](https://htmx.drawlib.com/reports/pni501/)
